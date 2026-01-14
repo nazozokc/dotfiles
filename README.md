@@ -1,8 +1,8 @@
 # dotfiles
 
-このリポジトリは `nazozokc` の設定ファイルの保管場所です。
+This repository is the storage location for configuration files of `nazozokc`.
 
-管理対象:
+Managed targets:
 
 - `nvim`
 - `fish`
@@ -12,20 +12,17 @@
 
 ---
 
-## 前提
+## Prerequisites
 
-- リポジトリは `~/dotfiles` にクローンすることを想定しています（変更可）。
-- 既存の設定は必ず**バックアップ**するか削除してから適用してください。
-- 設定は **コピーではなく symlink** で管理します。コピーは混乱の元。
+- This repository is assumed to be cloned into `~/.config` (can be changed).
+- Make sure to **back up** or remove any existing configurations before applying.
 
 ---
 
-## リポジトリのクローン
+## Clone the repository
 
 ```bash
 cd ~
 git clone https://github.com/nazozokc/dotfiles.git
-# もしくは SSH
+# or via SSH
 # git clone git@github.com:nazozokc/dotfiles.git
-```
----
