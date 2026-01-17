@@ -1,28 +1,34 @@
 # dotfiles
 
-This repository is the storage location for configuration files of `nazozokc`.
+nazozokc の個人用 dotfiles リポジトリ。  
+複数環境で同じ開発・ターミナル環境を再現するための設定ファイル集。
 
-Managed targets:
+## 管理しているもの
 
-- `nvim`
-- `fish`
-- `zsh`
+- **Neovim** (`nvim`)
+- **fish shell** (`fish`)
+- **zsh** (`zsh`)
+- **WezTerm** (`wezterm`)
+- **Nix** (`nix`)
+
+基本的に Linux 環境向け。  
+設定はわりと攻めてるので、コピペ運用は非推奨。
+
+---
+
+## 前提
+
+以下は自分で入れておくこと。
+
+- `git`
+- `neovim`
+- `fish` または `zsh`
 - `wezterm`
-- `nix`
+- （`nix` ディレクトリを使うなら）`nix`
 
 ---
 
-## Prerequisites
-
-- This repository is assumed to be cloned into `~/.config`.
-- Make sure to **back up** or remove any existing configurations before applying.
-
----
-
-## Clone the repository
+## クローン
 
 ```bash
-cd ~
-git clone https://github.com/nazozokc/dotfiles.git
-# or via SSH
-# git clone git@github.com:nazozokc/dotfiles.git
+git clone https://github.com/nazozokc/dotfiles.git ~/.config/dotfiles
