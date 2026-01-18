@@ -31,4 +31,4 @@ nazozokc の個人用 dotfiles リポジトリ。
 ## クローン
 
 ```bash
-git clone https://github.com/nazozokc/dotfiles.git ~/.config/dotfiles
+git clone https://github.com/nazozokc/dotfiles.git ~/.config
