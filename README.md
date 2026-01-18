@@ -9,6 +9,7 @@ nazozokc の個人用 dotfiles リポジトリ。
 - **fish shell** (`fish`)
 - **zsh** (`zsh`)
 - **WezTerm** (`wezterm`)
+- **Nix** (`nix`)
 
 基本的に Linux 環境向け。  
 コピペ運用は非推奨。
