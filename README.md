@@ -1,34 +1,35 @@
 # dotfiles
 
-nazozokc の個人用 dotfiles リポジトリ。  
-複数環境で同じ開発・ターミナル環境を再現するための設定ファイル集。
+Linux 向けのnazozokc個人用 dotfiles 管理リポジトリ。  
+主に **開発環境・シェル・エディタ・ターミナル設定**を一元管理する目的で運用している。
 
-## 管理しているもの
-
-- **Neovim** (`nvim`)
-- **fish shell** (`fish`)
-- **zsh** (`zsh`)
-- **WezTerm** (`wezterm`)
-- **Nix** (`nix`)
-
-基本的に Linux 環境向け。  
-コピペ運用は非推奨。
+> ⚠️ 個人環境前提のため、そのままの利用は非推奨  
+> 必要な部分だけ参考にする用途を想定
 
 ---
 
-## 前提
+## 対象環境
 
-以下は自分で入れておくこと。
+| 項目 | 内容 |
+|---|---|
+| OS | Arch Linux |
+| Shell | fish / (zsh)|
+| Editor | Neovim |
+| Terminal | WezTerm |
+| Package | pacman / yay / nix（試験的） |
 
-- `git`
-- `neovim`
-- `fish` または `zsh`
-- `wezterm`
-- （`nix` ディレクトリを使うなら）`nix`
+※ macOS / Windows は未対応  
+※ Arch 以外では一部設定が動作しない可能性あり
 
 ---
 
-## クローン
+## ディレクトリ構成
 
-```bash
-git clone https://github.com/nazozokc/dotfiles.git ~/.config
+```text
+.
+├── fish/        # fish shell 設定
+├── zsh/         # zsh 設定
+├── nvim/        # Neovim 設定
+├── wezterm/     # WezTerm 設定
+├── nix/         # nix 関連（実験用）
+└── README.md
