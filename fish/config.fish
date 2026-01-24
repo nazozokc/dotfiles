@@ -1,4 +1,28 @@
 if status is-interactive
+
+  eza -lh --icons
+  # ==================================
+  # ghq-fzf keybind
+  # =================================
+function ghq-fzf
+    set src (ghq list | fzf \
+        --preview '
+            set repo (ghq root)/{}
+            if ls $repo/README* >/dev/null 2>&1
+                bat --color=always --style=header,grid --line-range :80 $repo/README*
+            else
+                ls -lah $repo
+            end
+        '
+    )
+
+    if test -n "$src"
+        cd (ghq root)/$src
+        commandline -f repaint
+    end
+end
+
+bind \cg ghq-fzf
 # =========================
 # 基本設定
 # =========================
@@ -46,22 +70,24 @@ thefuck --alias | source
 # エイリアス
 # =========================
 
-alias ll "ls -lah"
+alias ll "ls -lh"
 alias la "ls -A"
 alias l  "ls -CF"
-alias rm "rm -i"
+alias rm "rm -rf"
 alias cp "cp -i"
 alias mv "mv -i"
 alias grep "grep --color=auto"
 alias clr "clear"
-alias ts-enviroment "sudo npm i -D typescript ts-node-dev @types/node @types/express"
+alias ts-enviroment "sudo npm i -D typescript tsx esbuild @types/node @types/express"
 alias q "exit"
 if command -q exa
     alias ls "exa -lh --icons"
 end
 alias vim "nvim"
 alias opencodeclear "rm -rf ~/.local/share/opencode"
-alias parllamaclear "rm -rf /home/nazozo/.local/share/parllama/chats"                              
+alias parllamaclear "rm -rf /home/nazozo/.local/share/parllama/chats"   
+alias claude-ollama "export ANTHROPIC_AUTH_TOKEN=ollama | export ANTHROPIC_BASE_URL=http://localhost:11434"
+alias 1 "wlr-randr --output eDP-1 --scale 1.0"
 
 # Git
 alias g  "git"
@@ -69,10 +95,11 @@ alias gs "git status"
 alias ga "git add"
 alias gc "git commit"
 alias gp "git push"
+alias gp-rebase "git pull --rebase origin main"
 alias gl "git log --oneline --graph --decorate"
 alias gd "git diff"
 alias gb "git branch"
-alias gco "git checkout"
+alias gco. "git checkout"
 
 # Docker
 alias d "docker"
@@ -94,13 +121,19 @@ alias du "du -h"
 set -g fish_command_timer 1
 
 # 自動補完提案を無効化
-set -g fish_autosuggestion_enabled 0
+set -g fish_autosuggestion_enabled 1
 
 # fishコマンドの補完を無効化
 complete --erase --command fish
 
 # pipxコマンドの補完を無効化
 complete --erase --command pipx 
+
+# ディレクトリ移動時ls
+function __auto_ls --on-variable PWD
+    ls -lh --icons
+end
+
 
 # ===========================
 # コマンド補完
@@ -144,7 +177,8 @@ set -g fish_color_selection --background=$selection
 set -g fish_color_search_match --background=$selection
 set -g fish_color_operator $green
 set -g fish_color_escape $pink
-set -g fish_color_autosuggestion normal
+set -g fish_color_autosuggestion brblack
+set -U fish_autosuggestion_strategy history completion
 
 # Completion Pager Colors (補完表示を非表示にするため透明に近い色に設定)
 set -g fish_pager_color_progress normal
