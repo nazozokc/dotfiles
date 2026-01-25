@@ -1,4 +1,7 @@
 return {
   "lewis6991/spellsitter.nvim",
-  config = true,
+  event = { "BufReadPost", "BufNewFile" },
+  config = function()
+    require("spellsitter").setup()
+  end,
 }
