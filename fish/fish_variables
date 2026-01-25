@@ -16,6 +16,7 @@ SETUVAR _fisher_jorgebucaran_2F_fisher_files:\x7e/\x2econfig/fish/functions/fish
 SETUVAR _fisher_plugins:jorgebucaran/fisher\x1ejethrokuan/z\x1efranciscolourenco/done
 SETUVAR _fisher_upgraded_to_4_4:\x1d
 SETUVAR fish_autosuggestion_enabled:0
+SETUVAR fish_autosuggestion_strategy:history\x1ecompletion
 SETUVAR fish_greeting:
 SETUVAR fish_user_paths:/home/nazozo/\x2eopencode/bin
 SETUVAR --export fish_vi_mode_prompt:\x1d
