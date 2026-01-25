@@ -1,4 +1,4 @@
-function git-repo
+function ghrepo
     set repo (ghq list | fzf \
         --preview '
             if test -f (ghq root)/{}/README.md
