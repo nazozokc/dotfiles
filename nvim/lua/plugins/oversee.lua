@@ -1,4 +1,4 @@
 return {
   "stevearc/overseer.nvim",
-  event = "VeryLazy",
+  cmd = { "OverseerRun" },
 }

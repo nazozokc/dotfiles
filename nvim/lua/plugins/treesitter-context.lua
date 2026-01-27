@@ -1,7 +1,7 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter-context",
-    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "Trouble" },
     opts = {
       enable = true,
       max_lines = 3,        -- 表示行数（2〜4が無難）
