@@ -33,3 +33,4 @@ Linux 向けのnazozokc個人用 dotfiles 管理リポジトリ。
 ├── wezterm/     # WezTerm 設定
 ├── nix/         # nix 関連（実験用）
 └── README.md
+```
