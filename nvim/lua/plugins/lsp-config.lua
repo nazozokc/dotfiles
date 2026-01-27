@@ -1,35 +1,12 @@
 return {
   {
-    "williamboman/mason.nvim",
-    lazy = false,
-    config = function()
-      require("mason").setup()
-    end,
-  },
-
-  {
-    "williamboman/mason-lspconfig.nvim",
-    lazy = false,
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "ts_ls",
-          "lua_ls",
-          "html",
-          "solargraph",
-        },
-      })
-    end,
-  },
-
-  {
     "neovim/nvim-lspconfig",
     lazy = false,
     config = function()
       local capabilities =
           require("cmp_nvim_lsp").default_capabilities()
 
-      -- ts_ls（TypeScript / 軽量化）
+      -- TypeScript（軽量化）
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         single_file_support = false,
@@ -46,47 +23,35 @@ return {
           },
         },
 
-        settings = {
-          typescript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "none",
-              includeInlayFunctionParameterTypeHints = false,
-              includeInlayVariableTypeHints = false,
-              includeInlayFunctionReturnTypeHints = false,
-            },
-          },
-          javascript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "none",
-            },
-          },
-        },
-
         on_attach = function(client)
           client.server_capabilities.documentFormattingProvider = false
         end,
-      })
-
-      vim.lsp.config("solargraph", {
-        capabilities = capabilities,
-      })
-
-      vim.lsp.config("html", {
-        capabilities = capabilities,
       })
 
       vim.lsp.config("lua_ls", {
         capabilities = capabilities,
         settings = {
           Lua = {
-            diagnostics = {
-              globals = { "vim" },
-            },
+            diagnostics = { globals = { "vim" } },
           },
         },
       })
 
-      -- LSP keymaps
+      vim.lsp.config("html", {
+        capabilities = capabilities,
+      })
+
+      vim.lsp.config("solargraph", {
+        capabilities = capabilities,
+      })
+
+      -- LSP 有効化（これが必須）
+vim.lsp.enable("ts_ls")
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("html")
+vim.lsp.enable("solargraph")
+
+
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
           local opts = { buffer = ev.buf }
