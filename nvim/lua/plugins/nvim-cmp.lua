@@ -8,6 +8,7 @@ return {
     "hrsh7th/cmp-cmdline",
     "hrsh7th/cmp-calc",
     "vim-denops/denops.vim",
+    "roobert/tailwindcss-colorizer-cmp.nvim",
 
     -- denippet
     "uga-rosa/denippet.vim",
