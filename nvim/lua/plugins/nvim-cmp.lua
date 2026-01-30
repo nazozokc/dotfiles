@@ -1,5 +1,6 @@
 return {
   "hrsh7th/nvim-cmp",
+  event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     -- 補完ソース
     "hrsh7th/cmp-nvim-lsp",

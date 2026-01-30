@@ -1,6 +1,7 @@
 -- plugins/lualine.lua
 return {
   "nvim-lualine/lualine.nvim",
+  lazy = false,
   dependencies = { "nvim-tree/nvim-web-devicons", "folke/trouble.nvim" },
   config = function()
     local trouble = require("trouble")
