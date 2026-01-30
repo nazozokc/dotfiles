@@ -1,13 +1,4 @@
-return {
-  {
-    "tpope/vim-fugitive",
-    cmd = { "Git", "G" },
-  },
-  {
-    "lewis6991/gitsigns.nvim",
-    event = { "BufReadPost" },
-    config = function()
-      require("gitsigns").setup()
-    end,
-  }
-}
+-- NOTE:
+-- Disabled to avoid duplicate fugitive/gitsigns specs.
+-- The active Git plugins live in `lua/plugins/git-stuff.lua`.
+return {}

@@ -6,11 +6,12 @@ return {
       suggestion = {
         enabled = true,
         auto_trigger = true,
+        -- Avoid conflicts with window navigation (<C-h/j/k/l>) and common completion keys (<C-n>/<C-p>).
         keymap = {
-          accept = "<C-l>",
-          next = "<C-n>",
-          prev = "<C-p>",
-          dismiss = "<C-e>",
+          accept = "<M-l>",
+          next = "<M-n>",
+          prev = "<M-p>",
+          dismiss = "<M-e>",
         },
       },
       panel = { enabled = false },
