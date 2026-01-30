@@ -1,6 +1,6 @@
 return {
   "folke/which-key.nvim",
-  event = "VimEnter",
+  event = "VeryLazy",
   opts = {
     preset = "modern", -- 表示を今風に
     delay = 200,       -- 反応速度（短いほどキビキビ）
