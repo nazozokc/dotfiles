@@ -1,10 +1,14 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
+  event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
-    -- 最低限
+    -- insert 用
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
+
+    -- cmdline 用（必要最低限）
+    "hrsh7th/cmp-cmdline",
+    "hrsh7th/cmp-path",
 
     -- denippet
     "uga-rosa/denippet.vim",
@@ -14,13 +18,18 @@ return {
   config = function()
     local cmp = require("cmp")
 
-    -- denippet 設定（最小）
+    ------------------------------------------------------------------
+    -- denippet（最小）
+    ------------------------------------------------------------------
     vim.g.denippet_snippet_dirs = {
       vim.fn.stdpath("config") .. "/snippets",
     }
 
+    ------------------------------------------------------------------
+    -- Insert mode
+    ------------------------------------------------------------------
     cmp.setup({
-      preselect = cmp.PreselectMode.None, -- ← これ地味に効く
+      preselect = cmp.PreselectMode.None,
 
       snippet = {
         expand = function(args)
@@ -76,8 +85,30 @@ return {
       },
 
       experimental = {
-        ghost_text = false, -- ← 絶対 false
+        ghost_text = false,
+      },
+    })
+
+    ------------------------------------------------------------------
+    -- Cmdline "/"
+    ------------------------------------------------------------------
+    cmp.setup.cmdline("/", {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = {
+        { name = "buffer" },
+      },
+    })
+
+    ------------------------------------------------------------------
+    -- Cmdline ":"
+    ------------------------------------------------------------------
+    cmp.setup.cmdline(":", {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = {
+        { name = "path" },
+        { name = "cmdline" },
       },
     })
   end,
 }
+

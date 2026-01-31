@@ -1,4 +1,9 @@
 -- =========================================================
+-- Performance: Enable Lua module cache
+-- =========================================================
+vim.loader.enable()
+
+-- =========================================================
 -- Bootstrap lazy.nvim
 -- =========================================================
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -40,7 +45,30 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -- Load configs
 -- =========================================================
 require("vim-options")
-require("lazy").setup("plugins")
+require("lazy").setup("plugins", {
+  defaults = { lazy = true },
+  concurrency = 16,
+  performance = {
+    cache = {
+      enabled = true,
+    },
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "netrw",
+        "tarPlugin",
+        "tar",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+        "zip",
+      },
+    },
+  },
+})
 
 -- =========================================================
 -- Keymaps
@@ -52,9 +80,10 @@ local map = vim.keymap.set
 -- ---------------------------------------------------------
 map("n", "<leader>t", ":ToggleTerm<CR>", {})
 map("n", "<leader>c", ":Oil ~/.config<CR>", {})
-map("n", "<leader>so", ":SymbolsOutline<CR>")
-map("n", "<F2>", ":Twilight<CR>", {})
-map("n", "<leader>e", ":TroubleToggle<CR>")
+map("n", "<leader>so", "<cmd>SymbolsOutline<CR>")
+map("n", "<F2>", "<cmd>Twilight<CR>", {})
+-- TroubleToggle は残っていることも多いけど、v3 系の推奨コマンドに寄せる
+map("n", "<leader>e", "<cmd>Trouble diagnostics toggle<cr>")
 
 -- ---------------------------------------------------------
 -- DAP
