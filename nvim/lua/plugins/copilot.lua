@@ -6,15 +6,23 @@ return {
       suggestion = {
         enabled = true,
         auto_trigger = true,
-        -- Avoid conflicts with window navigation (<C-h/j/k/l>) and common completion keys (<C-n>/<C-p>).
         keymap = {
-          accept = "<M-l>",
-          next = "<M-n>",
-          prev = "<M-p>",
-          dismiss = "<M-e>",
+          accept = false, -- ← Copilot側ではTabを使わない
         },
       },
       panel = { enabled = false },
     })
+
+    -- Tab を自前で制御する
+    vim.keymap.set("i", "<Tab>", function()
+      local copilot = require("copilot.suggestion")
+      if copilot.is_visible() then
+        copilot.accept()
+        return ""
+      else
+        return "<Tab>"
+      end
+    end, { expr = true, silent = true })
   end,
 }
+

@@ -64,6 +64,10 @@ map('i', '<S-Tab>', 'v:lua.s_tab_complete()', { expr = true, noremap = true })
 --   { "neovim/nvim-lspconfig", lazy = false },
 --   { "hrsh7th/nvim-cmp", dependencies = { "uga-rosa/denippet.vim", "uga-rosa/cmp-denippet" } },
 -- })
+vim.cmd([[
+  autocmd RecordingEnter * set lazyredraw
+  autocmd RecordingLeave * set nolazyredraw
+]])
 
 -- =============================
 -- 高速化のため無効化
@@ -73,6 +77,5 @@ vim.opt.ruler = false
 vim.opt.showmode = false
 vim.opt.showcmd = false
 vim.opt.cmdheight = 1           -- コマンドライン高さ最小化
-vim.opt.lazyredraw = true       -- マクロ高速化
 vim.opt.shortmess:append("c")   -- メッセージ短縮
 
