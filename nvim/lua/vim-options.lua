@@ -64,10 +64,7 @@ map('i', '<S-Tab>', 'v:lua.s_tab_complete()', { expr = true, noremap = true })
 --   { "neovim/nvim-lspconfig", lazy = false },
 --   { "hrsh7th/nvim-cmp", dependencies = { "uga-rosa/denippet.vim", "uga-rosa/cmp-denippet" } },
 -- })
-vim.cmd([[
-  autocmd RecordingEnter * set lazyredraw
-  autocmd RecordingLeave * set nolazyredraw
-]])
+vim.opt.lazyredraw = true
 
 -- =============================
 -- 高速化のため無効化
