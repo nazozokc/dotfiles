@@ -147,3 +147,22 @@ end, { desc = "Dropbar pick symbol" })
 map("n", "gp", function()
   require("dropbar.api").open()
 end, { desc = "Dropbar open" })
+
+require("gitsigns").setup({
+  update_debounce = 200,
+  signcolumn = false,
+})
+
+-- LSP progress 完全無効
+vim.lsp.handlers["$/progress"] = function() end
+
+-- tiny-inline-diagnostic 軽量化
+require("tiny-inline-diagnostic").setup({
+  update_in_insert = false,
+})
+
+-- Noice LSP系OFF
+require("noice").setup({
+  lsp = { progress = { enabled = false } },
+})
+

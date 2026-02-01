@@ -41,7 +41,15 @@ return {
       },
     },
     config = function(_, opts)
-      require("noice").setup(opts)
+      require("noice").setup({
+  lsp = {
+    progress = { enabled = false },
+    hover = { enabled = false },
+    signature = { enabled = false },
+  },
+  messages = { enabled = false },
+  notify = { enabled = false },
+})
 
       -- Noice の Float 背景を透過
       vim.api.nvim_create_autocmd("ColorScheme", {

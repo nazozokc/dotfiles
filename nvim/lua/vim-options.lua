@@ -2,6 +2,7 @@
 -- 高速化ガチ設定
 -- =============================
 
+vim.lsp.handlers["$/progress"] = function() end
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
