@@ -19,13 +19,18 @@ return {
     "neovim/nvim-lspconfig",
     lazy = false,
     config = function()
-      local lspconfig = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      local capabilities =
+          require("cmp_nvim_lsp").default_capabilities()
 
-      -- 共通 on_attach
-      local on_attach = function(client, bufnr)
-        -- tsserverのsemanticTokensは重いので殺す
-        client.server_capabilities.semanticTokensProvider = nil
+      -- ===== 共通設定 =====
+      local function on_attach(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        local bufnr = args.buf
+
+        -- tsserverはsemanticTokensが激重なので無効化
+        if client and client.name == "ts_ls" then
+          client.server_capabilities.semanticTokensProvider = nil
+        end
 
         local opts = { buffer = bufnr }
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
@@ -34,10 +39,13 @@ return {
         vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
       end
 
-      -- TypeScript / JavaScript
-      lspconfig.ts_ls.setup({
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = on_attach,
+      })
+
+      -- ===== TypeScript =====
+      vim.lsp.config("ts_ls", {
         capabilities = capabilities,
-        on_attach = on_attach,
         flags = {
           debounce_text_changes = 150,
         },
@@ -46,6 +54,7 @@ return {
             inlayHints = {
               includeInlayParameterNameHints = "none",
               includeInlayVariableTypeHints = false,
+              includeInlayFunctionLikeReturnTypeHints = false,
             },
           },
           javascript = {
@@ -57,16 +66,14 @@ return {
         },
       })
 
-      -- HTML
-      lspconfig.html.setup({
+      -- ===== HTML =====
+      vim.lsp.config("html", {
         capabilities = capabilities,
-        on_attach = on_attach,
       })
 
-      -- Lua
-      lspconfig.lua_ls.setup({
+      -- ===== Lua =====
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
-        on_attach = on_attach,
         settings = {
           Lua = {
             diagnostics = {
@@ -76,10 +83,17 @@ return {
         },
       })
 
-      -- Ruby
-      lspconfig.solargraph.setup({
+      -- ===== Ruby =====
+      vim.lsp.config("solargraph", {
         capabilities = capabilities,
-        on_attach = on_attach,
+      })
+
+      -- 有効化
+      vim.lsp.enable({
+        "ts_ls",
+        "html",
+        "lua_ls",
+        "solargraph",
       })
     end,
   },
