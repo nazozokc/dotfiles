@@ -1,34 +1,38 @@
--- 変更点には ★ コメント付き
 return {
   "hrsh7th/nvim-cmp",
-  event = { "InsertEnter", "CmdlineEnter" },
+  event = "LspAttach",
   dependencies = {
+    -- 補完ソース
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-cmdline",
+    "hrsh7th/cmp-calc",
 
-    -- ★ calc は遅延ロード
-    { "hrsh7th/cmp-calc", event = "InsertEnter" },
-
-    "vim-denops/denops.vim",
-    "roobert/tailwindcss-colorizer-cmp.nvim",
-
-    "uga-rosa/denippet.vim",
-    "uga-rosa/cmp-denippet",
-    "ryoppippi/denippet-autoimport-vscode",
+    -- スニペット
+    "L3MON4D3/LuaSnip",
+    "saadparwaiz1/cmp_luasnip",
+    "rafamadriz/friendly-snippets",
   },
 
   config = function()
     local cmp = require("cmp")
+    local luasnip = require("luasnip")
 
-    vim.g.denippet_snippet_dirs = {
-      vim.fn.stdpath("config") .. "/snippets",
-    }
+    require("luasnip.loaders.from_vscode").lazy_load()
 
-    -- highlight はそのまま
-    vim.api.nvim_set_hl(0, "CmpGhostSnippet", { fg = "#727169", italic = true })
-    vim.api.nvim_set_hl(0, "CmpSnippetPreview", { fg = "#6e738d", italic = true })
+    ------------------------------------------------------------------
+    -- ハイライト
+    ------------------------------------------------------------------
+    vim.api.nvim_set_hl(0, "CmpGhostSnippet", {
+      fg = "#727169",
+      italic = true,
+    })
+
+    vim.api.nvim_set_hl(0, "CmpSnippetPreview", {
+      fg = "#6e738d",
+      italic = true,
+    })
 
     ------------------------------------------------------------------
     -- cmp 本体
@@ -38,7 +42,7 @@ return {
 
       snippet = {
         expand = function(args)
-          vim.fn["denippet#anonymous"](args.body)
+          luasnip.lsp_expand(args.body)
         end,
       },
 
@@ -50,14 +54,19 @@ return {
       formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(entry, item)
-          local icons = { Function = "󰊕", Snippet = "" }
+          local icons = {
+            Function = "󰊕",
+            Snippet  = "",
+          }
+
           item.kind = (icons[item.kind] or "") .. " " .. item.kind
           item.menu = ({
-            denippet = "[SNIP]",
+            luasnip = "[SNIP]",
             nvim_lsp = "[LSP]",
             buffer = "[BUF]",
             path = "[PATH]",
           })[entry.source.name]
+
           return item
         end,
       },
@@ -65,29 +74,31 @@ return {
       mapping = cmp.mapping.preset.insert({
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<CR>"] = cmp.mapping.confirm({ select = true }),
+
+        ["<Tab>"] = function(fallback)
+          if cmp.visible() then
+            cmp.confirm({ select = true })
+          elseif luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+          else
+            fallback()
+          end
+        end,
+
+        ["<S-Tab>"] = function(fallback)
+          if luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end,
       }),
 
       sources = {
-        { name = "denippet", priority = 1000 },
+        { name = "luasnip",  priority = 1000 },
         { name = "nvim_lsp", priority = 900 },
-        { name = "path", priority = 500 },
-        {
-          name = "buffer",
-          priority = 250,
-          -- ★ 現在のバッファのみ
-          option = {
-            get_bufnrs = function()
-              return { vim.api.nvim_get_current_buf() }
-            end,
-          },
-        },
-      },
-
-      -- ★ 明示的にパフォーマンス制御
-      performance = {
-        debounce = 80,
-        throttle = 40,
-        fetching_timeout = 200,
+        { name = "path",     priority = 500 },
+        { name = "buffer",   priority = 250 },
       },
 
       experimental = {
@@ -98,15 +109,15 @@ return {
     })
 
     ------------------------------------------------------------------
-    -- ★ snippet preview（条件付き）
+    -- snippet hover ghost preview（修正版・本命）
     ------------------------------------------------------------------
     local ns = vim.api.nvim_create_namespace("cmp_snippet_preview")
 
-    cmp.event:on("confirm_done", function(event)
+    cmp.event:on("complete_changed", function(event)
       vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
 
       local entry = event.entry
-      if not entry or entry.source.name ~= "denippet" then
+      if not entry or entry.source.name ~= "luasnip" then
         return
       end
 
@@ -116,32 +127,51 @@ return {
       end
 
       local preview = snippet
-        :gsub("%$%b{}", function(s) return s:match("{(.-)}") or "" end)
-        :gsub("%$%d+", "")
-        :gsub("\n.*", "")
+          :gsub("%$%b{}", function(s)
+            return s:match("{(.-)}") or ""
+          end)
+          :gsub("%$%d+", "")
+          :gsub("\n.*", "")
 
-      local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-      vim.api.nvim_buf_set_extmark(0, ns, row - 1, col, {
+      local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+      row = row - 1
+
+      vim.api.nvim_buf_set_extmark(0, ns, row, col, {
         virt_text = { { preview, "CmpSnippetPreview" } },
         virt_text_pos = "eol",
       })
     end)
 
+    cmp.event:on("menu_closed", function()
+      vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
+    end)
+
     ------------------------------------------------------------------
-    -- cmdline（そのまま）
+    -- cmdline
     ------------------------------------------------------------------
     cmp.setup.cmdline("/", {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = { { name = "buffer" } },
+      sources = cmp.config.sources({
+        { name = "nvim_lsp_document_symbol" },
+        { name = "cmdline" },
+        { name = "ghq" },
+      }, {
+        { name = "buffer" },
+      }),
+      completion = {
+        completeopt = "menu,menuone,noselect",
+      },
     })
 
     cmp.setup.cmdline(":", {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = {
-        { name = "path" },
-        { name = "cmdline" },
+      sources = cmp.config.sources(
+        { { name = "async_path" } },
+        { { name = "cmdline" }, { { name = "cmdline_history" } } }
+      ),
+      completion = {
+        completeopt = "menu,menuone,noselect",
       },
     })
   end,
 }
-

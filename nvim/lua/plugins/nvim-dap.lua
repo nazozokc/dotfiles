@@ -2,13 +2,13 @@ return {
   {
     "mfussenegger/nvim-dap",
   },
-
   {
     "rcarriga/nvim-dap-ui",
     dependencies = {
       "mfussenegger/nvim-dap",
       "nvim-neotest/nvim-nio",
     },
+    event = "VeryLazy",
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
@@ -24,9 +24,33 @@ return {
       end
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
+
+
+        dap.configurations.javascript = {
+          {
+            type = "node2",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            cwd = vim.fn.getcwd(),
+            sourceMaps = true,
+            protocol = "inspector",
+          },
+        }
+        dap.configurations.typescript = {
+          {
+            type = "node2",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            cwd = vim.fn.getcwd(),
+            sourceMaps = true,
+            protocol = "inspector",
+          },
+        }
       end
 
-      -- キーマップ（ここで定義しておくと DAP が未ロードでも安全に動く）
+      -- キーマップ（最低限）
       vim.keymap.set("n", "<F5>", dap.continue)
       vim.keymap.set("n", "<F10>", dap.step_over)
       vim.keymap.set("n", "<F11>", dap.step_into)
@@ -36,56 +60,5 @@ return {
         dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
       end)
     end,
-  },
-
-  -- JS/TS debug adapter
-  {
-    "microsoft/vscode-js-debug",
-    build = "npm install --ignore-scripts",
-  },
-
-  {
-    "mxsdev/nvim-dap-vscode-js",
-    dependencies = {
-      "mfussenegger/nvim-dap",
-      "microsoft/vscode-js-debug",
-    },
-    config = function()
-      require("dap-vscode-js").setup({
-        adapters = {
-          "pwa-node",
-          "pwa-chrome",
-          "pwa-msedge",
-        },
-      })
-
-      local dap = require("dap")
-      for _, lang in ipairs({ "javascript", "typescript" }) do
-        dap.configurations[lang] = {
-          {
-            type = "pwa-node",
-            request = "launch",
-            name = "Launch file",
-            program = "${file}",
-            cwd = "${workspaceFolder}",
-          },
-        }
-      end
-    end,
-  },
-
-  {
-    "theHamsta/nvim-dap-virtual-text",
-    dependencies = {
-      "mfussenegger/nvim-dap",
-    },
-    opts = {
-      enabled = true,
-      enabled_commands = true,
-      highlight_changed_variables = true,
-      highlight_new_as_changed = true,
-      commented = false,
-      show_stop_reason = true,
-    },
   },
 }

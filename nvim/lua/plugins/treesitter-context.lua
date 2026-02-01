@@ -1,7 +1,8 @@
+-- ~/.config/nvim/lua/plugins/treesitter-context.lua
 return {
   {
     "nvim-treesitter/nvim-treesitter-context",
-    event = "BufReadPost",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {
       enable = true,
       max_lines = 3,        -- 表示行数（2〜4が無難）

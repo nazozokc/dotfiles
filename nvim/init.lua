@@ -1,9 +1,4 @@
 -- =========================================================
--- Performance: Enable Lua module cache
--- =========================================================
-vim.loader.enable()
-
--- =========================================================
 -- Bootstrap lazy.nvim
 -- =========================================================
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -45,30 +40,7 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -- Load configs
 -- =========================================================
 require("vim-options")
-require("lazy").setup("plugins", {
-  defaults = { lazy = true },
-  concurrency = 16,
-  performance = {
-    cache = {
-      enabled = true,
-    },
-    rtp = {
-      disabled_plugins = {
-        "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
-        "netrw",
-        "tarPlugin",
-        "tar",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
-        "zip",
-      },
-    },
-  },
-})
+require("lazy").setup("plugins")
 
 -- =========================================================
 -- Keymaps
@@ -79,11 +51,10 @@ local map = vim.keymap.set
 -- UI / Toggle
 -- ---------------------------------------------------------
 map("n", "<leader>t", ":ToggleTerm<CR>", {})
-map("n", "<leader>c", ":Oil ~/.config<CR>", {})
-map("n", "<leader>so", "<cmd>SymbolsOutline<CR>")
-map("n", "<F2>", "<cmd>Twilight<CR>", {})
--- TroubleToggle は残っていることも多いけど、v3 系の推奨コマンドに寄せる
-map("n", "<leader>e", "<cmd>Trouble diagnostics toggle<cr>")
+map("n", "<leader>c", ":Neotree ~/.config/nvim reveal right<CR>", {})
+map("n", "<leader>so", ":SymbolsOutline<CR>")
+map("n", "<F2>", ":Twilight<CR>", {})
+map("n", "<leader>e", ":TroubleToggle<CR>")
 
 -- ---------------------------------------------------------
 -- DAP
@@ -147,22 +118,3 @@ end, { desc = "Dropbar pick symbol" })
 map("n", "gp", function()
   require("dropbar.api").open()
 end, { desc = "Dropbar open" })
-
-require("gitsigns").setup({
-  update_debounce = 200,
-  signcolumn = false,
-})
-
--- LSP progress 完全無効
-vim.lsp.handlers["$/progress"] = function() end
-
--- tiny-inline-diagnostic 軽量化
-require("tiny-inline-diagnostic").setup({
-  update_in_insert = false,
-})
-
--- Noice LSP系OFF
-require("noice").setup({
-  lsp = { progress = { enabled = false } },
-})
-

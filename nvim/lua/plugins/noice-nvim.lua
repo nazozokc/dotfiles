@@ -1,3 +1,4 @@
+-- init.lua か plugins/noice.lua に
 return {
   {
     "folke/noice.nvim",
@@ -38,28 +39,17 @@ return {
         bottom_search = true,         -- /検索は下に表示
         command_palette = true,       -- cmdline と補完をいい感じに
         long_message_to_split = true, -- 長い出力は split に
+        -- Noice の Float 背景殺す
+        vim.api.nvim_create_autocmd("ColorScheme", {
+          callback = function()
+            vim.cmd([[
+      highlight NoicePopup guibg=none
+      highlight NoicePopupBorder guibg=none
+    ]])
+          end,
+        })
+
       },
     },
-    config = function(_, opts)
-      require("noice").setup({
-  lsp = {
-    progress = { enabled = false },
-    hover = { enabled = false },
-    signature = { enabled = false },
-  },
-  messages = { enabled = false },
-  notify = { enabled = false },
-})
-
-      -- Noice の Float 背景を透過
-      vim.api.nvim_create_autocmd("ColorScheme", {
-        callback = function()
-          vim.cmd([[
-            highlight NoicePopup guibg=none
-            highlight NoicePopupBorder guibg=none
-          ]])
-        end,
-      })
-    end,
   },
 }

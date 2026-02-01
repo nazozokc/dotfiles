@@ -1,4 +1,5 @@
 return {
+  -- 1. mini.ai（テキストオブジェクト、編集系なのでほぼすぐロード）
   {
     "echasnovski/mini.ai",
     version = false,

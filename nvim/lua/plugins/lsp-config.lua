@@ -1,69 +1,85 @@
 return {
   {
+    "williamboman/mason.nvim",
+    lazy = false,
+    config = function()
+      require("mason").setup()
+    end,
+  },
+
+  {
+    "williamboman/mason-lspconfig.nvim",
+    lazy = false,
+    opts = {
+      auto_install = true,
+    },
+  },
+
+  {
     "neovim/nvim-lspconfig",
     lazy = false,
-    dependencies = { "hrsh7th/cmp-nvim-lsp" },
     config = function()
+      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      ------------------------------------------------------------------
-      -- TypeScript / ts_ls
-      ------------------------------------------------------------------
-      vim.lsp.config("ts_ls", {
+      -- 共通 on_attach
+      local on_attach = function(client, bufnr)
+        -- tsserverのsemanticTokensは重いので殺す
+        client.server_capabilities.semanticTokensProvider = nil
+
+        local opts = { buffer = bufnr }
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+        vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, opts)
+        vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, opts)
+        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+      end
+
+      -- TypeScript / JavaScript
+      lspconfig.ts_ls.setup({
         capabilities = capabilities,
-        single_file_support = false,
-        init_options = {
-          hostInfo = "neovim",
-          watchOptions = {
-            ignoredFiles = {
-              "**/node_modules/**",
-              "**/.git/**",
-              "**/dist/**",
-              "**/build/**",
+        on_attach = on_attach,
+        flags = {
+          debounce_text_changes = 150,
+        },
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "none",
+              includeInlayVariableTypeHints = false,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "none",
+              includeInlayVariableTypeHints = false,
             },
           },
         },
-        on_attach = function(client, bufnr)
-          client.server_capabilities.documentFormattingProvider = false
-          local opts = { buffer = bufnr }
-          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-          vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, opts)
-          vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, opts)
-          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-        end,
       })
 
-      ------------------------------------------------------------------
-      -- Lua
-      ------------------------------------------------------------------
-      vim.lsp.config("lua_ls", {
+      -- HTML
+      lspconfig.html.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
+      })
+
+      -- Lua
+      lspconfig.lua_ls.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
         settings = {
           Lua = {
-            diagnostics = { globals = { "vim" } },
+            diagnostics = {
+              globals = { "vim" },
+            },
           },
         },
-        on_attach = function(client, bufnr)
-          local opts = { buffer = bufnr }
-          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-          vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, opts)
-          vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, opts)
-          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-        end,
       })
 
-      ------------------------------------------------------------------
-      -- HTML
-      ------------------------------------------------------------------
-      vim.lsp.config("html", {
+      -- Ruby
+      lspconfig.solargraph.setup({
         capabilities = capabilities,
-      })
-
-      ------------------------------------------------------------------
-      -- Ruby / solargraph
-      ------------------------------------------------------------------
-      vim.lsp.config("solargraph", {
-        capabilities = capabilities,
+        on_attach = on_attach,
       })
     end,
   },

@@ -1,7 +1,6 @@
 return {
   {
     "uga-rosa/translate.nvim",
-    cmd = { "Translate" },
     config = function()
       require("translate").setup({
         default = {

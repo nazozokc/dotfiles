@@ -4,18 +4,22 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
-    cmd = { "CopilotChat" },
+    event = "VeryLazy",
     build = "make tiktoken", -- optional だけどできるなら
     opts = {},
   },
   {
+    "zbirenbaum/copilot.lua",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup({})
+    end
+  },
+  {
     "zbirenbaum/copilot-cmp",
     event = "VeryLazy",
-    dependencies = {
-      "zbirenbaum/copilot.lua",
-    },
     config = function()
       require("copilot_cmp").setup({})
-    end,
+    end
   },
 }

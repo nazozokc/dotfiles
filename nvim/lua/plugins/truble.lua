@@ -1,3 +1,4 @@
+-- plugins/trouble.lua
 return {
   "folke/trouble.nvim",
   event = "InsertEnter",

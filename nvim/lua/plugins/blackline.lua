@@ -1,7 +1,7 @@
 -- ~/.config/nvim/lua/plugins/indent-blankline.lua
 return {
   "lukas-reineke/indent-blankline.nvim",
-  event = "BufReadPost",
+  event = "VimEnter",
   main = "ibl",
   opts = {
     indent = {

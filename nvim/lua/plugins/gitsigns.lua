@@ -1,4 +1,12 @@
--- NOTE:
--- Disabled to avoid duplicate fugitive/gitsigns specs.
--- The active Git plugins live in `lua/plugins/git-stuff.lua`.
-return {}
+return {
+  {
+    "tpope/vim-fugitive",
+  },
+  {
+    "lewis6991/gitsigns.nvim",
+    event = { "BufReadPost" },
+    config = function()
+      require("gitsigns").setup()
+    end,
+  }
+}

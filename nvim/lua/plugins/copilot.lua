@@ -1,28 +1,21 @@
 return {
   "zbirenbaum/copilot.lua",
-  cmd = { "Copilot", "CopilotChat" },
+  event = "InsertEnter",
   config = function()
     require("copilot").setup({
       suggestion = {
         enabled = true,
         auto_trigger = true,
+        debounce = 75,
         keymap = {
-          accept = false, -- ← Copilot側ではTabを使わない
+          accept = "<Tab>",
+          next = "<C-n>",
+          prev = "<C-p>",
+          dismiss = "<C-e>",
         },
       },
       panel = { enabled = false },
     })
-
-    -- Tab を自前で制御する
-    vim.keymap.set("i", "<Tab>", function()
-      local copilot = require("copilot.suggestion")
-      if copilot.is_visible() then
-        copilot.accept()
-        return ""
-      else
-        return "<Tab>"
-      end
-    end, { expr = true, silent = true })
   end,
 }
 
