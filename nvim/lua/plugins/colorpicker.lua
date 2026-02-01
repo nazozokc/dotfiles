@@ -1,4 +1,8 @@
 return {
   "uga-rosa/ccc.nvim",
-  event = "VeryLazy",
+  cmd = {
+    "CccPick",
+    "CccHighlighterEnable",
+    "CccHighlighterDisable",
+  },
 }

@@ -1,15 +1,21 @@
 return {
   "vim-test/vim-test",
-  event = "InsertEnter",
+  cmd = {
+    ":TestNearest",
+    ":TestFile",
+    ":TestSuite",
+    ":TestLast",
+    ":TestVisit",
+  },
   dependencies = {
     "preservim/vimux"
   },
   config = function()
-    vim.keymap.set("n", "<leader>t", ":TestNearest<CR>", {})
-    vim.keymap.set("n", "<leader>T", ":TestFile<CR>", {})
-    vim.keymap.set("n", "<leader>a", ":TestSuite<CR>", {})
-    vim.keymap.set("n", "<leader>l", ":TestLast<CR>", {})
-    vim.keymap.set("n", "<leader>g", ":TestVisit<CR>", {})
+    vim.keymap.set("n", "<leader>vt", ":TestNearest<CR>", {})
+    vim.keymap.set("n", "<leader>VT", ":TestFile<CR>", {})
+    vim.keymap.set("n", "<leader>va", ":TestSuite<CR>", {})
+    vim.keymap.set("n", "<leader>vl", ":TestLast<CR>", {})
+    vim.keymap.set("n", "<leader>vg", ":TestVisit<CR>", {})
     vim.cmd("let test#strategy = 'vimux'")
   end,
 }
