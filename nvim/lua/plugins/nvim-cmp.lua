@@ -1,6 +1,5 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = "LspAttach",
   dependencies = {
     -- 補完ソース
     "hrsh7th/cmp-nvim-lsp",
