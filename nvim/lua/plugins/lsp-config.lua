@@ -43,29 +43,6 @@ return {
         callback = on_attach,
       })
 
-      -- ===== TypeScript =====
-      vim.lsp.config("ts_ls", {
-        capabilities = capabilities,
-        flags = {
-          debounce_text_changes = 150,
-        },
-        settings = {
-          typescript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "none",
-              includeInlayVariableTypeHints = false,
-              includeInlayFunctionLikeReturnTypeHints = false,
-            },
-          },
-          javascript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "none",
-              includeInlayVariableTypeHints = false,
-            },
-          },
-        },
-      })
-
       -- ===== HTML =====
       vim.lsp.config("html", {
         capabilities = capabilities,
@@ -90,7 +67,6 @@ return {
 
       -- 有効化
       vim.lsp.enable({
-        "ts_ls",
         "html",
         "lua_ls",
         "solargraph",

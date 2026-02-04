@@ -11,17 +11,28 @@ return {
         done_icon = "✔",
         skip_history = true,
         group_style = "Title",
-        priority = 30,
+        priority = 10,
       },
     },
     notification = {
-      filter = vim.log.levels.WARN,
-      history_size = 0,
+      filter = vim.log.levels.INFO,
+      history_size = 10,
       override_vim_notify = false,
-      view = { stack_upwards = false, align = "message", line_margin = 1 },
-      window = { winblend = 100, border = "none", zindex = 45, align = "bottom", relative = "editor" },
+      view = {
+        stack_upwards = false,
+        align = "message",
+        line_margin = 1,
+      },
+      window = {
+        winblend = 5,
+        border = "none",
+        zindex = 45,
+        align = "bottom",
+        relative = "editor",
+      },
     },
-    logger = { level = vim.log.levels.ERROR },
+    logger = {
+      level = vim.log.levels.ERROR,
+    },
   },
 }
-
