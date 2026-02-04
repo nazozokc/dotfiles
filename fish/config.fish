@@ -83,7 +83,6 @@ alias q "exit"
 if command -q exa
     alias ls "exa -lh --icons"
 end
-alias vim "nvim"
 alias opencodeclear "rm -rf ~/.local/share/opencode"
 alias parllamaclear "rm -rf /home/nazozo/.local/share/parllama/chats"   
 alias claude-ollama "export ANTHROPIC_AUTH_TOKEN=ollama | export ANTHROPIC_BASE_URL=http://localhost:11434"
