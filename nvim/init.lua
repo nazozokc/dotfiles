@@ -56,16 +56,6 @@ map("n", "<leader>so", ":SymbolsOutline<CR>")
 map("n", "<F2>", ":Twilight<CR>", {})
 map("n", "<leader>e", ":TroubleToggle<CR>")
 
--- ---------------------------------------------------------
--- DAP
--- ---------------------------------------------------------
-map("n", "<F9>", function()
-  require("dap").toggle_breakpoint()
-end)
-
-map("n", "<F5>", function()
-  require("dap").continue()
-end)
 
 -- ---------------------------------------------------------
 -- LSP (Lspsaga / Actions)
