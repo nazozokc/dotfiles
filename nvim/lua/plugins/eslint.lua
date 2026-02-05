@@ -1,4 +1,5 @@
 return {
   "MunifTanjim/eslint.nvim",
-  event = "BufReadPre",
+  event = "LspAttach",
+  ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 }
