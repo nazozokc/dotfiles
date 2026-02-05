@@ -1,6 +1,7 @@
 return {
   {
     "mfussenegger/nvim-dap",
+    cmd = { "DapToggleBreakpoint", "DapContinue", "DapStepOver" },
   },
   {
     "rcarriga/nvim-dap-ui",

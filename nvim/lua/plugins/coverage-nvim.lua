@@ -1,7 +1,7 @@
 return {
   "andythigpen/nvim-coverage",
   dependencies = { "nvim-lua/plenary.nvim" },
-  event = "VeryLazy",
+  cmd = { "CoverageLoad", "CoverageSummary", "CoverageToggle", "CoverageHide" },
   config = function()
     require("coverage").setup({
       commands = true,    -- :CoverageSummary などコマンドを作る

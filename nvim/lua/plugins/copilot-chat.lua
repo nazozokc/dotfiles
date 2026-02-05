@@ -17,7 +17,7 @@ return {
   },
   {
     "zbirenbaum/copilot-cmp",
-    event = "VeryLazy",
+    cmd = { "Copilot", "CopilotChat" },
     config = function()
       require("copilot_cmp").setup({})
     end
