@@ -17,8 +17,9 @@ return {
   },
 
   {
+    -- ★ build を消すのが超重要
     "microsoft/vscode-js-debug",
-    build = "npm install --ignore-scripts",
+    lazy = true,
   },
 
   {
@@ -41,13 +42,12 @@ return {
   {
     "theHamsta/nvim-dap-virtual-text",
     opts = {
-      enabled = true,                   -- デフォルトで有効
-      enabled_commands = true,          -- :EnableVirtualText でON/OFF可能
-      highlight_changed_variables = true, -- 変化した値をハイライト
+      enabled = true,
+      enabled_commands = true,
+      highlight_changed_variables = true,
       highlight_new_as_changed = true,
-      commented = false,                -- 行末に // の形で表示しない
-      show_stop_reason = true,          -- 停止理由も表示
+      commented = false,
+      show_stop_reason = true,
     },
-  }
-
+  },
 }

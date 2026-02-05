@@ -1,21 +1,20 @@
 return {
   "nvimdev/template.nvim",
-  cmd = { "Template", "TemProject" },
+  cmd = { "Template", "TemplateProject" },
   config = function()
     require("template").setup({
-      temp_dir = "~/.config/nvim/template",
-      author = "nazozo", -- お前の名前
+      temp_dir = vim.fn.expand("/home/nazozo/.config/nvim/template"),
+      author = "nazozo",
       email = "hoge@example.com",
 
-      -- 変数を追加
       variables = {
         ["_year_"] = function()
           return os.date("%Y")
         end,
         ["_date_"] = function()
           return os.date("%Y-%m-%d")
-        end
-      }
+        end,
+      },
     })
   end,
 }
