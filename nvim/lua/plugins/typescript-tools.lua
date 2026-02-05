@@ -5,15 +5,20 @@ return {
     "neovim/nvim-lspconfig",
   },
   ft = {
-    "javascript", "javascriptreact",
-    "typescript", "typescriptreact",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
   },
   config = function()
     require("typescript-tools").setup {
       on_attach = function(client, bufnr)
-        -- tsserver 自体の機能も削る
+        -- formatting 完全無効
         client.server_capabilities.documentFormattingProvider = false
         client.server_capabilities.documentRangeFormattingProvider = false
+
+        -- semantic tokens 無効（かなり効く）
+        client.server_capabilities.semanticTokensProvider = nil
 
         local function bufmap(mode, lhs, rhs)
           vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true })
@@ -26,15 +31,15 @@ return {
       end,
 
       settings = {
-        -- ★ここが最重要
-        separate_diagnostic_server = false, -- ← これONだと地獄
-        publish_diagnostic_on = "insert_leave",
+        -- ===== 超重要 =====
+        separate_diagnostic_server = false,
+        publish_diagnostic_on = "save", -- insert_leave より軽い
 
-        -- 補完を軽くする
+        -- 補完を最小限に
         complete_function_calls = false,
         include_completions_with_insert_text = false,
 
-        -- 表示系は全部切る
+        -- 表示系 全部オフ
         code_lens = "off",
         disable_member_code_lens = true,
 
@@ -49,10 +54,15 @@ return {
           includeInlayEnumMemberValueHints = false,
         },
 
-        -- 不要なファイルを見ない（超重要）
-        tsserver_format_options = {},
+        -- ファイル監視を軽量化（CPU暴走防止）
+        tsserver_watch_options = {
+          watchFile = "useFsEvents",
+          watchDirectory = "useFsEvents",
+          fallbackPolling = "dynamicPriority",
+        },
+
         tsserver_locale = "en",
       },
     }
-  end
+  end,
 }
