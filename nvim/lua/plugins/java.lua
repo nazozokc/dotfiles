@@ -6,7 +6,7 @@ return {
       "mfussenegger/nvim-dap", -- Debug プラグイン
       "MunifTanjim/nui.nvim",  -- UI 補助
     },
-    ft = { "java" },
+    ft = { "jar" },
     config = function()
       require("java").setup({
         jdtls = { version = "latest" },         -- jdtls のバージョン
@@ -19,10 +19,5 @@ return {
       -- LSP を有効化
       require("lspconfig").jdtls.setup({})
     end,
-  },
-  {
-    "some/spring-boot.nvim",
-    ft = { "java" },
-    requires = { "nvim-java/nvim-java" },
-  },
+  }
 }
