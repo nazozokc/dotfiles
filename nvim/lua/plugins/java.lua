@@ -6,7 +6,7 @@ return {
       "mfussenegger/nvim-dap", -- Debug プラグイン
       "MunifTanjim/nui.nvim",  -- UI 補助
     },
-    ft = { "jar" },
+    ft = { "java" },
     config = function()
       require("java").setup({
         jdtls = { version = "latest" },         -- jdtls のバージョン

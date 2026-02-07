@@ -2,8 +2,8 @@
 # VERSION: 3.0
 SETUVAR ZO_CMD:zo
 SETUVAR Z_CMD:z
-SETUVAR Z_DATA:/home/nazozo/\x2elocal/share/z/data
-SETUVAR Z_DATA_DIR:/home/nazozo/\x2elocal/share/z
+SETUVAR Z_DATA:/home/nazozokc/\x2elocal/share/z/data
+SETUVAR Z_DATA_DIR:/home/nazozokc/\x2elocal/share/z
 SETUVAR Z_EXCLUDE:\x5e/home/nazozo\x24
 SETUVAR --export __fish_git_prompt_char_branch:\ue0a0
 SETUVAR --export __fish_git_prompt_color_branch:magenta

@@ -86,7 +86,7 @@ if command -q exa
     alias ls "exa -lh --icons"
 end
 alias opencodeclear "rm -rf ~/.local/share/opencode"
-alias parllamaclear "rm -rf /home/nazozo/.local/share/parllama/chats"   
+alias parllamaclear "rm -rf /home/nazozokc/.local/share/parllama/chats"   
 alias claude-ollama "export ANTHROPIC_AUTH_TOKEN=ollama | export ANTHROPIC_BASE_URL=http://localhost:11434"
 alias 1 "wlr-randr --output eDP-1 --scale 1.0"
 
@@ -211,7 +211,7 @@ set -x FZF_DEFAULT_OPTS "
 end
 
 # opencode
-fish_add_path /home/nazozo/.opencode/bin
+fish_add_path /home/nazozokc/.opencode/bin
 
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
