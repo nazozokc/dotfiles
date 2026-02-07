@@ -1,6 +1,6 @@
 return {
   "NickvanDyke/opencode.nvim",
-  event = "VeryLazy",
+  cmd = { "OpenCode" },
   dependencies = {
     "folke/snacks.nvim", },
   config = function()

@@ -1,6 +1,6 @@
 return {
   "zbirenbaum/copilot.lua",
-  cmd = {"Copilot", "CopilotChat"},
+  cmd = { "Copilot", "CopilotChat" },
   config = function()
     require("copilot").setup({
       suggestion = {
