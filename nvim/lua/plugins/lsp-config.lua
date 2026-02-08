@@ -3,7 +3,6 @@ return {
     "neovim/nvim-lspconfig",
     lazy = false,
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities =
         require("cmp_nvim_lsp").default_capabilities()
 
@@ -13,7 +12,7 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           local bufnr = args.buf
 
-          -- ts_ls は semanticTokens が重いので切る
+          -- ts_ls の semanticTokens を無効化（重い）
           if client and client.name == "ts_ls" then
             client.server_capabilities.semanticTokensProvider = nil
           end
@@ -27,12 +26,12 @@ return {
       })
 
       -- ===== HTML =====
-      lspconfig.html.setup({
+      vim.lsp.config("html", {
         capabilities = capabilities,
       })
 
       -- ===== Lua =====
-      lspconfig.lua_ls.setup({
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -44,12 +43,12 @@ return {
       })
 
       -- ===== Ruby =====
-      lspconfig.solargraph.setup({
+      vim.lsp.config("solargraph", {
         capabilities = capabilities,
       })
 
       -- ===== JavaScript / TypeScript =====
-      lspconfig.ts_ls.setup({
+      vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         cmd = { "typescript-language-server", "--stdio" },
         filetypes = {
@@ -58,11 +57,19 @@ return {
           "typescript",
           "typescriptreact",
         },
-        root_dir = lspconfig.util.root_pattern(
+        root_dir = vim.fs.root(0, {
           "package.json",
           "tsconfig.json",
-          ".git"
-        ),
+          ".git",
+        }),
+      })
+
+      -- ===== 有効化 =====
+      vim.lsp.enable({
+        "html",
+        "lua_ls",
+        "solargraph",
+        "ts_ls",
       })
     end,
   },
