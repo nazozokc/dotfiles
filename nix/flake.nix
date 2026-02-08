@@ -14,27 +14,25 @@
     };
   in
   {
-    packages.${system}.apps =
-      pkgs.buildEnv {
+    packages.${system} = {
+      apps = pkgs.buildEnv {
         name = "nazozokc-apps";
-        paths = import ./packages.nix { inherit pkgs; };
+        paths = import ./apps/packages.nix { inherit pkgs; };
       };
 
-    packages.${system}.lsp =
-      pkgs.buildEnv {
+      lsp = pkgs.buildEnv {
         name = "nazozokc-lsp";
-        paths = import ./lsp.nix { inherit pkgs; };
+        paths = import ./nvim/lsp.nix { inherit pkgs; };
       };
 
-    # デフォルトで apps + lsp
-    packages.${system}.default =
-      pkgs.buildEnv {
+      default = pkgs.buildEnv {
         name = "nazozokc-default";
         paths = [
           self.packages.${system}.apps
           self.packages.${system}.lsp
         ];
       };
+    };
   };
 }
 
