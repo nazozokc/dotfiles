@@ -1,5 +1,10 @@
 {
-  # ユーザー単位で unfree パッケージを許可
-  allowUnfree = true;
+
+nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+
+ "1password-cli"
+
+];
+
 }
 
