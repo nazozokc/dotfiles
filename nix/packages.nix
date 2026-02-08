@@ -1,24 +1,30 @@
 { pkgs }:
 
 with pkgs; [
-# terminal
+  # terminal
   neovim
   wezterm
   ghostty
   fish
 
-# 文字入力
+  # IME
   fcitx5
   fcitx5-mozc
   qt6Packages.fcitx5-configtool
+
+  # apps
   discord
   spotify
   google-chrome
 
-# ソフトインストール,github-cli
-gh
-  git
+  # tools
   curl
   wget
+  git
+  gh
+
+  # node
+  nodejs
+  nodePackages.pnpm
 ]
 
