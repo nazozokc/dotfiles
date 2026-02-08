@@ -22,17 +22,23 @@
       name = "nazozokc-lsp";
       paths = import ./nvim/lsp.nix { inherit pkgs; };
     };
+    nvimAppsEnv = pkgs.buildEnv {
+    name = "nazozokc-nvim-apps";
+    paths = import ./nvim/apps.nix { inherit pkgs; };
+    };
   in
   {
     packages.${system} = {
       apps = appsEnv;
       lsp  = lspEnv;
+      nvim-app = nvimAppsEnv;
 
       default = pkgs.buildEnv {
         name = "nazozokc-default";
         paths = [
           appsEnv
           lspEnv
+          nvimAppsEnv
         ];
         ignoreCollisions = true;  # npm などの man ページ衝突を無視
       };
