@@ -25,5 +25,9 @@ with pkgs; [
   ghq
   git
   wget
+
+  # 1password
+  _1password-cli
+  _1password-gui
 ]
 
