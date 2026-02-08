@@ -1,44 +1,30 @@
 {
-  description = "Neovim LSP devShell";
+  description = "nazozokc apps + neovim LSP (no home-manager)";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs = { self, nixpkgs }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-    in {
-      devShells.${system}.default = pkgs.mkShell {
-        packages = with pkgs; [
-          # Node / Web
-          nodejs_20
-          nodePackages.typescript
-          nodePackages.typescript-language-server
-          nodePackages.eslint
-          vscode-langservers-extracted
+  let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  in
+  {
+    packages.${system} = {
+      apps = pkgs.buildEnv {
+        name = "nazozokc-apps";
+        paths = import ./packages.nix { inherit pkgs; };
+      };
 
-          # Lua
-          lua-language-server
-
-          # Ruby
-          solargraph
-
-          # Rust
-          rust-analyzer
-          rustc
-          cargo
-
-          # C / C++
-          clang
-          clang-tools
-
-          # Java
-          jdk21
-          jdt-language-server
-        ];
+      lsp = pkgs.buildEnv {
+        name = "nazozokc-lsp";
+        paths = import ./lsp.nix { inherit pkgs; };
       };
     };
+  };
 }
 
