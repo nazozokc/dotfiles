@@ -9,7 +9,7 @@ with pkgs; [
   typescript
   typescript-language-server
 
-  # HTML / CSS / JSON / ESLint
+  # HTML / CSS
   vscode-langservers-extracted
 
   # C / C++

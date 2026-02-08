@@ -12,25 +12,29 @@
       inherit system;
       config = { allowUnfree = true; };
     };
+
+    appsEnv = pkgs.buildEnv {
+      name = "nazozokc-apps";
+      paths = import ./apps/packages.nix { inherit pkgs; };
+    };
+
+    lspEnv = pkgs.buildEnv {
+      name = "nazozokc-lsp";
+      paths = import ./nvim/lsp.nix { inherit pkgs; };
+    };
   in
   {
     packages.${system} = {
-      apps = pkgs.buildEnv {
-        name = "nazozokc-apps";
-        paths = import ./apps/packages.nix { inherit pkgs; };
-      };
-
-      lsp = pkgs.buildEnv {
-        name = "nazozokc-lsp";
-        paths = import ./nvim/lsp.nix { inherit pkgs; };
-      };
+      apps = appsEnv;
+      lsp  = lspEnv;
 
       default = pkgs.buildEnv {
         name = "nazozokc-default";
         paths = [
-          self.packages.${system}.apps
-          self.packages.${system}.lsp
+          appsEnv
+          lspEnv
         ];
+        ignoreCollisions = true;  # npm などの man ページ衝突を無視
       };
     };
   };
