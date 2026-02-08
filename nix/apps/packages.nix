@@ -7,6 +7,7 @@ with pkgs; [
   ghostty
   fish
   kanata
+  opencode
 
   # 文字入力
   fcitx5
