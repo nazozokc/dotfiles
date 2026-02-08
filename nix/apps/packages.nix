@@ -6,6 +6,7 @@ with pkgs; [
   wezterm
   ghostty
   fish
+  kanata
 
   # 文字入力
   fcitx5
