@@ -22,6 +22,7 @@ with pkgs; [
   # 基本ツール
   curl
   gh
+  ghq
   git
   wget
 ]
