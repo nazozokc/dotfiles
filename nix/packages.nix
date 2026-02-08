@@ -1,7 +1,7 @@
 { pkgs }:
 
 with pkgs; [
-  # terminal
+  # terminal / shell
   neovim
   wezterm
   ghostty
@@ -12,18 +12,18 @@ with pkgs; [
   fcitx5-mozc
   qt6Packages.fcitx5-configtool
 
-  # apps
+  # GUI apps (unfree)
+  google-chrome
   discord
   spotify
-  google-chrome
 
   # tools
-  curl
-  wget
   git
   gh
+  curl
+  wget
 
-  # node
+  # node ecosystem
   nodejs
   nodePackages.pnpm
 ]
