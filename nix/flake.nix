@@ -1,5 +1,5 @@
 {
-  description = "nazozokc personal packages (apps + neovim LSP)";
+  description = "Arch Linux user environment (apps / dev / nvim) managed by Nix";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -10,39 +10,18 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       inherit system;
-      config = { allowUnfree = true; };
+      config.allowUnfree = true;
     };
-
-    appsEnv = pkgs.buildEnv {
-      name = "nazozokc-apps";
-      paths = import ./apps/packages.nix { inherit pkgs; };
-    };
-
-    lspEnv = pkgs.buildEnv {
-      name = "nazozokc-lsp";
-      paths = import ./nvim/lsp.nix { inherit pkgs; };
-    };
-    nvimAppsEnv = pkgs.buildEnv {
-    name = "nazozokc-nvim-apps";
-    paths = import ./nvim/apps.nix { inherit pkgs; };
-    };
-  in
-  {
+  in {
     packages.${system} = {
-      apps = appsEnv;
-      lsp  = lspEnv;
-      nvim-app = nvimAppsEnv;
+      apps    = import ./profiles/apps.nix    { inherit pkgs; };
+      dev     = import ./profiles/dev.nix     { inherit pkgs; };
+      nvim    = import ./profiles/nvim.nix    { inherit pkgs; };
 
-      default = pkgs.buildEnv {
-        name = "nazozokc-default";
-        paths = [
-          appsEnv
-          lspEnv
-          nvimAppsEnv
-        ];
-        ignoreCollisions = true;  # npm などの man ページ衝突を無視
-      };
+      default = import ./profiles/default.nix { inherit pkgs self system; };
     };
+
+    defaultPackage.${system} = self.packages.${system}.default;
   };
 }
 

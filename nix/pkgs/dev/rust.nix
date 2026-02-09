@@ -1,7 +1,8 @@
 { pkgs }:
 
 with pkgs; [
-  tree-sitter
-  ollama
+  rustc
+  cargo
+  rustfmt
 ]
 
