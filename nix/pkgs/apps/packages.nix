@@ -10,5 +10,7 @@ with pkgs; [
   curl
   wget
   unzip
+  bat
+  fzf
 ]
 
