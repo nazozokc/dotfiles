@@ -1,27 +1,46 @@
 {
-  description = "Arch Linux user environment (apps / dev / nvim) managed by Nix";
+  description = "nazozokc nix + home-manager config";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs }:
-  let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
-  in {
-    packages.${system} = {
-      apps    = import ./profiles/apps.nix    { inherit pkgs; };
-      dev     = import ./profiles/dev.nix     { inherit pkgs; };
-      nvim    = import ./profiles/nvim.nix    { inherit pkgs; };
+  outputs = { self, nixpkgs, home-manager, ... }:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+    in
+    {
+      # nix profile 用（今まで通り）
+      packages.${system} = {
+        apps = pkgs.callPackage ./pkgs/apps.nix {};
+        dev  = pkgs.callPackage ./pkgs/dev.nix {};
+        lsp  = pkgs.callPackage ./pkgs/lsp.nix {};
 
-      default = import ./profiles/default.nix { inherit pkgs self system; };
-    };
+        default = pkgs.buildEnv {
+          name = "default";
+          paths = [
+            self.packages.${system}.apps
+            self.packages.${system}.dev
+            self.packages.${system}.lsp
+          ];
+          ignoreCollisions = true;
+        };
+      };
 
-    defaultPackage.${system} = self.packages.${system}.default;
-  };
+      # home-manager
+      homeConfigurations.nazozokc =
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            ./home/default.nix
+          ];
+        };
+    };
 }
 
