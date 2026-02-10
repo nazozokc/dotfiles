@@ -31,9 +31,8 @@
           ./nix/home-files.nix
           ./nix/pkgs/cli-tool.nix
           ./nix/pkgs/nvim.nix
-          ./nix/pkgs/gui-tools.nix  # ← 追加
-];
-
+          ./nix/pkgs/gui-tool.nix  # ← 追加
+          ];
           })
         ];
       };
