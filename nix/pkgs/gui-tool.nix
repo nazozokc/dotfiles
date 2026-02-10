@@ -6,6 +6,7 @@
     zen-browser
     spotify
     discord
+    vscode
     # wezterm は既に nvim.nix 側で管理済み
   ];
 }
