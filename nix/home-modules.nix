@@ -2,17 +2,17 @@
 
 {
   home.file = {
-    ".config/fish/config.fish".source =
-      ../fish/;
+    ".config/fish".source =
+      ../fish;
 
-    ".config/nvim/init.lua".source =
-      ../nvim/;
+    ".config/nvim".source =
+      ../nvim;
 
-    ".config/wezterm/wezterm.lua".source =
-      ../wezterm/;
+    ".config/wezterm".source =
+      ../wezterm;
 
     ".zshrc".source =
-      ../zsh/;
+      ../zsh/zshrc;
   };
 }
 
