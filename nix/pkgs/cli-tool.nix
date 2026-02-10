@@ -16,6 +16,7 @@
     fzf       # fuzzy finder
     neovim
     fish
+    lazygit
 
     # アーカイブ/検索
     unzip
