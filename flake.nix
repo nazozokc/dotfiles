@@ -34,7 +34,7 @@
             programs.home-manager.enable = true;
 
             imports = [
-              ./nix/home-files.nix
+              ./nix/config-sym.nix
               ./nix/pkgs/cli-tool.nix
               ./nix/pkgs/nvim.nix
               ./nix/pkgs/gui-tool.nix  # ← ここも typo 修正
