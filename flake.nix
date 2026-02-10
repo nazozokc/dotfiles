@@ -37,7 +37,7 @@
               ./nix/home-files.nix
               ./nix/pkgs/cli-tool.nix
               ./nix/pkgs/nvim.nix
-              ./nix/pkgs/gui-tools.nix  # ← ここも typo 修正
+              ./nix/pkgs/gui-tool.nix  # ← ここも typo 修正
             ];
           })
         ];
