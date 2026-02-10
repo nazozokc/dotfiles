@@ -14,7 +14,7 @@
     bat       # cat代替
     eza       # ls代替
     fzf       # fuzzy finder
-    nvim
+    neovim
     fish
 
     # アーカイブ/検索
