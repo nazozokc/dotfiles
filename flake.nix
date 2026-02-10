@@ -29,7 +29,8 @@
 
             imports = [
               ./nix/home-files.nix
-              ./nix/home-packages.nix
+              ./nix/pkgs/cli-tool.nix
+              ./nix/pkgs/nvim.nix
             ];
           })
         ];
