@@ -2,20 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    # ===== CLI =====
-    git
-    curl
-    wget
-    ripgrep
-    fd
-    bat
-    eza
-    fzf
-    jq
-    tree
-    unzip
-    zip
-
     # ===== LSP =====
     lua-language-server        # Lua / Neovim
     nil                        # Nix
