@@ -1,18 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  programs.fish = {
-    enable = true;
+  # fish を有効化（home.nix 内からも呼べる）
+  programs.fish.enable = true;
 
-    shellAliases = {
-      ll = "ls -lah";
-      gs = "git status";
-      gco = "git checkout";
-    };
-
-    interactiveShellInit = ''
-      set -g fish_greeting
-    '';
-  };
+  # fish ディレクトリをリンク
+  home.file.".config/fish".source = ./fish;
 }
 
