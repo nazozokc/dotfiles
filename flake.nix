@@ -28,7 +28,7 @@
             programs.home-manager.enable = true;
 
             imports = [
-              ./nix/home-modules.nix
+              ./nix/home-files.nix
             ];
           })
         ];
