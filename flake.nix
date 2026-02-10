@@ -12,7 +12,14 @@
   outputs = { nixpkgs, home-manager, ... }:
   let
     system = "x86_64-linux";
-    pkgs = import nixpkgs { inherit system; };
+
+    # nixpkgs を allowUnfree 許可で読み込む
+    pkgs = import nixpkgs {
+      inherit system;
+      config = {
+        allowUnfree = true;   # ← ここで unfree パッケージ許可
+      };
+    };
   in {
     homeConfigurations.nazozokc =
       home-manager.lib.homeManagerConfiguration {
@@ -20,19 +27,18 @@
 
         modules = [
           ({ config, pkgs, ... }: {
-
             home.username = "nazozokc";
             home.homeDirectory = "/home/nazozokc";
             home.stateVersion = "24.05";
 
             programs.home-manager.enable = true;
 
-          imports = [
-          ./nix/home-files.nix
-          ./nix/pkgs/cli-tool.nix
-          ./nix/pkgs/nvim.nix
-          ./nix/pkgs/gui-tool.nix  # ← 追加
-          ];
+            imports = [
+              ./nix/home-files.nix
+              ./nix/pkgs/cli-tool.nix
+              ./nix/pkgs/nvim.nix
+              ./nix/pkgs/gui-tools.nix  # ← ここも typo 修正
+            ];
           })
         ];
       };
