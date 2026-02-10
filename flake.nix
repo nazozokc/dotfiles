@@ -29,6 +29,7 @@
 
             imports = [
               ./nix/home-files.nix
+              ./nix/home-packages.nix
             ];
           })
         ];
