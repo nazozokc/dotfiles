@@ -3,7 +3,6 @@
 {
   # Home Manager で管理する GUI アプリ
   home.packages = with pkgs; [
-    zen-browser
     spotify
     discord
     vscode
