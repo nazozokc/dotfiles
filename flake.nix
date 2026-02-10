@@ -27,11 +27,13 @@
 
             programs.home-manager.enable = true;
 
-            imports = [
-              ./nix/home-files.nix
-              ./nix/pkgs/cli-tool.nix
-              ./nix/pkgs/nvim.nix
-            ];
+          imports = [
+          ./nix/home-files.nix
+          ./nix/pkgs/cli-tool.nix
+          ./nix/pkgs/nvim.nix
+          ./nix/pkgs/gui-tools.nix  # ← 追加
+];
+
           })
         ];
       };
