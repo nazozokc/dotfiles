@@ -103,7 +103,7 @@ force = true;
 git clone <repo>
 cd dotfiles
 exec bash
-home-manager switch --flake .
+nix run github:nix-community/home-manager -- switch --flake .
 ````
 
 ---
