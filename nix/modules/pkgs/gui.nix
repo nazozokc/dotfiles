@@ -9,7 +9,6 @@
     firefox
     wezterm
     ghostty
-    zen-browser   # ここで inputs を使う場合も可能
-  ];
+    ];
 }
 
