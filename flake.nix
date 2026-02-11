@@ -34,22 +34,20 @@
     ########################################
     # Home Manager (Linux / mac 共通)
     ########################################
-
     homeConfigurations = forAllSystems (system: pkgs:
-      home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+  home-manager.lib.homeManagerConfiguration {
+    pkgs = pkgs;
+    modules = [
+      ./nix/modules/shared.nix
+      ./nix/modules/pkgs/cli.nix
+      ./nix/modules/pkgs/gui.nix
+      (if pkgs.stdenv.isLinux then ./nix/modules/os/linux.nix else ./nix/modules/os/darwin.nix)
+      ./nix/config-sym.nix
+    ];
+  }
+);
 
-        extraSpecialArgs = { inherit inputs; };
-
-        # Mac/Linux 両対応の PATH 設定
-        home.sessionVariables = {
-        PATH = builtins.concatStringsSep ":" [
-        (if pkgs.stdenv.isDarwin then "/nix/var/nix/profiles/default/bin" else "")
-        "$HOME/.nix-profile/bin"
-        "$PATH"
-        ];
-      };
-        
+            
         modules = [
           ./nix/modules/shared.nix
           ./nix/modules/pkgs/cli.nix
