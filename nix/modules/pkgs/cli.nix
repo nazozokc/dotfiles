@@ -9,6 +9,7 @@
     gh
     fd
     bat
+    neovim
     eza
     fzf
     jq
