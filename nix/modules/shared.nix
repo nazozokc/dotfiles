@@ -1,20 +1,13 @@
-{ config, pkgs, username, systemType, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  home.username = username;
+  home.username = "nazozokc";
 
   home.homeDirectory =
-    if systemType == "darwin"
-    then "/Users/${username}"
-    else "/home/${username}";
+    if pkgs.stdenv.isDarwin
+    then "/Users/nazozokc"
+    else "/home/nazozokc";
 
   home.stateVersion = "24.05";
-
-  imports = [
-    ./pkgs/cli.nix
-    ./pkgs/gui.nix
-  ];
-
-  programs.home-manager.enable = true;
 }
 
