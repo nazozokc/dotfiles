@@ -1,37 +1,23 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  ########################################
-  # 共通CLIツール
-  ########################################
-
   home.packages = with pkgs; [
-
-    # 基本
     git
     curl
     wget
-    neovim
-
-    # ファイル操作・検索
     ripgrep
+    gh
     fd
-    eza
     bat
+    eza
     fzf
-    tree
-
-    # JSON / アーカイブ
     jq
+    tree
     zip
     unzip
 
-    ########################################
-    # LSP (Neovim用)
-    ########################################
-
+    # LSP
     lua-language-server
-    nil
     pyright
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
@@ -41,13 +27,5 @@
     nixd
     pkgs.nixfmt
   ];
-
-  ########################################
-  # 共通セッション変数
-  ########################################
-
-  home.sessionVariables = {
-    EDITOR = "nvim";
-  };
 }
 
