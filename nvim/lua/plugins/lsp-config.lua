@@ -4,7 +4,7 @@ return {
     lazy = false,
     config = function()
       local capabilities =
-        require("cmp_nvim_lsp").default_capabilities()
+          require("cmp_nvim_lsp").default_capabilities()
 
       -- ===== 共通 on_attach =====
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -64,14 +64,19 @@ return {
         }),
       })
 
+      vim.lsp.config("nixd", {
+        capabilities = capabilities,
+        cmd = { "nixfmt" },
+      })
+
       -- ===== 有効化 =====
       vim.lsp.enable({
         "html",
         "lua_ls",
         "solargraph",
         "ts_ls",
+        "nixd",
       })
     end,
   },
 }
-
