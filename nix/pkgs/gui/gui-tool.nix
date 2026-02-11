@@ -1,7 +1,12 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, zen-browser, ... }:
 
+let
+  browser =
+    if pkgs.stdenv.isLinux
+    then zen-browser.packages.${pkgs.system}.default
+    else pkgs.firefox;
+in
 {
-  # Home Manager で管理する GUI アプリ
   home.packages = with pkgs; [
     discord
     spotify
@@ -10,7 +15,6 @@
     firefox
     wezterm
     ghostty
-    # wezterm は既に nvim.nix 側で管理済み
-  ];
+  ] ++ [ browser ];
 }
 
