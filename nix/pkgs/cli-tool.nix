@@ -27,6 +27,9 @@
     # ネットワーク/デバッグ
     httpie
     tcpdump
+
+    # task management
+    obsidian
   ];
 }
 
