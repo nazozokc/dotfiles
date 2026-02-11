@@ -46,8 +46,6 @@
     ];
   }
 );
-
-            
         modules = [
           ./nix/modules/shared.nix
           ./nix/modules/pkgs/cli.nix
@@ -61,7 +59,6 @@
           ./nix/config-sym.nix
         ];
       }
-    );
 
     ########################################
     # nix-darwin (mac用)
