@@ -15,77 +15,65 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, ... }:
+  outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
+    systems = [ "x86_64-linux" "aarch64-darwin" ];
+
+    forAllSystems = f:
+      nixpkgs.lib.genAttrs systems (system:
+        f system (import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        })
+      );
+
     username = "nazozokc";
 
-    systems = {
-      linux = "x86_64-linux";
-      darwin = "aarch64-darwin";
-    };
-  in
-  {
+  in {
     ########################################
-    # Linux (Home Manager)
+    # Home Manager
     ########################################
-    homeConfigurations."${username}-linux" =
+
+    homeConfigurations = forAllSystems (system: pkgs:
       home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${systems.linux};
+        inherit pkgs;
+
+        extraSpecialArgs = { inherit inputs username; };
 
         modules = [
-          ./nix/modules/shared.nix
-          ./nix/modules/os/linux.nix
-        ];
-
-        extraSpecialArgs = {
-          inherit username;
-          systemType = "linux";
-        };
-      };
-
-    ########################################
-    # macOS (Home Manager only)
-    ########################################
-    homeConfigurations."${username}-darwin" =
-      home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${systems.darwin};
-
-        modules = [
-          ./nix/modules/shared.nix
-          ./nix/modules/os/darwin.nix
-        ];
-
-        extraSpecialArgs = {
-          inherit username;
-          systemType = "darwin";
-        };
-      };
-
-    ########################################
-    # nix-darwin system
-    ########################################
-    darwinConfigurations."${username}" =
-      darwin.lib.darwinSystem {
-        system = systems.darwin;
-
-        modules = [
-          ({ pkgs, ... }: {
-            nix.settings.experimental-features = [ "nix-command" "flakes" ];
-            users.users.${username}.home = "/Users/${username}";
-          })
-
-          home-manager.darwinModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
+            home.username = username;
+            home.homeDirectory =
+              if pkgs.stdenv.isDarwin
+              then "/Users/${username}"
+              else "/home/${username}";
 
-            home-manager.users.${username} = {
-              imports = [
-                ./nix/modules/shared.nix
-                ./nix/modules/os/darwin.nix
-              ];
-            };
+            home.stateVersion = "24.05";
           }
+
+          ./nix/modules/shared.nix
+          ./nix/modules/pkgs/cli.nix
+          ./nix/modules/pkgs/gui.nix
+
+          (if pkgs.stdenv.isLinux
+           then ./nix/modules/os/linux.nix
+           else ./nix/modules/os/darwin.nix)
+
+          ./nix/config-sym.nix
+        ];
+      }
+    );
+
+    ########################################
+    # nix-darwin
+    ########################################
+
+    darwinConfigurations.${username} =
+      darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+
+        modules = [
+          ./nix/modules/shared.nix
         ];
       };
   };
