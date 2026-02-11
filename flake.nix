@@ -44,7 +44,6 @@
               ./nix/pkgs/cli/cli-tool.nix
               ./nix/pkgs/nvim.nix
               ./nix/pkgs/gui/gui-tool.nix
-              ./nix/pkgs/gui/obsidian.nix
             ];
           })
         ];
