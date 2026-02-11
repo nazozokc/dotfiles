@@ -8,6 +8,7 @@
     then "/Users/nazozokc"
     else "/home/nazozokc";
 
-  home.stateVersion = "24.05";
+  # stateVersion は強制
+  home.stateVersion = lib.mkForce "24.05";
 }
 
