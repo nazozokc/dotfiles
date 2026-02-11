@@ -1,12 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, inputs, system, ... }:
 
 let
-  nixGLIntel =
-    pkgs.nixgl.override {
-      enableIntel = true;
-      enableNvidia = false;
-      enableAmd = false;
-    };
+  nixGLIntel = inputs.nixgl.packages.${system}.nixGLIntel;
 in
 {
   home.packages = [
