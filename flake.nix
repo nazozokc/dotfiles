@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles";
+  description = "nazozo multi-system dotfiles";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -30,39 +30,18 @@
         inherit pkgs;
 
         extraSpecialArgs = {
-          inherit zen-browser;
+          inherit system zen-browser username;
         };
 
         modules = [
-          {
-            home.username = username;
-
-            home.homeDirectory =
-              if pkgs.stdenv.isDarwin
-              then "/Users/${username}"
-              else "/home/${username}";
-
-            home.stateVersion = "24.05";
-
-            programs.home-manager.enable = true;
-
-            imports = [
-              ./nix/config-sym.nix
-              ./nix/pkgs/cli/cli-tool.nix
-              ./nix/pkgs/nvim.nix
-              ./nix/pkgs/gui/gui-tool.nix
-            ];
-          }
+          ./nix/modules/shared.nix
         ];
       };
   in
   {
     homeConfigurations = {
-      # 今使ってるLinux
-      ${username} = mkHome "x86_64-linux";
-
-      # 将来Macに行ったら追加するだけ
-      # ${username}-mac = mkHome "aarch64-darwin";
+      linux = mkHome "x86_64-linux";
+      mac   = mkHome "aarch64-darwin";
     };
   };
 }
