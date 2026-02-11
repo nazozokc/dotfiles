@@ -16,6 +16,7 @@
     tree
     zip
     unzip
+    lazygit
 
     # LSP
     lua-language-server
