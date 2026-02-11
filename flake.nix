@@ -41,9 +41,10 @@
 
             imports = [
               ./nix/config-sym.nix
-              ./nix/pkgs/cli-tool.nix
+              ./nix/pkgs/cli/cli-tool.nix
               ./nix/pkgs/nvim.nix
-              ./nix/pkgs/gui-tool.nix  # ← ここも typo 修正
+              ./nix/pkgs/gui/gui-tool.nix
+              ./nix/pkgs/gui/obsidian.nix
             ];
           })
         ];

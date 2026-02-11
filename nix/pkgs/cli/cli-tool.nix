@@ -28,8 +28,6 @@
     httpie
     tcpdump
 
-    # task management
-    obsidian
   ];
 }
 
