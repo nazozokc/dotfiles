@@ -1,128 +1,89 @@
-# nazozo dotfiles
+# nazozo Dotfiles
 
-Arch Linux + Nix + Home Manager による
-ユーザー空間完全再現型 dotfiles 構成。
+このリポジトリは **Linux (Arch Linux) / macOS (Darwin)** 両対応の dotfiles 管理 flake です。  
+`home-manager` と `nix-darwin` を使って、CLI / GUI アプリ、設定ファイル、シェル環境などを一元管理します。
 
----
+## 概要
 
-## 🧠 設計思想
+- **パッケージ管理**
+  - Linux / macOS 共通で Home Manager による管理
+  - CLI ツールと GUI ツールを flake 経由でインストール
+- **OS別設定**
+  - `linux.nix` / `darwin.nix` で OS 固有の設定を管理
+- **設定ファイル管理**
+  - `config-sym.nix` で `.config` 配下のシンボリックリンクを自動生成
+- **multi-system flake**
+  - Linux / macOS どちらの環境でも同じ flake を利用可能
+  - `home-manager` と `nix-darwin` を同時にサポート
 
-- OS レイヤーは Arch (pacman) が管理
-- アプリケーション層は Nix が管理
-- 設定ファイルは Home Manager が symlink 管理
-- dotfiles は生ファイルのまま管理（Lua / fish 等を書き直さない）
-- リポジトリが唯一の正
-
----
-
-## 🧱 レイヤー構成
-
-```
-
-Arch Linux (pacman)
-├─ Kernel / KDE / systemd / Driver
-└─ ベースシステム
-
-Nix (home-manager)
-├─ CLIツール
-├─ LSPバイナリ
-├─ GUIアプリ
-└─ Neovim本体
-
-Home Manager
-└─ dotfiles シンボリックリンク生成
+## ファイル構成
 
 ```
 
----
+dotfiles/
+├─ flake.nix
+├─ nix/
+│  ├─ modules/
+│  │  ├─ shared.nix         # 共通設定
+│  │  ├─ os/
+│  │  │   ├─ linux.nix      # Linux 専用設定
+│  │  │   └─ darwin.nix     # macOS 専用設定
+│  │  └─ pkgs/
+│  │      ├─ cli.nix        # CLI ツール
+│  │      └─ gui.nix        # GUI ツール
+│  └─ config-sym.nix        # シンボリックリンク管理
 
-## 📦 管理対象
+````
+
+## 対応アプリ
 
 ### CLI
 
-- git
-- curl / wget
-- ripgrep
-- fd
-- bat
-- eza
-- fzf
-- jq
-- tree
-- zip / unzip
-
-### LSP
-
-- lua-language-server
-- nil
-- pyright
-- typescript-language-server
-- bash-language-server
-- clangd
-- marksman
+- `xclip`, `wl-clipboard`, `xdg-utils` など (Linux)
+- `git`, `nvim`, `fzf`, `htop` など (共通)
 
 ### GUI
 
-- zen-browser
-- spotify
-- discord
-- vscode
-- wezterm
+- `vscode`, `spotify`, `discord`, `firefox`, `google-chrome`, `ghostty`, `wezterm`, `zen-browser`
 
-### Fonts
+## セットアップ手順
 
-- Nerd Fonts（Hack / JetBrainsMono など）
+### Linux
 
----
+```bash
+# flake から home-manager を有効化
+home-manager switch --flake .#x86_64-linux
+````
 
-## 🔗 dotfiles 管理
+### macOS
 
-管理対象:
+```bash
+# flake から home-manager を有効化
+home-manager switch --flake .#aarch64-darwin
 
-- ~/.config/fish
-- ~/.config/nvim
-- ~/.config/wezterm
-- ~/.zshrc
-
-すべて:
-
+# nix-darwin 用にシステム設定
+darwin-rebuild switch --flake .#nazozokc
 ```
 
-recursive = true;
-force = true;
+## 注意点
 
-````
+* `home-manager` を使って `.config` 配下の設定をリンクするため、既存の設定ファイルは上書きされる場合があります。
+* GUI ツールの一部は `unfree` ライセンスのため、flake 内で `config.allowUnfree = true;` を設定しています。
+* Linux / macOS 共通で動作しますが、OS 固有のパッケージは `linux.nix` / `darwin.nix` で管理してください。
 
-ローカル変更は上書きされる。
-
----
-
-## 🚀 初回セットアップ
+## 更新
 
 ```bash
-git clone <repo>
-cd dotfiles
-exec bash
-nix run github:nix-community/home-manager -- switch --flake .
-````
-
----
-
-## 🔄 アップデート方法
-
-```bash
+# flake 更新
 nix flake update
-exec bash
-home-manager switch --flake .
+
+# home-manager 再適用
+home-manager switch --flake .#x86_64-linux    # Linux
+home-manager switch --flake .#aarch64-darwin  # macOS
 ```
 
+
 ---
-
-## ⚠ 注意
-
-* fish 起動中に home-manager を実行しない
-* unfree パッケージ（discord / spotify）は allowUnfree 必須
-* pacman と nix の役割を混ぜない
 
 # LICENSE
 MIT
