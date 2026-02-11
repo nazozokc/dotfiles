@@ -43,14 +43,13 @@
 
         # Mac/Linux 両対応の PATH 設定
         home.sessionVariables = {
-          PATH = builtins.concatStringsSep ":"
-            [
-              (pkgs.stdenv.isDarwin then "/nix/var/nix/profiles/default/bin" else "")
-              "$HOME/.nix-profile/bin"
-              "$PATH"
-            ];
-        };
-
+        PATH = builtins.concatStringsSep ":" [
+        (if pkgs.stdenv.isDarwin then "/nix/var/nix/profiles/default/bin" else "")
+        "$HOME/.nix-profile/bin"
+        "$PATH"
+        ];
+      };
+        
         modules = [
           ./nix/modules/shared.nix
           ./nix/modules/pkgs/cli.nix
