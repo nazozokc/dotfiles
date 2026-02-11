@@ -11,7 +11,7 @@
     bash-language-server
     clang-tools                # clangd (C/C++)
     marksman                   # Markdown
-    nix-lsp
+    nil
   ];
 }
 
