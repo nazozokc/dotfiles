@@ -47,8 +47,6 @@
               if pkgs.stdenv.isDarwin
               then "/Users/${username}"
               else "/home/${username}";
-
-            home.stateVersion = "24.05";
           }
 
           ./nix/modules/shared.nix

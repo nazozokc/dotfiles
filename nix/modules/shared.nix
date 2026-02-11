@@ -8,7 +8,7 @@
     then "/Users/${username}"
     else "/home/${username}";
 
-  home.stateVersion = "23.11";
+  home.stateVersion = "24.05";
 
   imports = [
     ./pkgs/cli.nix
