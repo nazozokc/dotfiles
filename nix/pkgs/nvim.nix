@@ -12,7 +12,7 @@
     clang-tools                # clangd (C/C++)
     marksman                   # Markdown
     nixd  #nix-lsp
-    nixfmt-rfc-style #nix-formatter
+    pkgs.nixfmt #nix-formatter
   ];
 }
 
