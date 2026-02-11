@@ -1,35 +1,18 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
-  ########################################
-  # Linux 専用パッケージ
-  ########################################
-
   home.packages = with pkgs; [
-    xclip          # クリップボード
-    wl-clipboard   # Wayland用
+    xclip
+    wl-clipboard
     xdg-utils
   ];
 
-  ########################################
-  # Linux専用セッション変数
-  ########################################
+  xdg.enable = true;
+  fonts.fontconfig.enable = true;
 
   home.sessionVariables = {
     EDITOR = "nvim";
     BROWSER = "zen-browser";
   };
-
-  ########################################
-  # Linux専用設定
-  ########################################
-
-  xdg.enable = true;
-
-  ########################################
-  # フォント（Linuxのみで有効）
-  ########################################
-
-  fonts.fontconfig.enable = true;
 }
 

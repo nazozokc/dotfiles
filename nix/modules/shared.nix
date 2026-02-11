@@ -1,25 +1,20 @@
-{ pkgs, system, username, ... }:
+{ config, pkgs, username, systemType, ... }:
 
 {
   home.username = username;
 
   home.homeDirectory =
-    if pkgs.stdenv.isDarwin
+    if systemType == "darwin"
     then "/Users/${username}"
     else "/home/${username}";
 
-  home.stateVersion = "24.05";
-
-  programs.home-manager.enable = true;
+  home.stateVersion = "23.11";
 
   imports = [
-    ../config-sym.nix
     ./pkgs/cli.nix
     ./pkgs/gui.nix
-
-    (if pkgs.stdenv.isLinux
-     then ./os/linux.nix
-     else ./os/darwin.nix)
   ];
+
+  programs.home-manager.enable = true;
 }
 
