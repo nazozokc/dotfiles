@@ -15,54 +15,68 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, ... }:
   let
-    systems = [ "x86_64-linux" "aarch64-darwin" ];
-
-    # システムごとに pkgs を生成して渡すヘルパー
-    forAllSystems = f:
-      nixpkgs.lib.genAttrs systems (system:
-        f system (import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        })
-      );
-
     username = "nazozokc";
 
-  in {
+    systems = [
+      "x86_64-linux"
+      "aarch64-darwin"
+    ];
 
-    ########################################
-    # Home Manager (Linux / mac 共通)
-    ########################################
-    homeConfigurations = forAllSystems (system: pkgs:
+    # pkgs を一元生成（後で overlay 足す場所）
+    mkPkgs = system:
+      import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+
+    # Home Manager 共通生成関数
+    mkHome = system:
       home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = mkPkgs system;
 
-        # modules 内で inputs を参照できるようにする
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = {
+          inherit inputs username system;
+        };
 
         modules = [
-          ./nix/modules/shared.nix
-          ./nix/modules/pkgs/cli.nix
-          ./nix/modules/pkgs/gui.nix
-          # OS別モジュール
-          (if pkgs.stdenv.isLinux
-            then ./nix/modules/os/linux.nix
-            else ./nix/modules/os/darwin.nix)
-          ./nix/config-sym.nix
+          ./nix/modules/home-manager/shared.nix
+
+          # OS別
+          (if system == "aarch64-darwin"
+            then ./nix/modules/os/darwin.nix
+            else ./nix/modules/os/linux.nix)
         ];
-      }
-    );
+      };
+  in
+  {
+    ########################################
+    # Home Manager
+    ########################################
+    homeConfigurations = {
+      "${username}" = mkHome "x86_64-linux";
+      "${username}-darwin" = mkHome "aarch64-darwin";
+    };
 
     ########################################
-    # nix-darwin (mac用)
+    # nix-darwin（macOS システム設定）
     ########################################
     darwinConfigurations = {
       "${username}" = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
+
         modules = [
-          ./nix/modules/shared.nix
+          ./nix/modules/darwin/system.nix
+
+          # Home Manager を nix-darwin に統合
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.useGlobalPkgs = false;
+            home-manager.users.${username} =
+              import ./nix/modules/home-manager/shared.nix;
+          }
         ];
       };
     };
