@@ -1,9 +1,6 @@
 {
   description = "nazozo dotfiles (home-manager first)";
 
-  ########################################
-  # Inputs
-  ########################################
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -19,9 +16,6 @@
     };
   };
 
-  ########################################
-  # Outputs
-  ########################################
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
     username = "nazozokc";
@@ -30,6 +24,22 @@
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
+    };
+
+    ########################################
+    # myPkgs 定義
+    ########################################
+    myPkgs = let
+      cli = import ./nix/home-manager/pkgs/cli/default.nix { inherit pkgs; };
+      gui = import ./nix/home-manager/pkgs/gui/default.nix { inherit pkgs; };
+      lang = import ./nix/home-manager/pkgs/lang/default.nix { inherit pkgs; };
+    in
+    {
+      pkgs = pkgs; # common.nix 内で with myPkgs.pkgs するため
+      cli = cli;
+      gui = gui;
+      lang = lang;
+      tools = []; # 必要なら追加
     };
   in
   {
@@ -41,7 +51,7 @@
         inherit pkgs;
 
         extraSpecialArgs = {
-          inherit inputs username;
+          inherit inputs username myPkgs;
         };
 
         modules = [
