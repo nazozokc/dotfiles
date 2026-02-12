@@ -4,5 +4,6 @@ with pkgs; [
   git
   gh
   git-lfs
+  lazygit
 ]
 
