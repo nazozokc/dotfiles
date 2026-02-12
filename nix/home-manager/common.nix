@@ -5,7 +5,6 @@
   # パッケージ（最低限）
   ########################################
   home.packages = with pkgs; [
-    neovim
     fish
     wezterm
     git
