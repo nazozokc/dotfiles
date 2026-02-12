@@ -1,6 +1,9 @@
 {
-  description = "nazozo dotfiles (Home Manager + pkgs integrated)";
+  description = "nazozo dotfiles (home-manager first)";
 
+  ########################################
+  # Inputs
+  ########################################
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -9,12 +12,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # 将来用（mac買ったら使う）
     darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
+  ########################################
+  # Outputs
+  ########################################
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
     username = "nazozokc";
@@ -24,16 +31,17 @@
       inherit system;
       config.allowUnfree = true;
     };
-
-    myPkgs = import ./nix/pkgs/default.nix { inherit pkgs; };
   in
   {
+    ########################################
+    # Home Manager（Linux）
+    ########################################
     homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         extraSpecialArgs = {
-          inherit inputs username myPkgs;
+          inherit inputs username;
         };
 
         modules = [
@@ -43,12 +51,15 @@
         ];
       };
 
+    ########################################
+    # nix-darwin（macOS / まだ使わない）
+    ########################################
     darwinConfigurations.${username} =
       darwin.lib.darwinSystem {
         system = "aarch64-darwin";
 
         specialArgs = {
-          inherit inputs username myPkgs;
+          inherit inputs username;
         };
 
         modules = [
