@@ -1,6 +1,9 @@
 {
   description = "nazozo multi-system dotfiles";
 
+  ########################################
+  # Inputs
+  ########################################
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -15,62 +18,63 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, ... }:
+  ########################################
+  # Outputs
+  ########################################
+  outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
     username = "nazozokc";
 
-    mkPkgs = system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
+    systems = [
+      "x86_64-linux"
+      "aarch64-darwin"
+    ];
 
-    mkHome = system:
+    forAllSystems = nixpkgs.lib.genAttrs systems;
+
+  in {
+
+    ########################################
+    # Home Manager（Linux / mac 共通）
+    ########################################
+    homeConfigurations = forAllSystems (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
+      in
       home-manager.lib.homeManagerConfiguration {
-        pkgs = mkPkgs system;
+        inherit pkgs;
 
         extraSpecialArgs = {
-          inherit inputs username system;
+          inherit inputs username;
         };
 
         modules = [
-          ./nix/modules/home-manager/shared.nix
+          ./nix/shared.nix
+          ./nix/home-manager/common.nix
 
-          (if system == "aarch64-darwin"
-            then ./nix/modules/os/darwin.nix
-            else ./nix/modules/os/linux.nix)
+          (if pkgs.stdenv.isDarwin
+            then ./nix/home-manager/darwin.nix
+            else ./nix/home-manager/linux.nix)
         ];
+      }
+    );
+
+    ########################################
+    # nix-darwin（macOS システム）
+    ########################################
+    darwinConfigurations.${username} = darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+
+      specialArgs = {
+        inherit inputs username;
       };
-  in
-  {
-    ########################################
-    # Home Manager
-    ########################################
-    homeConfigurations = {
-      "${username}" = mkHome "x86_64-linux";
-      "${username}-darwin" = mkHome "aarch64-darwin";
-    };
 
-    ########################################
-    # nix-darwin
-    ########################################
-    darwinConfigurations = {
-      "${username}" = darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-
-        modules = [
-          ./nix/modules/darwin/system.nix
-
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.useGlobalPkgs = false;
-
-            home-manager.users.${username} =
-              import ./nix/modules/home-manager/shared.nix;
-          }
-        ];
-      };
+      modules = [
+        ./nix/os/darwin.nix
+      ];
     };
   };
 }
