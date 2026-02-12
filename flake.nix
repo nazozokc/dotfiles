@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (simple multi-system)";
+  description = "nazozo dotfiles (simple multi-system + packages + symlinks)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -9,7 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # 将来 mac で使うために nix-darwin
     darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,6 +40,12 @@
           ./nix/home-manager/common.nix
           ./nix/home-manager/linux.nix
         ];
+
+        # ① パッケージまとめ
+        home.packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "x86_64-linux"; };
+
+        # ⑤ symlink 作成
+        home.activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
       };
 
     ########################################
@@ -55,6 +60,12 @@
         modules = [
           ./nix/os/darwin.nix
         ];
+
+        # ① パッケージまとめ
+        packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "aarch64-darwin"; };
+
+        # ⑤ symlink 作成
+        activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
       };
   };
 }
