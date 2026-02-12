@@ -1,12 +1,13 @@
-{ lib, config, myPkgs, ... }:
+{ lib, config, ... }:
 
 let
-  homeDir    = config.home.homeDirectory;
-  dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
+  # flake ルートからの相対パスを使う
+  dotfilesDir = ./dotfiles;
+  homeDir = config.home.homeDirectory;
 in
 {
   ########################################
-  # dotfilesリンク
+  # dotfilesリンク（flake 内の相対パスを使用）
   ########################################
   xdg.configFile = {
     "fish"    = { source = "${dotfilesDir}/fish"; force = true; };
@@ -17,14 +18,14 @@ in
   home.activation.linkDotfilesCommon =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       echo "linking extra dotfiles (force)"
-      ln -sfn "${dotfilesDir}/pip"         "${homeDir}/.pip"
+      ln -sfn "${dotfilesDir}/pip"        "${homeDir}/.pip"
       ln -sfn "${dotfilesDir}/my_scripts" "${homeDir}/.scripts"
     '';
 
   ########################################
-  # プログラム有効化
+  # プログラム有効化は最低限
   ########################################
-  xdg.enable                   = true;
+  xdg.enable                 = true;
   programs.home-manager.enable = true;
 }
 
