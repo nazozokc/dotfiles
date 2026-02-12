@@ -1,10 +1,13 @@
 { lib, config, myPkgs, ... }:
 
 let
-  homeDir = config.home.homeDirectory;
+  homeDir   = config.home.homeDirectory;
   configHome = config.xdg.configHome;
   dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
 
+  ########################################
+  # パッケージまとめ
+  ########################################
   cliPkgs = with myPkgs.pkgs; [
     myPkgs.cli.core
     myPkgs.cli.git
@@ -24,14 +27,18 @@ let
     myPkgs.lang.rust
     myPkgs.tools
   ];
+
 in
 {
   home.packages = cliPkgs ++ guiPkgs ++ langPkgs;
 
+  ########################################
+  # dotfilesリンク
+  ########################################
   xdg.configFile = {
-    "fish" = { source = "${dotfilesDir}/fish"; force = true; };
-    "nvim" = { source = "${dotfilesDir}/nvim"; force = true; };
-    "wezterm" = { source = "${dotfilesDir}/wezterm"; force = true; };
+    "fish"   = { source = "${dotfilesDir}/fish"; force = true; };
+    "nvim"   = { source = "${dotfilesDir}/nvim"; force = true; };
+    "wezterm"= { source = "${dotfilesDir}/wezterm"; force = true; };
   };
 
   home.activation.linkDotfilesCommon =
@@ -41,10 +48,13 @@ in
       ln -sfn "${dotfilesDir}/my_scripts" "${homeDir}/.scripts"
     '';
 
-  programs.fish.enable = true;
-  programs.neovim.enable = true;
+  ########################################
+  # プログラム有効化
+  ########################################
+  programs.fish.enable    = true;
+  programs.neovim.enable  = true;
   programs.wezterm.enable = true;
-  xdg.enable = true;
+  xdg.enable              = true;
   programs.home-manager.enable = true;
 }
 
