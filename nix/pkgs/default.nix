@@ -1,12 +1,23 @@
 { pkgs }:
 
-{
-  lang = {
-    node = import ./lang/node.nix { inherit pkgs; };
-    python = import ./lang/python.nix { inherit pkgs; };
-    rust = import ./lang/rust.nix { inherit pkgs; };
-  };
+let
+  ########################################
+  # CLI ツール群
+  ########################################
+  cli = import ./cli/default.nix { inherit pkgs; };
 
-  tools = import ./tools/dev.nix { inherit pkgs; };
+  ########################################
+  # GUI アプリ群
+  ########################################
+  gui = import ./gui/default.nix { inherit pkgs; };
+
+  ########################################
+  # 言語・開発系
+  ########################################
+  lang = import ./lang/default.nix { inherit pkgs; };
+
+in
+{
+  inherit cli gui lang;
 }
 
