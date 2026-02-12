@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (simple multi-system + packages + symlinks)";
+  description = "nazozo dotfiles (my home-manager)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
