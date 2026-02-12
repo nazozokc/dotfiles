@@ -26,19 +26,6 @@ in
       # wezterm
       link_force "${dotfilesDir}/wezterm" "${configHome}/wezterm"
 
-      # zsh
-      link_force "${dotfilesDir}/zsh/zshrc" "${homeDir}/.zshrc"
-      link_force "${dotfilesDir}/zsh/zshenv" "${homeDir}/.zshenv"
-
-      # bash
-      link_force "${dotfilesDir}/bash/.bashrc" "${homeDir}/.bashrc"
-      link_force "${dotfilesDir}/bash/.bash_profile" "${homeDir}/.bash_profile"
-
-      # scripts
-      link_force "${dotfilesDir}/my_scripts" "${homeDir}/.scripts"
-
-      # ideavim
-      link_force "${dotfilesDir}/ideavimrc" "${homeDir}/.ideavimrc"
     '';
 }
 
