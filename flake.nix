@@ -43,9 +43,9 @@
     let
       pkgs = pkgsFor system;
 
-      cli  = import ./nix/home-manager/cli/default.nix { inherit pkgs; };
-      gui  = import ./nix/home-manager/gui/default.nix { inherit pkgs; };
-      lang = import ./nix/home-manager/lang/default.nix { inherit pkgs; };
+      cli  = import ./nix/pkgs/cli/default.nix { inherit pkgs; };
+      gui  = import ./nix/pkgs/gui/default.nix { inherit pkgs; };
+      lang = import ./nix/pkgs/lang/default.nix { inherit pkgs; };
     in
     {
       pkgs = pkgs;
