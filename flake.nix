@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (multi-system unified)";
+  description = "nazozo dotfiles (full multi-system with apps)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -25,7 +25,7 @@
       config.allowUnfree = true;
     };
 
-    # ホームディレクトリ
+    # ホームディレクトリをシステムごとに返す関数
     homeDirFor = system:
       if builtins.match ".*-darwin" system != null
       then "/Users/${username}"
@@ -39,23 +39,15 @@
       home-manager.lib.homeManagerConfiguration {
         pkgs = pkgsFor "x86_64-linux";
         extraSpecialArgs = { inherit username inputs; };
-
         modules = [
           ./nix/shared.nix
           ./nix/home-manager/common.nix
           ./nix/home-manager/linux.nix
         ];
 
-        # ① パッケージまとめ
-        home.packages = import ./nix/home-manager/common.nix {
-          pkgs = pkgsFor "x86_64-linux";
-        };
-
-        # ⑤ symlink 作成
-        home.activation = import ./nix/home-manager/symlinks.nix {
-          pkgs = pkgsFor "x86_64-linux";
-          inherit username;
-        };
+        # パッケージと symlink
+        home.packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "x86_64-linux"; };
+        home.activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "x86_64-linux"; username = username; };
       };
 
     ########################################
@@ -65,79 +57,66 @@
       darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = { inherit username inputs; };
-
         modules = [
           ./nix/os/darwin.nix
         ];
 
-        # ① パッケージまとめ
-        packages = import ./nix/home-manager/common.nix {
-          pkgs = pkgsFor "aarch64-darwin";
-        };
-
-        # ⑤ symlink 作成
-        activation = import ./nix/home-manager/symlinks.nix {
-          pkgs = pkgsFor "aarch64-darwin";
-          inherit username;
-        };
+        # パッケージと symlink
+        packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "aarch64-darwin"; };
+        activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "aarch64-darwin"; username = username; };
       };
 
     ########################################
-    # Apps（スクリプト化）
+    # apps (per-system)
     ########################################
-    apps = {
-      # Linux/macOS 両対応の switch スクリプト
-      switch = let
-        runPkgs = pkgsFor builtins.currentSystem;
-        homedir = homeDirFor builtins.currentSystem;
+    apps = let
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
+    in builtins.listToAttrs (map (system: {
+      name = system;
+      value = let
+        runPkgs = pkgsFor system;
+        homedir = homeDirFor system;
       in
       {
-        type = "app";
-        program = runPkgs.writeShellScript "switch" ''
-          set -eo pipefail
-          echo "Switching configuration..."
-          if [ "$(uname)" = "Darwin" ]; then
-            sudo nix run nix-darwin -- switch --flake .#${username}
-          else
-            nix run nixpkgs#home-manager -- switch --flake .#${username}
-          fi
-          echo "Done!"
-        '';
-      };
+        switch = {
+          type = "app";
+          program = runPkgs.writeShellScript "switch" ''
+            set -eo pipefail
+            echo "Switching configuration for ${system}..."
+            if [ "$(uname)" = "Darwin" ]; then
+              sudo nix run nix-darwin -- switch --flake .#${username}
+            else
+              nix run nixpkgs#home-manager -- switch --flake .#${username}
+            fi
+            echo "Done!"
+          '';
+        };
 
-      # Flake 更新スクリプト
-      update = let
-        runPkgs = pkgsFor builtins.currentSystem;
-      in
-      {
-        type = "app";
-        program = runPkgs.writeShellScript "flake-update" ''
-          set -e
-          echo "Updating flake.lock..."
-          nix flake update
-          echo "Done! Run 'nix run .#switch' to apply changes."
-        '';
-      };
+        update = {
+          type = "app";
+          program = runPkgs.writeShellScript "flake-update" ''
+            set -e
+            echo "Updating flake.lock..."
+            nix flake update
+            echo "Done! Run 'nix run .#${system}.switch' to apply changes."
+          '';
+        };
 
-      # Node パッケージ更新（Linux/macOS 両対応）
-      update-node-packages = let
-        runPkgs = pkgsFor builtins.currentSystem;
-        homedir = homeDirFor builtins.currentSystem;
-      in
-      {
-        type = "app";
-        program = runPkgs.writeShellScript "update-node-packages" ''
-          set -e
-          echo "Updating Node.js packages..."
-          DOTFILES_DIR="${homedir}/ghq/github.com/nazozokc/dotfiles"
-          if [ ! -d "$DOTFILES_DIR" ]; then
-            DOTFILES_DIR="$(pwd)"
-          fi
-          ${runPkgs.bash}/bin/bash "$DOTFILES_DIR/nix/packages/node/update.sh" "$@"
-          echo "Node packages updated!"
-        '';
+        update-node-packages = {
+          type = "app";
+          program = runPkgs.writeShellScript "update-node-packages" ''
+            set -e
+            echo "Updating Node.js packages..."
+            DOTFILES_DIR="${homedir}/ghq/github.com/nazozokc/dotfiles"
+            if [ ! -d "$DOTFILES_DIR" ]; then
+              DOTFILES_DIR="$(pwd)"
+            fi
+            ${runPkgs.bash}/bin/bash "$DOTFILES_DIR/nix/packages/node/update.sh" "$@"
+            echo "Node packages updated!"
+          '';
+        };
       };
-    };
+    }) systems);
   };
 }
 
