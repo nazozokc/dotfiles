@@ -47,7 +47,7 @@
         ];
 
         home.packages = import ./nix/home-manager/common.nix { pkgs = linuxPkgs; };
-        home.activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+        home.activation = import ./nix/home-manager/symlinks.nix { pkgs = linuxPkgs; inherit username; };
       };
 
     ########################################
@@ -63,7 +63,7 @@
         ];
 
         packages = import ./nix/home-manager/common.nix { pkgs = darwinPkgs; };
-        activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+        activation = import ./nix/home-manager/symlinks.nix { pkgs = darwinPkgs; inherit username; };
       };
 
     ########################################
