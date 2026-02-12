@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (my home-manager)";
+  description = "nazozo dotfiles (home-manager + nix-darwin, unified apps)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -24,6 +24,11 @@
       inherit system;
       config.allowUnfree = true;
     };
+
+    homeDirFor = system:
+      if builtins.match ".*-darwin" system != null
+      then "/Users/${username}"
+      else "/home/${username}";
   in
   {
     ########################################
@@ -32,7 +37,6 @@
     homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
         pkgs = pkgsFor "x86_64-linux";
-
         extraSpecialArgs = { inherit username inputs; };
 
         modules = [
@@ -41,10 +45,10 @@
           ./nix/home-manager/linux.nix
         ];
 
-        # ① パッケージまとめ
+        # パッケージまとめ
         home.packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "x86_64-linux"; };
 
-        # ⑤ symlink 作成
+        # symlink 作成
         home.activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
       };
 
@@ -54,19 +58,71 @@
     darwinConfigurations.${username} =
       darwin.lib.darwinSystem {
         system = "aarch64-darwin";
-
         specialArgs = { inherit username inputs; };
 
         modules = [
           ./nix/os/darwin.nix
         ];
 
-        # ① パッケージまとめ
         packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "aarch64-darwin"; };
-
-        # ⑤ symlink 作成
         activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
       };
+
+    ########################################
+    # apps スクリプト（Linux / macOS 両対応）
+    ########################################
+    apps = let
+      getHomeDir = ''
+        if [[ "$(uname)" == "Darwin" ]]; then
+          echo "/Users/${username}"
+        else
+          echo "/home/${username}"
+        fi
+      '';
+    in
+    {
+      # Home Manager / nix-darwin 設定を切り替える
+      switch = {
+        type = "app";
+        program = ''
+          set -e
+          if [[ "$(uname)" == "Darwin" ]]; then
+            sudo nix run nix-darwin -- switch --flake .#${username}
+          else
+            nix run nixpkgs#home-manager -- switch --flake .#${username}
+          fi
+          echo "Switch complete!"
+        '';
+      };
+
+      # flake.lock 更新
+      update = {
+        type = "app";
+        program = ''
+          set -e
+          echo "Updating flake.lock..."
+          nix flake update
+          echo "Done! Run 'nix run .#switch' to apply."
+        '';
+      };
+
+      # Node パッケージ更新
+      update-node-packages = {
+        type = "app";
+        program = ''
+          set -e
+          HOME_DIR=$(${getHomeDir})
+          echo "Updating Node packages in $HOME_DIR..."
+          if [[ -f "$HOME_DIR/ghq/github.com/nazozokc/dotfiles/nix/packages/node/update.sh" ]]; then
+            bash "$HOME_DIR/ghq/github.com/nazozokc/dotfiles/nix/packages/node/update.sh"
+          else
+            echo "Node update script not found at $HOME_DIR/ghq/github.com/nazozokc/dotfiles/nix/packages/node/update.sh"
+            exit 1
+          fi
+          echo "Node packages update complete!"
+        '';
+      };
+    };
   };
 }
 
