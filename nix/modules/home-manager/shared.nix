@@ -2,7 +2,7 @@
 
 {
   ########################################
-  # 基本情報（超重要）
+  # 基本情報
   ########################################
   home.username = username;
 
@@ -14,28 +14,30 @@
   home.stateVersion = "24.11";
 
   ########################################
-  # 共通パッケージ（最小）
+  # 共通 pkgs 読み込み
   ########################################
-  home.packages = with pkgs; [
-    git
-    curl
-    wget
-    neovim
+  imports = [
+    ./pkgs
   ];
 
   ########################################
-  # プログラム
+  # 共通プログラム設定
   ########################################
-  programs.git.enable = true;
+  programs.git = {
+    enable = true;
+    userName = "nazozo";
+    userEmail = "example@example.com";
+  };
+
   programs.neovim.enable = true;
+  programs.fish.enable = true;
 
   ########################################
   # Nix 設定
   ########################################
-  nix = {
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-    };
-  };
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 }
 
