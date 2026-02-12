@@ -1,44 +1,44 @@
-{ pkgs, lib, ... }:
-
+{
+  lib,
+  config,
+  helpers,
+  dotfilesDir ? "${config.home.homeDirectory}/ghq/github.com/nazozokc/dotfiles",
+  ...
+}:
+let
+  homeDir = config.home.homeDirectory;
+  configHome = config.xdg.configHome;
+in
 {
   ########################################
-  # パッケージ（最低限）
+  # 強制シンボリックリンク（共通）
   ########################################
-  home.packages = with pkgs; [
-    fish
-    wezterm
-    git
-    gh
-    ripgrep
-    fd
-  ];
+  home.activation.linkDotfilesCommon =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      ${helpers.activation.mkLinkForce}
 
-  ########################################
-  # ~/.config へのシンボリックリンク
-  # ※ flake 相対パス（超重要）
-  ########################################
-  xdg.configFile = {
-    "nvim" = {
-      source = ./../../nvim;
-      force = true;
-    };
+      # fish
+      link_force "${dotfilesDir}/fish" "${configHome}/fish"
 
-    "fish" = {
-      source = ./../../fish;
-      force = true;
-    };
+      # neovim
+      link_force "${dotfilesDir}/nvim" "${configHome}/nvim"
 
-    "wezterm" = {
-      source = ./../../wezterm;
-      force = true;
-    };
-  };
+      # wezterm
+      link_force "${dotfilesDir}/wezterm" "${configHome}/wezterm"
 
-  ########################################
-  # 有効化（挙動だけHMに任せる）
-  ########################################
-  programs.fish.enable = true;
-  programs.neovim.enable = true;
-  programs.wezterm.enable = true;
+      # zsh
+      link_force "${dotfilesDir}/zsh/zshrc" "${homeDir}/.zshrc"
+      link_force "${dotfilesDir}/zsh/zshenv" "${homeDir}/.zshenv"
+
+      # bash
+      link_force "${dotfilesDir}/bash/.bashrc" "${homeDir}/.bashrc"
+      link_force "${dotfilesDir}/bash/.bash_profile" "${homeDir}/.bash_profile"
+
+      # scripts
+      link_force "${dotfilesDir}/my_scripts" "${homeDir}/.scripts"
+
+      # ideavim
+      link_force "${dotfilesDir}/ideavimrc" "${homeDir}/.ideavimrc"
+    '';
 }
 
