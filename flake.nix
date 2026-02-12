@@ -19,19 +19,12 @@
   let
     username = "nazozokc";
 
-    systems = [
-      "x86_64-linux"
-      "aarch64-darwin"
-    ];
-
-    # pkgs を一元生成（後で overlay 足す場所）
     mkPkgs = system:
       import nixpkgs {
         inherit system;
         config.allowUnfree = true;
       };
 
-    # Home Manager 共通生成関数
     mkHome = system:
       home-manager.lib.homeManagerConfiguration {
         pkgs = mkPkgs system;
@@ -43,7 +36,6 @@
         modules = [
           ./nix/modules/home-manager/shared.nix
 
-          # OS別
           (if system == "aarch64-darwin"
             then ./nix/modules/os/darwin.nix
             else ./nix/modules/os/linux.nix)
@@ -60,7 +52,7 @@
     };
 
     ########################################
-    # nix-darwin（macOS システム設定）
+    # nix-darwin
     ########################################
     darwinConfigurations = {
       "${username}" = darwin.lib.darwinSystem {
@@ -69,11 +61,11 @@
         modules = [
           ./nix/modules/darwin/system.nix
 
-          # Home Manager を nix-darwin に統合
           home-manager.darwinModules.home-manager
           {
             home-manager.useUserPackages = true;
             home-manager.useGlobalPkgs = false;
+
             home-manager.users.${username} =
               import ./nix/modules/home-manager/shared.nix;
           }
