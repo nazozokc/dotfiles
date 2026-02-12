@@ -18,22 +18,15 @@
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
     username = "nazozokc";
-
-    ########################################
-    # システムごとの pkgs
-    ########################################
-    pkgsFor = system: import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
   in
   {
-    ########################################
-    # Home Manager (Linux)
-    ########################################
     homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgsFor "x86_64-linux";
+        pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
+
+        extraSpecialArgs = {
+          inherit username inputs;
+        };
 
         modules = [
           ./nix/shared.nix
@@ -42,12 +35,13 @@
         ];
       };
 
-    ########################################
-    # nix-darwin (macOS)
-    ########################################
     darwinConfigurations.${username} =
       darwin.lib.darwinSystem {
         system = "aarch64-darwin";
+
+        specialArgs = {
+          inherit username inputs;
+        };
 
         modules = [
           ./nix/os/darwin.nix
