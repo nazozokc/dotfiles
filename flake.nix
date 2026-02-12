@@ -19,39 +19,54 @@
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
     username = "nazozokc";
-    system = "x86_64-linux";
 
-    pkgs = import nixpkgs {
+    ########################################
+    # システム定義
+    ########################################
+    systems = {
+      linux = "x86_64-linux";
+      darwin = "aarch64-darwin";
+    };
+
+    ########################################
+    # system ごとの pkgs
+    ########################################
+    pkgsFor = system: import nixpkgs {
       inherit system;
       config.allowUnfree = true;
     };
 
     ########################################
-    # myPkgs 定義
+    # myPkgs 作成関数
     ########################################
-    myPkgs = let
-      cli = import ./nix/home-manager/pkgs/cli/default.nix { inherit pkgs; };
-      gui = import ./nix/home-manager/pkgs/gui/default.nix { inherit pkgs; };
-      lang = import ./nix/home-manager/pkgs/lang/default.nix { inherit pkgs; };
+    mkMyPkgs = system:
+    let
+      pkgs = pkgsFor system;
+
+      cli  = import ./nix/home-manager/cli/default.nix { inherit pkgs; };
+      gui  = import ./nix/home-manager/gui/default.nix { inherit pkgs; };
+      lang = import ./nix/home-manager/lang/default.nix { inherit pkgs; };
     in
     {
-      pkgs = pkgs; # common.nix 内で with myPkgs.pkgs するため
+      pkgs = pkgs;
       cli = cli;
       gui = gui;
       lang = lang;
-      tools = []; # 必要なら追加
+      tools = [];
     };
+
   in
   {
     ########################################
-    # Home Manager（Linux）
+    # Home Manager (Linux)
     ########################################
     homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = pkgsFor systems.linux;
 
         extraSpecialArgs = {
-          inherit inputs username myPkgs;
+          inherit username inputs;
+          myPkgs = mkMyPkgs systems.linux;
         };
 
         modules = [
@@ -62,14 +77,15 @@
       };
 
     ########################################
-    # nix-darwin（macOS / まだ使わない）
+    # nix-darwin (macOS)
     ########################################
     darwinConfigurations.${username} =
       darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
+        system = systems.darwin;
 
         specialArgs = {
-          inherit inputs username;
+          inherit username inputs;
+          myPkgs = mkMyPkgs systems.darwin;
         };
 
         modules = [
