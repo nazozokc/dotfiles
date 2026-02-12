@@ -5,5 +5,4 @@ with pkgs; [
   ghostty
   firefox
   spotify
-  discord
 ]
