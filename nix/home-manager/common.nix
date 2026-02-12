@@ -1,4 +1,4 @@
-{ pkgs, lib, username, ... }:
+{ pkgs, lib, ... }:
 
 {
   ########################################
@@ -14,28 +14,28 @@
   ];
 
   ########################################
-  # .config へのシンボリックリンク
-  # ※ flake 相対パスを使う（超重要）
+  # ~/.config へのシンボリックリンク
+  # ※ flake 相対パス（超重要）
   ########################################
   xdg.configFile = {
-  "nvim" = {
-    source = ./../../nvim;
-    force = true;
-  };
+    "nvim" = {
+      source = ./../../nvim;
+      force = true;
+    };
 
-  "fish" = {
-    source = ./../../fish;
-    force = true;
-  };
+    "fish" = {
+      source = ./../../fish;
+      force = true;
+    };
 
-  "wezterm" = {
-    source = ./../../wezterm;
-    force = true;
+    "wezterm" = {
+      source = ./../../wezterm;
+      force = true;
+    };
   };
-};
 
   ########################################
-  # 有効化だけ
+  # 有効化（挙動だけHMに任せる）
   ########################################
   programs.fish.enable = true;
   programs.neovim.enable = true;
