@@ -6,4 +6,5 @@ nixd
 pkgs.nixfmt
 rustc
 python310
+pnpm
 ]

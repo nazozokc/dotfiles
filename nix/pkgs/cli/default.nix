@@ -11,5 +11,6 @@ with pkgs; [
   which
   git
   gh
+  git-wt
   lazygit
 ]
