@@ -1,31 +1,28 @@
-{ lib, config, ... }:
+{ lib, config, myPkgs, ... }:
 
 let
-  # flake ルートからの相対パスを使う
-  dotfilesDir = ./dotfiles;
-  homeDir = config.home.homeDirectory;
+  homeDir    = config.home.homeDirectory;
+  dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
+
 in
 {
   ########################################
-  # dotfilesリンク（flake 内の相対パスを使用）
+  # dotfilesリンクだけ作る
   ########################################
-  xdg.configFile = {
-    "fish"    = { source = "${dotfilesDir}/fish"; force = true; };
-    "nvim"    = { source = "${dotfilesDir}/nvim"; force = true; };
-    "wezterm" = { source = "${dotfilesDir}/wezterm"; force = true; };
-  };
-
   home.activation.linkDotfilesCommon =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       echo "linking extra dotfiles (force)"
-      ln -sfn "${dotfilesDir}/pip"        "${homeDir}/.pip"
-      ln -sfn "${dotfilesDir}/my_scripts" "${homeDir}/.scripts"
+      ln -sfn "${dotfilesDir}/fish"        "${homeDir}/.config/fish"
+      ln -sfn "${dotfilesDir}/nvim"        "${homeDir}/.config/nvim"
+      ln -sfn "${dotfilesDir}/wezterm"     "${homeDir}/.config/wezterm"
+      ln -sfn "${dotfilesDir}/pip"         "${homeDir}/.pip"
+      ln -sfn "${dotfilesDir}/my_scripts"  "${homeDir}/.scripts"
     '';
 
   ########################################
-  # プログラム有効化は最低限
+  # xdg と home-manager は有効にしておく
   ########################################
-  xdg.enable                 = true;
+  xdg.enable               = true;
   programs.home-manager.enable = true;
 }
 
