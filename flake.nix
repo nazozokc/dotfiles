@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (home-manager first)";
+  description = "nazozo dotfiles (home-manager simple)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -9,7 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # 将来用（mac買ったら使う）
     darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -21,40 +20,12 @@
     username = "nazozokc";
 
     ########################################
-    # システム定義
-    ########################################
-    systems = {
-      linux = "x86_64-linux";
-      darwin = "aarch64-darwin";
-    };
-
-    ########################################
-    # system ごとの pkgs
+    # システムごとの pkgs
     ########################################
     pkgsFor = system: import nixpkgs {
       inherit system;
       config.allowUnfree = true;
     };
-
-    ########################################
-    # myPkgs 作成関数
-    ########################################
-    mkMyPkgs = system:
-    let
-      pkgs = pkgsFor system;
-
-      cli  = import ./nix/pkgs/cli/default.nix { inherit pkgs; };
-      gui  = import ./nix/pkgs/gui/default.nix { inherit pkgs; };
-      lang = import ./nix/pkgs/lang/default.nix { inherit pkgs; };
-    in
-    {
-      pkgs = pkgs;
-      cli = cli;
-      gui = gui;
-      lang = lang;
-      tools = [];
-    };
-
   in
   {
     ########################################
@@ -62,12 +33,7 @@
     ########################################
     homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgsFor systems.linux;
-
-        extraSpecialArgs = {
-          inherit username inputs;
-          myPkgs = mkMyPkgs systems.linux;
-        };
+        pkgs = pkgsFor "x86_64-linux";
 
         modules = [
           ./nix/shared.nix
@@ -81,12 +47,7 @@
     ########################################
     darwinConfigurations.${username} =
       darwin.lib.darwinSystem {
-        system = systems.darwin;
-
-        specialArgs = {
-          inherit username inputs;
-          myPkgs = mkMyPkgs systems.darwin;
-        };
+        system = "aarch64-darwin";
 
         modules = [
           ./nix/os/darwin.nix
