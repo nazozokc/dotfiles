@@ -1,6 +1,7 @@
 { pkgs }:
 
 with pkgs;
+
 let
   core   = import ./core.nix   { inherit pkgs; };
   git    = import ./git.nix    { inherit pkgs; };
