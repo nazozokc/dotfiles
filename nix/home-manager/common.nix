@@ -1,31 +1,17 @@
-{
-  lib,
-  config,
-  helpers,
-  dotfilesDir ? "${config.home.homeDirectory}/ghq/github.com/nazozokc/dotfiles",
-  ...
-}:
+{ lib, config, ... }:
 let
   homeDir = config.home.homeDirectory;
   configHome = config.xdg.configHome;
+  dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
 in
 {
-  ########################################
-  # 強制シンボリックリンク（共通）
-  ########################################
   home.activation.linkDotfilesCommon =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      ${helpers.activation.mkLinkForce}
+      echo "linking dotfiles (force)"
 
-      # fish
-      link_force "${dotfilesDir}/fish" "${configHome}/fish"
-
-      # neovim
-      link_force "${dotfilesDir}/nvim" "${configHome}/nvim"
-
-      # wezterm
-      link_force "${dotfilesDir}/wezterm" "${configHome}/wezterm"
-
+      ln -sfn "${dotfilesDir}/fish" "${configHome}/fish"
+      ln -sfn "${dotfilesDir}/nvim" "${configHome}/nvim"
+      ln -sfn "${dotfilesDir}/wezterm" "${configHome}/wezterm"
     '';
 }
 
