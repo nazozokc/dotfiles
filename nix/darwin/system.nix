@@ -2,23 +2,23 @@
 
 {
   ########################################
-  # Nix 基本設定
+  # nix-darwin 基本設定
+  ########################################
+  system.stateVersion = 4;
+
+  ########################################
+  # Nix 自体の設定
   ########################################
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" username ];
       auto-optimise-store = true;
+      trusted-users = [ username ];
     };
   };
 
   ########################################
-  # nix-darwin 自体を管理対象に
-  ########################################
-  programs.nix-daemon.enable = true;
-
-  ########################################
-  # ユーザー（※ Home Manager とは別）
+  # ユーザー定義
   ########################################
   users.users.${username} = {
     home = "/Users/${username}";
@@ -26,60 +26,38 @@
   };
 
   ########################################
-  # システム全体で使うパッケージ
-  ########################################
-  environment.systemPackages = with pkgs; [
-    git
-    curl
-    wget
-  ];
-
-  ########################################
   # シェル
   ########################################
   programs.fish.enable = true;
-  environment.shells = [ pkgs.fish ];
 
   ########################################
-  # macOS デフォルト設定
-  ########################################
-  system.defaults = {
-    NSGlobalDomain = {
-      AppleShowAllExtensions = true;
-      ApplePressAndHoldEnabled = false;
-      InitialKeyRepeat = 15;
-      KeyRepeat = 2;
-    };
-
-    dock = {
-      autohide = true;
-      mru-spaces = false;
-      show-recents = false;
-    };
-
-    finder = {
-      AppleShowAllFiles = true;
-      ShowPathbar = true;
-      ShowStatusBar = true;
-    };
-  };
-
-  ########################################
-  # セキュリティ
+  # macOS セキュリティ / 権限
   ########################################
   security.pam.enableSudoTouchIdAuth = true;
 
   ########################################
-  # フォント（必要になったら足す）
+  # macOS システム設定（最低限）
   ########################################
-  fonts.packages = with pkgs; [
-    # noto-fonts
-    # nerd-fonts.fira-code
+  system.defaults = {
+    dock.autohide = true;
+    finder = {
+      AppleShowAllExtensions = true;
+      FXPreferredViewStyle = "Nlsv";
+    };
+  };
+
+  ########################################
+  # 環境変数
+  ########################################
+  environment.systemPackages = with pkgs; [
+    git
   ];
 
   ########################################
-  # nix-darwin state version
+  # フォント（必要なら）
   ########################################
-  system.stateVersion = 4;
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+  ];
 }
 
