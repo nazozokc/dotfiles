@@ -31,7 +31,9 @@
     homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
         pkgs = pkgsFor "x86_64-linux";
-        extraSpecialArgs = { inherit username inputs; };
+
+        # extraSpecialArgs は username だけで十分
+        extraSpecialArgs = { inherit username; };
 
         modules = [
           ./nix/shared.nix
@@ -39,10 +41,8 @@
           ./nix/home-manager/linux.nix
         ];
 
-        # パッケージまとめ
         home.packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "x86_64-linux"; };
 
-        # symlink 作成
         home.activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "x86_64-linux"; inherit username; };
       };
 
@@ -52,21 +52,19 @@
     darwinConfigurations.${username} =
       darwin.lib.darwinSystem {
         system = "aarch64-darwin";
-        specialArgs = { inherit username inputs; };
+        specialArgs = { inherit username; };
 
         modules = [
           ./nix/os/darwin.nix
         ];
 
-        # パッケージまとめ
         packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "aarch64-darwin"; };
 
-        # symlink 作成
         activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "aarch64-darwin"; inherit username; };
       };
 
     ########################################
-    # apps スクリプト（Linux / macOS 両対応）
+    # apps スクリプト
     ########################################
     apps = {
       "x86_64-linux" = let
