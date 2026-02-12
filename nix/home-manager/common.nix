@@ -1,35 +1,41 @@
+# common.nix
 { lib, config, myPkgs, ... }:
 
 let
   homeDir = config.home.homeDirectory;
   configHome = config.xdg.configHome;
   dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
+
+  # ここで myPkgs の各関数を呼び出す
+  cliPkgs = with myPkgs.pkgs; [
+    myPkgs.cli.core
+    myPkgs.cli.git
+    myPkgs.cli.misc
+    myPkgs.cli.search
+  ];
+
+  guiPkgs = with myPkgs.pkgs; [
+    myPkgs.gui.editor
+    myPkgs.gui.terminal
+    myPkgs.gui.misc
+  ];
+
+  langPkgs = with myPkgs.pkgs; [
+    myPkgs.lang.node
+    myPkgs.lang.python
+    myPkgs.lang.rust
+    myPkgs.tools
+  ];
+
 in
 {
   ########################################
   # パッケージまとめ
   ########################################
-  home.packages = with myPkgs; [
-    # CLI
-    cli.core
-    cli.git
-    cli.misc
-    cli.search
-
-    # GUI
-    gui.editor
-    gui.terminal
-    gui.misc
-
-    # 言語ツール
-    lang.node
-    lang.python
-    lang.rust
-    tools
-  ];
+  home.packages = cliPkgs ++ guiPkgs ++ langPkgs;
 
   ########################################
-  # .config へのリンク（Home Manager 管理下）
+  # dotfilesリンク
   ########################################
   xdg.configFile = {
     "fish" = { source = "${dotfilesDir}/fish"; force = true; };
@@ -37,9 +43,6 @@ in
     "wezterm" = { source = "${dotfilesDir}/wezterm"; force = true; };
   };
 
-  ########################################
-  # 追加のリンクや強制上書き（既存ファイル対策）
-  ########################################
   home.activation.linkDotfilesCommon =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       echo "linking extra dotfiles (force)"
@@ -48,8 +51,6 @@ in
       ln -sfn "${dotfilesDir}/my_scripts" "${homeDir}/.scripts"
     '';
 
-  ########################################
-  # 有効化のみ
   ########################################
   programs.fish.enable = true;
   programs.neovim.enable = true;
