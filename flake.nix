@@ -1,5 +1,5 @@
 {
-  description = "nazozo multi-system dotfiles";
+  description = "nazozo dotfiles (home-manager first)";
 
   ########################################
   # Inputs
@@ -12,6 +12,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # 将来用（mac買ったら使う）
     darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,26 +25,18 @@
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
     username = "nazozokc";
+    system = "x86_64-linux";
 
-    systems = [
-      "x86_64-linux"
-      "aarch64-darwin"
-    ];
-
-    forAllSystems = nixpkgs.lib.genAttrs systems;
-
-  in {
-
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  in
+  {
     ########################################
-    # Home Manager（Linux / mac 共通）
+    # Home Manager（Linux）
     ########################################
-    homeConfigurations = forAllSystems (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
-      in
+    homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
@@ -54,28 +47,25 @@
         modules = [
           ./nix/shared.nix
           ./nix/home-manager/common.nix
-
-          (if pkgs.stdenv.isDarwin
-            then ./nix/home-manager/darwin.nix
-            else ./nix/home-manager/linux.nix)
+          ./nix/home-manager/linux.nix
         ];
-      }
-    );
-
-    ########################################
-    # nix-darwin（macOS システム）
-    ########################################
-    darwinConfigurations.${username} = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-
-      specialArgs = {
-        inherit inputs username;
       };
 
-      modules = [
-        ./nix/os/darwin.nix
-      ];
-    };
+    ########################################
+    # nix-darwin（macOS / まだ使わない）
+    ########################################
+    darwinConfigurations.${username} =
+      darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+
+        specialArgs = {
+          inherit inputs username;
+        };
+
+        modules = [
+          ./nix/os/darwin.nix
+        ];
+      };
   };
 }
 
