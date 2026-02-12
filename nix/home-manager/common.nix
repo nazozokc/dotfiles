@@ -1,20 +1,8 @@
 { pkgs, lib, username, ... }:
 
-let
-  homeDir =
-    if pkgs.stdenv.isDarwin
-    then "/Users/${username}"
-    else "/home/${username}";
-
-  dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
-in
 {
-  home.username = username;
-  home.homeDirectory = homeDir;
-  home.stateVersion = "24.05";
-
   ########################################
-  # パッケージ管理だけ
+  # パッケージ（最低限）
   ########################################
   home.packages = with pkgs; [
     neovim
@@ -28,21 +16,19 @@ in
 
   ########################################
   # .config へのシンボリックリンク
+  # ※ flake 相対パスを使う（超重要）
   ########################################
   xdg.configFile = {
-    "nvim".source = "${dotfilesDir}/nvim";
-    "fish".source = "${dotfilesDir}/fish";
-    "wezterm".source = "${dotfilesDir}/wezterm";
+    "nvim".source = ./../../nvim;
+    "fish".source = ./../../fish;
+    "wezterm".source = ./../../wezterm;
   };
 
   ########################################
-  # 有効化だけ（設定は読まない）
+  # 有効化だけ
   ########################################
   programs.fish.enable = true;
   programs.neovim.enable = true;
   programs.wezterm.enable = true;
-
-  xdg.enable = true;
-  programs.home-manager.enable = true;
 }
 
