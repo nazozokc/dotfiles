@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (home-manager + nix-darwin unified)";
+  description = "nazozo dotfiles (full multi-system with apps)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -15,11 +15,10 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, darwin, ... }:
   let
     username = "nazozokc";
 
-    # システムごとの pkgs
     pkgsFor = system: import nixpkgs {
       inherit system;
       config.allowUnfree = true;
@@ -27,12 +26,11 @@
   in
   {
     ########################################
-    # Linux 用 Home Manager
+    # Linux Home Manager
     ########################################
     homeConfigurations.${username} =
       home-manager.lib.homeManagerConfiguration {
         pkgs = pkgsFor "x86_64-linux";
-
         extraSpecialArgs = { inherit username inputs; };
 
         modules = [
@@ -41,81 +39,66 @@
           ./nix/home-manager/linux.nix
         ];
 
-        # ① パッケージまとめ
+        # パッケージまとめ
         home.packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "x86_64-linux"; };
 
-        # ⑤ symlink 作成
-        home.activation = import ./nix/home-manager/symlinks.nix {
-          pkgs = pkgsFor "x86_64-linux";
-          username = username;
-        };
+        # symlink 作成
+        home.activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "x86_64-linux"; inherit username; };
       };
 
     ########################################
-    # macOS 用 nix-darwin
+    # macOS nix-darwin
     ########################################
     darwinConfigurations.${username} =
       darwin.lib.darwinSystem {
         system = "aarch64-darwin";
-
         specialArgs = { inherit username inputs; };
 
         modules = [
           ./nix/os/darwin.nix
         ];
 
+        # パッケージまとめ
         packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "aarch64-darwin"; };
 
-        activation = import ./nix/home-manager/symlinks.nix {
-          pkgs = pkgsFor "aarch64-darwin";
-          username = username;
-        };
+        # symlink 作成
+        activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "aarch64-darwin"; inherit username; };
       };
 
     ########################################
-    # apps にスクリプトを統一フォーマットで追加
+    # apps スクリプト（Linux / macOS 両対応）
     ########################################
     apps = {
-      # Linux 用
-      "x86_64-linux" = {
-        switch = {
-          type = "app";
-          program = ''
-            echo "Building and switching Linux Home Manager config..."
-            nix run nixpkgs#home-manager -- switch --flake .#${username}
-            echo "Done!"
-          '';
-        };
+      "x86_64-linux" = let
+        linuxPkgs = pkgsFor "x86_64-linux";
+      in {
+        switch = linuxPkgs.writeShellScriptBin "switch" ''
+          echo "Building and switching Linux Home Manager config..."
+          nix run nixpkgs#home-manager -- switch --flake .#${username}
+          echo "Done!"
+        '';
 
-        update-node-packages = {
-          type = "app";
-          program = ''
-            echo "Updating Node packages..."
-            ${pkgsFor "x86_64-linux"}/bin/bash ./nix/packages/node/update.sh
-            echo "Done!"
-          '';
-        };
+        update-node-packages = linuxPkgs.writeShellScriptBin "update-node-packages" ''
+          echo "Updating Node packages..."
+          ${linuxPkgs.bash}/bin/bash ./nix/packages/node/update.sh
+          echo "Done!"
+        '';
       };
 
-      # macOS 用
-      "aarch64-darwin" = {
-        switch = {
-          type = "app";
-          program = ''
-            echo "Building and switching macOS nix-darwin config..."
-            sudo nix run nix-darwin -- switch --flake .#${username}
-            echo "Done!"
-          '';
-        };
+      "aarch64-darwin" = let
+        darwinPkgs = pkgsFor "aarch64-darwin";
+      in {
+        switch = darwinPkgs.writeShellScriptBin "switch" ''
+          echo "Building and switching macOS nix-darwin config..."
+          sudo nix run nix-darwin -- switch --flake .#${username}
+          echo "Done!"
+        '';
 
-        update-node-packages = {
-          type = "app";
-          program = ''
-            echo "Updating Node packages on macOS..."
-            ${pkgsFor "aarch64-darwin"}/bin/bash ./nix/packages/node/update.sh
-            echo "Done!"
-          '';
-        };
+        update-node-packages = darwinPkgs.writeShellScriptBin "update-node-packages" ''
+          echo "Updating Node packages on macOS..."
+          ${darwinPkgs.bash}/bin/bash ./nix/packages/node/update.sh
+          echo "Done!"
+        '';
       };
     };
   };
