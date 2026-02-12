@@ -16,7 +16,7 @@ in
   ########################################
   # インストールするパッケージ
   ########################################
-  home.packages = cliPkgs ++ guiPkgs ++ langPkgs ++ myPkgs.tools;
+  home.packages = lib.concatMap (x: x) (myPkgs.cli ++ myPkgs.gui ++ myPkgs.lang ++ myPkgs.tools);
 
   ########################################
   # dotfilesリンク
