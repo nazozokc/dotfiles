@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (home-manager + nix-darwin, unified apps)";
+  description = "nazozo dotfiles (multi-system unified)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -25,6 +25,7 @@
       config.allowUnfree = true;
     };
 
+    # ホームディレクトリ
     homeDirFor = system:
       if builtins.match ".*-darwin" system != null
       then "/Users/${username}"
@@ -45,11 +46,16 @@
           ./nix/home-manager/linux.nix
         ];
 
-        # パッケージまとめ
-        home.packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "x86_64-linux"; };
+        # ① パッケージまとめ
+        home.packages = import ./nix/home-manager/common.nix {
+          pkgs = pkgsFor "x86_64-linux";
+        };
 
-        # symlink 作成
-        home.activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+        # ⑤ symlink 作成
+        home.activation = import ./nix/home-manager/symlinks.nix {
+          pkgs = pkgsFor "x86_64-linux";
+          inherit username;
+        };
       };
 
     ########################################
@@ -64,62 +70,71 @@
           ./nix/os/darwin.nix
         ];
 
-        packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "aarch64-darwin"; };
-        activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+        # ① パッケージまとめ
+        packages = import ./nix/home-manager/common.nix {
+          pkgs = pkgsFor "aarch64-darwin";
+        };
+
+        # ⑤ symlink 作成
+        activation = import ./nix/home-manager/symlinks.nix {
+          pkgs = pkgsFor "aarch64-darwin";
+          inherit username;
+        };
       };
 
     ########################################
-    # apps スクリプト（Linux / macOS 両対応）
+    # Apps（スクリプト化）
     ########################################
-    apps = let
-      getHomeDir = ''
-        if [[ "$(uname)" == "Darwin" ]]; then
-          echo "/Users/${username}"
-        else
-          echo "/home/${username}"
-        fi
-      '';
-    in
-    {
-      # Home Manager / nix-darwin 設定を切り替える
-      switch = {
+    apps = {
+      # Linux/macOS 両対応の switch スクリプト
+      switch = let
+        runPkgs = pkgsFor builtins.currentSystem;
+        homedir = homeDirFor builtins.currentSystem;
+      in
+      {
         type = "app";
-        program = ''
-          set -e
-          if [[ "$(uname)" == "Darwin" ]]; then
+        program = runPkgs.writeShellScript "switch" ''
+          set -eo pipefail
+          echo "Switching configuration..."
+          if [ "$(uname)" = "Darwin" ]; then
             sudo nix run nix-darwin -- switch --flake .#${username}
           else
             nix run nixpkgs#home-manager -- switch --flake .#${username}
           fi
-          echo "Switch complete!"
+          echo "Done!"
         '';
       };
 
-      # flake.lock 更新
-      update = {
+      # Flake 更新スクリプト
+      update = let
+        runPkgs = pkgsFor builtins.currentSystem;
+      in
+      {
         type = "app";
-        program = ''
+        program = runPkgs.writeShellScript "flake-update" ''
           set -e
           echo "Updating flake.lock..."
           nix flake update
-          echo "Done! Run 'nix run .#switch' to apply."
+          echo "Done! Run 'nix run .#switch' to apply changes."
         '';
       };
 
-      # Node パッケージ更新
-      update-node-packages = {
+      # Node パッケージ更新（Linux/macOS 両対応）
+      update-node-packages = let
+        runPkgs = pkgsFor builtins.currentSystem;
+        homedir = homeDirFor builtins.currentSystem;
+      in
+      {
         type = "app";
-        program = ''
+        program = runPkgs.writeShellScript "update-node-packages" ''
           set -e
-          HOME_DIR=$(${getHomeDir})
-          echo "Updating Node packages in $HOME_DIR..."
-          if [[ -f "$HOME_DIR/ghq/github.com/nazozokc/dotfiles/nix/packages/node/update.sh" ]]; then
-            bash "$HOME_DIR/ghq/github.com/nazozokc/dotfiles/nix/packages/node/update.sh"
-          else
-            echo "Node update script not found at $HOME_DIR/ghq/github.com/nazozokc/dotfiles/nix/packages/node/update.sh"
-            exit 1
+          echo "Updating Node.js packages..."
+          DOTFILES_DIR="${homedir}/ghq/github.com/nazozokc/dotfiles"
+          if [ ! -d "$DOTFILES_DIR" ]; then
+            DOTFILES_DIR="$(pwd)"
           fi
-          echo "Node packages update complete!"
+          ${runPkgs.bash}/bin/bash "$DOTFILES_DIR/nix/packages/node/update.sh" "$@"
+          echo "Node packages updated!"
         '';
       };
     };
