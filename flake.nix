@@ -28,7 +28,7 @@
                   then "/Users/${username}"
                   else "/home/${username}";
 
-dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
+    dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
 
   in
   {
@@ -68,7 +68,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
     apps = {
       "x86_64-linux" = {
         switch = {
-          type = "app";
+          type = "legacyApp";
           program = ''
             echo "Building and switching Linux Home Manager config..."
             nix run nixpkgs#home-manager -- switch --flake .#${username}
@@ -77,7 +77,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
         };
 
         update = {
-          type = "app";
+          type = "legacyApp";
           program = ''
             echo "Updating flake.lock..."
             nix flake update
@@ -86,7 +86,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
         };
 
         update-node-packages = {
-          type = "app";
+          type = "legacyApp";
           program = ''
             echo "Updating Node.js packages..."
             ${linuxPkgs.bash}/bin/bash ${dotfilesDir "x86_64-linux"}/nix/packages/node/update.sh
@@ -97,7 +97,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
 
       "aarch64-darwin" = {
         switch = {
-          type = "app";
+          type = "legacyApp";
           program = ''
             echo "Building and switching macOS nix-darwin config..."
             sudo nix run nix-darwin -- switch --flake .#${username}
@@ -106,7 +106,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
         };
 
         update = {
-          type = "app";
+          type = "legacyApp";
           program = ''
             echo "Updating flake.lock..."
             nix flake update
@@ -115,7 +115,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
         };
 
         update-node-packages = {
-          type = "app";
+          type = "legacyApp";
           program = ''
             echo "Updating Node.js packages..."
             ${darwinPkgs.bash}/bin/bash ${dotfilesDir "aarch64-darwin"}/nix/packages/node/update.sh
