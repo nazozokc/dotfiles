@@ -63,59 +63,71 @@
     };
 
     ########################################
-    # Apps / スクリプト (runCommand 化)
+    # Apps / スクリプト (writeShellScriptBin 化)
     ########################################
     apps = {
       "x86_64-linux" = {
-        switch = linuxPkgs.runCommand "hm-switch" {
-          buildInputs = [ linuxPkgs.bash ];
-        } ''
-          echo "Building and switching Linux Home Manager config..."
-          nix run nixpkgs#home-manager -- switch --flake .#${username}
-          echo "Done!"
-        '';
+        switch = {
+          type = "app";
+          program = linuxPkgs.writeShellScriptBin "hm-switch" ''
+            set -e
+            echo "Building and switching Linux Home Manager config..."
+            nix run nixpkgs#home-manager -- switch --flake .#${username}
+            echo "Done!"
+          '';
+        };
 
-        update = linuxPkgs.runCommand "flake-update" {
-          buildInputs = [ linuxPkgs.bash ];
-        } ''
-          echo "Updating flake.lock..."
-          nix flake update
-          echo "Done!"
-        '';
+        update = {
+          type = "app";
+          program = linuxPkgs.writeShellScriptBin "flake-update" ''
+            set -e
+            echo "Updating flake.lock..."
+            nix flake update
+            echo "Done!"
+          '';
+        };
 
-        update-node-packages = linuxPkgs.runCommand "node-update" {
-          buildInputs = [ linuxPkgs.bash ];
-        } ''
-          echo "Updating Node.js packages..."
-          ${linuxPkgs.bash}/bin/bash ${dotfilesDir "x86_64-linux"}/nix/packages/node/update.sh
-          echo "Done!"
-        '';
+        update-node-packages = {
+          type = "app";
+          program = linuxPkgs.writeShellScriptBin "node-update" ''
+            set -e
+            echo "Updating Node.js packages..."
+            ${linuxPkgs.bash}/bin/bash ${dotfilesDir "x86_64-linux"}/nix/packages/node/update.sh
+            echo "Done!"
+          '';
+        };
       };
 
       "aarch64-darwin" = {
-        switch = darwinPkgs.runCommand "darwin-switch" {
-          buildInputs = [ darwinPkgs.bash ];
-        } ''
-          echo "Building and switching macOS nix-darwin config..."
-          sudo nix run nix-darwin -- switch --flake .#${username}
-          echo "Done!"
-        '';
+        switch = {
+          type = "app";
+          program = darwinPkgs.writeShellScriptBin "darwin-switch" ''
+            set -e
+            echo "Building and switching macOS nix-darwin config..."
+            sudo nix run nix-darwin -- switch --flake .#${username}
+            echo "Done!"
+          '';
+        };
 
-        update = darwinPkgs.runCommand "flake-update" {
-          buildInputs = [ darwinPkgs.bash ];
-        } ''
-          echo "Updating flake.lock..."
-          nix flake update
-          echo "Done!"
-        '';
+        update = {
+          type = "app";
+          program = darwinPkgs.writeShellScriptBin "flake-update" ''
+            set -e
+            echo "Updating flake.lock..."
+            nix flake update
+            echo "Done!"
+          '';
+        };
 
-        update-node-packages = darwinPkgs.runCommand "node-update" {
-          buildInputs = [ darwinPkgs.bash ];
-        } ''
-          echo "Updating Node.js packages..."
-          ${darwinPkgs.bash}/bin/bash ${dotfilesDir "aarch64-darwin"}/nix/packages/node/update.sh
-          echo "Done!"
-        '';
+        update-node-packages = {
+          type = "app";
+          program = darwinPkgs.writeShellScriptBin "node-update" ''
+            set -e
+            echo "Updating Node.js packages..."
+            ${darwinPkgs.bash}/bin/bash ${dotfilesDir "aarch64-darwin"}/nix/packages/node/update.sh
+            echo "Done!"
+          '';
+        };
       };
     };
   };
