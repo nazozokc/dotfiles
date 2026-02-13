@@ -11,7 +11,7 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 echo "Updating Node packages from Nix..."
 
 # Nodeパッケージ読み込み
-NODE_PKGS=$(nix eval --raw "${DOTFILES_DIR}/default.nix" | tr '\n' ' ')
+NODE_PKGS=$(nix eval --raw "${DOTFILES_DIR}/node/default.nix" | tr '\n' ' ')
 
 # node_modules ディレクトリ
 NODE_MODULES="${DOTFILES_DIR}/node_modules"
