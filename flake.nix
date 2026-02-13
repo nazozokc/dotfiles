@@ -70,15 +70,17 @@
   "x86_64-linux" = let
     linuxPkgs = pkgsFor "x86_64-linux";
   in {
-    switch = {
-      type = "app";
-      program = builtins.toString (linuxPkgs.writeShellScriptBin "switch" ''
-        echo "Building and switching Linux Home Manager config..."
-        nix run nixpkgs#home-manager -- switch --flake .#${username}
-        echo "Done!"
-      '');
-    };
 
+  switch = {
+  type = "app";
+  program = builtins.toString (linuxPkgs.writeShellScriptBin "switch" ''
+    echo "Building and switching Linux Home Manager config..."
+    nix run nixpkgs#home-manager -- switch --flake .#${username}
+    echo "Done!"
+  '');
+};
+
+    
     update-node-packages = {
       type = "app";
       program = builtins.toString (linuxPkgs.writeShellScriptBin "update-node-packages" ''
