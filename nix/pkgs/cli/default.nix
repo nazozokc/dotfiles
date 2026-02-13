@@ -5,6 +5,8 @@ with pkgs; [
   coreutils
   curl
   wget
+  zoxide
+  exa
   tree
   htop
   file
