@@ -45,7 +45,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
       ];
 
       home.packages = import ./nix/home-manager/common.nix { pkgs = linuxPkgs; };
-      home.activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+      home.activation = import ./nix/home-manager/symlinks.nix { pkgs = linuxPkgs; inherit username; };
     };
 
     ########################################
@@ -59,7 +59,7 @@ dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
       ];
 
       packages = import ./nix/home-manager/common.nix { pkgs = darwinPkgs; };
-      activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+      activation = import ./nix/home-manager/symlinks.nix { pkgs = darwinPkgs; inherit username; };
     };
 
     ########################################
