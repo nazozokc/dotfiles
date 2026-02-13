@@ -6,7 +6,6 @@ with pkgs; [
   curl
   wget
   zoxide
-  exa
   tree
   htop
   file
