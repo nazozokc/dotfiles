@@ -3,6 +3,7 @@
 with pkgs; [
 nodejs
 nixd
+nil
 pkgs.nixfmt
 rustc
 python310
