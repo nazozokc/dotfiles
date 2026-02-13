@@ -1,5 +1,5 @@
 {
-  description = "nazozo dotfiles (full multi-system with apps)";
+  description = "nazozo dotfiles (full multi-system with scripts)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -15,104 +15,113 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, ... }:
+  outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs:
   let
     username = "nazozokc";
 
-    pkgsFor = system: import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
+    pkgsFor = system: import nixpkgs { inherit system; config.allowUnfree = true; };
+
+    linuxPkgs   = pkgsFor "x86_64-linux";
+    darwinPkgs  = pkgsFor "aarch64-darwin";
+
+    homeDir system = if builtins.match ".*-darwin" system != null
+                     then "/Users/${username}"
+                     else "/home/${username}";
+    dotfilesDir system = "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
   in
   {
     ########################################
     # Linux Home Manager
     ########################################
-    homeConfigurations.${username} =
-      home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgsFor "x86_64-linux";
+    homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+      pkgs = linuxPkgs;
+      extraSpecialArgs = { inherit username; };
+      modules = [
+        ./nix/shared.nix
+        ./nix/home-manager/common.nix
+        ./nix/home-manager/linux.nix
+      ];
 
-        # extraSpecialArgs は username だけで十分
-        extraSpecialArgs = { inherit username; };
-
-        modules = [
-          ./nix/shared.nix
-          ./nix/home-manager/common.nix
-          ./nix/home-manager/linux.nix
-        ];
-
-        home.packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "x86_64-linux"; };
-
-        home.activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "x86_64-linux"; inherit username; };
-      };
+      home.packages = import ./nix/home-manager/common.nix { pkgs = linuxPkgs; };
+      home.activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+    };
 
     ########################################
     # macOS nix-darwin
     ########################################
-    darwinConfigurations.${username} =
-      darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        specialArgs = { inherit username; };
+    darwinConfigurations.${username} = darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      specialArgs = { inherit username; };
+      modules = [
+        ./nix/os/darwin.nix
+      ];
 
-        modules = [
-          ./nix/os/darwin.nix
-        ];
-
-        packages = import ./nix/home-manager/common.nix { pkgs = pkgsFor "aarch64-darwin"; };
-
-        activation = import ./nix/home-manager/symlinks.nix { pkgs = pkgsFor "aarch64-darwin"; inherit username; };
-      };
+      packages = import ./nix/home-manager/common.nix { pkgs = darwinPkgs; };
+      activation = import ./nix/home-manager/symlinks.nix { inherit pkgs username; };
+    };
 
     ########################################
-    # apps スクリプト
+    # Apps / スクリプト
     ########################################
     apps = {
-  "x86_64-linux" = let
-    linuxPkgs = pkgsFor "x86_64-linux";
-  in {
+      "x86_64-linux" = {
+        switch = {
+          type = "app";
+          program = ''
+            echo "Building and switching Linux Home Manager config..."
+            nix run nixpkgs#home-manager -- switch --flake .#${username}
+            echo "Done!"
+          '';
+        };
 
-  switch = {
-  type = "app";
-  program = builtins.toString (linuxPkgs.writeShellScriptBin "switch" ''
-    echo "Building and switching Linux Home Manager config..."
-    nix run nixpkgs#home-manager -- switch --flake .#${username}
-    echo "Done!"
-  '');
-};
+        update = {
+          type = "app";
+          program = ''
+            echo "Updating flake.lock..."
+            nix flake update
+            echo "Done!"
+          '';
+        };
 
-    
-    update-node-packages = {
-      type = "app";
-      program = builtins.toString (linuxPkgs.writeShellScriptBin "update-node-packages" ''
-        echo "Updating Node packages..."
-        ${linuxPkgs.bash}/bin/bash ./nix/packages/node/update.sh
-        echo "Done!"
-      '');
+        update-node-packages = {
+          type = "app";
+          program = ''
+            echo "Updating Node.js packages..."
+            ${linuxPkgs.bash}/bin/bash ${dotfilesDir "x86_64-linux"}/nix/packages/node/update.sh
+            echo "Done!"
+          '';
+        };
+      };
+
+      "aarch64-darwin" = {
+        switch = {
+          type = "app";
+          program = ''
+            echo "Building and switching macOS nix-darwin config..."
+            sudo nix run nix-darwin -- switch --flake .#${username}
+            echo "Done!"
+          '';
+        };
+
+        update = {
+          type = "app";
+          program = ''
+            echo "Updating flake.lock..."
+            nix flake update
+            echo "Done!"
+          '';
+        };
+
+        update-node-packages = {
+          type = "app";
+          program = ''
+            echo "Updating Node.js packages..."
+            ${darwinPkgs.bash}/bin/bash ${dotfilesDir "aarch64-darwin"}/nix/packages/node/update.sh
+            echo "Done!"
+          '';
+        };
+      };
     };
-  };
-
-  "aarch64-darwin" = let
-    darwinPkgs = pkgsFor "aarch64-darwin";
-  in {
-    switch = {
-      type = "app";
-      program = builtins.toString (darwinPkgs.writeShellScriptBin "switch" ''
-        echo "Building and switching macOS nix-darwin config..."
-        sudo nix run nix-darwin -- switch --flake .#${username}
-        echo "Done!"
-      '');
-    };
-
-    update-node-packages = {
-      type = "app";
-      program = builtins.toString (darwinPkgs.writeShellScriptBin "update-node-packages" ''
-        echo "Updating Node packages on macOS..."
-        ${darwinPkgs.bash}/bin/bash ./nix/packages/node/update.sh
-        echo "Done!"
-      '');
-    };
-  };
-};
   };
 }
 
