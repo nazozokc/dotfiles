@@ -24,10 +24,12 @@
     linuxPkgs   = pkgsFor "x86_64-linux";
     darwinPkgs  = pkgsFor "aarch64-darwin";
 
-    homeDir system = if builtins.match ".*-darwin" system != null
-                     then "/Users/${username}"
-                     else "/home/${username}";
-    dotfilesDir system = "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
+    homeDir = system: if builtins.match ".*-darwin" system != null
+                  then "/Users/${username}"
+                  else "/home/${username}";
+
+dotfilesDir = system: "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
+
   in
   {
     ########################################
