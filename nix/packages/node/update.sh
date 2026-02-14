@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEFAULT_NIX="./default.nix"
+# スクリプト自身のあるディレクトリを基準に default.nix を指定
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEFAULT_NIX="$SCRIPT_DIR/default.nix"
+
+if [[ ! -f "$DEFAULT_NIX" ]]; then
+    echo "Error: default.nix not found in $SCRIPT_DIR"
+    exit 1
+fi
 
 # Node / npm / pnpm / CLI ツールのリスト
 PACKAGES=("nodejs" "npm" "npx" "pnpm" "npm-cli-tool" "pnpm-cli-tools" "npx-cli-tools")
