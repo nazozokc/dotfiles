@@ -5,5 +5,6 @@ with pkgs; [
   ghostty
   firefox
   vscode
+  discord
   spotify
 ]
