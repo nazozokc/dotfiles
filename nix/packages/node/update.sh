@@ -4,7 +4,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 DEFAULT_NIX="default.nix"
 
-# npm / pnpm / npm-cli-tools 等の package-lock.json 更新
+# -----------------------------
+# package-lock.json を再生成
+# -----------------------------
 regenerate_package_lock() {
   local npm_name="$1"
   local lock_file="$2"
@@ -28,7 +30,9 @@ regenerate_package_lock() {
   cp "$tmp_dir/package-lock.json" "$lock_file"
 }
 
-# npm パッケージ一覧を default.nix から抽出
+# -----------------------------
+# default.nix から npm パッケージ一覧取得
+# -----------------------------
 get_npm_packages() {
   perl -0777 -ne '
     while (/mkNpmPackage\s*\{(.*?)\};/gs) {
@@ -40,12 +44,14 @@ get_npm_packages() {
   ' "$DEFAULT_NIX"
 }
 
-# バージョンと hash 更新
+# -----------------------------
+# 個別 npm パッケージ更新
+# -----------------------------
 update_npm_package() {
   local pname="$1"
   echo "=== Updating $pname ==="
 
-  # npx は npm と同じバージョンにする
+  # npx は npm と同期
   if [[ "$pname" == "npx" ]]; then
     echo "  npx version tied to npm, skipping individual update"
     return
@@ -54,12 +60,10 @@ update_npm_package() {
   # 現在の version を取得
   local current_version
   current_version=$(perl -0777 -ne '
-    $block = "";
     while (/mkNpmPackage\s*\{(.*?)\};/gs) {
-      $b = $1;
-      if ($b =~ /pname\s*=\s*"'$pname'"/) { $block=$b; last }
+      my $b=$1;
+      print $1 if $b =~ /pname\s*=\s*"'$pname'"/ && $b =~ /version\s*=\s*"([^"]+)"/;
     }
-    print $1 if $block =~ /version\s*=\s*"([^"]+)"/;
   ' "$DEFAULT_NIX")
 
   if [[ -z "$current_version" ]]; then
@@ -82,12 +86,8 @@ update_npm_package() {
 
   echo "  Updating $current_version → $latest_version"
 
-  # default.nix 内のバージョン更新（ブロック全体置換）
-  perl -0777 -pi -e '
-    $pname=shift;
-    $latest=shift;
-    s/(mkNpmPackage\s*\{.*?pname\s*=\s*"'$pname'".*?version\s*=\s*")[^"]+/$1'$latest'/s
-  ' "$pname" "$latest_version" "$DEFAULT_NIX"
+  # default.nix 内のバージョン更新
+  perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?version\s*=\s*\")[^\"]+/\$1$latest_version/s" "$DEFAULT_NIX"
 
   # source hash 更新
   local url="https://registry.npmjs.org/${pname}/-/${pname}-${latest_version}.tgz"
@@ -97,12 +97,7 @@ update_npm_package() {
   local new_sri
   new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
 
-  # hash 更新
-  perl -0777 -pi -e '
-    $pname=shift;
-    $sri=shift;
-    s/(mkNpmPackage\s*\{.*?pname\s*=\s*"'$pname'".*?hash\s*=\s*")[^"]+/$1'$new_sri'/s
-  ' "$pname" "$new_sri" "$DEFAULT_NIX"
+  perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?hash\s*=\s*\")[^\"]+/\$1$new_sri/s" "$DEFAULT_NIX"
 
   # package-lock.json 更新
   local lock_file="$pname/package-lock.json"
@@ -114,16 +109,15 @@ update_npm_package() {
   new_deps_hash=$(nix build --impure --expr "((import <nixpkgs> {}).callPackage ./. {}).\"$pname\"" 2>&1 | perl -ne 'print $1 if /got:\s+(\S+)/' || echo "")
 
   if [[ -n "$new_deps_hash" ]]; then
-    perl -0777 -pi -e '
-      $pname=shift;
-      $deps=shift;
-      s/(mkNpmPackage\s*\{.*?pname\s*=\s*"'$pname'".*?npmDepsHash\s*=\s*")[^"]+/$1'$new_deps_hash'/s
-    ' "$pname" "$new_deps_hash" "$DEFAULT_NIX"
+    perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?npmDepsHash\s*=\s*\")[^\"]+/\$1$new_deps_hash/s" "$DEFAULT_NIX"
   fi
 
   echo "  $pname updated to $latest_version"
 }
 
+# -----------------------------
+# メイン処理
+# -----------------------------
 echo "Updating npm packages..."
 for pkg in $(get_npm_packages); do
   update_npm_package "$pkg"
