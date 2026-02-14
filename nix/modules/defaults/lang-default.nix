@@ -5,5 +5,5 @@ nixd
 nil
 pkgs.nixfmt
 rustc
-python310
+python312
 ]
