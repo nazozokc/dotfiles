@@ -6,5 +6,4 @@ with pkgs; [
   firefox
   vscode
   spotify
-  keycastr
 ]
