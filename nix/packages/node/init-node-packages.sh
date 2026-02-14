@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEFAULT_NIX="./default.nix"
-TMP_NIX="./default.nix.tmp"
+# 修正版
+DEFAULT_NIX="$(dirname "$0")/../../default.nix"
+TMP_NIX="$(dirname "$0")/../../default.nix.tmp"
 
 echo "Initializing npm / npx / pnpm with auto hashes from $DEFAULT_NIX..."
 
