@@ -1,0 +1,9 @@
+{
+  "name": "nazozo-node-tools",
+  "version": "1.0.0",
+  "dependencies": {
+    "npm": "latest",
+    "npx": "latest",
+    "pnpm": "latest"
+  }
+}

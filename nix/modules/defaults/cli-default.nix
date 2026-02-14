@@ -4,6 +4,7 @@ with pkgs; [
   neovim
   coreutils
   bun
+  jq
   curl
   wget
   zoxide
