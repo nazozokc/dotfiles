@@ -29,7 +29,7 @@ in
   unocss-language-server = mkNpmPackage {
     pname = "unocss-language-server";
     version = "0.1.8";
-    hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
+    hash = "sha256-0fqwk7rfpi4biqzprdywm8nqxhq3pmsd9wmlicydkq8zjx76wwcc";
     npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
     description = "UnoCSS Language Server";
     homepage = "https://github.com/unocss/unocss";
@@ -39,7 +39,7 @@ in
   prettier = mkNpmPackage {
     pname = "prettier";
     version = "3.8.1";
-    hash = "sha256-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=";
+    hash = "sha256-0add4c18afm3ab25zkb48fx1qpl6hg4rg4mssfclh5za00dwcy2c";
     npmDepsHash = "sha256-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
     description = "Prettier code formatter";
     homepage = "https://prettier.io/";
