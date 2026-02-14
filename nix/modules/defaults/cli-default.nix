@@ -16,4 +16,5 @@ with pkgs; [
   gh
   git-wt
   lazygit
+  node2nix
 ]

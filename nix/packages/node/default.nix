@@ -1,20 +1,23 @@
 { pkgs, lib ? pkgs.lib }:
 
 let
-  inherit (pkgs) buildNpmPackage fetchzip;
+  inherit (pkgs) buildNpmPackage fetchurl;
 
-  mkNpmPackage = { pname, version, hash, npmDepsHash, description, homepage, mainProgram ? pname, license ? lib.licenses.mit, postInstall ? "" }:
+  mkNpmPackage = { pname
+                 , version
+                 , hash
+                 , npmDepsHash
+                 , description
+                 , homepage
+                 , mainProgram ? pname
+                 , license ? lib.licenses.mit }:
     buildNpmPackage rec {
-      inherit pname version hash npmDepsHash mainProgram postInstall;
+      inherit pname version hash npmDepsHash mainProgram;
 
-      src = fetchzip {
+      src = fetchurl {
         url = "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz";
         inherit hash;
       };
-
-      postPatch = ''
-        mkdir -p node_modules
-      '';
 
       dontNpmBuild = true;
 
@@ -24,39 +27,35 @@ let
     };
 in
 {
-  # Node.js 本体
   nodejs = pkgs.nodejs-20_x;
 
-  # npm / npx / pnpm を管理
-  # hash と npmDepsHash は update.sh で自動生成される
   npm = mkNpmPackage {
-    pname = "npm";
-    version = "11.10.0";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    description = "Node package manager";
-    homepage = "https://www.npmjs.com/";
-    mainProgram = "npm";
+    pname        = "npm";
+    version      = "11.10.0";
+    hash         = "sha256-AAA";
+    npmDepsHash  = "sha256-AAA";
+    description  = "Node package manager";
+    homepage     = "https://www.npmjs.com/";
+    mainProgram  = "npm";
   };
 
   npx = mkNpmPackage {
-    pname = "npx";
-    version = "10.2.2";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    description = "npm package runner";
-    homepage = "https://www.npmjs.com/package/npx";
-    mainProgram = "npx";
+    pname        = "npx";
+    version      = "10.2.2";
+    hash         = "sha256-AAA";
+    npmDepsHash  = "sha256-AAA";
+    description  = "npm package runner";
+    homepage     = "https://www.npmjs.com/package/npx";
+    mainProgram  = "npx";
   };
 
   pnpm = mkNpmPackage {
-    pname = "pnpm";
-    version = "10.29.3";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    description = "Fast, disk space efficient package manager";
-    homepage = "https://pnpm.io/";
-    mainProgram = "pnpm";
+    pname        = "pnpm";
+    version      = "10.29.3";
+    hash         = "sha256-AAA";
+    npmDepsHash  = "sha256-AAA";
+    description  = "Fast, disk space efficient package manager";
+    homepage     = "https://pnpm.io/";
   };
 }
 
