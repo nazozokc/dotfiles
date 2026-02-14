@@ -24,6 +24,11 @@
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
+
+          # ✅ ここだけ追加
+          overlays = [
+            (import ./nix/overlays)
+          ];
         };
 
       linuxPkgs = pkgsFor "x86_64-linux";
