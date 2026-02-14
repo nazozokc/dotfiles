@@ -3,7 +3,21 @@
 let
   inherit (pkgs) buildNpmPackage fetchzip;
 
-  mkNpmPackage = { pname, npmName ? pname, version, hash, npmDepsHash, description, homepage, license ? lib.licenses.mit, mainProgram ? pname, forceEmptyCache ? false, npmFlags ? [ ], env ? { }, postInstall ? "" }:
+  mkNpmPackage = {
+    pname,
+    npmName ? pname,
+    version,
+    hash,
+    npmDepsHash,
+    description,
+    homepage,
+    license ? lib.licenses.mit,
+    mainProgram ? pname,
+    forceEmptyCache ? false,
+    npmFlags ? [],
+    env ? {},
+    postInstall ? "",
+  }:
     buildNpmPackage rec {
       inherit pname version npmDepsHash npmFlags env postInstall;
       inherit forceEmptyCache;
@@ -14,8 +28,8 @@ let
       };
 
       postPatch = ''
-        cp ${./${pname}/package-lock.json} package-lock.json
         mkdir -p node_modules
+        cp ${./${pname}/package-lock.json} package-lock.json || true
       '';
 
       dontNpmBuild = true;
@@ -24,26 +38,22 @@ let
         inherit description homepage license mainProgram;
       };
     };
-in
-{
-  unocss-language-server = mkNpmPackage {
-    pname = "unocss-language-server";
-    version = "0.1.8";
-    hash = "sha256-0fqwk7rfpi4biqzprdywm8nqxhq3pmsd9wmlicydkq8zjx76wwcc";
-    npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
-    description = "UnoCSS Language Server";
-    homepage = "https://github.com/unocss/unocss";
-    mainProgram = "unocss-language-server";
-  };
+
+in {
+  nodejs = pkgs.nodejs;      # Node
+  npm    = pkgs.nodePackages.npm;    # npm
+  pnpm   = pkgs.nodePackages.pnpm;   # pnpm
+  npx    = pkgs.nodePackages.npx;    # npx
 
   prettier = mkNpmPackage {
     pname = "prettier";
-    version = "3.8.1";
-    hash = "sha256-0add4c18afm3ab25zkb48fx1qpl6hg4rg4mssfclh5za00dwcy2c";
-    npmDepsHash = "sha256-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
+    version = "3.6.2";
+    hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
+    npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
     description = "Prettier code formatter";
     homepage = "https://prettier.io/";
-    mainProgram = "prettier";
   };
+
+  # 他の npm CLI パッケージも同様に追加可能
 }
 
