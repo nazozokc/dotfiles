@@ -1,6 +1,6 @@
 # Nazozo Dotfiles
 
-このリポジトリは Linux / macOS 両対応で Nix による dotfiles 管理を行う構成です。
+このリポジトリは Linux / macOS 両対応で Nix による dotfiles 管理を行う構成です。  
 macOS では **nix-darwin** を利用し、Home Manager と連携させています。
 
 ---
@@ -15,7 +15,6 @@ macOS では **nix-darwin** を利用し、Home Manager と連携させていま
 ## 前提条件
 
 * [Nix](https://nixos.org/download.html) がインストール済みであること
-
   * macOS の場合は Nix 2.15+ 推奨
 * Linux / macOS 両方で `nix` コマンドが使えること
 
@@ -23,81 +22,52 @@ macOS では **nix-darwin** を利用し、Home Manager と連携させていま
 
 ## 初回導入 (nix run を使用)
 
-### 1. リポジトリのクローン
-
 ```bash
 cd ~
 git clone https://github.com/nazozokc/dotfiles.git
 cd dotfiles
-```
 
-### 2. flake の初回実行
+# Home Manager + pkgs の初回セットアップ
+nix run .#switch
+````
 
-#### Linux:
-
-```bash
-nix run .#homeConfigurations.x86_64-linux.activationPackage
-```
-
-* このコマンドは Home Manager の初回セットアップを行います
-* `.config` 以下の dotfiles がリンクされ、パッケージもインストールされます
-
-#### macOS:
-
-```bash
-nix run .#darwinConfigurations.aarch64-darwin.activationPackage
-```
-
-* nix-darwin を使った初回セットアップ
-* Home Manager 設定も macOS 上で有効になります
+* Linux / macOS 両方で `nix run .#switch` だけで初回セットアップ可能
+* Home Manager による dotfiles のリンクとパッケージインストールが行われます
+* macOS では nix-darwin を通して Home Manager 設定も有効化されます
 
 ---
 
 ## 通常の更新・再適用
 
-* Linux:
-
 ```bash
-home-manager switch --flake .#x86_64-linux
+# dotfilesやパッケージ更新
+nix run .#switch
+
+# Node.js パッケージ更新
+nix run .#update-node-packages
 ```
-
-* macOS:
-
-```bash
-darwin-rebuild switch --flake .#aarch64-darwin
-```
-
----
-
-## ファイル構成
-
-```
-dotfiles/
-├─ flake.nix
-├─ nix/
-│  ├─ modules/
-│  │  ├─ shared.nix
-│  │  ├─ os/
-│  │  │  ├─ linux.nix
-│  │  │  └─ darwin.nix
-│  │  └─ pkgs/
-│  │      ├─ cli.nix
-│  │      └─ gui.nix
-│  └─ config-sym.nix
-```
-
-* `shared.nix` … Linux/macOS 共通の Home Manager 設定
-* `linux.nix` … Linux 専用の設定
-* `darwin.nix` … macOS 専用の設定
-* `cli.nix` / `gui.nix` … パッケージ管理設定
-* `config-sym.nix` … dotfiles のシンボリックリンク管理
-
----
-
-## 補足
 
 * Linux は Home Manager 単体で管理
 * macOS は nix-darwin を通して Home Manager を管理
-* GUI アプリも Nix 経由で管理可能
-* 既存の PATH 環境を壊さずに管理できる構成になっています
-* `nix run` を使うことで初心者でも初回セットアップが簡単にできます
+* GUIアプリも Nix で管理可能
+* 既存の PATH 環境を壊さず管理できます
+
+---
+
+## 管理対象一覧
+
+* **シェル**: fish
+* **エディタ**: Neovim, VSCode 設定
+* **CLIツール**: `nix/pkgs/cli-tool.nix` など
+* **ブラウザ**: Zen Browser (`zen-browser-flake`)
+* **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理 (`checkFilesChanged`, `checkLinkTargets`)
+* **macOS限定**: nix-darwin によるシステム設定
+* **Node.js**: Nix 経由でパッケージ管理 (`nix run .#update-node-packages`)
+
+---
+
+## 注意事項
+
+* OS本体やカーネルは pacman（Linux）や macOS 標準管理に任せる
+* Home Manager によるリンクや設定は既存の dotfiles を上書きする場合があります
+
