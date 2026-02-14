@@ -1,69 +1,59 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ディレクトリ移動
-cd "$(dirname "$0")"
-
 DEFAULT_NIX="./default.nix"
-TMP_DIR="./.tmp_node2nix"
+TMP_DIR="$(mktemp -d)"
+NODE2NIX_DIR="${TMP_DIR}/node2nix"
+
+mkdir -p "$NODE2NIX_DIR"
 
 echo "Initializing npm packages from $DEFAULT_NIX..."
 
-# default.nix から mkNpmPackage ブロックの pname を抽出
-PACKAGES=($(awk '/mkNpmPackage/ {getline; if($0 ~ /pname/){gsub(/[";]/,"",$3); print $3}}' "$DEFAULT_NIX"))
+# 1. default.nix からパッケージ名を抽出
+PKGS=($(awk '/mkNpmPackage/{getline; gsub(/.*pname[ ]*=[ ]*"/,""); gsub(/".*/,""); print $0}' "$DEFAULT_NIX"))
+echo "Detected packages: ${PKGS[*]}"
 
-echo "Detected packages: ${PACKAGES[*]}"
+for PKG in "${PKGS[@]}"; do
+    echo "=== Processing $PKG ==="
 
-mkdir -p "$TMP_DIR"
-
-for pname in "${PACKAGES[@]}"; do
-    echo "=== Processing $pname ==="
-
-    # npm から最新バージョン取得
-    version=$(npm view "$pname" version 2>/dev/null || true)
-    if [[ -z "$version" ]]; then
-        echo "  Could not find version for $pname, skipping."
+    VERSION=$(npm view "$PKG" version 2>/dev/null || true)
+    if [[ -z "$VERSION" ]]; then
+        echo "  Could not find version for $PKG, skipping."
         continue
     fi
-    echo "  Version: $version"
+    echo "  Version: $VERSION"
 
-    # 一時 package.json 作成
-    PKG_JSON="$TMP_DIR/package.json"
-    cat > "$PKG_JSON" <<EOF
-{
-  "name": "temp",
-  "version": "1.0.0",
-  "dependencies": {
-    "$pname": "$version"
-  }
-}
-EOF
+    # fetchurl hash
+    URL="https://registry.npmjs.org/${PKG}/-/${PKG}-${VERSION}.tgz"
+    HASH=$(nix-prefetch-url --unpack "$URL")
+    echo "  Source hash: $HASH"
 
-    # node2nix で deps.nix 作成
-    node2nix -i "$PKG_JSON" -o "$TMP_DIR/deps.nix" -c "$TMP_DIR/composition.nix"
+    # node2nix 用 package.json を一時作成
+    echo "{\"name\":\"tmp\",\"version\":\"1.0.0\",\"dependencies\":{\"$PKG\":\"$VERSION\"}}" > "$NODE2NIX_DIR/package.json"
 
-    # npmDepsHash を抽出
-    npmDepsHash=$(awk -F '=' '/npmDepsHash/ {gsub(/[";]/,"",$2); print $2}' "$TMP_DIR/deps.nix" | tr -d ' ')
-    echo "  npmDepsHash: $npmDepsHash"
+    # node2nix 実行して node-env.nix を生成
+    node2nix --input "$NODE2NIX_DIR/package.json" --node-env "$NODE2NIX_DIR/node-env.nix" --composition "$NODE2NIX_DIR/composition.nix" >/dev/null
 
-    # default.nix の hash / npmDepsHash を置換
-    awk -v pname="$pname" -v version="$version" -v deps="$npmDepsHash" '
-    BEGIN { inBlock=0 }
+    # node-env.nix から npmDepsHash を抽出
+    NPMDEPSHASH=$(awk -F'"' "/$PKG/{getline; getline; gsub(/.*\"/,\"\", \$0); gsub(/\"/,\"\", \$0); print \$0}" "$NODE2NIX_DIR/node-env.nix" || true)
+    echo "  npmDepsHash: $NPMDEPSHASH"
+
+    # default.nix に反映
+    awk -v pkg="$PKG" -v version="$VERSION" -v hash="$HASH" -v deps="$NPMDEPSHASH" '
+    BEGIN{inBlock=0}
     {
-        if ($0 ~ "pname[[:space:]]*=[[:space:]]*\"" pname "\"") inBlock=1
-        if (inBlock && $0 ~ "version[[:space:]]*=") sub(/".*"/, "\"" version "\"")
-        if (inBlock && $0 ~ "npmDepsHash[[:space:]]*=") sub(/".*"/, "\"" deps "\"")
-        if (inBlock && $0 ~ "};") inBlock=0
-        print
+      if ($0 ~ "pname[ ]*=[ ]*\"" pkg "\"") inBlock=1
+      if (inBlock && $0 ~ "version") sub(/".*"/, "\"" version "\"")
+      if (inBlock && $0 ~ "hash") sub(/".*"/, "\"" hash "\"")
+      if (inBlock && $0 ~ "npmDepsHash") sub(/".*"/, "\"" deps "\"")
+      if (inBlock && $0 ~ "};") inBlock=0
+      print
     }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
-    mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
 
-    echo "  $pname updated in $DEFAULT_NIX"
+    mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
+    echo "  $PKG updated in $DEFAULT_NIX"
 done
 
-# 一時ディレクトリ削除
 rm -rf "$TMP_DIR"
-
-echo ""
 echo "All packages updated in $DEFAULT_NIX!"
 
