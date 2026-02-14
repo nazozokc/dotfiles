@@ -3,10 +3,9 @@
 {
   home.packages =
     let
-      cliPkgs = import ../defaults/cli-default.nix { inherit pkgs; };
-      guiPkgs = import ../defaults/gui-default.nix { inherit pkgs; };
-      langPkgs = import ../defaults/lang-default.nix { inherit pkgs; };
-      nodePkgs = import ../defaults/node-pkgs.nix { inherit pkgs; };
+      Pkgs = import ../tools/packages.nix { inherit pkgs; };
+      langPkgs = import ../tools/lang-pkgs.nix { inherit pkgs; };
+      nodePkgs = import ../tools/node-pkgs.nix { inherit pkgs; };
     in
-    cliPkgs ++ guiPkgs ++ langPkgs ++ nodePkgs;
+    Pkgs ++ langPkgs ++ nodePkgs;
 }
