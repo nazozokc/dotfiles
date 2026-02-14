@@ -22,9 +22,7 @@ in
   npx = pkgs.nodePackages.npx;
 
   prettier = mkNpmPackage {
-    pname = "prettier";
-    version = "3.8.1";
-    hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
+    add4c18afm3ab25zkb48fx1qpl6hg4rg4mssfclh5za00dwcy2c";
     npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
     description = "Prettier code formatter";
     homepage = "https://prettier.io/";
