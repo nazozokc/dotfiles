@@ -4,61 +4,63 @@ set -euo pipefail
 cd "$(dirname "$0")"
 DEFAULT_NIX="default.nix"
 
-echo "Initializing npm packages from $DEFAULT_NIX..."
+echo "Updating npm packages in $DEFAULT_NIX..."
 
-# --- default.nix から npm パッケージ名だけ抽出 ---
+# default.nix から mkNpmPackage の pname と npmName を抽出
 mapfile -t PKGS < <(
-    awk '/mkNpmPackage/ {inBlock=1} 
-         inBlock && /pname *=/ {gsub(/[ ";]/,""); print $3; inBlock=0}' "$DEFAULT_NIX"
+    perl -0777 -ne '
+        while (/mkNpmPackage\s*\{(.*?)\};/gs) {
+            my $block = $1;
+            my ($pname) = $block =~ /pname\s*=\s*"([^"]+)"/;
+            my ($npm_name) = $block =~ /npmName\s*=\s*"([^"]+)"/;
+            $npm_name //= $pname;
+            print "$pname\t$npm_name\n";
+        }
+    ' "$DEFAULT_NIX"
 )
 
-echo "Detected packages: ${PKGS[*]}"
+for pkg_pair in "${PKGS[@]}"; do
+    pname="${pkg_pair%%$'\t'*}"
+    npm_name="${pkg_pair##*$'\t'}"
+    echo "Processing $npm_name..."
 
-# --- 各パッケージを更新 ---
-for pkg in "${PKGS[@]}"; do
-    echo "=== Processing $pkg ==="
+    # 現在のバージョン
+    current_version=$(grep -A5 "pname = \"$pname\"" "$DEFAULT_NIX" | perl -ne 'print $1 if /version = "([^"]+)/' | head -1)
+    [[ -z "$current_version" ]] && echo "  Could not find current version, skipping." && continue
 
-    # 現在のバージョンを default.nix から取得
-    current_version=$(awk -v p="$pkg" '
-        $0 ~ "pname *= *\""p"\"" {
-            for(i=1;i<=5;i++){getline; if($0 ~ /version *=/){gsub(/[ ";]/,"",$3); print $3; exit}}
-        }' "$DEFAULT_NIX")
+    # 最新バージョンを取得
+    latest_version=$(npm view "$npm_name" version 2>/dev/null || true)
+    [[ -z "$latest_version" ]] && echo "  Could not fetch latest version, skipping." && continue
+    [[ "$current_version" == "$latest_version" ]] && echo "  Already latest ($current_version)" && continue
 
-    if [[ -z "$current_version" ]]; then
-        echo "  Could not find version for $pkg, skipping."
-        continue
-    fi
+    echo "  Updating $current_version -> $latest_version"
 
-    # npm から最新バージョン取得
-    latest_version=$(npm view "$pkg" version 2>/dev/null || true)
-    if [[ -z "$latest_version" ]]; then
-        echo "  Could not fetch latest version for $pkg, skipping."
-        continue
-    fi
-
-    if [[ "$current_version" == "$latest_version" ]]; then
-        echo "  Already at latest version: $current_version"
-        continue
-    fi
-
-    echo "  Updating from $current_version -> $latest_version"
-
-    # 新しい tarball の URL
-    url="https://registry.npmjs.org/${pkg}/-/${pkg}-${latest_version}.tgz"
-
-    # ソースハッシュ取得
+    # 新しい hash
+    url="https://registry.npmjs.org/${npm_name}/-/${pname}-${latest_version}.tgz"
     new_hash=$(nix-prefetch-url --unpack "$url")
     new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
 
-    # default.nix を直接書き換え
+    # default.nix の version と hash を更新
     perl -0777 -pi -e "
-        s/(pname *= *\"$pkg\".*?version *= *\")$current_version(\")/$1$latest_version$2/s;
-        s/(pname *= *\"$pkg\".*?hash *= *\")[^\"]+/$1$new_sri/s;
+        s/(pname *= *\"$pname\".*?version *= *\")$current_version(\")/$1$latest_version$2/s;
+        s/(pname *= *\"$pname\".*?hash *= *\")[^\"]+/$1$new_sri/s;
     " "$DEFAULT_NIX"
 
-    echo "  $pkg updated in $DEFAULT_NIX"
+    # npmDepsHash を更新（nix-build で計算）
+    echo "  Calculating npmDepsHash..."
+    new_deps_hash=$(nix build --impure --expr "((import <nixpkgs> {}).callPackage ./. {}).\"$npm_name\"" 2>&1 \
+                    | perl -ne 'print $1 if /got:\s+(\S+)/' || true)
+    if [[ -n "$new_deps_hash" ]]; then
+        perl -0777 -pi -e "
+            s/(pname *= *\"$pname\".*?npmDepsHash *= *\")[^\"]+/$1$new_deps_hash/s;
+        " "$DEFAULT_NIX"
+        echo "  npmDepsHash updated"
+    else
+        echo "  Could not calculate npmDepsHash, skipping"
+    fi
+
+    echo "  $npm_name updated"
 done
 
-echo ""
-echo "All packages updated in $DEFAULT_NIX!"
+echo "All updates done!"
 
