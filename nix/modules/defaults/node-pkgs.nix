@@ -1,6 +1,6 @@
 { pkgs }:
 
 with pkgs; [
-pnpm
-npx
+nodePackages.npm
+nodePackages.pnpm
 ]
