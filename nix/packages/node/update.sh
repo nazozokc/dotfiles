@@ -33,12 +33,14 @@ update_package() {
     echo "  Already latest version: $current_version"
   fi
 
+  # Fetch new tarball hash
   local url="https://registry.npmjs.org/${npm_name}/-/${pname}-${latest_version}.tgz"
   echo "  Fetching new hash..."
   local new_hash
   new_hash=$(nix-prefetch-url --unpack "$url")
   perl -0777 -pi -e "s/(pname = \"$pname\".*?version = \"$latest_version\".*?hash = \")sha256-[^\"]+/\$1$new_hash/s" "$DEFAULT_NIX"
 
+  # Update npmDepsHash (impure)
   echo "  Calculating npmDepsHash..."
   local deps_hash
   deps_hash=$(nix build --no-link --impure "(import $DEFAULT_NIX {}).$pname" 2>&1 \
@@ -52,6 +54,7 @@ update_package() {
   echo "  $npm_name updated!"
 }
 
+# Detect all packages
 while read -r pname npm_name; do
   update_package "$pname" "$npm_name"
 done < <(

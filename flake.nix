@@ -16,18 +16,11 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      darwin,
-      ...
-    }@inputs:
+    { self, nixpkgs, home-manager, darwin, ... }@inputs:
     let
       username = "nazozokc";
 
-      pkgsFor =
-        system:
+      pkgsFor = system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
@@ -36,8 +29,7 @@
       linuxPkgs = pkgsFor "x86_64-linux";
       darwinPkgs = pkgsFor "aarch64-darwin";
 
-      homeDir =
-        system:
+      homeDir = system:
         if builtins.match ".*-darwin" system != null
         then "/Users/${username}"
         else "/home/${username}";
@@ -158,3 +150,4 @@
       };
     };
 }
+
