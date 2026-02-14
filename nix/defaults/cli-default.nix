@@ -15,5 +15,4 @@ with pkgs; [
   gh
   git-wt
   lazygit
-  gparted
 ]
