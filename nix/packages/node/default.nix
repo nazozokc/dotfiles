@@ -30,9 +30,9 @@ in
   # npm 本体
   npm = mkNpmPackage {
     pname = "npm";
-    version = "11.10.0";
-    hash = "sha256-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=";
-    npmDepsHash = "sha256-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
+    .10.0";
+    hash = "sha256-qbBK0sCOwLEHllH7logUSAkVnCTKfco7RkUxrjbSFSE=";
+    npmDepsHash = "";
     description = "Node package manager";
     homepage = "https://www.npmjs.com/";
     mainProgram = "npm";
