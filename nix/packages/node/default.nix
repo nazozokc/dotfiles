@@ -28,10 +28,10 @@ let
     };
 in
 {
-  # Node.js 本体
+  # Node.js 本体（Nixpkgs 管理）
   nodejs = pkgs.nodejs-20_x;
 
-  # npm 本体
+  # npm
   npm = mkNpmPackage {
     pname = "npm";
     version = "10.3.0";
@@ -42,7 +42,7 @@ in
     mainProgram = "npm";
   };
 
-  # npx CLI ツール（npm に同梱されるが明示管理）
+  # npx
   npx = mkNpmPackage {
     pname = "npx";
     version = "10.3.0";
@@ -53,7 +53,7 @@ in
     mainProgram = "npx";
   };
 
-  # pnpm 本体
+  # pnpm
   pnpm = mkNpmPackage {
     pname = "pnpm";
     version = "8.10.0";
@@ -63,7 +63,7 @@ in
     homepage = "https://pnpm.io/";
   };
 
-  # npm CLI 用パッケージ例（npm-CLI-tool）
+  # npm CLI ツール例
   npm-cli-tool = mkNpmPackage {
     pname = "npm-CLI-tool";
     version = "1.2.3";
@@ -73,7 +73,7 @@ in
     homepage = "https://example.com/npm-CLI-tool";
   };
 
-  # pnpm CLI 用パッケージ例（pnpm-cli-tools）
+  # pnpm CLI ツール例
   pnpm-cli-tools = mkNpmPackage {
     pname = "pnpm-cli-tools";
     version = "0.5.0";
@@ -83,7 +83,7 @@ in
     homepage = "https://example.com/pnpm-cli-tools";
   };
 
-  # npx CLI 用パッケージ例（npx-cli-tools）
+  # npx CLI ツール例
   npx-cli-tools = mkNpmPackage {
     pname = "npx-cli-tools";
     version = "0.3.1";

@@ -1,59 +1,85 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# スクリプト自身のあるディレクトリを基準に default.nix を指定
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_NIX="$SCRIPT_DIR/default.nix"
+cd "$(dirname "$0")"
 
-if [[ ! -f "$DEFAULT_NIX" ]]; then
-    echo "Error: default.nix not found in $SCRIPT_DIR"
-    exit 1
-fi
+DEFAULT_NIX="default.nix"
 
-# Node / npm / pnpm / CLI ツールのリスト
-PACKAGES=("npm" "npx" "pnpm" "npm-cli-tool" "pnpm-cli-tools" "npx-cli-tools")
+# package-lock.json を再生成
+regenerate_package_lock() {
+  local pname="$1"
+  local lock_file="$2"
+  echo "  Regenerating package-lock.json for $pname..."
+  tmp_dir=$(mktemp -d)
+  trap 'rm -rf "$tmp_dir"' RETURN ERR
 
-update_package() {
-    local pkg="$1"
-    local version
-    local hash
-    local deps_hash
+  pushd "$tmp_dir" >/dev/null
+  npm pack "$pname" --pack-destination . >/dev/null 2>&1
+  tar -xzf ./*.tgz --strip-components=1
+  npm install --package-lock-only --ignore-scripts >/dev/null 2>&1 || true
+  popd >/dev/null
 
-    echo "=== Updating $pkg ==="
-
-    # まず default.nix からバージョンを取得
-    version=$(grep -A3 "pname = \"$pkg\"" "$DEFAULT_NIX" | grep version | perl -pe 's/.*"([^"]+)".*/$1/')
-
-    if [[ -z "$version" ]]; then
-        echo "  Could not find version for $pkg, skipping."
-        return
-    fi
-
-    echo "  Version: $version"
-
-    # URL を生成
-    url="https://registry.npmjs.org/$pkg/-/$pkg-$version.tgz"
-
-    # hash を取得
-    echo "  Fetching source hash..."
-    hash=$(nix-prefetch-url --unpack "$url")
-    echo "  hash=$hash"
-
-    # npmDepsHash を取得
-    echo "  Calculating npmDepsHash..."
-    deps_hash=$(nix build --impure --expr "((import <nixpkgs> {}).callPackage ./. {}).\"$pkg\"" 2>&1 | grep -oP 'got: \K\S+')
-    echo "  npmDepsHash=$deps_hash"
-
-    # default.nix を更新
-    perl -0777 -pi -e "s/(pname = \"$pkg\".*?hash = \")sha256-[^\"]+/\${1}$hash/s" "$DEFAULT_NIX"
-    perl -0777 -pi -e "s/(pname = \"$pkg\".*?npmDepsHash = \")sha256-[^\"]+/\${1}$deps_hash/s" "$DEFAULT_NIX"
-
-    echo "  Updated $pkg!"
+  cp "$tmp_dir/package-lock.json" "$lock_file"
 }
 
-for pkg in "${PACKAGES[@]}"; do
-    update_package "$pkg"
+# default.nix から npm / npx / pnpm / CLI ツールを抽出
+get_npm_packages() {
+  perl -0777 -ne '
+    while (/mkNpmPackage\s*\{(.*?)\};/gs) {
+      my $block = $1;
+      my ($pname) = $block =~ /pname\s*=\s*"([^"]+)"/;
+      print "$pname\n";
+    }
+  ' "$DEFAULT_NIX"
+}
+
+# 個別更新処理
+update_package() {
+  local pname="$1"
+  echo "=== Updating $pname ==="
+
+  current_version=$(grep -A5 "pname = \"$pname\"" "$DEFAULT_NIX" | perl -ne 'print $1 if /version = "([^"]+)/' | head -1)
+  latest_version=$(npm view "$pname" version 2>/dev/null || echo "$current_version")
+
+  if [[ "$current_version" == "$latest_version" ]]; then
+    echo "  Already at latest version: $current_version"
+    return
+  fi
+
+  echo "  Updating version $current_version → $latest_version"
+
+  # default.nix の version を置換
+  perl -pi -e "s/(pname = \"$pname\".*?version = \")$current_version/\${1}$latest_version/s" "$DEFAULT_NIX"
+
+  # ソース tgz の hash を取得
+  url="https://registry.npmjs.org/${pname}/-/${pname}-${latest_version}.tgz"
+  echo "  Fetching hash..."
+  new_hash=$(nix-prefetch-url --unpack "$url" | tail -1)
+  new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
+
+  # default.nix の hash を更新
+  perl -0777 -pi -e "s/(pname = \"$pname\".*?hash = \")sha256-[^\"]+/\${1}$new_sri/s" "$DEFAULT_NIX"
+
+  # package-lock.json があれば再生成
+  lock_file="$pname/package-lock.json"
+  [[ -f "$lock_file" ]] && regenerate_package_lock "$pname" "$lock_file"
+
+  # npmDepsHash 計算
+  echo "  Calculating npmDepsHash..."
+  new_deps_hash=$(nix build --impure --expr "((import <nixpkgs> {}).callPackage ./. {}).\"$pname\"" 2>&1 | perl -ne 'print $1 if /got:\s+(\S+)/' || true)
+
+  [[ -n "$new_deps_hash" ]] && \
+    perl -0777 -pi -e "s/(pname = \"$pname\".*?npmDepsHash = \")sha256-[^\"]+/\${1}$new_deps_hash/s" "$DEFAULT_NIX"
+
+  echo "  $pname updated to $latest_version"
+}
+
+# Node.js はスキップして npm / npx / pnpm / CLI ツールのみ更新
+for pkg in $(get_npm_packages); do
+  [[ "$pkg" == "nodejs" ]] && continue
+  update_package "$pkg"
 done
 
+echo ""
 echo "All packages updated!"
 
