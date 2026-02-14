@@ -11,4 +11,4 @@ in
     opencode
     coderabbit-cli;
     ollama
-}
+};
