@@ -1,62 +1,84 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# default.nix があるディレクトリに移動
 cd "$(dirname "$0")"
-
 DEFAULT_NIX="default.nix"
 
-# npm パッケージ名と default.nix 内の pname を抽出
+# Regenerate package-lock.json for a given npm package
+regenerate_package_lock() {
+  local npm_name="$1"
+  local lock_file="$2"
+
+  echo "  Regenerating package-lock.json"
+  local tmp_dir
+  tmp_dir=$(mktemp -d)
+  trap 'rm -rf "$tmp_dir"' RETURN ERR
+
+  pushd "$tmp_dir" >/dev/null
+  npm pack "$npm_name" --pack-destination . 2>/dev/null
+  tar -xzf ./*.tgz --strip-components=1
+  npm install --package-lock-only --ignore-scripts 2>/dev/null || true
+  popd >/dev/null
+
+  cp "$tmp_dir/package-lock.json" "$lock_file"
+}
+
+# Extract package list from default.nix (pname)
 get_npm_packages() {
   perl -0777 -ne '
     while (/mkNpmPackage\s*\{(.*?)\};/gs) {
       my $block = $1;
       my ($pname) = $block =~ /pname\s*=\s*"([^"]+)"/;
-      my ($npmName) = $block =~ /npmName\s*=\s*"([^"]+)"/;
-      $npmName //= $pname;
-      print "$pname\t$npmName\n";
+      print "$pname\n";
     }
   ' "$DEFAULT_NIX"
 }
 
 update_npm_package() {
   local pname="$1"
-  local npmName="$2"
+  local current_version latest_version new_hash new_sri
 
-  echo "Updating $npmName..."
+  echo "Updating $pname..."
 
-  # 現行バージョン取得
-  current_version=$(perl -0777 -ne 'print $1 if /pname = "'"$pname"'".*?version = "([^"]+)"/s' "$DEFAULT_NIX")
-  latest_version=$(npm view "$npmName" version 2>/dev/null || echo "")
+  # Current version
+  current_version=$(grep -A5 "pname = \"$pname\"" "$DEFAULT_NIX" | perl -ne 'print $1 if /version = "([^"]+)"/' | head -1)
+  if [[ -z $current_version ]]; then
+    echo "  Could not find current version for $pname"
+    return
+  fi
 
+  # Latest version
+  latest_version=$(npm view "$pname" version 2>/dev/null || echo "")
   if [[ -z $latest_version ]]; then
-    echo "  Could not fetch latest version for $npmName"
-    return
-  fi
-  if [[ "$current_version" == "$latest_version" ]]; then
-    echo "  Already at latest version ($current_version)"
+    echo "  Could not fetch latest version for $pname"
     return
   fi
 
-  echo "  Updating from $current_version → $latest_version"
+  if [[ $current_version == "$latest_version" ]]; then
+    echo "  Already at latest version: $current_version"
+    return
+  fi
 
-  # default.nix 内の version を更新
-  perl -0777 -pi -e 's/(pname = "'"$pname"'".*?version = ")'"$current_version"'"/${1}'"$latest_version"'/' "$DEFAULT_NIX"
+  echo "  Updating from $current_version to $latest_version"
 
-  # 新しい tarball ハッシュを取得
-  url="https://registry.npmjs.org/$npmName/-/$pname-$latest_version.tgz"
-  new_hash=$(nix-prefetch-url --unpack "$url")
+  # Update version in default.nix
+  perl -pi -e "BEGIN{\$found=0} if(/pname = \"$pname\"/){\$found=1} if(\$found && /version = \"$current_version\"/){\$_=~s/$current_version/$latest_version/; \$found=0}" "$DEFAULT_NIX"
 
-  # default.nix の hash を更新
-  perl -0777 -pi -e 's/(pname = "'"$pname"'".*?hash = ")sha256-[^"]+/${1}'"$new_hash"'/' "$DEFAULT_NIX"
+  # Fetch new hash
+  local url="https://registry.npmjs.org/$pname/-/$pname-$latest_version.tgz"
+  new_hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
+  new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
 
-  echo "  Updated $pname to $latest_version"
+  # Update hash in default.nix
+  perl -0777 -pi -e "s/(pname = \"$pname\".*?version = \"$latest_version\".*?hash = \")sha256-[^\"]+/\${1}$new_sri/s" "$DEFAULT_NIX"
+
+  echo "  Updated $pname to $latest_version with hash $new_sri"
 }
 
-echo "Updating npm packages from default.nix..."
-while IFS=$'\t' read -r pname npmName; do
-  update_npm_package "$pname" "$npmName"
+echo "Updating npm packages..."
+while read -r pname; do
+  update_npm_package "$pname"
 done < <(get_npm_packages)
 
-echo "All updates complete!"
+echo "Update complete!"
 

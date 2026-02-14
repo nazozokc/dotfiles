@@ -3,41 +3,46 @@
 let
   inherit (pkgs) buildNpmPackage fetchzip;
 
-  # npm CLI パッケージを Nix で管理するためのヘルパー
-  mkNpmPackage = { pname, npmName ? pname, version, hash, npmDepsHash, description, homepage, license ? lib.licenses.mit, mainProgram ? pname }: 
+  # Helper for npm CLI packages from registry
+  mkNpmPackage =
+    { pname, version, hash, npmDepsHash, description, homepage, mainProgram ? pname }:
     buildNpmPackage rec {
-      inherit pname version npmDepsHash;
+      inherit pname version hash npmDepsHash mainProgram description homepage;
       src = fetchzip {
-        url = "https://registry.npmjs.org/${npmName}/-/${pname}-${version}.tgz";
+        url = "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz";
         inherit hash;
       };
       dontNpmBuild = true;
-
-      meta = {
-        inherit description homepage license mainProgram;
-      };
+      postPatch = ''
+        mkdir -p node_modules
+      '';
+      meta = { inherit description homepage mainProgram; };
     };
 in
 {
-  # 例：UnoCSS Language Server
-  unocss-language-server = mkNpmPackage {
-    pname = "unocss-language-server";
-    version = "0.1.8";
-    hash = "sha256-jHFuTpcf4dk8i7Ty1HS9A8OOLarct3w/jovE6/KZHDs=";
-    npmDepsHash = "sha256-hqo+J1o4sG+jGQBSGwQ1uvSCS9mCFX6TfjEC9kut9fI=";
-    description = "UnoCSS Language Server";
-    homepage = "https://github.com/unocss/unocss";
-    mainProgram = "unocss-language-server";
-  };
+  # Node 本体とパッケージマネージャ
+  nodejs = pkgs.nodejs-20_x;
+  npm    = pkgs.nodePackages.npm;
+  pnpm   = pkgs.nodePackages.pnpm;
+  npx    = pkgs.nodePackages.npx;
 
-  # 例：Prettier
+  # ここに CLI ツールを追加できる
   prettier = mkNpmPackage {
     pname = "prettier";
     version = "3.5.0";
     hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
     npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
     description = "Prettier code formatter";
-    homepage = "https://prettier.io/";
+    homepage = "https://prettier.io";
+  };
+
+  eslint = mkNpmPackage {
+    pname = "eslint";
+    version = "8.46.0";
+    hash = "sha256-ccccccccccccccccccccccccccccccccccccccccccc=";
+    npmDepsHash = "sha256-ddddddddddddddddddddddddddddddddddddddddddd=";
+    description = "ESLint code linter";
+    homepage = "https://eslint.org";
   };
 }
 
