@@ -1,79 +1,57 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ──────────────────────────────
-# Node.js パッケージの hash / npmDepsHash を自動更新するスクリプト
-# default.nix 内の pname = "..." を自動で抽出
-# ──────────────────────────────
-
 DEFAULT_NIX="./default.nix"
+TEMP_NIX="./default.nix.tmp"
 
 echo "Initializing npm packages from $DEFAULT_NIX..."
 
-# default.nix から pname のみ抽出
-PACKAGES=($(grep -oP 'pname\s*=\s*"\K[^"]+' "$DEFAULT_NIX"))
+# mkNpmPackage ブロックからパッケージ名を抽出
+packages=($(awk '
+  $0 ~ /mkNpmPackage *{/ {inBlock=1}
+  inBlock && $0 ~ /pname *=/ {
+    gsub(/[ ;"]/,"",$3)
+    print $3
+    inBlock=0
+  }' "$DEFAULT_NIX"))
 
-if [[ ${#PACKAGES[@]} -eq 0 ]]; then
-    echo "No packages detected in $DEFAULT_NIX!"
-    exit 1
-fi
+echo "Detected packages: ${packages[*]}"
 
-echo "Detected packages: ${PACKAGES[*]}"
+for pname in "${packages[@]}"; do
+  echo "=== Processing $pname ==="
 
-for PNAME in "${PACKAGES[@]}"; do
-    echo "=== Processing $PNAME ==="
+  # npm から最新バージョンを取得
+  version=$(npm view "$pname" version 2>/dev/null)
+  echo "  Version: $version"
 
-    # default.nix から現在のバージョンを取得
-    # default.nix から現在のバージョンを取得（末尾セミコロンを除去）
-VERSION=$(grep -A1 "pname\s*=\s*\"$PNAME\"" "$DEFAULT_NIX" \
-          | grep 'version' \
-          | sed -E 's/.*"([^"]+)".*/\1/' \
-          | tr -d '[:space:]')
+  # ソースURL
+  url="https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz"
 
-    if [[ -z "$VERSION" ]]; then
-        echo "  Could not find version for $PNAME, skipping."
-        continue
-    fi
-    echo "  Version: $VERSION"
+  # source hash を取得
+  hash=$(nix-prefetch-url --unpack "$url")
+  echo "  Source hash: $hash"
 
-    # npm パッケージをダウンロードして source hash 取得
-    URL="https://registry.npmjs.org/${PNAME}/-/${PNAME}-${VERSION}.tgz"
-    HASH=$(nix-prefetch-url --unpack "$URL")
-    SRI=$(nix hash convert --hash-algo sha256 --to sri "$HASH")
-    echo "  Source hash: $SRI"
+  # npmDepsHash を計算（node2nix を利用）
+  echo "  Calculating npmDepsHash via node2nix..."
+  node2nixOutput=$(node2nix -i <(echo "{}") -o /dev/null -c /dev/null --nodejs-20 -p "$pname@$version" 2>&1)
+  depsHash=$(echo "$node2nixOutput" | grep "npmDepsHash" | awk '{print $2}' || echo "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+  echo "  npmDepsHash: $depsHash"
 
-    # node2nix で npmDepsHash 取得
-    echo "  Calculating npmDepsHash via node2nix..."
-    TMP_DIR=$(mktemp -d)
-    pushd "$TMP_DIR" > /dev/null
+  # default.nix を置換
+  awk -v pname="$pname" -v version="$version" -v hash="$hash" -v deps="$depsHash" '
+  BEGIN {inBlock=0}
+  {
+    if ($0 ~ "mkNpmPackage" && $0 ~ pname) inBlock=1
+    if (inBlock && $0 ~ "version *= *") sub(/".*"/, "\"" version "\"")
+    if (inBlock && $0 ~ "hash *= *") sub(/".*"/, "\"" hash "\"")
+    if (inBlock && $0 ~ "npmDepsHash *= *") sub(/".*"/, "\"" deps "\"")
+    if (inBlock && $0 ~ "};") inBlock=0
+    print
+  }' "$DEFAULT_NIX" > "$TEMP_NIX"
 
-    # 仮 package.json 作成
-    echo "{\"name\":\"tmp\",\"version\":\"1.0.0\",\"dependencies\":{\"$PNAME\":\"$VERSION\"}}" > package.json
+  mv "$TEMP_NIX" "$DEFAULT_NIX"
 
-    # node2nix 実行
-    node2nix -i package.json -o node-packages.nix -c composition.nix
-
-    # npmDepsHash を抽出
-    NPMDEPSHASH=$(grep -A1 "$PNAME" node-packages.nix | grep npmDepsHash | grep -oP '"\K[^"]+')
-    echo "  npmDepsHash: $NPMDEPSHASH"
-
-    popd > /dev/null
-    rm -rf "$TMP_DIR"
-
-    # default.nix を安全に更新
-    awk -v pname="$PNAME" -v version="$VERSION" -v hash="$SRI" -v deps="$NPMDEPSHASH" '
-    BEGIN { inBlock=0 }
-    {
-        if ($0 ~ "pname[[:space:]]*=[[:space:]]*\""pname"\"") inBlock=1
-        if (inBlock && $0 ~ "version[[:space:]]*=") sub(/".*"/, "\""version"\"")
-        if (inBlock && $0 ~ "hash[[:space:]]*=") sub(/".*"/, "\""hash"\"")
-        if (inBlock && $0 ~ "npmDepsHash[[:space:]]*=") sub(/".*"/, "\""deps"\"")
-        if (inBlock && $0 ~ "};") inBlock=0
-        print
-    }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
-
-    mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
-    echo "  $PNAME updated in $DEFAULT_NIX!"
+  echo "  $pname updated"
 done
 
 echo "All packages updated in $DEFAULT_NIX!"
