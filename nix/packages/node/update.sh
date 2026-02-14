@@ -1,62 +1,70 @@
-{ pkgs, lib ? pkgs.lib }:
+#!/usr/bin/env bash
+set -euo pipefail
 
-let
-  inherit (pkgs) buildNpmPackage fetchzip;
+cd "$(dirname "$0")"
+DEFAULT_NIX="./default.nix"
 
-  mkNpmPackage =
-    {
-      pname,
-      npmName ? pname,
-      version,
-      hash,
-      npmDepsHash,
-      description,
-      homepage,
-      license ? lib.licenses.mit,
-      mainProgram ? pname,
-      forceEmptyCache ? false,
-      npmFlags ? [],
-      env ? {},
-      postInstall ? "",
-    }:
-    buildNpmPackage rec {
-      inherit pname version npmDepsHash npmFlags env postInstall forceEmptyCache;
+update_package() {
+  local pname="$1"
+  local npm_name="$2"
 
-      src = fetchzip {
-        url = "https://registry.npmjs.org/${npmName}/-/${pname}-${version}.tgz";
-        inherit hash;
-      };
+  echo "Updating $npm_name..."
 
-      postPatch = ''
-        mkdir -p node_modules
-        if [ -f ${./${pname}/package-lock.json} ]; then
-          cp ${./${pname}/package-lock.json} package-lock.json
-        fi
-      '';
+  local current_version
+  current_version=$(perl -0777 -ne "print \$1 if /pname = \"$pname\".*?version = \"([^\"]+)\"/s" "$DEFAULT_NIX")
 
-      dontNpmBuild = true;
+  if [[ -z "$current_version" ]]; then
+    echo "  Cannot find version for $pname"
+    return
+  fi
 
-      meta = {
-        inherit description homepage license mainProgram;
-      };
-    };
-in
-{
-  node = pkgs.nodejs-20;
+  local latest_version
+  latest_version=$(npm view "$npm_name" version 2>/dev/null)
 
-  npm = pkgs.nodePackages.npm;
-  pnpm = pkgs.nodePackages.pnpm;
-  npx = pkgs.nodePackages.npx;
+  if [[ -z "$latest_version" ]]; then
+    echo "  Cannot fetch latest version for $npm_name"
+    return
+  fi
 
-  prettier = mkNpmPackage {
-    pname = "prettier";
-    version = "3.8.1";
-    hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
-    npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
-    description = "Prettier code formatter";
-    homepage = "https://prettier.io/";
-  };
+  if [[ "$current_version" != "$latest_version" ]]; then
+    echo "  Updating version $current_version -> $latest_version"
+    perl -0777 -pi -e "s/(pname = \"$pname\".*?version = \")$current_version/\$1$latest_version/s" "$DEFAULT_NIX"
+  else
+    echo "  Already latest version: $current_version"
+  fi
 
-  # 他の npm CLI パッケージもここに追加できる
+  local url="https://registry.npmjs.org/${npm_name}/-/${pname}-${latest_version}.tgz"
+  echo "  Fetching new hash..."
+  local new_hash
+  new_hash=$(nix-prefetch-url --unpack "$url")
+  perl -0777 -pi -e "s/(pname = \"$pname\".*?version = \"$latest_version\".*?hash = \")sha256-[^\"]+/\$1$new_hash/s" "$DEFAULT_NIX"
+
+  echo "  Calculating npmDepsHash..."
+  local deps_hash
+  deps_hash=$(nix build --no-link --impure "(import $DEFAULT_NIX {}).$pname" 2>&1 \
+              | grep -o 'sha256-[a-zA-Z0-9+/=]\{43,44\}' \
+              | head -1 || true)
+
+  if [[ -n "$deps_hash" ]]; then
+    perl -0777 -pi -e "s/(pname = \"$pname\".*?npmDepsHash = \")sha256-[^\"]+/\$1$deps_hash/s" "$DEFAULT_NIX"
+  fi
+
+  echo "  $npm_name updated!"
 }
+
+while read -r pname npm_name; do
+  update_package "$pname" "$npm_name"
+done < <(
+  perl -0777 -ne '
+    while(/mkNpmPackage\s*\{(.*?)\};/gs){
+      my $b=$1;
+      my ($pname)=$b=~/pname\s*=\s*"([^"]+)"/;
+      my ($npm)=$b=~/npmName\s*=\s*"([^"]+)"/;
+      $npm=$pname unless $npm;
+      print "$pname\t$npm\n";
+    }
+  ' "$DEFAULT_NIX"
+)
+
+echo "All packages updated!"
 
