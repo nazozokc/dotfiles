@@ -5,43 +5,12 @@ cd "$(dirname "$0")"
 DEFAULT_NIX="default.nix"
 
 # -----------------------------
-# package-lock.json を再生成
-# -----------------------------
-regenerate_package_lock() {
-  local npm_name="$1"
-  local lock_file="$2"
-
-  if [[ ! -f "$lock_file" ]]; then
-    echo "  No package-lock.json for $npm_name, skipping"
-    return
-  fi
-
-  echo "  Regenerating package-lock.json for $npm_name"
-  local tmp_dir
-  tmp_dir=$(mktemp -d)
-  trap 'rm -rf "$tmp_dir"' RETURN ERR
-
-  pushd "$tmp_dir" >/dev/null
-  npm pack "$npm_name" --pack-destination . >/dev/null 2>&1 || echo "  Warning: npm pack failed"
-  tar -xzf ./*.tgz --strip-components=1 >/dev/null 2>&1 || echo "  Warning: tar failed"
-  npm install --package-lock-only --ignore-scripts >/dev/null 2>&1 || echo "  Warning: npm install failed"
-  popd >/dev/null
-
-  cp "$tmp_dir/package-lock.json" "$lock_file"
-}
-
-# -----------------------------
 # default.nix から npm パッケージ一覧取得
 # -----------------------------
 get_npm_packages() {
-  perl -0777 -ne '
-    while (/mkNpmPackage\s*\{(.*?)\};/gs) {
-      my $block = $1;
-      my ($pname) = $block =~ /pname\s*=\s*"([^"]+)"/;
-      next unless $pname;
-      print "$pname\n";
-    }
-  ' "$DEFAULT_NIX"
+  echo "npm"
+  echo "npx"
+  echo "pnpm"
 }
 
 # -----------------------------
@@ -88,7 +57,7 @@ update_npm_package() {
 
   echo "  Updating $current_version → $latest_version"
 
-  # default.nix 内のバージョン更新（安全にエスケープ）
+  # default.nix 内のバージョン更新
   perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?version\s*=\s*\")\Q$current_version\E/\$1$latest_version/s" "$DEFAULT_NIX"
 
   # source hash 更新
@@ -100,10 +69,6 @@ update_npm_package() {
   new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
 
   perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?hash\s*=\s*\")[^\"]+/\$1$new_sri/s" "$DEFAULT_NIX"
-
-  # package-lock.json 更新
-  local lock_file="$pname/package-lock.json"
-  regenerate_package_lock "$pname" "$lock_file"
 
   # npmDepsHash 更新
   echo "  Calculating npmDepsHash..."
@@ -126,5 +91,5 @@ for pkg in $(get_npm_packages); do
 done
 
 echo ""
-echo "All npm packages updated safely!"
+echo "npm / npx / pnpm update complete!"
 
