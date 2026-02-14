@@ -10,4 +10,5 @@ in
     amp
     opencode
     coderabbit-cli;
+    ollama
 }
