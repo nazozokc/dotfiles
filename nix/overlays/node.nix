@@ -1,12 +1,4 @@
-# nix/overlays/node.nix
+# nix/overlays/git.nix
 
-final: prev: {
-
-  nodejs = prev.nodejs_22;
-
-  pnpm = prev.pnpm.override {
-    nodejs = final.nodejs;
-  };
-
-}
+final: prev: { }
 
