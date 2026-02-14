@@ -24,36 +24,33 @@ let
     };
 in
 {
-  # Node.js 本体
   nodejs = pkgs.nodejs-20_x;
 
-  # npm 本体
+  # mkNpmPackage ブロックで管理するパッケージ群
   npm = mkNpmPackage {
     pname = "npm";
-    .10.0";
-    hash = "sha256-qbBK0sCOwLEHllH7logUSAkVnCTKfco7RkUxrjbSFSE=";
+    version = "11.10.0";
+    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     description = "Node package manager";
     homepage = "https://www.npmjs.com/";
     mainProgram = "npm";
   };
 
-  # npx（npm に同梱されるが明示管理）
   npx = mkNpmPackage {
     pname = "npx";
     version = "10.2.2";
-    hash = "sha256-jvdDWuYf9FABEf3mjlpbXjFoYMo0i/dlBYaGhew2xyM=";
+    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     description = "npm package runner";
     homepage = "https://www.npmjs.com/package/npx";
     mainProgram = "npx";
   };
 
-  # pnpm 本体
   pnpm = mkNpmPackage {
     pname = "pnpm";
     version = "10.29.3";
-    hash = "sha256-nZqxs62ybtJnZeJPGKJ0Psd4im/gEopzP0oPn3xn7o0=";
+    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     description = "Fast, disk space efficient package manager";
     homepage = "https://pnpm.io/";
