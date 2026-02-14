@@ -2,57 +2,58 @@
 set -euo pipefail
 
 DEFAULT_NIX="./default.nix"
-TEMP_NIX="./default.nix.tmp"
+TMPDIR=$(mktemp -d)
 
 echo "Initializing npm packages from $DEFAULT_NIX..."
 
-# mkNpmPackage ブロックからパッケージ名を抽出
-packages=($(awk '
-  $0 ~ /mkNpmPackage *{/ {inBlock=1}
-  inBlock && $0 ~ /pname *=/ {
-    gsub(/[ ;"]/,"",$3)
-    print $3
-    inBlock=0
-  }' "$DEFAULT_NIX"))
+# default.nix からパッケージ名を自動抽出
+PACKAGES=($(awk '/mkNpmPackage/ {getline; if ($0 ~ /pname/) { gsub(/[ ,"]/,"",$3); print $3 }}' "$DEFAULT_NIX"))
 
-echo "Detected packages: ${packages[*]}"
+echo "Detected packages: ${PACKAGES[*]}"
 
-for pname in "${packages[@]}"; do
+for pname in "${PACKAGES[@]}"; do
   echo "=== Processing $pname ==="
 
-  # npm から最新バージョンを取得
-  version=$(npm view "$pname" version 2>/dev/null)
+  # version を抽出
+  version=$(awk -v p="$pname" '/mkNpmPackage/ {getline; if ($0 ~ "pname.*"p) { while(getline){ if ($0 ~ "version") { gsub(/[ ,"]/,"",$3); print $3; break }}}}' "$DEFAULT_NIX")
+  if [[ -z "$version" ]]; then
+    echo "  Could not find version for $pname, skipping."
+    continue
+  fi
   echo "  Version: $version"
 
-  # ソースURL
+  # ソース tarball のハッシュ取得
   url="https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz"
-
-  # source hash を取得
   hash=$(nix-prefetch-url --unpack "$url")
   echo "  Source hash: $hash"
 
-  # npmDepsHash を計算（node2nix を利用）
-  echo "  Calculating npmDepsHash via node2nix..."
-  node2nixOutput=$(node2nix -i <(echo "{}") -o /dev/null -c /dev/null --nodejs-20 -p "$pname@$version" 2>&1)
-  depsHash=$(echo "$node2nixOutput" | grep "npmDepsHash" | awk '{print $2}' || echo "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+  # 一時 package.json 作成
+  echo "{\"dependencies\": {\"$pname\": \"$version\"}}" > "$TMPDIR/package.json"
+
+  # node2nix で composition と node-env 作成（npmDepsHash 用）
+  node2nix -i "$TMPDIR/package.json" -o "$TMPDIR/node-env.nix" -c "$TMPDIR/composition.nix" --nodejs-20 >/dev/null 2>&1
+
+  # node-env.nix から npmDepsHash 抽出
+  depsHash=$(grep 'npmDepsHash' "$TMPDIR/node-env.nix" | head -n1 | awk '{print $3}' | tr -d '"')
   echo "  npmDepsHash: $depsHash"
 
-  # default.nix を置換
-  awk -v pname="$pname" -v version="$version" -v hash="$hash" -v deps="$depsHash" '
-  BEGIN {inBlock=0}
+  # default.nix を安全に更新
+  awk -v p="$pname" -v v="$version" -v h="$hash" -v d="$depsHash" '
+  BEGIN { inBlock=0 }
   {
-    if ($0 ~ "mkNpmPackage" && $0 ~ pname) inBlock=1
-    if (inBlock && $0 ~ "version *= *") sub(/".*"/, "\"" version "\"")
-    if (inBlock && $0 ~ "hash *= *") sub(/".*"/, "\"" hash "\"")
-    if (inBlock && $0 ~ "npmDepsHash *= *") sub(/".*"/, "\"" deps "\"")
+    if ($0 ~ "pname.*"p) inBlock=1
+    if (inBlock && $0 ~ "version") $0="    version      = \""v"\";"
+    if (inBlock && $0 ~ "hash") $0="    hash         = \""h"\";"
+    if (inBlock && $0 ~ "npmDepsHash") $0="    npmDepsHash  = \""d"\";"
     if (inBlock && $0 ~ "};") inBlock=0
     print
-  }' "$DEFAULT_NIX" > "$TEMP_NIX"
+  }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
 
-  mv "$TEMP_NIX" "$DEFAULT_NIX"
-
-  echo "  $pname updated"
+  mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
+  echo "  $pname updated in $DEFAULT_NIX"
 done
 
+rm -rf "$TMPDIR"
+echo ""
 echo "All packages updated in $DEFAULT_NIX!"
 
