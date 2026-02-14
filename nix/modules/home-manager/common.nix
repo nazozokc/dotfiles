@@ -8,5 +8,5 @@
       langPkgs = import ../defaults/lang-default.nix { inherit pkgs; };
       nodePkgs = import ../defaults/node-pkgs.nix { inherit pkgs;}
     in
-    cliPkgs ++ guiPkgs ++ langPkgs;
+    cliPkgs ++ guiPkgs ++ langPkgs ++ nodePkgs;
 }
