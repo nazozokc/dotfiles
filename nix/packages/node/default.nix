@@ -32,9 +32,7 @@ in
   nodejs = pkgs.nodejs-20_x;
 
   # npm
-  npm = mkNpmPackage {
-    pname = "npm";
-    version = "10.3.0";
+  npm = .10.0";
     hash = "sha256-qbBK0sCOwLEHllH7logUSAkVnCTKfco7RkUxrjbSFSE=";
     npmDepsHash = "sha256-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
     description = "Node package manager";
@@ -43,20 +41,7 @@ in
   };
 
   # npx
-  npx = mkNpmPackage {
-    pname = "npx";
-    version = "10.3.0";
-    hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
-    npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
-    description = "npm package runner";
-    homepage = "https://www.npmjs.com/package/npx";
-    mainProgram = "npx";
-  };
-
-  # pnpm
-  pnpm = mkNpmPackage {
-    pname = "pnpm";
-    version = "8.10.0";
+  npx = .29.3";
     hash = "sha256-ccccccccccccccccccccccccccccccccccccccccccc=";
     npmDepsHash = "sha256-ddddddddddddddddddddddddddddddddddddddddddd=";
     description = "Fast, disk space efficient package manager";

@@ -62,7 +62,9 @@ update_npm_package() {
   current_version=$(perl -0777 -ne '
     while (/mkNpmPackage\s*\{(.*?)\};/gs) {
       my $b=$1;
-      print $1 if $b =~ /pname\s*=\s*"'$pname'"/ && $b =~ /version\s*=\s*"([^"]+)"/;
+      if($b =~ /pname\s*=\s*"'$pname'"/ && $b =~ /version\s*=\s*"([^"]+)"/) {
+        print $1;
+      }
     }
   ' "$DEFAULT_NIX")
 
@@ -86,8 +88,8 @@ update_npm_package() {
 
   echo "  Updating $current_version → $latest_version"
 
-  # default.nix 内のバージョン更新
-  perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?version\s*=\s*\")[^\"]+/\$1$latest_version/s" "$DEFAULT_NIX"
+  # default.nix 内のバージョン更新（安全にエスケープ）
+  perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?version\s*=\s*\")\Q$current_version\E/\$1$latest_version/s" "$DEFAULT_NIX"
 
   # source hash 更新
   local url="https://registry.npmjs.org/${pname}/-/${pname}-${latest_version}.tgz"
