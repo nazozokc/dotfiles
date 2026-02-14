@@ -24,9 +24,11 @@ let
     };
 in
 {
+  # Node.js 本体
   nodejs = pkgs.nodejs-20_x;
 
-  # mkNpmPackage ブロックで管理するパッケージ群
+  # npm / npx / pnpm を管理
+  # hash と npmDepsHash は update.sh で自動生成される
   npm = mkNpmPackage {
     pname = "npm";
     version = "11.10.0";
@@ -54,6 +56,7 @@ in
     npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     description = "Fast, disk space efficient package manager";
     homepage = "https://pnpm.io/";
+    mainProgram = "pnpm";
   };
 }
 

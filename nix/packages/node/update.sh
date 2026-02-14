@@ -2,94 +2,39 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
-DEFAULT_NIX="default.nix"
+DEFAULT_NIX="./default.nix"
 
-# -----------------------------
-# default.nix から npm パッケージ一覧取得
-# -----------------------------
-get_npm_packages() {
-  echo "npm"
-  echo "npx"
-  echo "pnpm"
-}
+echo "Initializing npm / npx / pnpm with node2nix hashes in $DEFAULT_NIX..."
 
-# -----------------------------
-# 個別 npm パッケージ更新
-# -----------------------------
-update_npm_package() {
-  local pname="$1"
-  echo "=== Updating $pname ==="
+# 1. package.json を作る（存在しなければ生成）
+if [ ! -f package.json ]; then
+  echo '{"name":"temp","version":"1.0.0","dependencies":{"npm":"11.10.0","npx":"10.2.2","pnpm":"10.29.3"}}' > package.json
+fi
 
-  # npx は npm と同期
-  if [[ "$pname" == "npx" ]]; then
-    echo "  npx version tied to npm, skipping individual update"
-    return
-  fi
+# 2. node2nix で依存を解決
+node2nix -i package.json -o node-packages.nix -c composition.nix
 
-  # 現在の version を取得
-  local current_version
-  current_version=$(perl -0777 -ne '
-    while (/mkNpmPackage\s*\{(.*?)\};/gs) {
-      my $b=$1;
-      if($b =~ /pname\s*=\s*"'$pname'"/ && $b =~ /version\s*=\s*"([^"]+)"/) {
-        print $1;
-      }
-    }
-  ' "$DEFAULT_NIX")
+# 3. default.nix の mkNpmPackage ブロックを更新
+for pname in $(awk '/pname =/ {gsub(/[ ";]/,""); print $3}' "$DEFAULT_NIX"); do
+  version=$(jq -r ".dependencies[\"$pname\"]" package.json)
+  hash=$(nix-prefetch-url "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz")
+  npmDepsHash=$(nix hash file ./composition.nix --type sha256)
 
-  if [[ -z "$current_version" ]]; then
-    echo "  Could not find current version for $pname"
-    return
-  fi
+  echo "Updating $pname: version=$version, hash=$hash, npmDepsHash=$npmDepsHash"
 
-  # 最新バージョン取得
-  local latest_version
-  latest_version=$(npm view "$pname" version 2>/dev/null || echo "")
-  if [[ -z "$latest_version" ]]; then
-    echo "  Could not fetch latest version for $pname"
-    return
-  fi
+  awk -v pname="$pname" -v version="$version" -v hash="$hash" -v deps="$npmDepsHash" '
+  BEGIN { inBlock=0 }
+  {
+    if ($0 ~ "pname = \"" pname "\"") inBlock=1
+    if (inBlock && $0 ~ "version =") sub(/".*"/, "\"" version "\"")
+    if (inBlock && $0 ~ "hash =") sub(/".*"/, "\"" hash "\"")
+    if (inBlock && $0 ~ "npmDepsHash =") sub(/".*"/, "\"" deps "\"")
+    if (inBlock && $0 ~ "};") inBlock=0
+    print
+  }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
 
-  if [[ "$current_version" == "$latest_version" ]]; then
-    echo "  Already at latest version: $current_version"
-    return
-  fi
-
-  echo "  Updating $current_version → $latest_version"
-
-  # default.nix 内のバージョン更新
-  perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?version\s*=\s*\")\Q$current_version\E/\$1$latest_version/s" "$DEFAULT_NIX"
-
-  # source hash 更新
-  local url="https://registry.npmjs.org/${pname}/-/${pname}-${latest_version}.tgz"
-  echo "  Fetching new hash for $url"
-  local new_hash
-  new_hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null)
-  local new_sri
-  new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
-
-  perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?hash\s*=\s*\")[^\"]+/\$1$new_sri/s" "$DEFAULT_NIX"
-
-  # npmDepsHash 更新
-  echo "  Calculating npmDepsHash..."
-  local new_deps_hash
-  new_deps_hash=$(nix build --impure --expr "((import <nixpkgs> {}).callPackage ./. {}).\"$pname\"" 2>&1 | perl -ne 'print $1 if /got:\s+(\S+)/' || echo "")
-
-  if [[ -n "$new_deps_hash" ]]; then
-    perl -0777 -pi -e "s/(mkNpmPackage\s*\{.*?pname\s*=\s*\"$pname\".*?npmDepsHash\s*=\s*\")[^\"]+/\$1$new_deps_hash/s" "$DEFAULT_NIX"
-  fi
-
-  echo "  $pname updated to $latest_version"
-}
-
-# -----------------------------
-# メイン処理
-# -----------------------------
-echo "Updating npm packages..."
-for pkg in $(get_npm_packages); do
-  update_npm_package "$pkg"
+  mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
 done
 
-echo ""
-echo "npm / npx / pnpm update complete!"
+echo "All packages updated successfully!"
 
