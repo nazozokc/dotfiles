@@ -1,57 +1,60 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# default.nix があるディレクトリに移動
 cd "$(dirname "$0")"
+
 DEFAULT_NIX="./default.nix"
+TMP_DIR="$(mktemp -d)"
+PACKAGES=()
 
-echo "Updating npm / npx / pnpm packages in $DEFAULT_NIX with node2nix..."
+echo "Initializing npm / npx / pnpm hashes from default.nix..."
 
-# default.nix から mkNpmPackage ブロック内のパッケージ名を抽出
-PACKAGES=($(awk '/mkNpmPackage/ {match($0,/pname = "([^"]+)"/,a); print a[1]}' "$DEFAULT_NIX"))
+# 1️⃣ default.nix からパッケージ名を抽出
+while IFS= read -r line; do
+  pname=$(echo "$line" | awk -F'[ =;]+' '/mkNpmPackage/ {gsub(/"/,"",$2); print $2}')
+  [[ -n "$pname" ]] && PACKAGES+=("$pname")
+done < "$DEFAULT_NIX"
 
-for PNAME in "${PACKAGES[@]}"; do
-    echo "=== Processing $PNAME ==="
+echo "Detected packages: ${PACKAGES[*]}"
 
-    # 最新バージョン取得
-    VERSION=$(npm view "$PNAME" version 2>/dev/null || true)
-    if [[ -z "$VERSION" ]]; then
-        echo "  Could not fetch version for $PNAME, skipping."
-        continue
-    fi
-    echo "  Latest version: $VERSION"
+# 2️⃣ 各パッケージを node2nix で処理して hash と npmDepsHash を取得
+for pname in "${PACKAGES[@]}"; do
+  echo "=== Processing $pname ==="
+  version=$(nix eval --raw "import <nixpkgs> {}.$pname.version" || true)
+  [[ -z "$version" ]] && version=$(npm view "$pname" version)
 
-    # node2nix で一時的に npmDepsHash を生成
-    TMP_DIR=$(mktemp -d)
-    echo "  Running node2nix for $PNAME..."
-    mkdir -p "$TMP_DIR/$PNAME"
-    pushd "$TMP_DIR/$PNAME" > /dev/null
-    npm init -y >/dev/null 2>&1
-    npm install "$PNAME@$VERSION" >/dev/null 2>&1
-    node2nix -i package.json -o node-packages.nix -c composition.nix >/dev/null
-    NPM_DEPS_HASH=$(awk '/npmDepsHash/ {gsub(/"/,""); print $3}' node-packages.nix)
-    popd > /dev/null
-    rm -rf "$TMP_DIR"
+  echo "  Version: $version"
 
-    # ソースの tarball hash 取得
-    URL="https://registry.npmjs.org/${PNAME}/-/${PNAME}-${VERSION}.tgz"
-    HASH=$(nix-prefetch-url --unpack "$URL")
-    SRI=$(nix hash convert --hash-algo sha256 --to sri "$HASH")
+  URL="https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz"
 
-    # default.nix の hash と npmDepsHash を置換
-    awk -v pname="$PNAME" -v version="$VERSION" -v hash="$SRI" -v deps="$NPM_DEPS_HASH" '
-    BEGIN { inBlock=0 }
-    {
-        if ($0 ~ "pname = \"" pname "\"") inBlock=1
-        if (inBlock && $0 ~ "version =") sub(/".*"/, "\"" version "\"")
-        if (inBlock && $0 ~ "hash =") sub(/".*"/, "\"" hash "\"")
-        if (inBlock && $0 ~ "npmDepsHash =") sub(/".*"/, "\"" deps "\"")
-        if (inBlock && $0 ~ "};") inBlock=0
-        print
-    }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
+  # fetchurl で hash を取得
+  hash=$(nix-prefetch-url --unpack "$URL")
+  sri=$(nix hash convert --hash-algo sha256 --to sri "$hash")
+  echo "  hash: $sri"
 
-    mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
-    echo "  $PNAME updated"
+  # node2nix で npmDepsHash を生成
+  pushd "$TMP_DIR" >/dev/null
+  rm -rf node-packages.nix
+  node2nix -i <(echo "{}") -o node-packages.nix -c composition.nix >/dev/null 2>&1
+  depsHash=$(awk -F'"' "/$pname/ {getline; getline; if(\$1 ~ /npmDepsHash/) print \$2}" node-packages.nix)
+  popd >/dev/null
+
+  [[ -z "$depsHash" ]] && depsHash="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+  echo "  npmDepsHash: $depsHash"
+
+  # 3️⃣ default.nix を書き換え
+  awk -v pname="$pname" -v hash="$sri" -v deps="$depsHash" '
+  BEGIN { inBlock=0 }
+  {
+    if ($0 ~ "pname[ ]*=[ ]*\"" pname "\"") inBlock=1
+    if (inBlock && $0 ~ "hash[ ]*=") sub(/".*"/, "\"" hash "\"")
+    if (inBlock && $0 ~ "npmDepsHash[ ]*=") sub(/".*"/, "\"" deps "\"")
+    if (inBlock && $0 ~ "};") inBlock=0
+    print
+  }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
+
+  mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
+  echo "  $pname updated in default.nix"
 done
 
 echo "All packages updated in $DEFAULT_NIX!"
