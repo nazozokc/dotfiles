@@ -1,6 +1,8 @@
 {
   description = "nazozo dotfiles (multi-system, apps + nom)";
 
+  nixConfig = (import ./nix/cachix.nix).flakeConfig;
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
