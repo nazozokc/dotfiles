@@ -1,60 +1,74 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$(dirname "$0")"
+# ──────────────────────────────
+# Node.js パッケージの hash / npmDepsHash を自動更新するスクリプト
+# default.nix 内の pname = "..." を自動で抽出
+# ──────────────────────────────
 
 DEFAULT_NIX="./default.nix"
-TMP_DIR="$(mktemp -d)"
-PACKAGES=()
 
-echo "Initializing npm / npx / pnpm hashes from default.nix..."
+echo "Initializing npm packages from $DEFAULT_NIX..."
 
-# 1️⃣ default.nix からパッケージ名を抽出
-while IFS= read -r line; do
-  pname=$(echo "$line" | awk -F'[ =;]+' '/mkNpmPackage/ {gsub(/"/,"",$2); print $2}')
-  [[ -n "$pname" ]] && PACKAGES+=("$pname")
-done < "$DEFAULT_NIX"
+# default.nix から pname のみ抽出
+PACKAGES=($(grep -oP 'pname\s*=\s*"\K[^"]+' "$DEFAULT_NIX"))
+
+if [[ ${#PACKAGES[@]} -eq 0 ]]; then
+    echo "No packages detected in $DEFAULT_NIX!"
+    exit 1
+fi
 
 echo "Detected packages: ${PACKAGES[*]}"
 
-# 2️⃣ 各パッケージを node2nix で処理して hash と npmDepsHash を取得
-for pname in "${PACKAGES[@]}"; do
-  echo "=== Processing $pname ==="
-  version=$(nix eval --raw "import <nixpkgs> {}.$pname.version" || true)
-  [[ -z "$version" ]] && version=$(npm view "$pname" version)
+for PNAME in "${PACKAGES[@]}"; do
+    echo "=== Processing $PNAME ==="
 
-  echo "  Version: $version"
+    # default.nix から現在のバージョンを取得
+    VERSION=$(grep -A1 "pname\s*=\s*\"$PNAME\"" "$DEFAULT_NIX" | grep 'version' | grep -oP '"\K[^"]+')
+    if [[ -z "$VERSION" ]]; then
+        echo "  Could not find version for $PNAME, skipping."
+        continue
+    fi
+    echo "  Version: $VERSION"
 
-  URL="https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz"
+    # npm パッケージをダウンロードして source hash 取得
+    URL="https://registry.npmjs.org/${PNAME}/-/${PNAME}-${VERSION}.tgz"
+    HASH=$(nix-prefetch-url --unpack "$URL")
+    SRI=$(nix hash convert --hash-algo sha256 --to sri "$HASH")
+    echo "  Source hash: $SRI"
 
-  # fetchurl で hash を取得
-  hash=$(nix-prefetch-url --unpack "$URL")
-  sri=$(nix hash convert --hash-algo sha256 --to sri "$hash")
-  echo "  hash: $sri"
+    # node2nix で npmDepsHash 取得
+    echo "  Calculating npmDepsHash via node2nix..."
+    TMP_DIR=$(mktemp -d)
+    pushd "$TMP_DIR" > /dev/null
 
-  # node2nix で npmDepsHash を生成
-  pushd "$TMP_DIR" >/dev/null
-  rm -rf node-packages.nix
-  node2nix -i <(echo "{}") -o node-packages.nix -c composition.nix >/dev/null 2>&1
-  depsHash=$(awk -F'"' "/$pname/ {getline; getline; if(\$1 ~ /npmDepsHash/) print \$2}" node-packages.nix)
-  popd >/dev/null
+    # 仮 package.json 作成
+    echo "{\"name\":\"tmp\",\"version\":\"1.0.0\",\"dependencies\":{\"$PNAME\":\"$VERSION\"}}" > package.json
 
-  [[ -z "$depsHash" ]] && depsHash="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
-  echo "  npmDepsHash: $depsHash"
+    # node2nix 実行
+    node2nix -i package.json -o node-packages.nix -c composition.nix
 
-  # 3️⃣ default.nix を書き換え
-  awk -v pname="$pname" -v hash="$sri" -v deps="$depsHash" '
-  BEGIN { inBlock=0 }
-  {
-    if ($0 ~ "pname[ ]*=[ ]*\"" pname "\"") inBlock=1
-    if (inBlock && $0 ~ "hash[ ]*=") sub(/".*"/, "\"" hash "\"")
-    if (inBlock && $0 ~ "npmDepsHash[ ]*=") sub(/".*"/, "\"" deps "\"")
-    if (inBlock && $0 ~ "};") inBlock=0
-    print
-  }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
+    # npmDepsHash を抽出
+    NPMDEPSHASH=$(grep -A1 "$PNAME" node-packages.nix | grep npmDepsHash | grep -oP '"\K[^"]+')
+    echo "  npmDepsHash: $NPMDEPSHASH"
 
-  mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
-  echo "  $pname updated in default.nix"
+    popd > /dev/null
+    rm -rf "$TMP_DIR"
+
+    # default.nix を安全に更新
+    awk -v pname="$PNAME" -v version="$VERSION" -v hash="$SRI" -v deps="$NPMDEPSHASH" '
+    BEGIN { inBlock=0 }
+    {
+        if ($0 ~ "pname[[:space:]]*=[[:space:]]*\""pname"\"") inBlock=1
+        if (inBlock && $0 ~ "version[[:space:]]*=") sub(/".*"/, "\""version"\"")
+        if (inBlock && $0 ~ "hash[[:space:]]*=") sub(/".*"/, "\""hash"\"")
+        if (inBlock && $0 ~ "npmDepsHash[[:space:]]*=") sub(/".*"/, "\""deps"\"")
+        if (inBlock && $0 ~ "};") inBlock=0
+        print
+    }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
+
+    mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
+    echo "  $PNAME updated in $DEFAULT_NIX!"
 done
 
 echo "All packages updated in $DEFAULT_NIX!"
