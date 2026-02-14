@@ -1,12 +1,24 @@
 # nix/overlays/default.nix
-
 final: prev:
+
 let
-  ai   = import ./ai.nix final prev;
-  node = import ./node.nix final prev;
-  git  = import ./git.nix final prev;
+  # このディレクトリ内の overlay を列挙
+  overlayFiles = [
+    ./ai.nix
+    ./git.nix
+    ./node.nix
+
+  ];
+
+  # 各 overlay を適用してマージ
+  applyOverlays =
+    builtins.foldl'
+      (acc: overlay:
+        acc // (import overlay final prev)
+      )
+      { }
+      overlayFiles;
+
 in
-  ai
-  // node
-  // git
+applyOverlays
 
