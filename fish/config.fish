@@ -71,8 +71,8 @@ thefuck --alias | source
 # =========================
 
 alias vim "nvim"
-alias old-vim "vim"
 alias ll "ls -lh"
+alias lah "ls -lah" 
 alias la "ls -A"
 alias l  "ls -CF"
 alias rm "rm -rf"
