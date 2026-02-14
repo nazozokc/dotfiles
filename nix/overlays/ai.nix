@@ -9,6 +9,6 @@ in
   inherit (prev._llm-agents.packages.${system})
     amp
     opencode
-    coderabbit-cli;
-    ollama
-};
+    coderabbit-cli
+    ollama;
+}
