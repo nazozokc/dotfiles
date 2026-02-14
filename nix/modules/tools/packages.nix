@@ -24,6 +24,7 @@ with pkgs; [
   #github
   git
   gh
+  ghq
   lazygit
   git-wt
 
