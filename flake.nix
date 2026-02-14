@@ -85,7 +85,7 @@
               nixpkgs.config.allowUnfree = true;
             }
 
-            ./nix/modules/os/darwin.nix
+            ./nix/modules/darwin/darwin.nix
             ./nix/modules/home-manager/common.nix
             ./nix/modules/home-manager/symlinks.nix
           ];
