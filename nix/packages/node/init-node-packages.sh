@@ -1,60 +1,56 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$(dirname "$0")"
+DEFAULT_NIX="./default.nix"
+TMP_NIX="./default.nix.tmp"
 
-DEFAULT_NIX="default.nix"
-PKG_JSON="package.json"
-NODE2NIX_OUT="node-packages.nix"
-NODE2NIX_COMPOSITION="composition.nix"
+echo "Initializing npm / npx / pnpm with auto hashes from $DEFAULT_NIX..."
 
-PACKAGES=("npm" "npx" "pnpm")
+# 1. default.nix から mkNpmPackage の pname を抽出
+PACKAGES=($(awk '/mkNpmPackage/ {p=1} p && /pname =/ {gsub(/[ ";]/,"",$3); print $3; p=0}' $DEFAULT_NIX))
 
-echo "Initializing npm / npx / pnpm with node2nix hashes in $DEFAULT_NIX..."
-
-# node2nix 用 package.json を作成
-# 実際に使いたいパッケージとバージョンをここに定義
-cat > "$PKG_JSON" <<EOF
-{
-  "name": "nazozo-node-tools",
-  "version": "1.0.0",
-  "dependencies": {
-    "npm": "latest",
-    "npx": "latest",
-    "pnpm": "latest"
-  }
-}
-EOF
-
-# node2nix で Nix パッケージ生成
-echo "=== Running node2nix ==="
-nix run nixpkgs#node2nix -- generate -i "$PKG_JSON" -o "$NODE2NIX_OUT" -c "$NODE2NIX_COMPOSITION"
-
-# node-packages.nix から各パッケージのハッシュを抽出して default.nix に書き込む
 for pname in "${PACKAGES[@]}"; do
-  version=$(jq -r ".dependencies[\"$pname\"]" "$PKG_JSON")
-  hash=$(grep -A1 "name = \"$pname\";" "$NODE2NIX_OUT" | grep "npmDepsHash =" | awk '{print $3}' | tr -d '";')
-
   echo "=== Processing $pname ==="
-  echo "  Version: $version"
-  echo "  npmDepsHash: $hash"
 
-  # default.nix の該当ブロックを書き換え
-  awk -v pname="$pname" -v deps="$hash" '
+  # 2. 最新バージョン取得
+  version=$(npm view "$pname" version 2>/dev/null || true)
+  if [[ -z "$version" ]]; then
+    echo "  Could not fetch version for $pname"
+    continue
+  fi
+  echo "  Latest version: $version"
+
+  # 3. URL 生成
+  url="https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz"
+
+  # 4. ソースハッシュ取得
+  echo "  Fetching source hash..."
+  hash=$(nix-prefetch-url --unpack "$url")
+  sri=$(nix hash convert --hash-algo sha256 --to sri "$hash")
+  echo "  Hash: $sri"
+
+  # 5. npmDepsHash 計算
+  echo "  Calculating npmDepsHash..."
+  npmDepsHash=$(nix build --impure --expr "((import <nixpkgs> {}).callPackage ./. {}).\"$pname\"" 2>&1 \
+    | grep 'got:' | awk '{print $2}' || echo "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+  echo "  npmDepsHash: $npmDepsHash"
+
+  # 6. default.nix に安全に反映
+  awk -v pname="$pname" -v version="$version" -v hash="$sri" -v deps="$npmDepsHash" '
   BEGIN { inBlock=0 }
   {
     if ($0 ~ "pname = \"" pname "\"") inBlock=1
+    if (inBlock && $0 ~ "version =") sub(/".*"/, "\"" version "\"")
+    if (inBlock && $0 ~ "hash =") sub(/".*"/, "\"" hash "\"")
     if (inBlock && $0 ~ "npmDepsHash =") sub(/".*"/, "\"" deps "\"")
     if (inBlock && $0 ~ "};") inBlock=0
     print
-  }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
+  }' "$DEFAULT_NIX" > "$TMP_NIX"
 
-  mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
+  mv "$TMP_NIX" "$DEFAULT_NIX"
+  echo "  $pname updated in default.nix"
 done
 
-# cleanup
-rm "$PKG_JSON"
-
 echo ""
-echo "All Node.js packages initialized with node2nix hashes in $DEFAULT_NIX!"
+echo "All packages initialized and updated successfully!"
 
