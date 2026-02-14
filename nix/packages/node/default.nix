@@ -1,61 +1,71 @@
-{ pkgs, lib ? pkgs.lib }:
+#!/usr/bin/env bash
+set -euo pipefail
 
-let
-  inherit (pkgs) buildNpmPackage fetchurl;
+# -------------------------------
+# update.sh for npm packages in default.nix
+# Pure bash version, no node-env generation
+# -------------------------------
 
-  mkNpmPackage = { pname
-                 , version
-                 , hash
-                 , npmDepsHash
-                 , description
-                 , homepage
-                 , mainProgram ? pname
-                 , license ? lib.licenses.mit }:
-    buildNpmPackage rec {
-      inherit pname version hash npmDepsHash mainProgram;
+DEFAULT_NIX="./default.nix"
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
 
-      src = fetchurl {
-        url = "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz";
-        inherit hash;
-      };
+echo "Initializing npm packages from $DEFAULT_NIX..."
 
-      dontNpmBuild = true;
+# --- Extract packages from default.nix ---
+# Looks for mkNpmPackage { pname = "..." ... };
+PKGS=($(awk '/pname *= *"/ {gsub(/[ ";]/,""); print $3}' "$DEFAULT_NIX"))
 
-      meta = {
-        inherit description homepage license mainProgram;
-      };
-    };
-in
-{
-  nodejs = pkgs.nodejs-20_x;
+echo "Detected packages: ${PKGS[*]}"
 
-  npm = mkNpmPackage {
-    pname        = "npm";
-    version      = "11.10.0";
-    hash         = "088ms8vawca58qxwlzfa4jf1a2a82j49dysijq3v3h4fq394mc59";
-    npmDepsHash  = "";
-    description  = "Node package manager";
-    homepage     = "https://www.npmjs.com/";
-    mainProgram  = "npm";
-  };
+for PKG in "${PKGS[@]}"; do
+  echo "=== Processing $PKG ==="
 
-  npx = mkNpmPackage {
-    pname        = "npx";
-    version      = "10.2.2";
-    hash         = "08y76vn8b1l60mjzg2rlr9h6hcaybdd8xrpx240m1x0zwrd47xwf";
-    npmDepsHash  = "";
-    description  = "npm package runner";
-    homepage     = "https://www.npmjs.com/package/npx";
-    mainProgram  = "npx";
-  };
+  # Get current version from default.nix
+  CURRENT_VERSION=$(awk -v pkg="$PKG" '
+    $0 ~ "pname *= *\"" pkg "\"" {found=1}
+    found && $0 ~ "version *= *\"" {gsub(/.*version *= *"/,""); gsub(/".*/,""); print; exit}
+  ' "$DEFAULT_NIX")
 
-  pnpm = mkNpmPackage {
-    pname        = "pnpm";
-    version      = "10.29.3";
-    hash         = "13gfcxy9y3sa7xrql4p0dy57iiryfji1hkz2cmkx4vmjmnrv36lx";
-    npmDepsHash  = "";
-    description  = "Fast, disk space efficient package manager";
-    homepage     = "https://pnpm.io/";
-  };
-}
+  # Get latest version from npm
+  LATEST_VERSION=$(npm view "$PKG" version 2>/dev/null || echo "")
+  if [[ -z $LATEST_VERSION ]]; then
+    echo "  Could not fetch latest version for $PKG, skipping."
+    continue
+  fi
+  echo "  $CURRENT_VERSION -> $LATEST_VERSION"
+
+  # Fetch new source hash
+  URL="https://registry.npmjs.org/$PKG/-/$PKG-$LATEST_VERSION.tgz"
+  HASH=$(nix-prefetch-url --unpack "$URL")
+  echo "  Source hash: $HASH"
+
+  # Compute npmDepsHash
+  PKGDIR="$TMPDIR/$PKG"
+  mkdir -p "$PKGDIR"
+  pushd "$PKGDIR" >/dev/null
+  npm init -y >/dev/null
+  npm install "$PKG@$LATEST_VERSION" --package-lock-only >/dev/null
+  NPMDEPSHASH=$(nix hash path ./node_modules --type sha256)
+  popd >/dev/null
+  echo "  npmDepsHash: $NPMDEPSHASH"
+
+  # Update default.nix
+  awk -v pkg="$PKG" -v ver="$LATEST_VERSION" -v hash="$HASH" -v deps="$NPMDEPSHASH" '
+    BEGIN {inBlock=0}
+    {
+      if ($0 ~ "pname *= *\"" pkg "\"") inBlock=1
+      if (inBlock && $0 ~ "version *= *") $0 = gensub(/version *= *".*"/, "version = \"" ver "\"", "g")
+      if (inBlock && $0 ~ "hash *= *") $0 = gensub(/hash *= *".*"/, "hash = \"" hash "\"", "g")
+      if (inBlock && $0 ~ "npmDepsHash *= *") $0 = gensub(/npmDepsHash *= *".*"/, "npmDepsHash = \"" deps "\"", "g")
+      if (inBlock && $0 ~ "};") inBlock=0
+      print
+    }' "$DEFAULT_NIX" > "$DEFAULT_NIX.tmp"
+  mv "$DEFAULT_NIX.tmp" "$DEFAULT_NIX"
+
+  echo "  $PKG updated in $DEFAULT_NIX"
+done
+
+echo ""
+echo "All packages updated in $DEFAULT_NIX!"
 
