@@ -1,8 +1,8 @@
 {
   description = "nazozo dotfiles (multi-system, apps + nom)";
 
-  # ✅ 追加: cachix.nix を flake に適用
-   nixConfig =
+  # ✅ nix/cachix.nix を安全に読み込む
+  nixConfig =
     let
       cachix = import ./nix/cachix.nix;
     in
