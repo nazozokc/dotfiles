@@ -24,7 +24,12 @@ for PNAME in "${PACKAGES[@]}"; do
     echo "=== Processing $PNAME ==="
 
     # default.nix から現在のバージョンを取得
-    VERSION=$(grep -A1 "pname\s*=\s*\"$PNAME\"" "$DEFAULT_NIX" | grep 'version' | grep -oP '"\K[^"]+')
+    # default.nix から現在のバージョンを取得（末尾セミコロンを除去）
+VERSION=$(grep -A1 "pname\s*=\s*\"$PNAME\"" "$DEFAULT_NIX" \
+          | grep 'version' \
+          | sed -E 's/.*"([^"]+)".*/\1/' \
+          | tr -d '[:space:]')
+
     if [[ -z "$VERSION" ]]; then
         echo "  Could not find version for $PNAME, skipping."
         continue
