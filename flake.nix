@@ -50,9 +50,9 @@
           extraSpecialArgs = { inherit username; };
           modules = [
             ./nix/shared.nix
-            ./nix/home-manager/common.nix
-            ./nix/home-manager/linux.nix
-            ./nix/home-manager/symlinks.nix
+            ./nix/modules/home-manager/common.nix
+            ./nix/modules/home-manager/linux.nix
+            ./nix/modules/home-manager/symlinks.nix
           ];
         };
 
@@ -64,9 +64,9 @@
           system = "aarch64-darwin";
           specialArgs = { inherit username; };
           modules = [
-            ./nix/os/darwin.nix
-            ./nix/home-manager/common.nix
-            ./nix/home-manager/symlinks.nix
+            ./nix/modules/os/darwin.nix
+            ./nix/modules/home-manager/common.nix
+            ./nix/modules/home-manager/symlinks.nix
           ];
         };
 
