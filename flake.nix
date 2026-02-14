@@ -20,15 +20,14 @@
     let
       username = "nazozokc";
 
+      # ✅ 追加: overlay を一度定義
+      overlay = import ./nix/overlays;
+
       pkgsFor = system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
-
-          # ✅ ここだけ追加
-          overlays = [
-            (import ./nix/overlays)
-          ];
+          overlays = [ overlay ];
         };
 
       linuxPkgs = pkgsFor "x86_64-linux";
@@ -69,6 +68,12 @@
           system = "aarch64-darwin";
           specialArgs = { inherit username; };
           modules = [
+            # ✅ ここ追加（重要）
+            {
+              nixpkgs.overlays = [ overlay ];
+              nixpkgs.config.allowUnfree = true;
+            }
+
             ./nix/modules/os/darwin.nix
             ./nix/modules/home-manager/common.nix
             ./nix/modules/home-manager/symlinks.nix
