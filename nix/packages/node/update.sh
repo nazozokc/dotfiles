@@ -11,7 +11,7 @@ if [[ ! -f "$DEFAULT_NIX" ]]; then
 fi
 
 # Node / npm / pnpm / CLI ツールのリスト
-PACKAGES=("nodejs" "npm" "npx" "pnpm" "npm-cli-tool" "pnpm-cli-tools" "npx-cli-tools")
+PACKAGES=("npm" "npx" "pnpm" "npm-cli-tool" "pnpm-cli-tools" "npx-cli-tools")
 
 update_package() {
     local pkg="$1"
