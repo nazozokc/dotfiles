@@ -1,21 +1,29 @@
-# cachix.nix
-# Minimal binary cache configuration (official cache only)
+# minimal-binary-cache.nix
+# Official cache.nixos.org only
 
 let
   substituters = [
-    "https://cache.nixos.org"
+    "https://cache.nixos.org/"
   ];
 
-  publicKeys = [
+  trustedPublicKeys = [
     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
   ];
 in
 {
-  inherit substituters publicKeys;
+  # Standard Nix configuration
+  nix.settings = {
+    substituters = substituters;
+    trusted-public-keys = trustedPublicKeys;
 
-  flakeConfig = {
+    # Strictly prevent additional substituters
+    require-sigs = true;
+  };
+
+  # Flake configuration
+  nixConfig = {
     extra-substituters = substituters;
-    extra-trusted-public-keys = publicKeys;
+    extra-trusted-public-keys = trustedPublicKeys;
   };
 }
 

@@ -1,12 +1,18 @@
 {
   description = "nazozo dotfiles (multi-system, apps + nom)";
 
-  # ✅ nix/cachix.nix を安全に読み込む
-  nixConfig =
-    let
-      cachix = import ./nix/cachix.nix;
-    in
-      cachix.flakeConfig;
+  ########################################
+  # Minimal binary cache (official only)
+  ########################################
+  nixConfig = {
+    extra-substituters = [
+      "https://cache.nixos.org/"
+    ];
+
+    extra-trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+  };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
