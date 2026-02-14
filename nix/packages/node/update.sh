@@ -21,15 +21,20 @@ update_package() {
     echo "  Already latest version: $current_version"
   fi
 
+  # fetch new tarball hash
   local url="https://registry.npmjs.org/${npm_name}/-/${pname}-${latest_version}.tgz"
   echo "  Fetching new hash..."
   local new_hash
   new_hash=$(nix-prefetch-url --unpack "$url")
   perl -0777 -pi -e "s/(pname = \"$pname\".*?hash = \")sha256-[^\"]+/\$1$new_hash/s" "$DEFAULT_NIX"
 
+  # Calculate npmDepsHash
   echo "  Calculating npmDepsHash..."
   local deps_hash
-  deps_hash=$(nix build --impure --expr "((import ./default.nix {}).$pname)" --no-out-link | grep -oE 'sha256-[a-zA-Z0-9+/=]+' | head -1)
+  deps_hash=$(nix build --impure --expr "(import ./default.nix {}).$pname" 2>&1 \
+    | grep -oE 'sha256-[a-zA-Z0-9+/=]+' \
+    | head -1)
+
   if [[ -n "$deps_hash" ]]; then
     perl -0777 -pi -e "s/(pname = \"$pname\".*?npmDepsHash = \")sha256-[^\"]+/\$1$deps_hash/s" "$DEFAULT_NIX"
   fi
