@@ -35,7 +35,7 @@ in
   npm = mkNpmPackage {
     pname = "npm";
     version = "10.3.0";
-    hash = "sha256-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=";
+    hash = "sha256-qbBK0sCOwLEHllH7logUSAkVnCTKfco7RkUxrjbSFSE=";
     npmDepsHash = "sha256-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
     description = "Node package manager";
     homepage = "https://www.npmjs.com/";
