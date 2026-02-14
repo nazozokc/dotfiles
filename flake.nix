@@ -92,7 +92,7 @@
         };
 
       ########################################
-      # Apps (nom integrated)
+      # Apps (all nom integrated)
       ########################################
       apps = {
         "x86_64-linux" = {
@@ -114,7 +114,7 @@
               "${linuxPkgs.writeShellScriptBin "flake-update" ''
                 set -e
                 echo "Updating flake.lock..."
-                nix flake update
+                nix flake update |& ${linuxPkgs.nix-output-monitor}/bin/nom
                 echo "Done!"
               ''}/bin/flake-update";
           };
@@ -126,7 +126,8 @@
                 set -e
                 echo "Updating Node.js packages..."
                 ${linuxPkgs.bash}/bin/bash \
-                  ${dotfilesDir-linux}/nix/packages/node/update.sh
+                  ${dotfilesDir-linux}/nix/packages/node/update.sh |& \
+                  ${linuxPkgs.nix-output-monitor}/bin/nom
                 echo "Done!"
               ''}/bin/node-update";
           };
@@ -151,7 +152,7 @@
               "${darwinPkgs.writeShellScriptBin "flake-update" ''
                 set -e
                 echo "Updating flake.lock..."
-                nix flake update
+                nix flake update |& ${darwinPkgs.nix-output-monitor}/bin/nom
                 echo "Done!"
               ''}/bin/flake-update";
           };
@@ -163,7 +164,8 @@
                 set -e
                 echo "Updating Node.js packages..."
                 ${darwinPkgs.bash}/bin/bash \
-                  ${dotfilesDir-darwin}/nix/packages/node/update.sh
+                  ${dotfilesDir-darwin}/nix/packages/node/update.sh |& \
+                  ${darwinPkgs.nix-output-monitor}/bin/nom
                 echo "Done!"
               ''}/bin/node-update";
           };
