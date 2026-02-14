@@ -1,6 +1,7 @@
 {
   description = "nazozo dotfiles (multi-system, apps + nom)";
 
+  # ✅ 追加: cachix.nix を flake に適用
   nixConfig = (import ./nix/cachix.nix).flakeConfig;
 
   inputs = {
@@ -22,7 +23,6 @@
     let
       username = "nazozokc";
 
-      # ✅ 追加: overlay を一度定義
       overlay = import ./nix/overlays;
 
       pkgsFor = system:
@@ -70,7 +70,6 @@
           system = "aarch64-darwin";
           specialArgs = { inherit username; };
           modules = [
-            # ✅ ここ追加（重要）
             {
               nixpkgs.overlays = [ overlay ];
               nixpkgs.config.allowUnfree = true;
