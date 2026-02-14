@@ -4,16 +4,14 @@ set -euo pipefail
 cd "$(dirname "$0")"
 DEFAULT_NIX="default.nix"
 
-# Regenerate package-lock.json for a given npm package
 regenerate_package_lock() {
   local pname="$1"
   local lock_file="$2"
-
-  echo "  Regenerating package-lock.json"
   local tmp_dir
   tmp_dir=$(mktemp -d)
   trap 'rm -rf "$tmp_dir"' RETURN ERR
 
+  echo "  Regenerating package-lock.json for $pname..."
   pushd "$tmp_dir" >/dev/null
   npm pack "$pname" --pack-destination . 2>/dev/null
   tar -xzf ./*.tgz --strip-components=1
@@ -23,7 +21,6 @@ regenerate_package_lock() {
   cp "$tmp_dir/package-lock.json" "$lock_file"
 }
 
-# Extract package list from default.nix (pname)
 get_npm_packages() {
   perl -0777 -ne '
     while (/mkNpmPackage\s*\{(.*?)\};/gs) {
@@ -40,14 +37,12 @@ update_npm_package() {
 
   echo "Updating $pname..."
 
-  # Current version
   current_version=$(grep -A5 "pname = \"$pname\"" "$DEFAULT_NIX" | perl -ne 'print $1 if /version = "([^"]+)"/' | head -1)
   if [[ -z $current_version ]]; then
     echo "  Could not find current version for $pname"
     return
   fi
 
-  # Latest version
   latest_version=$(npm view "$pname" version 2>/dev/null || echo "")
   if [[ -z $latest_version ]]; then
     echo "  Could not fetch latest version for $pname"
@@ -60,28 +55,18 @@ update_npm_package() {
   fi
 
   echo "  Updating from $current_version to $latest_version"
-
-  # Update version in default.nix
   perl -pi -e "BEGIN{\$found=0} if(/pname = \"$pname\"/){\$found=1} if(\$found && /version = \"$current_version\"/){\$_=~s/$current_version/$latest_version/; \$found=0}" "$DEFAULT_NIX"
 
-  # Fetch new source hash
   local url="https://registry.npmjs.org/$pname/-/$pname-$latest_version.tgz"
   new_hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
   new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
-
-  # Update hash in default.nix
   perl -0777 -pi -e "s/(pname = \"$pname\".*?version = \"$latest_version\".*?hash = \")sha256-[^\"]+/\${1}$new_sri/s" "$DEFAULT_NIX"
 
-  # Regenerate package-lock.json
   local lock_file="$pname/package-lock.json"
   mkdir -p "$pname"
   regenerate_package_lock "$pname" "$lock_file"
 
-  # Generate new npmDepsHash using node2nix
-  new_deps_hash=$(nix build --no-link -f <nixpkgs> -E "let pkgs = import <nixpkgs> {}; in pkgs.buildFHSUserEnv { name = \"dummy\"; buildInputs = [ pkgs.nodePackages.node2nix ]; }" >/dev/null 2>&1; \
-      nix hash file --type sha256 "$lock_file")
-
-  # Update npmDepsHash in default.nix
+  new_deps_hash=$(nix hash file --type sha256 "$lock_file")
   perl -0777 -pi -e "s/(pname = \"$pname\".*?npmDepsHash = \")sha256-[^\"]+/\${1}$new_deps_hash/s" "$DEFAULT_NIX"
 
   echo "  Updated $pname to $latest_version"

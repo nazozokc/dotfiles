@@ -3,46 +3,47 @@
 let
   inherit (pkgs) buildNpmPackage fetchzip;
 
-  # Helper for npm CLI packages from registry
-  mkNpmPackage =
-    { pname, version, hash, npmDepsHash, description, homepage, mainProgram ? pname }:
+  mkNpmPackage = { pname, npmName ? pname, version, hash, npmDepsHash, description, homepage, license ? lib.licenses.mit, mainProgram ? pname, forceEmptyCache ? false, npmFlags ? [ ], env ? { }, postInstall ? "" }:
     buildNpmPackage rec {
-      inherit pname version hash npmDepsHash mainProgram description homepage;
+      inherit pname version npmDepsHash npmFlags env postInstall;
+      inherit forceEmptyCache;
+
       src = fetchzip {
-        url = "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz";
+        url = "https://registry.npmjs.org/${npmName}/-/${pname}-${version}.tgz";
         inherit hash;
       };
-      dontNpmBuild = true;
+
       postPatch = ''
+        cp ${./${pname}/package-lock.json} package-lock.json
         mkdir -p node_modules
       '';
-      meta = { inherit description homepage mainProgram; };
+
+      dontNpmBuild = true;
+
+      meta = {
+        inherit description homepage license mainProgram;
+      };
     };
 in
 {
-  # Node 本体とパッケージマネージャ
-  nodejs = pkgs.nodejs-20_x;
-  npm    = pkgs.nodePackages.npm;
-  pnpm   = pkgs.nodePackages.pnpm;
-  npx    = pkgs.nodePackages.npx;
-
-  # ここに CLI ツールを追加できる
-  prettier = mkNpmPackage {
-    pname = "prettier";
-    version = "3.8.1";
+  unocss-language-server = mkNpmPackage {
+    pname = "unocss-language-server";
+    version = "0.1.8";
     hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
     npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
-    description = "Prettier code formatter";
-    homepage = "https://prettier.io";
+    description = "UnoCSS Language Server";
+    homepage = "https://github.com/unocss/unocss";
+    mainProgram = "unocss-language-server";
   };
 
-  eslint = mkNpmPackage {
-    pname = "eslint";
-    version = "10.0.0";
-    hash = "sha256-rsiqy0i81sc66n+hvq9tEKLyiLyA0kSjunOi2LN7ASg=";
-    npmDepsHash = "sha256-ddddddddddddddddddddddddddddddddddddddddddd=";
-    description = "ESLint code linter";
-    homepage = "https://eslint.org";
+  prettier = mkNpmPackage {
+    pname = "prettier";
+    version = "3.9.0";
+    hash = "sha256-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=";
+    npmDepsHash = "sha256-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
+    description = "Prettier code formatter";
+    homepage = "https://prettier.io/";
+    mainProgram = "prettier";
   };
 }
 
