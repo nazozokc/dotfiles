@@ -49,8 +49,6 @@ in
   npm = mkNpmPackage {
     pname = "npm";
     version = "11.10.0";
-    hash = "0000000000000000000000000000000000000000000000000000";
-    npmDepsHash = "";
     description = "Node package manager";
     homepage = "https://www.npmjs.com/";
     mainProgram = "npm";
@@ -59,8 +57,6 @@ in
   pnpm = mkNpmPackage {
     pname = "pnpm";
     version = "10.29.3";
-    hash = "0000000000000000000000000000000000000000000000000000";
-    npmDepsHash = "";
     description = "Fast, disk-space efficient package manager";
     homepage = "https://pnpm.io/";
   };
