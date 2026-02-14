@@ -6,7 +6,7 @@ DEFAULT_NIX="default.nix"
 
 # Regenerate package-lock.json for a given npm package
 regenerate_package_lock() {
-  local npm_name="$1"
+  local pname="$1"
   local lock_file="$2"
 
   echo "  Regenerating package-lock.json"
@@ -15,7 +15,7 @@ regenerate_package_lock() {
   trap 'rm -rf "$tmp_dir"' RETURN ERR
 
   pushd "$tmp_dir" >/dev/null
-  npm pack "$npm_name" --pack-destination . 2>/dev/null
+  npm pack "$pname" --pack-destination . 2>/dev/null
   tar -xzf ./*.tgz --strip-components=1
   npm install --package-lock-only --ignore-scripts 2>/dev/null || true
   popd >/dev/null
@@ -36,7 +36,7 @@ get_npm_packages() {
 
 update_npm_package() {
   local pname="$1"
-  local current_version latest_version new_hash new_sri
+  local current_version latest_version new_hash new_sri new_deps_hash
 
   echo "Updating $pname..."
 
@@ -64,7 +64,7 @@ update_npm_package() {
   # Update version in default.nix
   perl -pi -e "BEGIN{\$found=0} if(/pname = \"$pname\"/){\$found=1} if(\$found && /version = \"$current_version\"/){\$_=~s/$current_version/$latest_version/; \$found=0}" "$DEFAULT_NIX"
 
-  # Fetch new hash
+  # Fetch new source hash
   local url="https://registry.npmjs.org/$pname/-/$pname-$latest_version.tgz"
   new_hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
   new_sri=$(nix hash convert --hash-algo sha256 --to sri "$new_hash")
@@ -72,7 +72,21 @@ update_npm_package() {
   # Update hash in default.nix
   perl -0777 -pi -e "s/(pname = \"$pname\".*?version = \"$latest_version\".*?hash = \")sha256-[^\"]+/\${1}$new_sri/s" "$DEFAULT_NIX"
 
-  echo "  Updated $pname to $latest_version with hash $new_sri"
+  # Regenerate package-lock.json
+  local lock_file="$pname/package-lock.json"
+  mkdir -p "$pname"
+  regenerate_package_lock "$pname" "$lock_file"
+
+  # Generate new npmDepsHash using node2nix
+  new_deps_hash=$(nix build --no-link -f <nixpkgs> -E "let pkgs = import <nixpkgs> {}; in pkgs.buildFHSUserEnv { name = \"dummy\"; buildInputs = [ pkgs.nodePackages.node2nix ]; }" >/dev/null 2>&1; \
+      nix hash file --type sha256 "$lock_file")
+
+  # Update npmDepsHash in default.nix
+  perl -0777 -pi -e "s/(pname = \"$pname\".*?npmDepsHash = \")sha256-[^\"]+/\${1}$new_deps_hash/s" "$DEFAULT_NIX"
+
+  echo "  Updated $pname to $latest_version"
+  echo "    hash=$new_sri"
+  echo "    npmDepsHash=$new_deps_hash"
 }
 
 echo "Updating npm packages..."

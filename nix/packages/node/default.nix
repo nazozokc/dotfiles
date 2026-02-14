@@ -29,7 +29,7 @@ in
   # ここに CLI ツールを追加できる
   prettier = mkNpmPackage {
     pname = "prettier";
-    version = "3.5.0";
+    version = "3.8.1";
     hash = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=";
     npmDepsHash = "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=";
     description = "Prettier code formatter";
@@ -38,8 +38,8 @@ in
 
   eslint = mkNpmPackage {
     pname = "eslint";
-    version = "8.46.0";
-    hash = "sha256-ccccccccccccccccccccccccccccccccccccccccccc=";
+    version = "10.0.0";
+    hash = "sha256-rsiqy0i81sc66n+hvq9tEKLyiLyA0kSjunOi2LN7ASg=";
     npmDepsHash = "sha256-ddddddddddddddddddddddddddddddddddddddddddd=";
     description = "ESLint code linter";
     homepage = "https://eslint.org";
