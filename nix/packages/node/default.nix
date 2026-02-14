@@ -38,7 +38,7 @@ in
 
   prettier = mkNpmPackage {
     pname = "prettier";
-    version = "3.9.0";
+    version = "3.8.1";
     hash = "sha256-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=";
     npmDepsHash = "sha256-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
     description = "Prettier code formatter";
