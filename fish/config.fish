@@ -101,6 +101,7 @@ alias gl "git log --oneline --graph --decorate"
 alias gd "git diff"
 alias gb "git branch"
 alias gco. "git checkout"
+alias lzg "lazygit"
 
 # Docker
 alias d "docker"
@@ -113,6 +114,9 @@ alias ... "cd ../.."
 # システム
 alias df "df -h"
 alias du "du -h"
+
+# nix
+alias ns "nix-shell"
 
 # =========================
 # fish 便利機能
