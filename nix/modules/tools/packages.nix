@@ -23,12 +23,8 @@ with pkgs; [
   node2nix
 
   #development, langs
-  nodejs_24
-  typescript-language-server
   bun
   deno
-  nodePackages.npm
-  nodePackages.pnpm
   nil
   nixd
   pkgs.nixfmt
