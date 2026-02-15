@@ -65,8 +65,8 @@
         inherit system;
         overlays = [
         overlay
-        gh-graph
-        gh-nippou
+        gh-graph.overlays.default
+        gh-nippou.overlays.default
         ];
         config.allowUnfree = true;
       };
