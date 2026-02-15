@@ -26,10 +26,27 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
+
+    gh-graph = {
+      url = "github:kawarimidoll/gh-graph";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    gh-nippou = {
+      url = "github:ryoppippi/gh-nippou";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
   outputs =
-    { self, nixpkgs, home-manager, darwin, ... }@inputs:
+    {
+    self,
+    nixpkgs,
+    home-manager,
+    darwin,
+    gh-nippou,
+    gh-graph,
+    ...
+    }@inputs:
     let
       username = "nazozokc";
 
