@@ -73,3 +73,5 @@ nix run .#update-node-packages
 * OS本体やカーネルは pacman（Linux）や macOS 標準管理に任せる
 * Home Manager によるリンクや設定は既存の dotfiles を上書きする場合があります
 
+# Activity
+![Alt](https://repobeats.axiom.co/api/embed/c4db566c918002010974abbbcc1ee5150bed51da.svg "Repobeats analytics image")
