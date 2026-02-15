@@ -1,6 +1,6 @@
 return {
   "rebelot/kanagawa.nvim",
-  priority = 5000,
+  priority = 1000,
   config = function()
     require("kanagawa").setup({
       transparent = true, -- これが本体
