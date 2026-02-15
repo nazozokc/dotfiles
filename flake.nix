@@ -68,6 +68,8 @@
           (import ./nix/overlays/ai-tools.nix)
           gh-graph.overlays.default
           gh-nippou.overlays.default
+          gh-user-stars.overlays.default
+          gh-triage.overlays.default
         ];
       };
 
