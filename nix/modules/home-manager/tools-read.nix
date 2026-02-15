@@ -1,9 +1,13 @@
 { pkgs, ... }:
 
+let
+  Pkgs = import ../tools/packages.nix { inherit pkgs; };
+in
 {
-  home.packages =
-    let
-      Pkgs = import ../tools/packages.nix { inherit pkgs; };
-    in
-    Pkgs;
+  imports = [
+    ../tools/program/gh.nix
+  ];
+
+  home.packages = Pkgs;
 }
+
