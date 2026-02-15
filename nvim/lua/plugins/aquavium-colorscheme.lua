@@ -9,11 +9,11 @@ return {
             -- options
 
             ---- For example,
-           bold = false,
-           italic = false,
-           transparent = false,
+           -- bold = false,
+           -- italic = false,
+           -- transparent = false,
         })
 
         vim.cmd("colorscheme Aquavium")
     end,
-},
+}
