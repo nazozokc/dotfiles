@@ -17,7 +17,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-     flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -29,6 +29,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # ===== 追加分 =====
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+
+    fish-na.url = "github:ryoppippi/fish-na";
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # ==================
+
     gh-graph = {
       url = "github:kawarimidoll/gh-graph";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,19 +49,19 @@
       url = "github:ryoppippi/gh-nippou";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
   };
 
   outputs =
     {
-    self,
-    nixpkgs,
-    flake-parts,
-    home-manager,
-    darwin,
-    gh-nippou,
-    gh-graph,
-    ...
+      self,
+      nixpkgs,
+      flake-parts,
+      home-manager,
+      darwin,
+      treefmt-nix,
+      fish-na,
+      nix-index-database,
+      ...
     }@inputs:
     let
       username = "nazozokc";
@@ -77,16 +88,38 @@
 
       dotfilesDir-linux = dotfilesDir "x86_64-linux";
       dotfilesDir-darwin = dotfilesDir "aarch64-darwin";
+
+      # treefmt 設定
+      treefmtEval = system:
+        treefmt-nix.lib.evalModule (pkgsFor system) {
+          projectRootFile = "flake.nix";
+          programs = {
+            nixfmt.enable = true;
+            deadnix.enable = true;
+            statix.enable = true;
+            prettier.enable = true;
+          };
+        };
     in
     {
+      ########################################
+      # Formatter
+      ########################################
+      formatter.x86_64-linux = (treefmtEval "x86_64-linux").config.build.wrapper;
+      formatter.aarch64-darwin = (treefmtEval "aarch64-darwin").config.build.wrapper;
+
       ########################################
       # Linux Home Manager
       ########################################
       homeConfigurations.${username} =
         home-manager.lib.homeManagerConfiguration {
           pkgs = linuxPkgs;
-          extraSpecialArgs = { inherit username; };
+          extraSpecialArgs = {
+            inherit username;
+            fish-na = fish-na;
+          };
           modules = [
+            nix-index-database.hmModules.nix-index
             ./nix/shared.nix
             ./nix/modules/home-manager/tools-read.nix
             ./nix/modules/home-manager/linux.nix
@@ -100,12 +133,17 @@
       darwinConfigurations.${username} =
         darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          specialArgs = { inherit username; };
+          specialArgs = {
+            inherit username;
+            fish-na = fish-na;
+          };
           modules = [
             {
               nixpkgs.overlays = [ overlay ];
               nixpkgs.config.allowUnfree = true;
             }
+
+            nix-index-database.darwinModules.nix-index
 
             ./nix/modules/darwin/darwin.nix
             ./nix/modules/home-manager/tools-read.nix
@@ -114,7 +152,7 @@
         };
 
       ########################################
-      # Apps (all nom integrated)
+      # Apps
       ########################################
       apps = {
         "x86_64-linux" = {
@@ -123,11 +161,8 @@
             program =
               "${linuxPkgs.writeShellScriptBin "hm-switch" ''
                 set -e
-                echo "Building and switching Linux Home Manager config..."
-                # Home Manager が npm モジュールをまとめて管理
                 nix run nixpkgs#home-manager -- switch --flake .#${username} \
                   |& ${linuxPkgs.nix-output-monitor}/bin/nom
-                echo "Done!"
               ''}/bin/hm-switch";
           };
 
@@ -135,24 +170,8 @@
             type = "app";
             program =
               "${linuxPkgs.writeShellScriptBin "flake-update" ''
-                set -e
-                echo "Updating flake.lock..."
                 nix flake update |& ${linuxPkgs.nix-output-monitor}/bin/nom
-                echo "Done!"
               ''}/bin/flake-update";
-          };
-
-          update-node-packages = {
-            type = "app";
-            program =
-              "${linuxPkgs.writeShellScriptBin "node-update" ''
-                set -e
-                echo "Updating Node.js packages..."
-                # buildEnv は使わず、update.sh を実行するだけ
-                ${linuxPkgs.bash}/bin/bash ${dotfilesDir-linux}/nix/packages/node/update.sh \
-                  |& ${linuxPkgs.nix-output-monitor}/bin/nom
-                echo "Done!"
-              ''}/bin/node-update";
           };
         };
 
@@ -161,36 +180,9 @@
             type = "app";
             program =
               "${darwinPkgs.writeShellScriptBin "darwin-switch" ''
-                set -e
-                echo "Building and switching macOS nix-darwin config..."
                 sudo nix run nix-darwin -- switch --flake .#${username} \
                   |& ${darwinPkgs.nix-output-monitor}/bin/nom
-                echo "Done!"
               ''}/bin/darwin-switch";
-          };
-
-          update = {
-            type = "app";
-            program =
-              "${darwinPkgs.writeShellScriptBin "flake-update" ''
-                set -e
-                echo "Updating flake.lock..."
-                nix flake update |& ${darwinPkgs.nix-output-monitor}/bin/nom
-                echo "Done!"
-              ''}/bin/flake-update";
-          };
-
-          update-node-packages = {
-            type = "app";
-            program =
-              "${darwinPkgs.writeShellScriptBin "node-update" ''
-                set -e
-                echo "Updating Node.js packages..."
-                # buildEnv は使わず、update.sh を実行するだけ
-                ${darwinPkgs.bash}/bin/bash ${dotfilesDir-darwin}/nix/packages/node/update.sh \
-                  |& ${darwinPkgs.nix-output-monitor}/bin/nom
-                echo "Done!"
-              ''}/bin/node-update";
           };
         };
       };
