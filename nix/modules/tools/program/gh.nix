@@ -18,8 +18,6 @@
       # Custom extensions from overlay
       pkgs.gh-graph
       pkgs.gh-nippou
-      pkgs.gh-user-stars
-      pkgs.gh-triage
     ];
   };
 }
