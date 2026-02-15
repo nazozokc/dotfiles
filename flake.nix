@@ -7,7 +7,6 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos.org/"
-      "https://cache.numtide.com"
     ];
 
     extra-trusted-public-keys = [
