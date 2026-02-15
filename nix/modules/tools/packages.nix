@@ -8,9 +8,9 @@ with pkgs; [
   zed
 
   #CLI tools
-  coreutils
-  bun
   jq
+  bat
+  trash-cli
   curl
   wget
   zoxide
@@ -20,6 +20,16 @@ with pkgs; [
   which
   fzf
   node2nix
+
+  #development, langs
+  nodejs_24
+  bun
+  deno
+  nodePackages.npm
+  nodePackages.pnpm
+  nil
+  nixd
+  nixPkgs.nixfmt
   
   #github
   git
