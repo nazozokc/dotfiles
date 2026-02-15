@@ -13,6 +13,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,13 +27,34 @@
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
+    gh-graph = {
+      url = "github:kawarimidoll/gh-graph";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+     gh-nippou = {
+      url = "github:ryoppippi/gh-nippou";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, treefmt-nix, nix-index-database, ... }:
+  outputs = {
+  self,
+  nixpkgs,
+  home-manager,
+  darwin,
+  treefmt-nix,
+  gh-graph,
+  gh-nippou,
+  flake-parts,
+  nix-index-database,
+  ...
+  }:
   let
     username = "nazozokc";
 
