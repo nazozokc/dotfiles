@@ -102,6 +102,7 @@
               "${linuxPkgs.writeShellScriptBin "hm-switch" ''
                 set -e
                 echo "Building and switching Linux Home Manager config..."
+                # Home Manager が npm モジュールをまとめて管理
                 nix run nixpkgs#home-manager -- switch --flake .#${username} \
                   |& ${linuxPkgs.nix-output-monitor}/bin/nom
                 echo "Done!"
@@ -125,9 +126,9 @@
               "${linuxPkgs.writeShellScriptBin "node-update" ''
                 set -e
                 echo "Updating Node.js packages..."
-                ${linuxPkgs.bash}/bin/bash \
-                  ${dotfilesDir-linux}/nix/packages/node/update.sh |& \
-                  ${linuxPkgs.nix-output-monitor}/bin/nom
+                # buildEnv は使わず、update.sh を実行するだけ
+                ${linuxPkgs.bash}/bin/bash ${dotfilesDir-linux}/nix/packages/node/update.sh \
+                  |& ${linuxPkgs.nix-output-monitor}/bin/nom
                 echo "Done!"
               ''}/bin/node-update";
           };
@@ -163,9 +164,9 @@
               "${darwinPkgs.writeShellScriptBin "node-update" ''
                 set -e
                 echo "Updating Node.js packages..."
-                ${darwinPkgs.bash}/bin/bash \
-                  ${dotfilesDir-darwin}/nix/packages/node/update.sh |& \
-                  ${darwinPkgs.nix-output-monitor}/bin/nom
+                # buildEnv は使わず、update.sh を実行するだけ
+                ${darwinPkgs.bash}/bin/bash ${dotfilesDir-darwin}/nix/packages/node/update.sh \
+                  |& ${darwinPkgs.nix-output-monitor}/bin/nom
                 echo "Done!"
               ''}/bin/node-update";
           };
