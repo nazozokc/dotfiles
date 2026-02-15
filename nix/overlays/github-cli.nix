@@ -1,5 +1,3 @@
-{ gh-graph, gh-nippou }:
-
 final: prev:
 
 let
