@@ -24,6 +24,7 @@ with pkgs; [
 
   #development, langs
   nodejs_24
+  typescript-language-server
   bun
   deno
   nodePackages.npm
@@ -33,7 +34,6 @@ with pkgs; [
   pkgs.nixfmt
   rustc
   rust-analyzer
-  rust
   python312
   
   #github
