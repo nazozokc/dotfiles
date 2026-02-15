@@ -1,4 +1,5 @@
 # このdotfilesについて
+
 このdotfilesはnixにより管理されています
 nixコマンドは以下のようになっています
 
@@ -12,14 +13,15 @@ nixコマンドは以下のようになっています
 github repositoryは<https://github.com/nazozokc/dotfiles>です。必要に応じて参照してください
 
 また、この他にもnixの構成を作る上で参考になるgithub repositoryは以下のURLです
-<https://github.com/ryoppippi/dotfiles/tree/main> 
-<https://github.com/mozumasu/dotfiles/tree/main> 
-<https://github.com/ntsk/dotfiles> 
+<https://github.com/ryoppippi/dotfiles/tree/main>
+<https://github.com/mozumasu/dotfiles/tree/main>
+<https://github.com/ntsk/dotfiles>
 
 ---
 
 わたしのdotfilesはhome-managerとnix-darwin、主にhome-managerでパッケージ管理を行っています。
 その他管理している設定ファイルは以下です
+
 - neovim
 - wezterm
 - fish

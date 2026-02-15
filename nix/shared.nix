@@ -1,4 +1,4 @@
-{ pkgs, lib, username, ... }:
+{ pkgs, username, ... }:
 
 {
   ########################################
@@ -6,10 +6,7 @@
   ########################################
   home.username = username;
 
-  home.homeDirectory =
-    if pkgs.stdenv.isDarwin
-    then "/Users/${username}"
-    else "/home/${username}";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
 
   # Home Manager の互換性バージョン
   home.stateVersion = "24.05";
@@ -24,4 +21,3 @@
   ########################################
   programs.home-manager.enable = true;
 }
-

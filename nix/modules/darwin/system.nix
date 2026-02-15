@@ -1,4 +1,4 @@
-{ pkgs, lib, username, ... }:
+{ pkgs, username, ... }:
 
 {
   ########################################
@@ -11,7 +11,10 @@
   ########################################
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = true;
       trusted-users = [ username ];
     };
@@ -60,4 +63,3 @@
     nerd-fonts.fira-code
   ];
 }
-

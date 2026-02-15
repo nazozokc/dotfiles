@@ -1,4 +1,4 @@
-{ inputs, username, ... }:
+{ username, ... }:
 
 {
   ########################################
@@ -18,4 +18,3 @@
     users.${username} = import ../home-manager/common.nix;
   };
 }
-

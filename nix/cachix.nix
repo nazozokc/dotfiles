@@ -13,7 +13,7 @@ in
 {
   # Standard Nix configuration
   nix.settings = {
-    substituters = substituters;
+    inherit substituters;
     trusted-public-keys = trustedPublicKeys;
 
     # Strictly prevent additional substituters
@@ -26,4 +26,3 @@ in
     extra-trusted-public-keys = trustedPublicKeys;
   };
 }
-

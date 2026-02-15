@@ -29,7 +29,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # ===== 追加分 =====
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
     fish-na.url = "github:ryoppippi/fish-na";
@@ -53,22 +52,23 @@
 
   outputs =
     {
-      self,
       nixpkgs,
-      flake-parts,
       home-manager,
       darwin,
       treefmt-nix,
+      gh-nippou,
+      gh-graph,
       fish-na,
       nix-index-database,
       ...
-    }@inputs:
+    }:
     let
       username = "nazozokc";
 
       overlay = import ./nix/overlays;
 
-      pkgsFor = system:
+      pkgsFor =
+        system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
@@ -78,19 +78,9 @@
       linuxPkgs = pkgsFor "x86_64-linux";
       darwinPkgs = pkgsFor "aarch64-darwin";
 
-      homeDir = system:
-        if builtins.match ".*-darwin" system != null
-        then "/Users/${username}"
-        else "/home/${username}";
-
-      dotfilesDir = system:
-        "${homeDir system}/ghq/github.com/nazozokc/dotfiles";
-
-      dotfilesDir-linux = dotfilesDir "x86_64-linux";
-      dotfilesDir-darwin = dotfilesDir "aarch64-darwin";
-
       # treefmt 設定
-      treefmtEval = system:
+      treefmtEval =
+        system:
         treefmt-nix.lib.evalModule (pkgsFor system) {
           projectRootFile = "flake.nix";
           programs = {
@@ -111,45 +101,43 @@
       ########################################
       # Linux Home Manager
       ########################################
-      homeConfigurations.${username} =
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = linuxPkgs;
-          extraSpecialArgs = {
-            inherit username;
-            fish-na = fish-na;
-          };
-          modules = [
-            nix-index-database.hmModules.nix-index
-            ./nix/shared.nix
-            ./nix/modules/home-manager/tools-read.nix
-            ./nix/modules/home-manager/linux.nix
-            ./nix/modules/home-manager/symlinks.nix
-          ];
+      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+        pkgs = linuxPkgs;
+        extraSpecialArgs = {
+          inherit username;
+          inherit fish-na;
         };
+        modules = [
+          nix-index-database.hmModules.nix-index
+          ./nix/shared.nix
+          ./nix/modules/home-manager/tools-read.nix
+          ./nix/modules/home-manager/linux.nix
+          ./nix/modules/home-manager/symlinks.nix
+        ];
+      };
 
       ########################################
       # macOS nix-darwin
       ########################################
-      darwinConfigurations.${username} =
-        darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = {
-            inherit username;
-            fish-na = fish-na;
-          };
-          modules = [
-            {
-              nixpkgs.overlays = [ overlay ];
-              nixpkgs.config.allowUnfree = true;
-            }
-
-            nix-index-database.darwinModules.nix-index
-
-            ./nix/modules/darwin/darwin.nix
-            ./nix/modules/home-manager/tools-read.nix
-            ./nix/modules/home-manager/symlinks.nix
-          ];
+      darwinConfigurations.${username} = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit username;
+          inherit fish-na;
         };
+        modules = [
+          {
+            nixpkgs.overlays = [ overlay ];
+            nixpkgs.config.allowUnfree = true;
+          }
+
+          nix-index-database.darwinModules.nix-index
+
+          ./nix/modules/darwin/darwin.nix
+          ./nix/modules/home-manager/tools-read.nix
+          ./nix/modules/home-manager/symlinks.nix
+        ];
+      };
 
       ########################################
       # Apps
@@ -158,34 +146,30 @@
         "x86_64-linux" = {
           switch = {
             type = "app";
-            program =
-              "${linuxPkgs.writeShellScriptBin "hm-switch" ''
-                set -e
-                nix run nixpkgs#home-manager -- switch --flake .#${username} \
-                  |& ${linuxPkgs.nix-output-monitor}/bin/nom
-              ''}/bin/hm-switch";
+            program = "${linuxPkgs.writeShellScriptBin "hm-switch" ''
+              set -e
+              nix run nixpkgs#home-manager -- switch --flake .#${username} \
+                |& ${linuxPkgs.nix-output-monitor}/bin/nom
+            ''}/bin/hm-switch";
           };
 
           update = {
             type = "app";
-            program =
-              "${linuxPkgs.writeShellScriptBin "flake-update" ''
-                nix flake update |& ${linuxPkgs.nix-output-monitor}/bin/nom
-              ''}/bin/flake-update";
+            program = "${linuxPkgs.writeShellScriptBin "flake-update" ''
+              nix flake update |& ${linuxPkgs.nix-output-monitor}/bin/nom
+            ''}/bin/flake-update";
           };
         };
 
         "aarch64-darwin" = {
           switch = {
             type = "app";
-            program =
-              "${darwinPkgs.writeShellScriptBin "darwin-switch" ''
-                sudo nix run nix-darwin -- switch --flake .#${username} \
-                  |& ${darwinPkgs.nix-output-monitor}/bin/nom
-              ''}/bin/darwin-switch";
+            program = "${darwinPkgs.writeShellScriptBin "darwin-switch" ''
+              sudo nix run nix-darwin -- switch --flake .#${username} \
+                |& ${darwinPkgs.nix-output-monitor}/bin/nom
+            ''}/bin/darwin-switch";
           };
         };
       };
     };
 }
-

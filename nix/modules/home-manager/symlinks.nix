@@ -1,7 +1,7 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, ... }:
 
 let
-  homeDir     = config.home.homeDirectory;
+  homeDir = config.home.homeDirectory;
   dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
 in
 {
@@ -13,4 +13,3 @@ in
     ln -sfn "${dotfilesDir}/wezterm"     "${homeDir}/.config/wezterm"
   '';
 }
-

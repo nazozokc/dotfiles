@@ -10,4 +10,3 @@ let
   applyOverlays = builtins.foldl' (acc: overlay: acc // (import overlay final prev)) { } overlayFiles;
 in
 applyOverlays
-

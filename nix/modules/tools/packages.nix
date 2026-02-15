@@ -1,6 +1,7 @@
 { pkgs }:
 
-with pkgs; [
+with pkgs;
+[
 
   #Editor
   neovim
@@ -31,7 +32,7 @@ with pkgs; [
   rustc
   rust-analyzer
   python312
-  
+
   #github
   git
   gh
