@@ -63,12 +63,13 @@
     pkgsFor = system:
       import nixpkgs {
         inherit system;
-        overlays = [
-        overlay
-        gh-graph.overlays.default
-        gh-nippou.overlays.default
-        ];
         config.allowUnfree = true;
+        overlays = [
+          (import ./nix/overlays/ai-tools.nix)
+          (import ./nix/overlays/github-cli.nix)
+          gh-graph.overlays.default
+          gh-nippou.overlays.default
+        ];
       };
 
     linuxPkgs = pkgsFor "x86_64-linux";
