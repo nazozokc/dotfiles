@@ -16,6 +16,7 @@ with pkgs; [
   zoxide
   tree
   htop
+  fastfetch
   file
   which
   fzf
@@ -32,6 +33,7 @@ with pkgs; [
   pkgs.nixfmt
   rustc
   rust-analyzer
+  rust
   python312
   
   #github
