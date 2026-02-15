@@ -29,7 +29,7 @@ with pkgs; [
   nodePackages.pnpm
   nil
   nixd
-  nixPkgs.nixfmt
+  pkgs.nixfmt
   rustc
   rust-analyzer
   python312
