@@ -30,6 +30,9 @@ with pkgs; [
   nil
   nixd
   nixPkgs.nixfmt
+  rustc
+  rust-analyzer
+  python312
   
   #github
   git
