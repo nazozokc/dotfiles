@@ -63,7 +63,11 @@
     pkgsFor = system:
       import nixpkgs {
         inherit system;
-        overlays = [ overlay ];
+        overlays = [
+        overlay
+        gh-graph
+        gh-nippou
+        ];
         config.allowUnfree = true;
       };
 

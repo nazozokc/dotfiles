@@ -3,6 +3,7 @@ let
   # 読み込む overlay ファイル一覧
   overlayFiles = [
     ./ai-tools.nix
+    ./github-cli.nix
     # 将来的に他の overlay をここに追加できる
   ];
 
