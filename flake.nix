@@ -106,7 +106,6 @@
           ./nix/modules/home-manager/tools-read.nix
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
-          ./nix/modules/tools/program/gh.nix
         ];
       };
 
@@ -121,7 +120,6 @@
           ./nix/modules/darwin/darwin.nix 
           ./nix/modules/home-manager/tools-read.nix 
           ./nix/modules/home-manager/symlinks.nix
-          ./nix/modules/tools/program/gh.nix
         ];
       };
 
