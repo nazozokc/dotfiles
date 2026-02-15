@@ -15,6 +15,8 @@
 
     flake-parts.url = "github:hercules-ci/flake-parts";
 
+    nix-filter.url = "github:numtide/nix-filter";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,6 +55,7 @@
   gh-nippou,
   flake-parts,
   nix-index-database,
+  nix-filter,
   ...
   }:
   let
