@@ -51,6 +51,8 @@ in
     version = "11.10.0";
     description = "Node package manager";
     homepage = "https://www.npmjs.com/";
+    hash = lib.fakeSha256;
+    npmDepsHash = lib.fakeSha256;
     mainProgram = "npm";
   };
 
@@ -58,6 +60,8 @@ in
     pname = "pnpm";
     version = "10.29.3";
     description = "Fast, disk-space efficient package manager";
+    hash = lib.fakeSha256;
+    npmDepsHash = lib.fakeSha256;
     homepage = "https://pnpm.io/";
   };
 }
