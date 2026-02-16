@@ -78,7 +78,6 @@
           (import ./nix/overlays/ai-tools.nix)
           gh-graph.overlays.default
           gh-nippou.overlays.default
-          gh-brag.overlays.default
         ];
       };
 
