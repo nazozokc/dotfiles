@@ -9,9 +9,8 @@ in
   ];
 
   home.packages = [
-    Pkgs
-    nodePackages.npm
-    nodePackages.pnpm
-  ];
+  nodePackages.npm
+  nodePackages.pnpm
+];
 }
 
