@@ -140,9 +140,11 @@
       ./nix/modules/darwin/darwin.nix
 
       (import ./nix/modules/home-manager/tools-read.nix {
-        inherit pkgs;
-        nodePackages = import ./nix/packages/node { inherit pkgs; };
-      })
+      pkgs = darwinPkgs;
+      nodePackages = import ./nix/packages/node {
+      pkgs = darwinPkgs;
+    };
+  })
 
       ./nix/modules/home-manager/symlinks.nix
     ];
