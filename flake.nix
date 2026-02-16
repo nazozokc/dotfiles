@@ -41,7 +41,6 @@
 
     gh-brag = {
     url = "github:jackchuka/gh-brag";
-    inputs.nixpkgs.follows = "nixpkgs";
     flake = false;
     };
 
