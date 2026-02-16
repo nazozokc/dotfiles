@@ -18,6 +18,7 @@ with pkgs;
   tree
   htop
   fastfetch
+  eza
   file
   which
   fzf
