@@ -119,7 +119,7 @@
 
       (import ./nix/modules/home-manager/tools-read.nix {
       pkgs = linuxPkgs;
-      nodePackages = import ./nix/packages/node {
+      nodePackages = import ./nix/packages/node/default.nix {
       pkgs = linuxPkgs;
       };
     })
@@ -141,7 +141,7 @@
 
       (import ./nix/modules/home-manager/tools-read.nix {
       pkgs = darwinPkgs;
-      nodePackages = import ./nix/packages/node {
+      nodePackages = import ./nix/packages/node/default.nix {
       pkgs = darwinPkgs;
     };
   })

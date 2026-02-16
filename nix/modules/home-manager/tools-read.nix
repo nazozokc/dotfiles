@@ -10,7 +10,6 @@ in
 
   home.packages = [
     Pkgs
-    nodePackages.nodejs
     nodePackages.npm
     nodePackages.pnpm
   ];
