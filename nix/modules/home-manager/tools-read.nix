@@ -8,6 +8,6 @@ in
     ../tools/program/gh/gh.nix
   ];
 
-  home.packages = pkgs;
+  home.packages = Pkgs;
 }
 
