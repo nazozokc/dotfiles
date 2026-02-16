@@ -100,6 +100,7 @@ alias gp-rebase "git pull --rebase origin main"
 alias gl "git log --oneline --graph --decorate"
 alias gd "git diff"
 alias gb "git branch"
+alias git-graph "gh graph --pixel %E2%96%A0"
 alias gco. "git checkout"
 alias lzg "lazygit"
 
