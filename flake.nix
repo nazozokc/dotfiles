@@ -118,10 +118,11 @@
       ./nix/shared.nix
 
       (import ./nix/modules/home-manager/tools-read.nix {
-        inherit pkgs;
-        nodePackages = import ./nix/packages/node { inherit pkgs; };
-      })
-
+      pkgs = linuxPkgs;
+      nodePackages = import ./nix/packages/node {
+      pkgs = linuxPkgs;
+      };
+    })
       ./nix/modules/home-manager/linux.nix
       ./nix/modules/home-manager/symlinks.nix
     ];
