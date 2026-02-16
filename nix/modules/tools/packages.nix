@@ -22,6 +22,8 @@ with pkgs;
   which
   fzf
   node2nix
+  tmux
+  uv
 
   #development, langs
   bun
@@ -32,6 +34,7 @@ with pkgs;
   rustc
   rust-analyzer
   python312
+  nodejs_24
   npm
   pnpm
 
