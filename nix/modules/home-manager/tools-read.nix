@@ -8,9 +8,6 @@ in
     ../tools/program/gh/gh.nix
   ];
 
-  home.packages = [
-  nodePackages.npm
-  nodePackages.pnpm
-];
+  home.packages = pkgs;
 }
 
