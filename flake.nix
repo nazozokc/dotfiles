@@ -151,6 +151,7 @@
           program =
             "${linuxPkgs.writeShellScriptBin "hm-switch" ''
               set -e
+              echo "linux home-manager configurations"
               nix run nixpkgs#home-manager -- switch --flake .#${username} \
                 |& ${linuxPkgs.nix-output-monitor}/bin/nom
             ''}/bin/hm-switch";
@@ -189,6 +190,7 @@
           type = "app";
           program =
             "${darwinPkgs.writeShellScriptBin "darwin-switch" ''
+            echo "darwin nix-darwin and home-manager configurations"
               sudo nix run nix-darwin -- switch --flake .#${username} \
                 |& ${darwinPkgs.nix-output-monitor}/bin/nom
             ''}/bin/darwin-switch";
