@@ -10,6 +10,7 @@
       # Extensions available in nixpkgs
       pkgs.gh-markdown-preview
       pkgs.gh-dash
+      pkgs.gh-brag
       pkgs.gh-actions-cache
       pkgs.gh-poi
       pkgs.gh-notify
