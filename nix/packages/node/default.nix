@@ -50,6 +50,8 @@ in
     pname = "npm";
     version = "11.10.0";
     description = "Node package manager";
+    hash = "";
+    npmDepsHash = "";
     homepage = "https://www.npmjs.com/";
     mainProgram = "npm";
   };
@@ -58,6 +60,8 @@ in
     pname = "pnpm";
     version = "10.29.3";
     description = "Fast, disk-space efficient package manager";
+    hash = "";
+    npmDepsHash = "";
     homepage = "https://pnpm.io/";
   };
 }
