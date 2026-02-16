@@ -39,6 +39,7 @@ with pkgs;
   pnpm
 
   #github
+  bit
   git
   gh
   ghq
