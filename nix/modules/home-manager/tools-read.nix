@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nodePackages,... }:
 
 let
   Pkgs = import ../tools/packages.nix { inherit pkgs; };
@@ -8,6 +8,11 @@ in
     ../tools/program/gh/gh.nix
   ];
 
-  home.packages = Pkgs;
+  home.packages = [
+    Pkgs
+    nodePackages.nodejs
+    nodePackages.npm
+    nodePackages.pnpm
+  ];
 }
 
