@@ -39,6 +39,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    gh-brag = {
+    url = "github:jackchuka/gh-brag";
+    inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,6 +58,7 @@
   treefmt-nix,
   gh-graph,
   gh-nippou,
+  gh-brag,
   flake-parts,
   nix-index-database,
   nix-filter,
@@ -71,6 +77,7 @@
           (import ./nix/overlays/ai-tools.nix)
           gh-graph.overlays.default
           gh-nippou.overlays.default
+          gh-brag.overlays.default
         ];
       };
 
