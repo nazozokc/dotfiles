@@ -36,7 +36,6 @@ with pkgs;
   rust-analyzer
   python312
   nodejs_24
-  npm
   pnpm
 
   #github
