@@ -32,6 +32,8 @@ with pkgs;
   rustc
   rust-analyzer
   python312
+  npm
+  pnpm
 
   #github
   git
