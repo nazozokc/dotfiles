@@ -5,7 +5,8 @@ let
 in
 {
   imports = [
-    ../tools/program/gh.nix
+    ../tools/program/gh/gh.nix
+    ../tools/program/gh/gh-brag.nix
   ];
 
   home.packages = Pkgs;
