@@ -29,7 +29,10 @@ with pkgs;
   ncdu 
   delta
   tldr
+
+  # nix
   nix-tree
+  direnv
 
   #development, langs
   bun
