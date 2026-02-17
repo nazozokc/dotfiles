@@ -29,6 +29,7 @@ with pkgs;
   ncdu 
   delta
   tldr
+  nix-tree
 
   #development, langs
   bun
@@ -49,6 +50,7 @@ with pkgs;
   ghq
   lazygit
   git-wt
+  gitui
 
   #GUI software
   wezterm
