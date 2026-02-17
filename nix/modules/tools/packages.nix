@@ -24,6 +24,7 @@ with pkgs;
   htop
   fastfetch
   neofetch
+  onefetch
   eza
   file
   which
