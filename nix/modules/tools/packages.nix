@@ -29,6 +29,7 @@ with pkgs;
   ncdu 
   delta
   tldr
+  bottom
 
   # nix
   nix-tree
