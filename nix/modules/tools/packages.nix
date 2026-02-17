@@ -8,6 +8,11 @@ with pkgs;
   vscode
   zed
 
+  #shell
+  fish
+  zsh
+  starship
+
   #CLI tools
   jq
   bat
