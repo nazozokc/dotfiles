@@ -80,7 +80,7 @@ alias cp "cp -i"
 alias mv "mv -i"
 alias grep "grep --color=auto"
 alias clr "clear"
-alias ts-enviroment "sudo npm i -D typescript tsx esbuild @types/node @types/express"
+alias ts-enviroment "npm i typescript tsx esbuild @types/node @types/express"
 alias q "exit"
 if command -q exa
     alias ls "exa -lh --icons"
