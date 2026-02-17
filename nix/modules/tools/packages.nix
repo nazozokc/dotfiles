@@ -25,7 +25,9 @@ with pkgs;
   node2nix
   tmux
   uv
-  tor-browser
+  ncdu 
+  delta
+  tldr
 
   #development, langs
   bun
@@ -53,4 +55,5 @@ with pkgs;
   spotify
   discord
   ghostty
+  tor-browser
 ]
