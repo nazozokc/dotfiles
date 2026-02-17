@@ -36,6 +36,8 @@ with pkgs;
   delta
   tldr
   bottom
+  just
+  xh
 
   # nix
   nix-tree
