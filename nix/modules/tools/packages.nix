@@ -18,6 +18,7 @@ with pkgs;
   tree
   htop
   fastfetch
+  neofetch
   eza
   file
   which
