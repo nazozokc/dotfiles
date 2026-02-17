@@ -25,6 +25,7 @@ with pkgs;
   node2nix
   tmux
   uv
+  tor-browser
 
   #development, langs
   bun
