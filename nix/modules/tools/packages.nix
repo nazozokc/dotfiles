@@ -47,6 +47,7 @@ with pkgs;
 
   # docker
   docker
+  lazydocker
 
   #development, langs
   bun
