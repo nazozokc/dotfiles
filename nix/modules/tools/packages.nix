@@ -42,6 +42,7 @@ with pkgs;
   # nix
   nix-tree
   direnv
+  cachix
 
   #development, langs
   bun
