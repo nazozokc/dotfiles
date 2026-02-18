@@ -45,6 +45,8 @@ with pkgs;
   cachix
   niv
 
+  # docker
+
   #development, langs
   bun
   deno
