@@ -25,7 +25,7 @@ function M.apply(config)
   }
 
   -- No aggressive transparency: readable in all lighting and avoids compositing overhead.
-  config.window_background_opacity = 1.0
+  config.window_background_opacity = 0.90
   config.text_background_opacity = 1.0
 
   -- Minimal chrome: resize handles only.
