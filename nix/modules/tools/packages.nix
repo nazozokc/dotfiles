@@ -49,7 +49,6 @@ with pkgs;
   deno
   nil
   nixd
-  rnix-lsp
   pkgs.nixfmt
   rustc
   rust-analyzer
