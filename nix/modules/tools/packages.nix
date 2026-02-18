@@ -46,6 +46,7 @@ with pkgs;
   niv
 
   # docker
+  docker
 
   #development, langs
   bun
@@ -58,6 +59,9 @@ with pkgs;
   python312
   nodejs_24
   pnpm
+
+  #package tools
+  cargo
 
   #github
   bit
