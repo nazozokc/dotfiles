@@ -50,6 +50,7 @@ with pkgs;
   lazydocker
 
   #development, langs
+  stylua
   bun
   deno
   nil
@@ -63,6 +64,8 @@ with pkgs;
 
   #package tools
   cargo
+  cmake
+  ninja
 
   #github
   bit
@@ -72,6 +75,9 @@ with pkgs;
   lazygit
   git-wt
   gitui
+
+  #AGENT
+  kiro-cli
 
   #GUI software
   wezterm
