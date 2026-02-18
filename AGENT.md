@@ -9,7 +9,15 @@ nixコマンドは以下のようになっています
 
 ---
 
-このdotfilesの思想はほかのPCでもすぐに再現可能な開発環境を実現することです
+# このdotfilesの思想
+
+- ほかのPCでもすぐに再現可能な開発環境を実現すること
+- CLIツール、GUIツール、LSPをnixで管理すること
+- 何を管理しているかを一目でわかるようにすること
+
+---
+
+# 参考レポジトリ
 github repositoryは<https://github.com/nazozokc/dotfiles>です。必要に応じて参照してください
 
 また、この他にもnixの構成を作る上で参考になるgithub repositoryは以下のURLです
