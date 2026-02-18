@@ -69,9 +69,8 @@ function M.apply(config)
         -- nil or 1.0 → 透過ON
         -- それ以外     → 不透明
         if not overrides.window_background_opacity
-            or overrides.window_background_opacity == 1.0
+            or overrides.window_background_opacity == 0.90
         then
-          -- 透過ON（作業に支障が出ない最低限）
           overrides.window_background_opacity = 0.75
         else
           -- 透過OFF（完全不透明）
