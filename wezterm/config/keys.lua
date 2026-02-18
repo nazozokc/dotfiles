@@ -69,12 +69,12 @@ function M.apply(config)
         -- nil or 1.0 → 透過ON
         -- それ以外     → 不透明
         if not overrides.window_background_opacity
-            or overrides.window_background_opacity == 0.90
+            or overrides.window_background_opacity == 0.95
         then
           overrides.window_background_opacity = 0.75
         else
           -- 透過OFF（完全不透明）
-          overrides.window_background_opacity = 1.0
+          overrides.window_background_opacity = 0.95
         end
 
         window:set_config_overrides(overrides)
