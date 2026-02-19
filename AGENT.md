@@ -33,5 +33,7 @@ github repositoryは<https://github.com/nazozokc/dotfiles>です。必要に応�
 - neovim
 - wezterm
 - fish
+- bash
+- efm-langserver
 
 上記３つのファイルはnixにより自動的にシンボリックリンクを.configに生成される仕組みとなっています。
