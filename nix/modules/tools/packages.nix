@@ -27,7 +27,6 @@ with pkgs;
   neofetch
   onefetch
   eza
-  file
   which
   fzf
   node2nix
@@ -39,6 +38,9 @@ with pkgs;
   bottom
   just
   xh
+
+  # filer
+  yazi
 
   # nix
   nix-tree
