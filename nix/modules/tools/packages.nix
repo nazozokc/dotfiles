@@ -11,6 +11,7 @@ with pkgs;
   #shell
   fish
   zsh
+  bash
   starship
 
   #CLI tools
