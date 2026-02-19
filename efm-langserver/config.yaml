@@ -1,0 +1,119 @@
+version: 2
+
+log-file: /tmp/efm.log
+log-level: 1
+
+root-markers:
+  - .git/
+  - package.json
+  - tsconfig.json
+  - flake.nix
+  - compile_commands.json
+  - pom.xml
+  - build.gradle
+
+languages:
+  # ========================
+  # JavaScript / TypeScript
+  # ========================
+  javascript:
+    - lint-command: "eslint_d -f unix --stdin --stdin-filename ${INPUT}"
+      lint-stdin: true
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "prettier --stdin-filepath ${INPUT}"
+      format-stdin: true
+
+  typescript:
+    - lint-command: "eslint_d -f unix --stdin --stdin-filename ${INPUT}"
+      lint-stdin: true
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "prettier --stdin-filepath ${INPUT}"
+      format-stdin: true
+
+  typescriptreact:
+    - lint-command: "eslint_d -f unix --stdin --stdin-filename ${INPUT}"
+      lint-stdin: true
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "prettier --stdin-filepath ${INPUT}"
+      format-stdin: true
+
+  # =========
+  # Nix
+  # =========
+  nix:
+    - lint-command: "statix check --stdin"
+      lint-stdin: true
+    - lint-command: "deadnix --stdin"
+      lint-stdin: true
+    - format-command: "nixfmt"
+      format-stdin: true
+
+  # =========
+  # Shell
+  # =========
+  sh:
+    - lint-command: "shellcheck -f gcc -"
+      lint-stdin: true
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "shfmt -i 2 -ci"
+      format-stdin: true
+
+  # =========
+  # Python
+  # =========
+  python:
+    - lint-command: "ruff check --stdin-filename ${INPUT} -"
+      lint-stdin: true
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "ruff format -"
+      format-stdin: true
+
+  # =========
+  # Markdown
+  # =========
+  markdown:
+    - lint-command: "markdownlint -s"
+      lint-stdin: true
+
+  # =========
+  # Lua
+  # =========
+  lua:
+    - format-command: "stylua -"
+      format-stdin: true
+
+  # =========
+  # C
+  # =========
+  c:
+    - lint-command: "clang-tidy ${INPUT} --quiet"
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "clang-format"
+      format-stdin: true
+
+  # =========
+  # C++
+  # =========
+  cpp:
+    - lint-command: "clang-tidy ${INPUT} --quiet"
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "clang-format"
+      format-stdin: true
+
+  # =========
+  # Java
+  # =========
+  java:
+    - lint-command: "checkstyle -f plain ${INPUT}"
+      lint-formats:
+        - "%f:%l:%c: %m"
+    - format-command: "google-java-format -"
+      format-stdin: true
+
