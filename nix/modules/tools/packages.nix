@@ -4,8 +4,8 @@ with pkgs;
 [
 
   #Editor
-  neovim #main
-  vscode #GUI / debug
+  neovim # main
+  vscode # GUI / debug
   zed # experimental
 
   #shell(main: fish)
@@ -32,7 +32,7 @@ with pkgs;
   node2nix
   tmux
   uv
-  ncdu 
+  ncdu
   delta
   tldr
   bottom
@@ -51,14 +51,14 @@ with pkgs;
   # docker
   docker
   lazydocker
-  
+
   # Languages
   python312
   nodejs_24
   bun
   deno
   rustc
-  
+
   # LSP / Formatter
   rust-analyzer
   nil
@@ -82,6 +82,7 @@ with pkgs;
 
   #AGENT
   kiro-cli
+  coderabbit-cli
 
   #GUI software
   wezterm
