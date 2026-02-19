@@ -4,11 +4,11 @@ with pkgs;
 [
 
   #Editor
-  neovim
-  vscode
-  zed
+  neovim #main
+  vscode #GUI / debug
+  zed # experimental
 
-  #shell
+  #shell(main: fish)
   fish
   zsh
   bash
@@ -50,18 +50,20 @@ with pkgs;
   docker
   lazydocker
 
-  #development, langs
-  stylua
-  bun
-  deno
-  nil
-  nixd
-  pkgs.nixfmt
-  rustc
-  rust-analyzer
-  python312
-  nodejs_24
-  pnpm
+# Languages
+python312
+nodejs_24
+bun
+deno
+rustc
+
+# LSP / Formatter
+rust-analyzer
+nil
+nixd
+pkgs.nixfmt
+stylua
+
 
   #package tools
   cargo

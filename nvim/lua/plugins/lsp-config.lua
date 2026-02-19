@@ -65,7 +65,6 @@ return {
 
 			vim.lsp.config("nixd", {
 				capabilities = capabilities,
-				cmd = { "nixfmt" },
 			})
 
 			vim.lsp.config("efm", {
