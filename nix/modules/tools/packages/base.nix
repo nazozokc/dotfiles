@@ -68,7 +68,6 @@ with pkgs;
 
   #util
   presenterm
-  version-lsp
 
   #other
   rename
