@@ -70,54 +70,8 @@ thefuck --alias | source
 # エイリアス
 # =========================
 
-alias vim "nvim"
-alias ll "ls -lh"
-alias lah "ls -lah" 
-alias la "ls -A"
-alias l  "ls -CF"
-alias rm "rm -rf"
-alias cp "cp -i"
-alias mv "mv -i"
-alias grep "grep --color=auto"
-alias clr "clear"
-alias ts-enviroment "npm i typescript tsx esbuild @types/node @types/express"
-alias q "exit"
-if command -q exa
-    alias ls "exa -lh --icons"
-end
-alias opencodeclear "rm -rf ~/.local/share/opencode"
-alias parllamaclear "rm -rf /home/nazozokc/.local/share/parllama/chats"   
-alias claude-ollama "export ANTHROPIC_AUTH_TOKEN=ollama | export ANTHROPIC_BASE_URL=http://localhost:11434"
-alias 1 "wlr-randr --output eDP-1 --scale 1.0"
-
-# Git
-alias g  "git"
-alias gs "git status"
-alias ga "git add"
-alias gc "git commit"
-alias gp "git push"
-alias gp-rebase "git pull --rebase origin main"
-alias gl "git log --oneline --graph --decorate"
-alias gd "git diff"
-alias gb "git branch"
-alias git-graph "gh graph --pixel %E2%96%A0"
-alias gco. "git checkout"
-alias lzg "lazygit"
-
-# Docker
-alias d "docker"
-alias dc "docker compose"
-
-# ディレクトリ操作
-alias .. "cd .."
-alias ... "cd ../.."
-
-# システム
-alias df "df -h"
-alias du "du -h"
-
-# nix
-alias ns "nix-shell"
+# （abbr は functions/abbr.fish に分離）
+source (dirname (status --current-filename))/functions/abbr.fish
 
 # =========================
 # fish 便利機能
