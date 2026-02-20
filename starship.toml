@@ -1,0 +1,103 @@
+add_newline = true
+
+# ----------------------------------------------------
+# format
+# ----------------------------------------------------
+format = """
+$directory\
+$git_branch\
+$git_status\
+$direnv\
+$python\
+$aws\
+$fill\
+$cmd_duration\
+$time\
+\n$character\
+"""
+
+# Enable if it appears on the same line as the command
+# right_format = """
+# $cmd_duration\
+# $time\
+# """
+
+# ----------------------------------------------------
+# left module
+# ----------------------------------------------------
+[python]
+format = """
+[](fg:#ffcb6b)\
+[$virtualenv]($style)\
+[](fg:#ffcb6b)\
+"""
+style = "bold fg:#313244 bg:#ffcb6b"
+
+[fill]
+symbol = '─'
+
+[directory]
+truncation_length = 6
+truncation_symbol = ' '
+truncate_to_repo = false
+home_symbol = '~'
+read_only = ' 󰌾 '
+format = """
+[](fg:#80EBDF)\
+[$path]($style)\
+[$read_only]($read_only_style)\
+[](fg:#80EBDF)\
+"""
+style = 'bold fg:#313244 bg:#80EBDF'
+read_only_style = 'bold fg:#313244 bg:#80EBDF'
+
+[direnv]
+disabled = false
+format = """
+[](fg:#89dceb)\
+[$symbol$allowed]($style)\
+[](fg:#89dceb)\
+"""
+style = "bold fg:#313244 bg:#89dceb"
+
+[git_branch]
+symbol = ""
+style = "fg:#769ff0 bg:#1d2230"
+format = """
+[](fg:#1d2230)\
+[$symbol $branch]($style)\
+"""
+
+[git_status]
+style = "fg:#769ff0 bg:#1d2230"
+format = """
+[$all_status$ahead_behind]($style)\
+[](fg:#1d2230)\
+"""
+
+# ----------------------------------------------------
+# right module
+# ----------------------------------------------------
+[cmd_duration]
+min_time = 1
+style = 'fg:#e0af68'
+format = "[ $duration]($style)" # nf-pl-right_soft_divider, nf-mdi-clock
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+format = '[[  $time](fg:#a0a9cb)]($style)'
+
+# ----------------------------------------------------
+# prompt module
+# ----------------------------------------------------
+[character]
+vimcmd_symbol = '[V](bold green) '
+
+# ----------------------------------------------------
+# AWS module
+# ----------------------------------------------------
+[aws]
+format = '[$symbol $profile ]($style)'
+symbol = "💭"
+style = "bold fg:#ffcb6b"
