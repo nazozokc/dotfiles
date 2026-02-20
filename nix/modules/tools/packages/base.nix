@@ -66,6 +66,5 @@ with pkgs;
   kiro-cli
 
   #other
-  translate-cli
   rename
 ]
