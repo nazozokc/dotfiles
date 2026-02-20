@@ -61,9 +61,14 @@ with pkgs;
   gitui
   git-secrets
   tig
+  gibo
 
   # AGENT
   kiro-cli
+
+  #util
+  presenterm
+  version-lsp
 
   #other
   rename
