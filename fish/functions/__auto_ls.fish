@@ -6,7 +6,7 @@ function __auto_ls --on-variable PWD
         if command -q eza
             eza -lh --icons
         else
-            ls -lh
+            eza -lh
         end
     end
 end
