@@ -3,8 +3,6 @@ function cdf
     # プレビューコマンドを選択
     if command -q eza
         set preview_cmd 'eza -lh --icons'
-    else
-        set preview_cmd 'ls -lh'
     end
 
     set dir (

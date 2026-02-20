@@ -5,8 +5,6 @@ function __auto_ls --on-variable PWD
         echo
         if command -q eza
             eza -lh --icons
-        else
-            eza -lh
         end
     end
 end
