@@ -59,7 +59,13 @@ with pkgs;
   lazygit
   git-wt
   gitui
+  git-secrets
+  tig
 
   # AGENT
   kiro-cli
+
+  #other
+  translate-cli
+  rename
 ]
