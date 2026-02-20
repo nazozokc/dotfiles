@@ -19,6 +19,8 @@
 
     nix-filter.url = "github:numtide/nix-filter";
 
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -64,6 +66,7 @@
       gh-brag,
       flake-parts,
       nix-index-database,
+      llm-agents,
       nix-filter,
       ...
     }:
@@ -78,6 +81,10 @@
           inherit system;
           config.allowUnfree = true;
           overlays = [
+            (_final: _prev: {
+              _llm-agents = llm-agents;
+              _claude-code-overlay = claude-code-overlay;
+            })
             overlay
             gh-graph.overlays.default
             gh-nippou.overlays.default
