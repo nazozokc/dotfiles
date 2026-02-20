@@ -4,6 +4,8 @@ with pkgs;
 [
   # Editor
   neovim
+  helix
+  novim
   vscode
   zed
 
