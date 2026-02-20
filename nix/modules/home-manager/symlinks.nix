@@ -12,5 +12,6 @@ in
     ln -sfn "${dotfilesDir}/nvim"        "${homeDir}/.config/nvim"
     ln -sfn "${dotfilesDir}/wezterm"     "${homeDir}/.config/wezterm"
     ln -sfn "${dotfilesDir}/bash"     "${homeDir}/.config/bash"
+    ln -sfn "${dotfilesDir}/starship.toml"     "${homeDir}/.config/starship.toml"
   '';
 }
