@@ -83,7 +83,6 @@
           overlays = [
             (_final: _prev: {
               _llm-agents = llm-agents;
-              _claude-code-overlay = claude-code-overlay;
             })
             overlay
             gh-graph.overlays.default
