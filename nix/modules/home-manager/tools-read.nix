@@ -1,7 +1,7 @@
-{ pkgs, nodePackages,... }:
+{ pkgs, nodePackages, ... }:
 
 let
-  Pkgs = import ../tools/packages.nix { inherit pkgs; };
+  Pkgs = import ../tools/packages { inherit pkgs; };
 in
 {
   imports = [
@@ -10,4 +10,3 @@ in
 
   home.packages = Pkgs;
 }
-
