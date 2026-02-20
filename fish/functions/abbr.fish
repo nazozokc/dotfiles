@@ -11,7 +11,9 @@ abbr --add mv mv\ -i
 abbr --add grep grep\ --color=auto
 abbr --add clr clear
 abbr --add q exit
-abbr --add ls exa\ -lh\ --icons
+if command -q eza
+    abbr --add ls eza\ -lh\ --icons
+end
 
 # 複雑なコマンドは function として定義
 function ts-enviroment

@@ -10,7 +10,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # =========================
 # alias
-alias ls="exa -lah --icons --git"
+alias ls="eza -lah --icons --git"
 alias vim="nvim"
 
 # =========================

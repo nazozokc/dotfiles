@@ -31,11 +31,11 @@ bind \cg ghq-fzf
      set last_dir (cat ~/.last_dir)
      if test -d "$last_dir"
          cd $last_dir
-         if command -q exa
-             exa -lh --icons
-         else
-             ls -lh
-           end
+          if command -q eza
+              eza -lh --icons
+          else
+              ls -lh
+            end
      end
  end
 
@@ -91,7 +91,7 @@ complete --erase --command pipx
 
 # ディレクトリ移動時ls
 function __auto_ls --on-variable PWD
-    ls -lh --icons
+    ls -lh
 end
 
 

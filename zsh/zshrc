@@ -110,11 +110,11 @@ zstyle ':autocomplete:*' max-lines 10
 zstyle ':autocomplete:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 # =========================
-# ディレクトリ移動時に exa 自動表示
+# ディレクトリ移動時に eza 自動表示
 # =========================
 chpwd() {
     # ディレクトリ内容を表示
-    command -v exa >/dev/null && exa -lah --icons --git
+    command -v eza >/dev/null && eza -lah --icons --git
 }
 
 list() {
@@ -133,7 +133,7 @@ cdf() {
               --pointer="" \
               --marker="✓" \
               --ansi \
-              --preview 'exa -lah --icons --git {} | head -50' \
+              --preview 'eza -lah --icons --git {} | head -50' \
               --preview-window=right:40%:wrap) || return
 
     cd "$dir" || return

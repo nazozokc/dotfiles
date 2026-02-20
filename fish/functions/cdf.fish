@@ -1,8 +1,8 @@
 # ディレクトリ検索して移動（zsh版と同等）
 function cdf
     # プレビューコマンドを選択
-    if command -q exa
-        set preview_cmd 'exa -lh --icons'
+    if command -q eza
+        set preview_cmd 'eza -lh --icons'
     else
         set preview_cmd 'ls -lh'
     end
