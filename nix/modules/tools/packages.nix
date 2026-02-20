@@ -82,7 +82,6 @@ with pkgs;
 
   #AGENT
   kiro-cli
-  coderabbit-cli
 
   #GUI software
   wezterm
