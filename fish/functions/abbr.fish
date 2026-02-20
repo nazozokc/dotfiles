@@ -3,7 +3,7 @@
 abbr --add vim nvim
 abbr --add ll ls\ -lh
 abbr --add lah ls\ -lah
-abbr --add la ls\ -A
+abbr --add la ls\ -lah
 abbr --add l ls\ -CF
 abbr --add rm rm\ -rf
 abbr --add cp cp\ -i
