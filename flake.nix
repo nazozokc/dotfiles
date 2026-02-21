@@ -77,7 +77,7 @@
           inherit system;
           config.allowUnfree = true;
           overlays = [
-            (_final: _prev: { _llm-agents = llm-agents; })
+            (_: _: { _llm-agents = llm-agents; })
             overlay
             gh-graph.overlays.default
             gh-nippou.overlays.default
@@ -88,28 +88,20 @@
       linuxAarch64Pkgs = pkgsFor "aarch64-linux";
       darwinPkgs = pkgsFor "aarch64-darwin";
 
-      treefmtEval =
-        system:
-        treefmt-nix.lib.evalModule (pkgsFor system) {
-          projectRootFile = "flake.nix";
-          programs = {
-            nixfmt.enable = true;
-            deadnix.enable = true;
-            statix.enable = true;
-            prettier.enable = true;
-          };
-        };
+      banner = title: ''
+        echo
+        echo "======================================"
+        echo "   🚀 ${title}"
+        echo "======================================"
+        echo "   User   : ${username}"
+        echo "   Host   : $(hostname)"
+        echo "   System : $(uname -m)-$(uname -s)"
+        echo "======================================"
+        echo
+      '';
 
-      dotfilesDir-linux = "/home/${username}/ghq/github.com/nazozokc/dotfiles";
-      dotfilesDir-darwin = "/Users/${username}/ghq/github.com/nazozokc/dotfiles";
     in
     {
-      ########################################
-      # Formatter
-      ########################################
-      formatter.x86_64-linux = (treefmtEval "x86_64-linux").config.build.wrapper;
-      formatter.aarch64-linux = (treefmtEval "aarch64-linux").config.build.wrapper;
-      formatter.aarch64-darwin = (treefmtEval "aarch64-darwin").config.build.wrapper;
 
       ########################################
       # Linux (x86)
@@ -119,12 +111,6 @@
         modules = [
           nix-index-database.homeModules.nix-index
           ./nix/shared.nix
-          (import ./nix/modules/home-manager/tools-read.nix {
-            pkgs = linuxPkgs;
-            nodePackages = import ./nix/packages/node/default.nix {
-              pkgs = linuxPkgs;
-            };
-          })
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
         ];
@@ -138,12 +124,6 @@
         modules = [
           nix-index-database.homeModules.nix-index
           ./nix/shared.nix
-          (import ./nix/modules/home-manager/tools-read.nix {
-            pkgs = linuxAarch64Pkgs;
-            nodePackages = import ./nix/packages/node/default.nix {
-              pkgs = linuxAarch64Pkgs;
-            };
-          })
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
         ];
@@ -157,13 +137,6 @@
         modules = [
           nix-index-database.darwinModules.nix-index
           ./nix/modules/darwin/darwin.nix
-          (import ./nix/modules/home-manager/tools-read.nix {
-            pkgs = darwinPkgs;
-            nodePackages = import ./nix/packages/node/default.nix {
-              pkgs = darwinPkgs;
-            };
-          })
-          ./nix/modules/home-manager/symlinks.nix
         ];
       };
 
@@ -173,7 +146,7 @@
       apps = {
 
         ########################################
-        # x86 Linux
+        # x86_64-linux
         ########################################
         "x86_64-linux" = {
 
@@ -181,6 +154,7 @@
             type = "app";
             program = "${linuxPkgs.writeShellScriptBin "hm-switch" ''
               set -e
+              ${banner "Home Manager Switch (x86_64-linux)"}
               nix run nixpkgs#home-manager -- switch --flake .#${username} \
                 |& ${linuxPkgs.nix-output-monitor}/bin/nom
             ''}/bin/hm-switch";
@@ -190,6 +164,7 @@
             type = "app";
             program = "${linuxPkgs.writeShellScriptBin "flake-update" ''
               set -e
+              ${banner "Flake Update (x86_64-linux)"}
               nix flake update \
                 |& ${linuxPkgs.nix-output-monitor}/bin/nom
             ''}/bin/flake-update";
@@ -197,7 +172,7 @@
         };
 
         ########################################
-        # ARM Linux
+        # aarch64-linux
         ########################################
         "aarch64-linux" = {
 
@@ -205,6 +180,7 @@
             type = "app";
             program = "${linuxAarch64Pkgs.writeShellScriptBin "hm-switch" ''
               set -e
+              ${banner "Home Manager Switch (aarch64-linux)"}
               nix run nixpkgs#home-manager -- switch --flake .#${username}-aarch64 \
                 |& ${linuxAarch64Pkgs.nix-output-monitor}/bin/nom
             ''}/bin/hm-switch";
@@ -214,6 +190,7 @@
             type = "app";
             program = "${linuxAarch64Pkgs.writeShellScriptBin "flake-update" ''
               set -e
+              ${banner "Flake Update (aarch64-linux)"}
               nix flake update \
                 |& ${linuxAarch64Pkgs.nix-output-monitor}/bin/nom
             ''}/bin/flake-update";
@@ -221,13 +198,15 @@
         };
 
         ########################################
-        # macOS
+        # aarch64-darwin
         ########################################
         "aarch64-darwin" = {
 
           switch = {
             type = "app";
             program = "${darwinPkgs.writeShellScriptBin "darwin-switch" ''
+              set -e
+              ${banner "Darwin Switch (aarch64-darwin)"}
               sudo nix run nix-darwin -- switch --flake .#${username} \
                 |& ${darwinPkgs.nix-output-monitor}/bin/nom
             ''}/bin/darwin-switch";
@@ -237,6 +216,7 @@
             type = "app";
             program = "${darwinPkgs.writeShellScriptBin "flake-update" ''
               set -e
+              ${banner "Flake Update (aarch64-darwin)"}
               nix flake update \
                 |& ${darwinPkgs.nix-output-monitor}/bin/nom
             ''}/bin/flake-update";
