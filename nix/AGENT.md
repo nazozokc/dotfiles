@@ -76,8 +76,15 @@ nix run .#update-node-packages
 - **macOS**: nix-darwinのモジュールとしてhome-managerを統合 (`home-manager.useUserPackages = true`)
 
 ## 参考リポジトリ
+下のリンクが私のdotfilesレポジトリです。必要に応じて参照してください
+<https://github.com/nazozokc/Dotfiles>
 
-- https://github.com/nazozokc/dotfiles
-- https://github.com/ryoppippi/dotfiles
-- https://github.com/mozumasu/dotfiles
-- https://github.com/ntsk/dotfiles
+下の3つのリンクは私がnix環境を実現するに当たって参照したレポジトリです、必要に応じて参照してください。
+**一番参照**
+<https://github.com/ryoppippi/dotfiles>
+
+**少し参照**
+<https://github.com/mozumasu/dotfiles>
+
+**あまり参照はないが参考にはなりそう** 
+<https://github.com/ntsk/dotfiles>
