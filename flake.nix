@@ -114,42 +114,40 @@
       ########################################
       # Linux (x86)
       ########################################
-      homeConfigurations.${username} =
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = linuxPkgs;
-          modules = [
-            nix-index-database.homeModules.nix-index
-            ./nix/shared.nix
-            (import ./nix/modules/home-manager/tools-read.nix {
+      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+        pkgs = linuxPkgs;
+        modules = [
+          nix-index-database.homeModules.nix-index
+          ./nix/shared.nix
+          (import ./nix/modules/home-manager/tools-read.nix {
+            pkgs = linuxPkgs;
+            nodePackages = import ./nix/packages/node/default.nix {
               pkgs = linuxPkgs;
-              nodePackages = import ./nix/packages/node/default.nix {
-                pkgs = linuxPkgs;
-              };
-            })
-            ./nix/modules/home-manager/linux.nix
-            ./nix/modules/home-manager/symlinks.nix
-          ];
-        };
+            };
+          })
+          ./nix/modules/home-manager/linux.nix
+          ./nix/modules/home-manager/symlinks.nix
+        ];
+      };
 
       ########################################
       # Linux (ARM)
       ########################################
-      homeConfigurations.${username}-aarch64 =
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = linuxAarch64Pkgs;
-          modules = [
-            nix-index-database.homeModules.nix-index
-            ./nix/shared.nix
-            (import ./nix/modules/home-manager/tools-read.nix {
+      homeConfigurations."${username}-aarch64" = home-manager.lib.homeManagerConfiguration {
+        pkgs = linuxAarch64Pkgs;
+        modules = [
+          nix-index-database.homeModules.nix-index
+          ./nix/shared.nix
+          (import ./nix/modules/home-manager/tools-read.nix {
+            pkgs = linuxAarch64Pkgs;
+            nodePackages = import ./nix/packages/node/default.nix {
               pkgs = linuxAarch64Pkgs;
-              nodePackages = import ./nix/packages/node/default.nix {
-                pkgs = linuxAarch64Pkgs;
-              };
-            })
-            ./nix/modules/home-manager/linux.nix
-            ./nix/modules/home-manager/symlinks.nix
-          ];
-        };
+            };
+          })
+          ./nix/modules/home-manager/linux.nix
+          ./nix/modules/home-manager/symlinks.nix
+        ];
+      };
 
       ########################################
       # macOS
@@ -247,4 +245,3 @@
       };
     };
 }
-
