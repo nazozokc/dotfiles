@@ -7,6 +7,15 @@
 - `README.md`
 を参照してください。
 
+# 何を管理しているか
+- neovim
+- fish
+- zsh
+- wezterm
+- starship
+- bash
+- efm-langserver
+
 # 回答スタイル
 - 挨拶、前置き入りません
 - 結論とどのようにタスクを実行したかを教えてください
