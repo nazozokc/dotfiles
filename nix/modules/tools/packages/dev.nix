@@ -6,7 +6,6 @@ with pkgs;
   python312
   nodejs_24
   bun
-  hono
   deno
   rustc
 
