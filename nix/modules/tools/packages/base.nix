@@ -71,4 +71,5 @@ with pkgs;
 
   #other
   rename
+  inetutils
 ]
