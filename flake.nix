@@ -111,6 +111,7 @@
         modules = [
           nix-index-database.homeModules.nix-index
           ./nix/shared.nix
+          ./nix/modules/home-manager/tools-read.nix
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
         ];
@@ -124,6 +125,7 @@
         modules = [
           nix-index-database.homeModules.nix-index
           ./nix/shared.nix
+          ./nix/modules/home-manager/tools-read.nix
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
         ];
@@ -137,6 +139,8 @@
         modules = [
           nix-index-database.darwinModules.nix-index
           ./nix/modules/darwin/darwin.nix
+          ./nix/modules/darwin/system.nix
+          ./nix/modules/home-manager/tools-read.nix
         ];
       };
 
