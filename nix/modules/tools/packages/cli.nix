@@ -2,4 +2,6 @@
 
 with pkgs;
 [
+#agent
+crush
 ]
