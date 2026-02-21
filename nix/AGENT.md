@@ -42,19 +42,37 @@
 ```
 nix/
 ├── modules/
-│   ├── tools/
-│   │   └── packages.nix       # 共通パッケージ定義
+│   ├── darwin/
+│   │   ├── darwin.nix
+│   │   └── system.nix
 │   ├── home-manager/
-│   │   ├── common.nix         # home-manager基本設定
-│   │   ├── linux.nix          # Linux固有設定
-│   │   ├── darwin.nix         # macOS固有設定
-│   │   ├── symlinks.nix       # ドットファイル管理
-│   │   └── tools-read.nix     # パッケージ読み込み
-│   └── darwin/
-│       ├── darwin.nix         # nix-darwinエントリ
-│       └── system.nix         # macOSシステム設定
-├── overlays/                  # nixpkgsオーバーレイ
-└── packages/node/             # Node.jsパッケージ
+│   │   ├── darwin.nix
+│   │   ├── linux.nix
+│   │   ├── symlinks.nix
+│   │   └── tools-read.nix
+│   └── tools/
+│       ├── packages/
+│       │   ├── base.nix
+│       │   ├── cli.nix
+│       │   ├── default.nix
+│       │   ├── dev.nix
+│       │   └── gui.nix
+│       └── program/
+│           ├── gh/
+│           │   └── gh.nix
+│           └── gh.nix
+├── overlays/
+│   ├── ai-tools.nix
+│   ├── default.nix
+│   └── gh.nix
+├── packages/
+│   └── node/
+│       ├── default.nix
+│       └── update.sh
+├── AGENT.md
+├── README.md
+├── cachix.nix
+└── shared.nix
 ```
 
 ## コマンド
