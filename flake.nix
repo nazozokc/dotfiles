@@ -14,11 +14,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
     flake-parts.url = "github:hercules-ci/flake-parts";
-
     nix-filter.url = "github:numtide/nix-filter";
-
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     home-manager = {
@@ -72,7 +69,6 @@
     }:
     let
       username = "nazozokc";
-
       overlay = import ./nix/overlays;
 
       pkgsFor =
@@ -81,9 +77,7 @@
           inherit system;
           config.allowUnfree = true;
           overlays = [
-            (_final: _prev: {
-              _llm-agents = llm-agents;
-            })
+            (_final: _prev: { _llm-agents = llm-agents; })
             overlay
             gh-graph.overlays.default
             gh-nippou.overlays.default
@@ -91,6 +85,7 @@
         };
 
       linuxPkgs = pkgsFor "x86_64-linux";
+      linuxAarch64Pkgs = pkgsFor "aarch64-linux";
       darwinPkgs = pkgsFor "aarch64-darwin";
 
       treefmtEval =
@@ -113,28 +108,48 @@
       # Formatter
       ########################################
       formatter.x86_64-linux = (treefmtEval "x86_64-linux").config.build.wrapper;
-
+      formatter.aarch64-linux = (treefmtEval "aarch64-linux").config.build.wrapper;
       formatter.aarch64-darwin = (treefmtEval "aarch64-darwin").config.build.wrapper;
 
       ########################################
-      # Linux
+      # Linux (x86)
       ########################################
-      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        pkgs = linuxPkgs;
-        modules = [
-          nix-index-database.homeModules.nix-index
-          ./nix/shared.nix
-
-          (import ./nix/modules/home-manager/tools-read.nix {
-            pkgs = linuxPkgs;
-            nodePackages = import ./nix/packages/node/default.nix {
+      homeConfigurations.${username} =
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = linuxPkgs;
+          modules = [
+            nix-index-database.homeModules.nix-index
+            ./nix/shared.nix
+            (import ./nix/modules/home-manager/tools-read.nix {
               pkgs = linuxPkgs;
-            };
-          })
-          ./nix/modules/home-manager/linux.nix
-          ./nix/modules/home-manager/symlinks.nix
-        ];
-      };
+              nodePackages = import ./nix/packages/node/default.nix {
+                pkgs = linuxPkgs;
+              };
+            })
+            ./nix/modules/home-manager/linux.nix
+            ./nix/modules/home-manager/symlinks.nix
+          ];
+        };
+
+      ########################################
+      # Linux (ARM)
+      ########################################
+      homeConfigurations.${username}-aarch64 =
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = linuxAarch64Pkgs;
+          modules = [
+            nix-index-database.homeModules.nix-index
+            ./nix/shared.nix
+            (import ./nix/modules/home-manager/tools-read.nix {
+              pkgs = linuxAarch64Pkgs;
+              nodePackages = import ./nix/packages/node/default.nix {
+                pkgs = linuxAarch64Pkgs;
+              };
+            })
+            ./nix/modules/home-manager/linux.nix
+            ./nix/modules/home-manager/symlinks.nix
+          ];
+        };
 
       ########################################
       # macOS
@@ -144,14 +159,12 @@
         modules = [
           nix-index-database.darwinModules.nix-index
           ./nix/modules/darwin/darwin.nix
-
           (import ./nix/modules/home-manager/tools-read.nix {
             pkgs = darwinPkgs;
             nodePackages = import ./nix/packages/node/default.nix {
               pkgs = darwinPkgs;
             };
           })
-
           ./nix/modules/home-manager/symlinks.nix
         ];
       };
@@ -162,7 +175,7 @@
       apps = {
 
         ########################################
-        # Linux apps
+        # x86 Linux
         ########################################
         "x86_64-linux" = {
 
@@ -170,7 +183,6 @@
             type = "app";
             program = "${linuxPkgs.writeShellScriptBin "hm-switch" ''
               set -e
-              echo "linux home-manager configurations"
               nix run nixpkgs#home-manager -- switch --flake .#${username} \
                 |& ${linuxPkgs.nix-output-monitor}/bin/nom
             ''}/bin/hm-switch";
@@ -179,60 +191,60 @@
           update = {
             type = "app";
             program = "${linuxPkgs.writeShellScriptBin "flake-update" ''
+              set -e
               nix flake update \
                 |& ${linuxPkgs.nix-output-monitor}/bin/nom
             ''}/bin/flake-update";
           };
+        };
 
-          # ★ 残す
-          update-node-packages = {
+        ########################################
+        # ARM Linux
+        ########################################
+        "aarch64-linux" = {
+
+          switch = {
             type = "app";
-            program = "${linuxPkgs.writeShellScriptBin "node-update" ''
+            program = "${linuxAarch64Pkgs.writeShellScriptBin "hm-switch" ''
               set -e
-              echo "Updating Node.js packages..."
-              ${linuxPkgs.bash}/bin/bash \
-                ${dotfilesDir-linux}/nix/packages/node/update.sh \
-                |& ${linuxPkgs.nix-output-monitor}/bin/nom
-              echo "Done!"
-            ''}/bin/node-update";
+              nix run nixpkgs#home-manager -- switch --flake .#${username}-aarch64 \
+                |& ${linuxAarch64Pkgs.nix-output-monitor}/bin/nom
+            ''}/bin/hm-switch";
+          };
+
+          update = {
+            type = "app";
+            program = "${linuxAarch64Pkgs.writeShellScriptBin "flake-update" ''
+              set -e
+              nix flake update \
+                |& ${linuxAarch64Pkgs.nix-output-monitor}/bin/nom
+            ''}/bin/flake-update";
           };
         };
 
         ########################################
-        # macOS apps
+        # macOS
         ########################################
         "aarch64-darwin" = {
 
           switch = {
             type = "app";
             program = "${darwinPkgs.writeShellScriptBin "darwin-switch" ''
-              echo "darwin nix-darwin and home-manager configurations"
-                sudo nix run nix-darwin -- switch --flake .#${username} \
-                  |& ${darwinPkgs.nix-output-monitor}/bin/nom
+              sudo nix run nix-darwin -- switch --flake .#${username} \
+                |& ${darwinPkgs.nix-output-monitor}/bin/nom
             ''}/bin/darwin-switch";
           };
 
           update = {
             type = "app";
             program = "${darwinPkgs.writeShellScriptBin "flake-update" ''
+              set -e
               nix flake update \
                 |& ${darwinPkgs.nix-output-monitor}/bin/nom
             ''}/bin/flake-update";
-          };
-
-          # ★ 残す
-          update-node-packages = {
-            type = "app";
-            program = "${darwinPkgs.writeShellScriptBin "node-update" ''
-              set -e
-              echo "Updating Node.js packages..."
-              ${darwinPkgs.bash}/bin/bash \
-                ${dotfilesDir-darwin}/nix/packages/node/update.sh \
-                |& ${darwinPkgs.nix-output-monitor}/bin/nom
-              echo "Done!"
-            ''}/bin/node-update";
           };
         };
       };
     };
 }
+
