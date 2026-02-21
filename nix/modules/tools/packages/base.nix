@@ -62,6 +62,7 @@ with pkgs;
   git-secrets
   tig
   gibo
+  gut-cli
 
   # AGENT
   kiro-cli
