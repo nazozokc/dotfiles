@@ -33,9 +33,7 @@ bind \cg ghq-fzf
          cd $last_dir
           if command -q eza
               eza -lh --icons
-          else
-              ls -lh
-            end
+          end
      end
  end
 
