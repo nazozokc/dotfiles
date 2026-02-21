@@ -9,7 +9,6 @@
     extensions = [
       # Extensions available in nixpkgs
       pkgs.gh-markdown-preview
-      pkgs.gut-cli
       pkgs.gh-dash
       pkgs.gh-actions-cache
       pkgs.gh-poi
