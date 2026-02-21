@@ -6,7 +6,7 @@
 
 ## システム構成
 
-| コンポーネント | Linux | macOS |
+| コンポーネント | Linux, ARM-linux| macOS |
 |--------------|-------|-------|
 | システム設定 | home-manager | nix-darwin |
 | ユーザーパッケージ | home-manager | home-manager (nix-darwin統合) |
