@@ -2,6 +2,9 @@
 
 with pkgs;
 [
-#agent
-crush
+  #agent
+  crush
+
+  #other
+  pay.respects
 ]
