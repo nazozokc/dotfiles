@@ -46,9 +46,6 @@ nix run .#switch
 
 # バージョン更新
 nix run .#update
-
-# Node.js パッケージ更新
-nix run .#update-node-packages
 ```
 
 - Linux は Home Manager 単体で管理
@@ -65,7 +62,6 @@ nix run .#update-node-packages
 - **CLIツール**: `nix/modules/tools/packages.nix`
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理 (`checkFilesChanged`, `checkLinkTargets`)
 - **macOS限定**: nix-darwin によるシステム設定
-- **Node.js**: Nix 経由でパッケージ管理 (`nix run .#update-node-packages`)
 
 ---
 

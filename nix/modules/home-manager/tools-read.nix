@@ -1,4 +1,4 @@
-{ pkgs, nodePackages, ... }:
+{ pkgs, ... }:
 
 let
   Pkgs = import ../tools/packages { inherit pkgs; };

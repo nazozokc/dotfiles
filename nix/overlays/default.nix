@@ -3,7 +3,6 @@ final: prev:
 let
   overlayFiles = [
     ./ai-tools.nix
-    ./gh.nix
   ];
 in
 prev.lib.composeManyExtensions

@@ -101,9 +101,6 @@
           ./nix/shared.nix
           (import ./nix/modules/home-manager/tools-read.nix {
             pkgs = linuxPkgs;
-            nodePackages = import ./nix/packages/node/default.nix {
-              pkgs = linuxPkgs;
-            };
           })
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
@@ -121,9 +118,6 @@
           ./nix/shared.nix
           (import ./nix/modules/home-manager/tools-read.nix {
             pkgs = linuxAarch64Pkgs;
-            nodePackages = import ./nix/packages/node/default.nix {
-              pkgs = linuxAarch64Pkgs;
-            };
           })
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
@@ -149,9 +143,6 @@
                 ./nix/shared.nix
                 (import ./nix/modules/home-manager/tools-read.nix {
                   pkgs = darwinPkgs;
-                  nodePackages = import ./nix/packages/node/default.nix {
-                    pkgs = darwinPkgs;
-                  };
                 })
                 ./nix/modules/home-manager/symlinks.nix
               ];
