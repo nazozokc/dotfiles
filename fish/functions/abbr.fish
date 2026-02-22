@@ -29,7 +29,7 @@ function parllamaclear
 end
 
 function claude-ollama
-  ollama launch claude
+    ollama launch claude
 end
 
 function 1
