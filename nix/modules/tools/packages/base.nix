@@ -10,7 +10,6 @@ with pkgs;
   # shell
   fish
   zsh
-  bash
   starship
 
   # CLI tools
@@ -23,7 +22,6 @@ with pkgs;
   tree
   htop
   fastfetch
-  neofetch
   onefetch
   eza
   which
@@ -36,7 +34,6 @@ with pkgs;
   tldr
   bottom
   just
-  xh
 
   # filer
   yazi
@@ -62,9 +59,6 @@ with pkgs;
   git-secrets
   tig
   gibo
-
-  # AGENT
-  kiro-cli
 
   #util
   presenterm
