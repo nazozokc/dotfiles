@@ -5,6 +5,7 @@ with pkgs;
   # Languages
   python312
   nodejs_24
+  pnpm
   bun
   deno
   rustc
