@@ -79,7 +79,7 @@
       pkgsFor =
         system:
         import nixpkgs {
-          inherit system;
+          localSystem.system = system;
           config.allowUnfree = true;
           overlays = [
             (_: _: { _llm-agents = llm-agents; })
