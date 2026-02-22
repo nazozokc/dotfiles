@@ -29,8 +29,7 @@ function parllamaclear
 end
 
 function claude-ollama
-    export ANTHROPIC_AUTH_TOKEN=ollama
-    export ANTHROPIC_BASE_URL=http://localhost:11434
+  ollama launch claude
 end
 
 function 1
