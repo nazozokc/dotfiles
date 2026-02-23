@@ -8,6 +8,7 @@ with pkgs;
   pnpm
   bun
   deno
+  clang
   rustc
 
   # LSP / Formatter
