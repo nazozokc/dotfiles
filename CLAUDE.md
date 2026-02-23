@@ -41,6 +41,6 @@
 <https://github.com/nazozokc/dotfiles> 
 
 # 参考レポジトリ
-- **一番参照** https://github.com/ryoppippi/dotfiles
-- **まあまあ参照** https://github.com/mozumasu/dotfiles
-- **参照はしていないがdotfilesとnixの構成を考える上で役に立つ** https://github.com/ntsk/dotfiles
+- **一番参照** <https://github.com/ryoppippi/dotfiles>
+- **まあまあ参照** <https://github.com/mozumasu/dotfiles>
+- **参照はしていないがdotfilesとnixの構成を考える上で役に立つ** <https://github.com/ntsk/dotfiles>
