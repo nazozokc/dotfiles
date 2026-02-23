@@ -71,6 +71,10 @@ return {
 				capabilities = capabilities,
 			})
 
+			vim.lsp.config("clang", {
+				capabilities = capabilities,
+			})
+
 			-- ===== 有効化 =====
 			vim.lsp.enable({
 				"html",
@@ -78,6 +82,7 @@ return {
 				"solargraph",
 				"efm",
 				"ts_ls",
+				"clang",
 				"nixd",
 			})
 		end,
