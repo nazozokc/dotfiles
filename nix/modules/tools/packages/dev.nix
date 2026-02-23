@@ -2,20 +2,29 @@
 
 with pkgs;
 [
-  # Languages
+  # python
   python312
+
+  # JS,TS
   nodejs_24
   pnpm
   bun
   deno
-  clang
-  rustc
 
-  # LSP / Formatter
+  # C
+  clang
+  clang-tools
+
+  # rust
+  rustc
   rust-analyzer
+
+  # nix
   nil
   nixd
   pkgs.nixfmt
+
+  # lua
   stylua
 
   # package tools
