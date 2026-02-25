@@ -27,6 +27,9 @@ with pkgs;
   # lua
   stylua
 
+  #Java
+  jdk
+
   # package tools
   cargo
   cmake
