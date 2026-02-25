@@ -1,0 +1,104 @@
+# Ghostty Configuration
+# Based on wezterm settings
+
+# ====================
+# Font
+# ====================
+font-family = "JetBrainsMono Nerd Font, Noto Sans Mono CJK JP"
+font-size = 13
+line-height = 1.05
+cell-width = 1.0
+
+# ====================
+# Colors (Tokyo Night Storm inspired, matching wezterm)
+# ====================
+theme = "dark"
+background-opacity = 0.90
+
+# Custom colors to match wezterm
+foreground = "#c5c9c5"
+background = "#181616"
+cursor-color = "#C8C093"
+
+# Selection colors
+selection-foreground = "#C8C093"
+selection-background = "#2D4F67"
+
+# ANSI colors
+black = "#0D0C0C"
+red = "#C4746E"
+green = "#8A9A7B"
+yellow = "#C4B28A"
+blue = "#8BA4B0"
+magenta = "#A292A3"
+cyan = "#8EA4A2"
+white = "#C8C093"
+
+# Bright ANSI colors
+bright-black = "#A6A69C"
+bright-red = "#E46876"
+bright-green = "#87A987"
+bright-yellow = "#E6C384"
+bright-blue = "#7FB4CA"
+bright-magenta = "#938AA9"
+bright-cyan = "#7AA89F"
+bright-white = "#C5C9c5"
+
+# ====================
+# Window
+# ====================
+window-padding = 6
+window-padding-y = 4
+window-decoration = true
+
+# ====================
+# Mouse
+# ====================
+mouse-hide-while-typing = true
+
+# ====================
+# IME
+# ====================
+ime = true
+
+# ====================
+# Tabs
+# ====================
+tab-title = "$PWD"
+tab-bar-position = "top"
+hide-tab-bar-if-one-tab = true
+
+# ====================
+# Shell
+# ====================
+shell = "/run/current-system/sw/bin/fish"
+
+# ====================
+# Keybinds (Ctrl+Shift based like wezterm)
+# ====================
+# New tab
+keybind = "ctrl+shift+t=new_tab"
+# Close tab
+keybind = "ctrl+shift+w=close_tab"
+# Close pane
+keybind = "ctrl+shift+q=close_pane"
+# Split horizontal
+keybind = "ctrl+shift+e=splithorizontal"
+# Split vertical
+keybind = "ctrl+shift+d=splitvertical"
+# Toggle pane zoom
+keybind = "ctrl+shift+z=toggle_pane_zoom"
+# Previous tab
+keybind = "ctrl+shift+page_up=previous_tab"
+# Next tab
+keybind = "ctrl+shift+page_down=next_tab"
+# Toggle fullscreen
+keybind = "ctrl+shift+enter=toggle_fullscreen"
+# New window
+keybind = "ctrl+shift+n=new_window"
+# Copy
+keybind = "ctrl+shift+c=copy"
+# Paste
+keybind = "ctrl+shift+v=paste"
+# Reload config
+keybind = "ctrl+shift+r=reload_config"
