@@ -1,17 +1,32 @@
 return {
-  "NickvanDyke/opencode.nvim",
-  cmd = { "OpenCode" },
+  "nickjvandyke/opencode.nvim",
+  cmd = { "OpenCode", "OC" },
   dependencies = {
-    "folke/snacks.nvim", },
+    "folke/snacks.nvim",
+  },
   config = function()
-    vim.g.opencode_opts = {
-      -- Your configuration, if any — see `lua/opencode/config.lua`, or "goto definition".
-    }
+    vim.g.opencode_opts = {}
 
-    -- Required for `opts.events.reload`.
     vim.o.autoread = true
 
-    -- Recommended/example keymaps.
+    vim.api.nvim_create_user_command("OC", function(opts)
+      local input = opts.args
+      if input and #input > 0 then
+        require("opencode").ask(input .. ": ", { submit = true })
+      else
+        require("opencode").select()
+      end
+    end, { nargs = "*", desc = "OpenCode: Ask or select action" })
+
+    vim.api.nvim_create_user_command("OpenCode", function(opts)
+      local input = opts.args
+      if input and #input > 0 then
+        require("opencode").ask(input .. ": ", { submit = true })
+      else
+        require("opencode").select()
+      end
+    end, { nargs = "*", desc = "OpenCode: Ask or select action" })
+
     vim.keymap.set({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end,
       { desc = "Ask opencode" })
     vim.keymap.set({ "n", "x" }, "<C-x>", function() require("opencode").select() end,
@@ -28,7 +43,6 @@ return {
     vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end,
       { desc = "opencode half page down" })
 
-    -- You may want these if you stick with the opinionated "<C-a>" and "<C-x>" above — otherwise consider "<leader>o".
     vim.keymap.set("n", "+", "<C-a>", { desc = "Increment", noremap = true })
     vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement", noremap = true })
   end,
