@@ -26,8 +26,8 @@ with pkgs;
   eza
   which
   fzf
-  node2nix
   tmux
+  cmux
   uv
   ncdu
   delta
