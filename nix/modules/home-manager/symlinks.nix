@@ -14,5 +14,6 @@ in
     ln -sfn "${dotfilesDir}/bash"     "${homeDir}/.config/bash"
     ln -sfn "${dotfilesDir}/starship.toml"     "${homeDir}/.config/starship.toml"
     ln -sfn "${dotfilesDir}/ghostty"     "${homeDir}/.config/ghostty"
+    ln -sfn "${dotfilesDir}/zsh"     "${homeDir}/.config/zsh"
   '';
 }
