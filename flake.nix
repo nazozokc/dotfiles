@@ -68,6 +68,7 @@
       zen-browser,
       gh-graph,
       gh-nippou,
+      gh-brag,
       nix-index-database,
       llm-agents,
       ...
