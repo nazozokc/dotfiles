@@ -27,7 +27,6 @@ with pkgs;
   which
   fzf
   tmux
-  cmux
   uv
   ncdu
   delta
