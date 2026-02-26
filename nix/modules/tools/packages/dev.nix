@@ -6,7 +6,7 @@ with pkgs;
   python312
 
   # JS,TS
-  nodejs_24
+  nodejs
   pnpm
   bun
   deno
