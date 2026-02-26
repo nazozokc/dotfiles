@@ -9,4 +9,5 @@ with pkgs;
   discord
   ghostty
   tor-browser
+  obsidian
 ]
