@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "config:recommended"
+  ],
+
+  "timezone": "Asia/Tokyo",
+
+  "nix": {
+    "enabled": true
+  },
+
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["weekly"]
+  },
+
+  "packageRules": [
+    {
+      "matchManagers": ["nix"],
+      "groupName": "nix dependencies"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    }
+  ]
+}
+
