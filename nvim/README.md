@@ -7,7 +7,7 @@ lazy.nvim をプラグインマネージャーとして使用しています。
 
 ## 特徴
 
-- **軽量・高速**: lazy.nvim による遅延読み込み
+- **軽量・高速・充実**: lazy.nvim による遅延読み込み
 - **LSP 完備**: TypeScript, Lua, Ruby, Nix, HTML など標準サポート
 - **モダンUI**: カスタムダッシュボード、ステータスライン、ファジーファインダー
 - **Treesitter**: シンタックスハイライト・インデント
@@ -164,8 +164,9 @@ nvim/
 - **ts_ls** - TypeScript / JavaScript
 - **html** - HTML
 - **solargraph** - Ruby
-- **nixd** - Nix
+- **nixd・nil** - Nix
 - **efm** - 汎用フォーマッター
+- **nixfmt** - nixフォーマッター
 
 ---
 
