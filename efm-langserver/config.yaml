@@ -59,7 +59,7 @@ languages:
       lint-stdin: true
       lint-formats:
         - "%f:%l:%c: %m"
-    - format-command: "shfmt -i 2 -ci"
+    - format-command: "shfmt -i 2 -ci -s"
       format-stdin: true
 
   # =========
@@ -79,6 +79,8 @@ languages:
   markdown:
     - lint-command: "markdownlint -s"
       lint-stdin: true
+    - format-command: "prettier --stdin-filepath ${INPUT}"
+      format-stdin: true
 
   # =========
   # Lua
