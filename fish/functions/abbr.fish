@@ -56,7 +56,7 @@ abbr --add gb git\ branch
 abbr --add git-graph gh\ graph\ --pixel\ %E2%96%A0
 
 function gco.
-    git checkout $argv
+    git checkout . 
 end
 
 abbr --add lzg lazygit
