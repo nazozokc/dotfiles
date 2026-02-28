@@ -3,6 +3,6 @@
   "nix": {
     "enabled": true
   },
-  "schedule": ["daily"],
+  "schedule": ["daily"]
 }
 
