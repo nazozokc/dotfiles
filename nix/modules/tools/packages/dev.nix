@@ -7,6 +7,8 @@ with pkgs;
 
   # JS,TS
   nodejs
+  typescript-language-server
+  typescript-go
   pnpm
   bun
   deno
