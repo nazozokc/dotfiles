@@ -1,53 +1,43 @@
-# Ghostty Configuration
-# Based on wezterm settings
-
 # ====================
 # Font
 # ====================
-font-family = "JetBrainsMono Nerd Font, Noto Sans Mono CJK JP"
+font-family = "JetBrainsMono Nerd Font"
 font-size = 13
-line-height = 1.05
-cell-width = 1.0
+adjust-cell-height = 5%
+adjust-cell-width = 0%
 
 # ====================
-# Colors (Tokyo Night Storm inspired, matching wezterm)
+# Colors
 # ====================
-theme = "dark"
 background-opacity = 0.90
-
-# Custom colors to match wezterm
-foreground = "#C5C9C5"
-background = "#181616"
-cursor-color = "#C5C9C5"
-
-# Selection colors
-selection-foreground = "#C5C9C5"
-selection-background = "#2D4F67"
+foreground = #C5C9C5
+background = #181616
+cursor-color = #C5C9C5
+selection-foreground = #C5C9C5
+selection-background = #2D4F67
 
 # ANSI colors
-black = "#0D0C0C"
-red = "#C4746E"
-green = "#8A9A7B"
-yellow = "#C4B28A"
-blue = "#8BA4B0"
-magenta = "#A292A3"
-cyan = "#8EA4A2"
-white = "#C5C9C5"
-
-# Bright ANSI colors
-bright-black = "#A6A69C"
-bright-red = "#E46876"
-bright-green = "#87A987"
-bright-yellow = "#E6C384"
-bright-blue = "#7FB4CA"
-bright-magenta = "#938AA9"
-bright-cyan = "#7AA89F"
-bright-white = "#C5C9C5"
+palette = 0=#0D0C0C
+palette = 1=#C4746E
+palette = 2=#8A9A7B
+palette = 3=#C4B28A
+palette = 4=#8BA4B0
+palette = 5=#A292A3
+palette = 6=#8EA4A2
+palette = 7=#C5C9C5
+palette = 8=#A6A69C
+palette = 9=#E46876
+palette = 10=#87A987
+palette = 11=#E6C384
+palette = 12=#7FB4CA
+palette = 13=#938AA9
+palette = 14=#7AA89F
+palette = 15=#C5C9C5
 
 # ====================
 # Window
 # ====================
-window-padding = 6
+window-padding-x = 6
 window-padding-y = 4
 window-decoration = true
 
@@ -57,34 +47,21 @@ window-decoration = true
 mouse-hide-while-typing = true
 
 # ====================
-# IME
-# ====================
-ime = true
-
-# ====================
 # Tabs
 # ====================
-tab-title = "$PWD"
-tab-bar-position = "top"
-hide-tab-bar-if-one-tab = true
+title = "$PWD"
 
 # ====================
-# Shell
+# Keybinds
 # ====================
-shell = "/run/current-system/sw/bin/fish"
-
-# ====================
-# Keybinds (Ctrl+Shift based like wezterm)
-# ====================
-# New tab
 keybind = ctrl+shift+t=new_tab
 keybind = ctrl+shift+w=close_tab
 keybind = ctrl+shift+q=close_surface
 keybind = ctrl+shift+e=new_split:right
 keybind = ctrl+shift+d=new_split:down
 keybind = ctrl+shift+z=toggle_split_zoom
-keybind = ctrl+shift+pageup=previous_tab
-keybind = ctrl+shift+pagedown=next_tab
+keybind = ctrl+shift+page_up=previous_tab
+keybind = ctrl+shift+page_down=next_tab
 keybind = ctrl+shift+enter=toggle_fullscreen
 keybind = ctrl+shift+n=new_window
 keybind = ctrl+shift+c=copy_to_clipboard
