@@ -15,5 +15,6 @@ in
     ln -sfn "${dotfilesDir}/starship.toml"     "${homeDir}/.config/starship.toml"
     ln -sfn "${dotfilesDir}/ghostty"     "${homeDir}/.config/ghostty"
     ln -sfn "${dotfilesDir}/zsh"     "${homeDir}/.config/zsh"
+    ln -sfn "${dotfilesDir}/agents"     "${homeDir}/agents"
   '';
 }
