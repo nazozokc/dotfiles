@@ -55,8 +55,8 @@ abbr --add gd git\ diff
 abbr --add gb git\ branch
 abbr --add git-graph gh\ graph\ --pixel\ %E2%96%A0
 
-function gco.
-    git checkout . 
+function gco
+    git checkout 
 end
 
 abbr --add lzg lazygit
