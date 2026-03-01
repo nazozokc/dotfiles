@@ -1,6 +1,6 @@
 {
-"timezone": "America/New_York",  
-"extends": ["config:recommended"],
+  "timezone": "Asia/Tokyo",  
+  "extends": ["config:recommended"],
   "nix": {
     "enabled": true
   },
