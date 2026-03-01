@@ -3,5 +3,11 @@
   "nix": {
     "enabled": true
   },
-  "schedule": ["before 11am"]
+  "schedule": ["after 2pm and before 3pm"],
+  "packageRules": [
+    {
+      "matchFileNames": ["nvim/lazy-lock.json"],
+      "enabled": true
+    }
+  ]
 }
