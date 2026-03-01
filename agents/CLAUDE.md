@@ -12,7 +12,7 @@ skillsはあなたが、自律的に様々なことを行うための、ルー�
 このskillsにはあなたがtypescript系のツールを使う際の注意点が記載されています。
 
 ## ./skills/arch-linux/SKILL.md
-これにはあなたがarch-linuxを使う際に何に触れていけないかが記載されています。
+これにはあなたがarch-linuxのファイル、つまり基本的な操作を使う際に何に触れていけないかが記載されています。
 
 ## ./skills/code-review/SKILL.md
 これはあなたがcode-reviewを行う際に注意するべきことが記載されています。
