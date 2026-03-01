@@ -20,7 +20,7 @@ with pkgs;
   wget
   zoxide
   tree
-  htop
+  btop
   fastfetch
   onefetch
   eza
