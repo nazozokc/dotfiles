@@ -3,6 +3,5 @@
   "nix": {
     "enabled": true
   },
-  "schedule": ["daily"]
+  "schedule": ["before 11am"]
 }
-
