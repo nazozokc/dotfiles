@@ -16,6 +16,6 @@ in
     ln -sfn "${dotfilesDir}/ghostty"     "${homeDir}/.config/ghostty"
     ln -sfn "${dotfilesDir}/zsh/zshrc"     "${homeDir}/.zshrc"
     ln -sfn "${dotfilesDir}/agents"     "${homeDir}/agents"
-    ln -sfn "${dotfilesDir}/opencode"     "${homeDir}/.config/opencode
+    ln -sfn "${dotfilesDir}/opencode"     "${homeDir}/.config/opencode"
   '';
 }
