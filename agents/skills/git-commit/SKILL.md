@@ -1,13 +1,16 @@
-# Skill: Git Commit Rule
+---
+name: git-commit
+description: Git commit rules and conventions for this project
+---
 
-## When to use
+# When to use
 - 変更をコミットするとき
 - pushするとき
 - PR作成前
 
-## Rules
+# Rules
 - 日本語コミットは禁止
 - 1 commit = 1 logical change
 
-## Commit Message Format
+# Commit Message Format
 "内容(20文字以内):日付"

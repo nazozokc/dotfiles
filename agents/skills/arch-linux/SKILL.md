@@ -1,3 +1,8 @@
+---
+name: arch-linux
+description: Instructions for Linux-specific file operations and restrictions
+---
+
 # skills: linux
 このskillsはlinuxOSの場合にファイルを操作する際の指示書や注意点が書かれています。
 

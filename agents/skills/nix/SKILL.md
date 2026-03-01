@@ -1,6 +1,9 @@
-# skill: nix
+---
+name: nix
+description: Nix configuration guidelines and best practices
+---
 
-## flake.lockのアップデート
+# flake.lockのアップデート
 ```bash
 1. nix run .#update
 
@@ -11,7 +14,7 @@
 4. git push
 ```
 
-## nixのファイルに変更を加える際の注意点
+# nixのファイルに変更を加える際の注意点
 - nixの設計は崩さない
 - コードレビューをしっかり行い、自らを信用しない
 - コードは単純で読みやすく
