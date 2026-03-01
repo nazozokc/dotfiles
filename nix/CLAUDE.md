@@ -1,5 +1,5 @@
 # 最初にやること
-`/home/nazozokc/agents/CLAUDE.md`
+`/home/nazozokc/.agents/CLAUDE.md`
 上を読み込んでください
 
 # Nix Dotfiles 構成ガイド

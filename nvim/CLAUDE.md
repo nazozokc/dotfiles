@@ -1,5 +1,5 @@
 # 最初にやること
-`/home/nazozokc/agents/AGENTS.md`
+`/home/nazozokc/.agents/AGENTS.md`
 - 上のファイルをしっかり読み込んであなたがタスクを実行する際にしっかり参考にしてください。
 
 # Neovim Configuration
