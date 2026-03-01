@@ -89,7 +89,7 @@ complete --erase --command pipx
 
 # ディレクトリ移動時ls
 function __auto_ls --on-variable PWD
-    ls -lh
+    eza -lh --icons
 end
 
 
