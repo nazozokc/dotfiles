@@ -108,6 +108,35 @@
 
     in
     {
+      ########################################
+      # Packages (via overlays)
+      ########################################
+      packages.x86_64-linux = {
+        inherit (linuxPkgs)
+          nix-index
+          typescript
+          eslint
+          prettier
+          ;
+      };
+
+      packages.aarch64-linux = {
+        inherit (linuxAarch64Pkgs)
+          nix-index
+          typescript
+          eslint
+          prettier
+          ;
+      };
+
+      packages.aarch64-darwin = {
+        inherit (darwinPkgs)
+          nix-index
+          typescript
+          eslint
+          prettier
+          ;
+      };
 
       ########################################
       # Linux (x86)
