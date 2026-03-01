@@ -1,22 +1,31 @@
 ---
 name: nix
-description: Nix configuration guidelines and best practices
+description: Nix設定を管理するときのガイドライン
 ---
 
-# flake.lockのアップデート
+# Nix 運用ガイドライン
+
+## flake.lock の更新手順
 ```bash
-1. nix run .#update
+# 1. 更新を実行
+nix run .#update
 
-2. git add .
+# 2. 変更をステージング
+git add .
 
-3. git commit -m "update flake.lock:(JST)"
+# 3. コミット（日本語禁止）
+git commit -m "update flake.lock:YYYYMMDD"
 
-4. git push
+# 4. リモートにプッシュ
+git push
 ```
 
-# nixのファイルに変更を加える際の注意点
-- nixの設計は崩さない
-- コードレビューをしっかり行い、自らを信用しない
-- コードは単純で読みやすく
-- nixのサイトを常に確認する<https://nix.dev/> 
+## コード変更時の心得
+- **設計は崩さない**: 既存のnixの構造を尊重する
+- **自己レビュー**: 自分のコードを過信しない、徹底的に確認する
+- **シンプルさ**: 複雑化せず、読みやすいコードを優先
+- **情報源**: 困ったら https://nix.dev/ を参照
 
+## 注意点
+- nixは宣言的な構成管理。副作用のある操作は慎重に
+- パッチやオーバーレイは最小限に

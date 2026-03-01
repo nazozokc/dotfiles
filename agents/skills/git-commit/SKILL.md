@@ -1,16 +1,33 @@
 ---
 name: git-commit
-description: Git commit rules and conventions for this project
+description: Gitコミット・プッシュ・PR作成時のルール
 ---
 
-# When to use
-- 変更をコミットするとき
-- pushするとき
-- PR作成前
+# Git 運用ガイドライン
 
-# Rules
-- 日本語コミットは禁止
-- 1 commit = 1 logical change
+## いつ使うか
+- ファイルをコミットするとき
+- リモートにプッシュするとき
+- Pull Request を作成するとき
 
-# Commit Message Format
-"内容(20文字以内):日付"
+## 基本ルール
+- **日本語コミット禁止**: 英語のみ使用
+- **1コミット = 1論理変更**: 複数の異なる変更を混在させない
+- **意味のある粒度**: 大きすぎる変更は分割する
+
+## コミットメッセージ形式
+```
+<内容(20文字以内)>:<日付(JST)>
+```
+
+### 例
+```
+add neovim config:20260101
+fix fish greeting:20260101
+update flake.lock:20260101
+```
+
+## 注意点
+- コミット前に `git status` で変更内容を確認
+- コミット後に自動生成されたファイル（含めて良いか判断）は別途コミット
+- PR作成前に `--force` 系のコマンドは使用禁止
