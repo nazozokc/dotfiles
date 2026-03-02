@@ -1,19 +1,8 @@
 {
-  "timezone": "Asia/Tokyo",  
+  "timezone": "Asia/Tokyo",
   "extends": ["config:recommended"],
   "nix": {
     "enabled": true
   },
-  "schedule": ["after 2pm and before 3pm"],
-  "packageRules": [
-    {
-      "matchFileNames": ["nvim/lazy-lock.json"],
-      "enabled": true
-    }
-    {
-      "matchFileNames": ["flake.lock"],
-      "enabled": true
-    }
-
-  ]
+  "schedule": ["after 2pm and before 3pm"]
 }
