@@ -10,5 +10,10 @@
       "matchFileNames": ["nvim/lazy-lock.json"],
       "enabled": true
     }
+    {
+      "matchFileNames": ["flake.lock"],
+      "enabled": true
+    }
+
   ]
 }
