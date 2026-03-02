@@ -18,7 +18,6 @@ function M.apply(config)
 
   -- Slightly tighter line height improves information density without touching glyphs.
   config.line_height = 1.05
-  config.cell_width = 1.0
 
   -- Keep standard ligatures on; they improve readability of common operators in code.
   config.harfbuzz_features = { "calt", "clig", "liga" }
