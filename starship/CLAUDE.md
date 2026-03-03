@@ -1,6 +1,6 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# 最初にやること
+`~/.agents/AGENTS.md`
+- 上のファイルをしっかり読み込んであなたがタスクを実行する際にしっかり参考にしてください。
 
 # starship
 
