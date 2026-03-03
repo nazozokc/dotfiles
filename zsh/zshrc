@@ -142,7 +142,7 @@ cdf() {
 alias vim="nvim"
 alias clr="clear"
 alias q="exit"
-alias typescript-enviroment="sudo npm i -D typescript ts-node-dev @types/node @types/express"
+alias typescript-environment="sudo npm i -D typescript ts-node-dev @types/node @types/express"
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -175,7 +175,6 @@ alias typescript-enviroment="sudo npm i -D typescript ts-node-dev @types/node @t
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-source ~/.oh-my-zsh/custom/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 export PATH="$HOME/.local/bin:$PATH"
 
 source /home/nazozo/.config/broot/launcher/bash/br

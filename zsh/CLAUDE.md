@@ -31,7 +31,7 @@
 | vim | nvim |
 | clr | clear |
 | q | exit |
-| typescript-enviroment | sudo npm i -D typescript ts-node-dev @types/node @types/express |
+| typescript-environment | sudo npm i -D typescript ts-node-dev @types/node @types/express |
 
 ## ディレクトリ構成
 
