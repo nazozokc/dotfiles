@@ -16,8 +16,41 @@ macOS では **nix-darwin** を利用し、Home Manager と連携させていま
 ## 前提条件
 
 - [Nix](https://nixos.org/download.html) がインストール済みであること
+  - インストール方法は下部の「Nix のインストール」を参照
   - macOS の場合は Nix 2.15+ 推奨
 - Linux / macOS 両方で `nix` コマンドが使えること
+
+## Nix のインストール
+
+### Linux (推奨: マルチユーザーインストール)
+
+```bash
+# マルチユーザーインストール (sudo が必要)
+sh <(curl -L https://nixos.org/nix/install) --daemon --yes
+
+# シェルを再起動するかログインし直す
+exec $SHELL
+```
+
+### macOS
+
+```bash
+# シングルユーザーインストール (推奨)
+sh <(curl -L https://nixos.org/nix/install) --no-daemon
+
+# またはマルチユーザーインストール
+sh <(curl -L https://nixos.org/nix/install) --daemon --yes
+
+# シェルを再起動するかログインし直す
+exec $SHELL
+```
+
+### インストール確認
+
+```bash
+nix --version
+nix-env --version
+```
 
 ---
 
