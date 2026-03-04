@@ -1,3 +1,12 @@
+name: Enable auto-merge
+
+on:
+  pull_request:
+
+jobs:
+  enable-automerge:
+    runs-on: ubuntu-latest
+    steps:
       - name: Enable auto-merge
         if: steps.cpr.outputs.pull-request-number != ''
         uses: peter-evans/enable-pull-request-automerge@v3
@@ -5,4 +14,4 @@
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
           merge-method: squash
           token: ${{ secrets.GITHUB_TOKEN }}
-
+     
