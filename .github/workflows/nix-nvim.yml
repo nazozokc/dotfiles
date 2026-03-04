@@ -37,5 +37,5 @@ jobs:
 
       - name: Neovim plugin health check
         run: |
-          nix develop -c nvim --headless +"checkhealth" +"quitall"
+          nix run .#neovim -- --headless +"checkhealth" +"quitall"
 
