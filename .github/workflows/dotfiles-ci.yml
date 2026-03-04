@@ -1,4 +1,4 @@
-name: CI: Lint (shell / nix)
+name: "CI: Lint (shell / nix)"
 
 "on":
   pull_request: {}
