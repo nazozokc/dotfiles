@@ -1,19 +1,19 @@
 return {
-    "T-b-t-nchos/Aquavium.nvim",
-    lazy = false,
-    priority = 5000,
-    config = function()
-        local aquavium = require("Aquavium")
+	"T-b-t-nchos/Aquavium.nvim",
+	lazy = false,
+	priority = 7000,
+	config = function()
+		local aquavium = require("Aquavium")
 
-        aquavium.setup({
-            -- options
+		aquavium.setup({
+			-- options
 
-            ---- For example,
-           -- bold = false,
-           -- italic = false,
-           -- transparent = false,
-        })
+			---- For example,
+			-- bold = false,
+			-- italic = false,
+			-- transparent = false,
+		})
 
-        vim.cmd("colorscheme Aquavium")
-    end,
+		vim.cmd("colorscheme Aquavium")
+	end,
 }
