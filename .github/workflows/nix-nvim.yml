@@ -33,7 +33,7 @@ jobs:
 
       - name: Neovim headless startup check
         run: |
-          nix run .#neovim -- --headless +"quitall"
+          nix run .#packages.x86_64-linux.neovim -- --headless +"quitall"
 
       - name: Neovim plugin health check
         run: |
