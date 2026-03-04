@@ -1,8 +1,8 @@
-name: Update flake.lock
+name: Update flake.lock (auto-merge)
 
 on:
   schedule:
-    - cron: "0 12 * * *" # 毎週月曜 12:00 JST
+    - cron: "0 12 * * *" # 毎日 21:00 JST
   workflow_dispatch:
 
 permissions:
@@ -20,12 +20,15 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v12
 
-      - name: Enable nix flakes
+      - name: Enable flakes
         run: |
           echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
 
       - name: Update flake.lock
         run: nix flake update
+
+      - name: Check flake
+        run: nix flake check
 
       - name: Commit changes
         id: commit
@@ -44,13 +47,22 @@ jobs:
 
           echo "changed=true" >> $GITHUB_OUTPUT
 
-      - name: Create Pull Request
+      - name: Create Pull Request (auto-merge)
         if: steps.commit.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           title: "chore(nix): update flake.lock"
           body: |
-            Automated update of flake.lock via GitHub Actions.
+            Automated flake.lock update.
+            - nix flake update
+            - nix flake check passed
+            Auto-merge enabled.
           branch: flake-update
           delete-branch: true
+          labels: |
+            nix
+            dependencies
+            bot
+          auto-merge: true
+          merge-method: squash
 
