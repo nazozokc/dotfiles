@@ -1,22 +1,87 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
-
 gui:
-  nerdFontsVersion: "3"
-  skipRewordInEditorWarning: true
+  # 日本語環境でも文字化けしにくい
+  language: "ja"
+
+  # マウス完全無効（キーボード至上主義）
+  mouseEvents: false
+
+  # 起動を高速化
+  skipNoStagedFilesWarning: true
+  skipStashWarning: true
+  skipDiscardChangeWarning: true
+
+  # 色は目に優しく、情報量重視
+  theme:
+    activeBorderColor:
+      - cyan
+      - bold
+    inactiveBorderColor:
+      - white
+    selectedLineBgColor:
+      - reverse
+    optionsTextColor:
+      - yellow
+
 git:
-  allBranchesLogCmds:
-    - 'git log --pretty=format:"%Cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%C(reset)" --graph --date=relative --decorate --all'
-  branchLogCmd: 'git log --pretty=format:"%Cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%C(reset)" --graph --date=relative --decorate {{branchName}} --'
-  overrideGpg: true
-  pagers:
-    - colorArg: always
-      pager: delta --color-only --paging=never
-customCommands:
-  - key: n
-    context: files
-    description: git now
-    command: git now
-  - key: I
-    context: localBranches
-    description: gh poi
-    command: gh poi
+  # pull時の自動rebase（履歴を汚さない思想）
+  pull:
+    mode: rebase
+
+  # pushで勝手に upstream を聞かせない
+  push:
+    autoSetupRemote: true
+
+  # fetchは常にprune
+  fetch:
+    prune: true
+
+  # commitメッセージはエディタでしっかり書く
+  commit:
+    signOff: false
+    autoWrapCommitMessage: true
+
+  # diffは詳細重視
+  paging:
+    colorArg: always
+    pager: delta --dark --line-numbers --side-by-side
+
+keybinding:
+  universal:
+    quit: "q"
+    quit-alt1: "<c-c>"
+    return: "<esc>"
+
+    # 強制操作系（確認なし）
+    forceQuit: "<c-q>"
+
+    # 移動はVim準拠
+    prevItem: "k"
+    nextItem: "j"
+    prevPage: "<c-u>"
+    nextPage: "<c-d>"
+    goToTop: "gg"
+    goToBottom: "G"
+
+  files:
+    stageItem: "s"
+    stageAll: "S"
+    unstageItem: "u"
+    discardChanges: "D" # 容赦なく捨てる
+
+  commits:
+    checkoutCommit: "o"
+    resetCommit: "R" # resetを即撃てる
+
+  branches:
+    checkoutBranch: "o"
+    deleteBranch: "D" # ローカルブランチは気軽に消す
+    renameBranch: "r"
+
+  status:
+    checkForUpdate: false
+
+update:
+  method: never # 自動更新は信用しない
+
+reporting: "off" # 余計な通信は切る
+
