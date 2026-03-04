@@ -8,6 +8,7 @@ with pkgs;
   spotify
   discord
   ghostty
+  zen-browser
   tor-browser
   obsidian
 ]
