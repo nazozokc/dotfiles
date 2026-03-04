@@ -8,4 +8,7 @@ with pkgs;
 
   #other
   pay-respects
+
+  #downloader
+  aria2
 ]
