@@ -46,4 +46,5 @@ jobs:
             nix
             dependencies
             bot
-
+          token: ${{ secrets.GITHUB_TOKEN }}
+ 
