@@ -1,4 +1,4 @@
-name: CI: Neovim plugin check (Nix)
+name: "CI: Neovim plugin check (Nix)"
 
 on:
   push:
