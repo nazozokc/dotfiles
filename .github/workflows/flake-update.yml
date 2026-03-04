@@ -41,11 +41,14 @@ jobs:
           git config user.name "flake-update-bot"
           git config user.email "flake-update-bot@users.noreply.github.com"
 
-          git checkout -b flake-update-$(date +%Y%m%d)
+          BRANCH="flake-update-$(date +%Y%m%d)"
+
+          git checkout -b "$BRANCH"
           git add flake.lock
           git commit -m "chore(nix): update flake.lock"
 
           echo "changed=true" >> $GITHUB_OUTPUT
+
 
       - name: Create Pull Request (auto-merge)
         if: steps.commit.outputs.changed == 'true'
