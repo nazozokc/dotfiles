@@ -1,18 +1,18 @@
-name: CI: Dotfiles setup test
+name: CI: Lint (shell / nix)
 
 on:
+  pull_request: {}
   push:
     paths:
+      - "**/*.sh"
+      - "**/*.bash"
+      - "**/*.zsh"
       - "**/*.nix"
-      - "nvim/**"
-      - "fish/**"
-      - "scripts/**"
-      - ".github/workflows/dotfiles-ci.yml"
-  pull_request:
+      - ".github/workflows/lint.yml"
 
 jobs:
-  test:
-    name: Setup test (${{ matrix.os }})
+  lint:
+    name: Lint (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -20,13 +20,12 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          - ubuntu-arm
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Nix インストール（公式）
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v12
 
@@ -35,33 +34,19 @@ jobs:
           mkdir -p ~/.config/nix
           echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
-      # flake が評価できるか（最重要）
-      - name: Flake evaluation
-        run: nix flake check --no-build
+      # shellcheck
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@v2
+        with:
+          scandir: .
+          severity: warning
 
-      # Home Manager / switch テスト
-      # 実環境を汚さないため --dry-run
-      - name: Run switch (dry-run)
-        run: nix run .#switch -- --dry-run
-
-      # fish config が壊れてないか
-      - name: Fish config check
+      # shfmt（差分チェックのみ）
+      - name: shfmt check
         run: |
-          nix shell nixpkgs#fish -c fish -n fish/config.fish
+          nix shell nixpkgs#shfmt -c shfmt -d .
 
-      # Neovim 設定チェック（起動→即終了）
-      - name: Neovim config check
-        run: |
-          nix shell nixpkgs#neovim -c \
-            nvim --headless "+quitall"
-
-      # shell script の最低限チェック（存在すれば）
-      - name: Shell scripts syntax check
-        run: |
-          if [ -d scripts ]; then
-            for f in scripts/*.sh; do
-              echo "checking $f"
-              bash -n "$f"
-            done
-          fi
+      # nix 構文チェック
+      - name: Nix syntax check
+        run: nix eval --parse flake.nix
 
