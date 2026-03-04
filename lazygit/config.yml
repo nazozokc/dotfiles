@@ -1,11 +1,9 @@
 gui:
   language: "ja"
-  mouseEvents: false
-
+  mouseEvents: true
   skipNoStagedFilesWarning: true
   skipStashWarning: true
   skipDiscardChangeWarning: true
-
   theme:
     activeBorderColor:
       - cyan
@@ -16,57 +14,44 @@ gui:
       - reverse
     optionsTextColor:
       - yellow
-
 git:
   pull:
     mode: rebase
-
   push:
     autoSetupRemote: true
-
   fetch:
     prune: true
-
   commit:
     signOff: false
     autoWrapCommitMessage: true
-
   # ※ 新仕様では lazygit が自動で pagers に移行する
-  paging:
-    colorArg: always
-    pager: delta --dark --line-numbers --side-by-side
-
+  pagers:
+    - colorArg: always
+      pager: delta --dark --line-numbers --side-by-side
 keybinding:
   universal:
     quit: "q"
     quit-alt1: "<c-c>"
     return: "<esc>"
     forceQuit: "<c-q>"
-
     prevItem: "k"
     nextItem: "j"
     prevPage: "<c-u>"
     nextPage: "<c-d>"
     goToTop: "gg"
     goToBottom: "G"
-
   files:
     stageItem: "s"
     stageAll: "S"
     unstageItem: "u"
     discardChanges: "D"
-
   commits:
     checkoutCommit: "o"
     resetCommit: "R"
-
   branches:
     checkoutBranch: "o"
     deleteBranch: "D"
     renameBranch: "r"
-
 update:
   method: never
-
 reporting: "off"
-
