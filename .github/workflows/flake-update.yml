@@ -1,0 +1,56 @@
+name: Update flake.lock
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # 毎週月曜 12:00 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-flake:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v12
+
+      - name: Enable nix flakes
+        run: |
+          echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
+
+      - name: Update flake.lock
+        run: nix flake update
+
+      - name: Commit changes
+        id: commit
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          git config user.name "flake-update-bot"
+          git config user.email "flake-update-bot@users.noreply.github.com"
+
+          git checkout -b flake-update/$(date +%Y%m%d)
+          git add flake.lock
+          git commit -m "chore(nix): update flake.lock"
+
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.commit.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "chore(nix): update flake.lock"
+          body: |
+            Automated update of flake.lock via GitHub Actions.
+          branch: flake-update
+          delete-branch: true
+
