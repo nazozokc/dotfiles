@@ -1,0 +1,67 @@
+name: CI: Dotfiles setup test
+
+on:
+  push:
+    paths:
+      - "**/*.nix"
+      - "nvim/**"
+      - "fish/**"
+      - "scripts/**"
+      - ".github/workflows/dotfiles-ci.yml"
+  pull_request:
+
+jobs:
+  test:
+    name: Setup test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Nix インストール（公式）
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v12
+
+      - name: Enable flakes
+        run: |
+          mkdir -p ~/.config/nix
+          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+
+      # flake が評価できるか（最重要）
+      - name: Flake evaluation
+        run: nix flake check --no-build
+
+      # Home Manager / switch テスト
+      # 実環境を汚さないため --dry-run
+      - name: Run switch (dry-run)
+        run: nix run .#switch -- --dry-run
+
+      # fish config が壊れてないか
+      - name: Fish config check
+        run: |
+          nix shell nixpkgs#fish -c fish -n fish/config.fish
+
+      # Neovim 設定チェック（起動→即終了）
+      - name: Neovim config check
+        run: |
+          nix shell nixpkgs#neovim -c \
+            nvim --headless "+quitall"
+
+      # shell script の最低限チェック（存在すれば）
+      - name: Shell scripts syntax check
+        run: |
+          if [ -d scripts ]; then
+            for f in scripts/*.sh; do
+              echo "checking $f"
+              bash -n "$f"
+            done
+          fi
+
