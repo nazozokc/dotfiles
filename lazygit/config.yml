@@ -1,16 +1,11 @@
 gui:
-  # 日本語環境でも文字化けしにくい
   language: "ja"
-
-  # マウス完全無効（キーボード至上主義）
   mouseEvents: false
 
-  # 起動を高速化
   skipNoStagedFilesWarning: true
   skipStashWarning: true
   skipDiscardChangeWarning: true
 
-  # 色は目に優しく、情報量重視
   theme:
     activeBorderColor:
       - cyan
@@ -23,24 +18,20 @@ gui:
       - yellow
 
 git:
-  # pull時の自動rebase（履歴を汚さない思想）
   pull:
     mode: rebase
 
-  # pushで勝手に upstream を聞かせない
   push:
     autoSetupRemote: true
 
-  # fetchは常にprune
   fetch:
     prune: true
 
-  # commitメッセージはエディタでしっかり書く
   commit:
     signOff: false
     autoWrapCommitMessage: true
 
-  # diffは詳細重視
+  # ※ 新仕様では lazygit が自動で pagers に移行する
   paging:
     colorArg: always
     pager: delta --dark --line-numbers --side-by-side
@@ -50,11 +41,8 @@ keybinding:
     quit: "q"
     quit-alt1: "<c-c>"
     return: "<esc>"
-
-    # 強制操作系（確認なし）
     forceQuit: "<c-q>"
 
-    # 移動はVim準拠
     prevItem: "k"
     nextItem: "j"
     prevPage: "<c-u>"
@@ -66,22 +54,19 @@ keybinding:
     stageItem: "s"
     stageAll: "S"
     unstageItem: "u"
-    discardChanges: "D" # 容赦なく捨てる
+    discardChanges: "D"
 
   commits:
     checkoutCommit: "o"
-    resetCommit: "R" # resetを即撃てる
+    resetCommit: "R"
 
   branches:
     checkoutBranch: "o"
-    deleteBranch: "D" # ローカルブランチは気軽に消す
+    deleteBranch: "D"
     renameBranch: "r"
 
-  status:
-    checkForUpdate: false
-
 update:
-  method: never # 自動更新は信用しない
+  method: never
 
-reporting: "off" # 余計な通信は切る
+reporting: "off"
 
