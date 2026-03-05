@@ -2,8 +2,6 @@ return {
 	"mhartington/formatter.nvim",
 	event = "BufWritePre",
 	config = function()
-		local util = require("formatter.util")
-
 		require("formatter").setup({
 			logging = false,
 

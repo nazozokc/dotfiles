@@ -10,7 +10,7 @@ return {
 			nearest_only = true, -- 最寄りのハイライトだけ強調
 			nearest_float_when = "auto", -- float 表示タイミング
 			enable_incsearch = true, -- incsearch と連動
-			build_position_cb = function(plist, idx, original_pos)
+			build_position_cb = function(plist, idx, _)
 				-- 上下分割/横分割で位置調整したいとき
 				return require("hlslens/util").float_updown(plist, idx)
 			end,
