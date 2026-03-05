@@ -22,4 +22,3 @@ function gbc
     # ブランチ切り替え
     git switch $branch 2>/dev/null; or git checkout $branch
 end
-

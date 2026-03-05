@@ -16,7 +16,7 @@ function fish_prompt
         echo -n $parent
 
         # 区切り
-        echo -n '/'
+        echo -n /
 
         # カレントディレクトリ（太字）
         set_color cyan --bold
