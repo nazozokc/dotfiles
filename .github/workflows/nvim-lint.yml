@@ -31,4 +31,4 @@ jobs:
 
       - name: luacheck
         run: |
-          nix shell nixpkgs#lua54Packages.luacheck --command luacheck nvim/ --globals vim; code=$?; [ $code -lt 2 ]
+          nix shell nixpkgs#lua54Packages.luacheck --command luacheck nvim/ --globals vim; code=$?; [ $code -lt 1 ]
