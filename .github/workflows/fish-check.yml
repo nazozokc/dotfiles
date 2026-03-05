@@ -16,13 +16,12 @@ jobs:
       - name: Fish syntax check
         run: |
           nix shell nixpkgs#fish --command sh -c '
-          fish --no-execute fish/config.fish
-          find fish/ -name "*.fish" -print0 \
-        | xargs -0 -I{} fish --no-execute {}
-    '
+            fish --no-execute fish/config.fish
+            find fish/ -name "*.fish" -print0 | xargs -0 -I{} fish --no-execute {}
+          '
 
-- name: fish_indent check
-  run: |
-    nix shell nixpkgs#fish --command sh -c '
-      find fish/ -name "*.fish" | xargs fish_indent --check
-    '
+      - name: fish_indent check
+        run: |
+          nix shell nixpkgs#fish --command sh -c '
+            find fish/ -name "*.fish" | xargs fish_indent --check
+          '
