@@ -34,8 +34,6 @@ with pkgs;
 
   #yaml
   yamlfmt
-  yamllint
-  yq
 
   # package tools
   cargo
