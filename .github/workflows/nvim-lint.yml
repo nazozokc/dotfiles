@@ -5,18 +5,26 @@ on:
     paths:
       - "nvim/**/*.lua"
       - ".github/workflows/nvim-lint.yml"
-
 jobs:
   lua-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v12
-      - name: StyLua format check
-        run: |
-          nix shell nixpkgs#stylua --command \
-            stylua --check nvim/
       - name: luacheck
         run: |
           nix shell nixpkgs#lua54Packages.luacheck --command \
             luacheck nvim/ --globals vim
+      - name: StyLua auto-format
+        run: |
+          nix shell nixpkgs#stylua --command \
+            stylua nvim/
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "style(lua): auto-format with StyLua"
+          title: "style(lua): auto-format with StyLua"
+          body: "StyLua による自動フォーマット"
+          branch: fix/stylua-format
+          delete-branch: true
+          labels: lua
