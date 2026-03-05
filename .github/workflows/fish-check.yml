@@ -25,3 +25,13 @@ jobs:
           nix shell nixpkgs#fish --command sh -c '
             find fish/ -name "*.fish" | xargs fish_indent --check
           '
+
+      - name: fish_indent auto-format
+        run: |
+          nix shell nixpkgs#fish --command sh -c '
+            find fish/ -name "*.fish" | xargs -I{} fish_indent -w {}
+          '
+      - name: Commit formatted files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style(fish): auto-format with fish_indent"
