@@ -32,6 +32,9 @@ with pkgs;
   #Java
   jdk
 
+  #yaml
+  yamlfmt
+
   # package tools
   cargo
   cmake
