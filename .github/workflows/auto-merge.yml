@@ -1,6 +1,6 @@
 name: Enable auto-merge
 
-on:
+"on":
   pull_request:
 
 jobs:
