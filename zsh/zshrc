@@ -1,4 +1,4 @@
-# shellcheck shell=zsh
+# shellcheck shell=bash
 
 # Starship
 if command -v starship &> /dev/null; then
