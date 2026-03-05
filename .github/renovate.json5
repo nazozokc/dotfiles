@@ -1,8 +1,44 @@
 {
-  "timezone": "Asia/Tokyo",
-  "extends": ["config:recommended"],
-  "nix": {
-    "enabled": true
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['config:recommended'],
+
+  // PRのラベル
+  labels: ['dependencies', 'renovate'],
+  vulnerabilityAlerts: {
+    labels: ['security'],
   },
-  "schedule": ["after 2pm and before 3pm"]
+
+  // 自動マージ
+  automerge: true,
+  platformAutomerge: true,
+
+  // リリースから3日以上経ったものだけ更新（壊れたリリースを踏まない）
+  minimumReleaseAge: '3 days',
+
+  // ブランチ数の上限なし（個人リポジトリなので無制限でOK）
+  branchConcurrentLimit: 0,
+
+  // ダッシュボードIssueは不要
+  dependencyDashboard: false,
+
+  // nixはhome-managerで自己管理
+  nix: {
+    enabled: false,
+  },
+
+  // lockfileのメンテPRは出す（学習中なので依存関係を常に最新に保つ）
+  lockFileMaintenance: {
+    enabled: true,
+    automerge: true,
+    schedule: ['before 5am on monday'],
+  },
+
+  packageRules: [
+    // メジャーバージョンアップは自動マージしない（破壊的変更があり得る）
+    {
+      matchUpdateTypes: ['major'],
+      automerge: false,
+      labels: ['dependencies', 'renovate', 'major'],
+    },
+  ],
 }
