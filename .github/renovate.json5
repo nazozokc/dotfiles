@@ -34,11 +34,10 @@
   },
 
   packageRules: [
-    // メジャーバージョンアップは自動マージしない（破壊的変更があり得る）
-    {
-      matchUpdateTypes: ['major'],
-      automerge: false,
-      labels: ['dependencies', 'renovate', 'major'],
-    },
-  ],
+  {
+    matchPackageNames: ['renovate'],
+    automerge: false,
+    labels: ['dependencies', 'renovate', 'self-update'],
+  },
+],
 }
