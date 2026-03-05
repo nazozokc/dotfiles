@@ -26,12 +26,9 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@v12
         # flakes はデフォルトで有効化される。別途 nix.conf を書く必要なし
 
-      - name: ShellCheck
-        uses: ludeeus/action-shellcheck@2.0.0
-        with:
-          scandir: .
-          severity: warning
-
+      - name: shellcheck
+        run: nix shell nixpkgs#shellcheck -c shellcheck **/*.sh
+        
       - name: shfmt check
         run: |
           nix shell nixpkgs#shfmt --command shfmt -d .
