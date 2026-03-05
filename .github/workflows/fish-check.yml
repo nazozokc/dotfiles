@@ -1,0 +1,24 @@
+name: "CI: Lint (fish)"
+on:
+  pull_request: {}
+  push:
+    paths:
+      - "fish/**/*.fish"
+      - ".github/workflows/fish-check.yml"
+
+jobs:
+  fish-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v12
+      - name: Fish syntax check
+        run: |
+          nix shell nixpkgs#fish --command \
+            fish --no-execute fish/config.fish
+          find fish/ -name "*.fish" -print0 \
+            | xargs -0 -I{} fish --no-execute {}
+      - name: fish_indent check
+        run: |
+          nix shell nixpkgs#fish --command \
+            fish_indent --check $(find fish/ -name "*.fish")

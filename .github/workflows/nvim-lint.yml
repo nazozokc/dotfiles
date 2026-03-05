@@ -1,0 +1,22 @@
+name: "CI: Lint (Lua)"
+on:
+  pull_request: {}
+  push:
+    paths:
+      - "nvim/**/*.lua"
+      - ".github/workflows/nvim-lint.yml"
+
+jobs:
+  lua-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v12
+      - name: StyLua format check
+        run: |
+          nix shell nixpkgs#stylua --command \
+            stylua --check nvim/
+      - name: luacheck
+        run: |
+          nix shell nixpkgs#lua54Packages.luacheck --command \
+            luacheck nvim/ --globals vim
