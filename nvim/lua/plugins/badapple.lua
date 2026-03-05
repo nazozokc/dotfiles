@@ -1,4 +1,4 @@
 return {
-  "ryoppippi/vim-bad-apple",
-  cmd = { "BadApple" },
+	"ryoppippi/vim-bad-apple",
+	cmd = { "BadApple" },
 }

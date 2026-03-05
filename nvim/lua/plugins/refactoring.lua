@@ -1,4 +1,4 @@
 return {
-  "ThePrimeagen/refactoring.nvim",
-  event = "LspAttach",
+	"ThePrimeagen/refactoring.nvim",
+	event = "LspAttach",
 }

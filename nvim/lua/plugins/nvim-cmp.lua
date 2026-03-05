@@ -1,176 +1,176 @@
 return {
-  "hrsh7th/nvim-cmp",
-  dependencies = {
-    -- 補完ソース
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-cmdline",
-    "hrsh7th/cmp-calc",
+	"hrsh7th/nvim-cmp",
+	dependencies = {
+		-- 補完ソース
+		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/cmp-buffer",
+		"hrsh7th/cmp-path",
+		"hrsh7th/cmp-cmdline",
+		"hrsh7th/cmp-calc",
 
-    -- スニペット
-    "L3MON4D3/LuaSnip",
-    "saadparwaiz1/cmp_luasnip",
-    "rafamadriz/friendly-snippets",
-  },
+		-- スニペット
+		"L3MON4D3/LuaSnip",
+		"saadparwaiz1/cmp_luasnip",
+		"rafamadriz/friendly-snippets",
+	},
 
-  config = function()
-    local cmp = require("cmp")
-    local luasnip = require("luasnip")
+	config = function()
+		local cmp = require("cmp")
+		local luasnip = require("luasnip")
 
-    require("luasnip.loaders.from_vscode").lazy_load()
+		require("luasnip.loaders.from_vscode").lazy_load()
 
-    ------------------------------------------------------------------
-    -- ハイライト
-    ------------------------------------------------------------------
-    vim.api.nvim_set_hl(0, "CmpGhostSnippet", {
-      fg = "#727169",
-      italic = true,
-    })
+		------------------------------------------------------------------
+		-- ハイライト
+		------------------------------------------------------------------
+		vim.api.nvim_set_hl(0, "CmpGhostSnippet", {
+			fg = "#727169",
+			italic = true,
+		})
 
-    vim.api.nvim_set_hl(0, "CmpSnippetPreview", {
-      fg = "#6e738d",
-      italic = true,
-    })
+		vim.api.nvim_set_hl(0, "CmpSnippetPreview", {
+			fg = "#6e738d",
+			italic = true,
+		})
 
-    ------------------------------------------------------------------
-    -- cmp 本体
-    ------------------------------------------------------------------
-    cmp.setup({
-      preselect = cmp.PreselectMode.Item,
+		------------------------------------------------------------------
+		-- cmp 本体
+		------------------------------------------------------------------
+		cmp.setup({
+			preselect = cmp.PreselectMode.Item,
 
-      snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body)
-        end,
-      },
+			snippet = {
+				expand = function(args)
+					luasnip.lsp_expand(args.body)
+				end,
+			},
 
-      window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-      },
+			window = {
+				completion = cmp.config.window.bordered(),
+				documentation = cmp.config.window.bordered(),
+			},
 
-      formatting = {
-        fields = { "kind", "abbr", "menu" },
-        format = function(entry, item)
-          local icons = {
-            Function = "󰊕",
-            Snippet  = "",
-          }
+			formatting = {
+				fields = { "kind", "abbr", "menu" },
+				format = function(entry, item)
+					local icons = {
+						Function = "󰊕",
+						Snippet = "",
+					}
 
-          item.kind = (icons[item.kind] or "") .. " " .. item.kind
-          item.menu = ({
-            luasnip = "[SNIP]",
-            nvim_lsp = "[LSP]",
-            buffer = "[BUF]",
-            path = "[PATH]",
-          })[entry.source.name]
+					item.kind = (icons[item.kind] or "") .. " " .. item.kind
+					item.menu = ({
+						luasnip = "[SNIP]",
+						nvim_lsp = "[LSP]",
+						buffer = "[BUF]",
+						path = "[PATH]",
+					})[entry.source.name]
 
-          return item
-        end,
-      },
+					return item
+				end,
+			},
 
-      mapping = cmp.mapping.preset.insert({
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<CR>"] = cmp.mapping.confirm({ select = true }),
+			mapping = cmp.mapping.preset.insert({
+				["<C-Space>"] = cmp.mapping.complete(),
+				["<CR>"] = cmp.mapping.confirm({ select = true }),
 
-        ["<Tab>"] = function(fallback)
-          if cmp.visible() then
-            cmp.confirm({ select = true })
-          elseif luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-          else
-            fallback()
-          end
-        end,
+				["<Tab>"] = function(fallback)
+					if cmp.visible() then
+						cmp.confirm({ select = true })
+					elseif luasnip.expand_or_jumpable() then
+						luasnip.expand_or_jump()
+					else
+						fallback()
+					end
+				end,
 
-        ["<S-Tab>"] = function(fallback)
-          if luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-          else
-            fallback()
-          end
-        end,
-      }),
+				["<S-Tab>"] = function(fallback)
+					if luasnip.jumpable(-1) then
+						luasnip.jump(-1)
+					else
+						fallback()
+					end
+				end,
+			}),
 
-      sources = {
-        { name = "luasnip",  priority = 1000 },
-        { name = "nvim_lsp", priority = 900 },
-        { name = "path",     priority = 500 },
-        { name = "buffer",   priority = 250 },
-      },
+			sources = {
+				{ name = "luasnip", priority = 1000 },
+				{ name = "nvim_lsp", priority = 900 },
+				{ name = "path", priority = 500 },
+				{ name = "buffer", priority = 250 },
+			},
 
-      experimental = {
-        ghost_text = {
-          hl_group = "CmpGhostSnippet",
-        },
-      },
-    })
+			experimental = {
+				ghost_text = {
+					hl_group = "CmpGhostSnippet",
+				},
+			},
+		})
 
-    ------------------------------------------------------------------
-    -- snippet hover ghost preview（修正版・本命）
-    ------------------------------------------------------------------
-    local ns = vim.api.nvim_create_namespace("cmp_snippet_preview")
+		------------------------------------------------------------------
+		-- snippet hover ghost preview（修正版・本命）
+		------------------------------------------------------------------
+		local ns = vim.api.nvim_create_namespace("cmp_snippet_preview")
 
-    cmp.event:on("complete_changed", function(event)
-      vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
+		cmp.event:on("complete_changed", function(event)
+			vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
 
-      local entry = event.entry
-      if not entry or entry.source.name ~= "luasnip" then
-        return
-      end
+			local entry = event.entry
+			if not entry or entry.source.name ~= "luasnip" then
+				return
+			end
 
-      local snippet = entry:get_insert_text()
-      if not snippet then
-        return
-      end
+			local snippet = entry:get_insert_text()
+			if not snippet then
+				return
+			end
 
-      local preview = snippet
-          :gsub("%$%b{}", function(s)
-            return s:match("{(.-)}") or ""
-          end)
-          :gsub("%$%d+", "")
-          :gsub("\n.*", "")
+			local preview = snippet
+				:gsub("%$%b{}", function(s)
+					return s:match("{(.-)}") or ""
+				end)
+				:gsub("%$%d+", "")
+				:gsub("\n.*", "")
 
-      local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
-      row = row - 1
+			local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+			row = row - 1
 
-      vim.api.nvim_buf_set_extmark(0, ns, row, col, {
-        virt_text = { { preview, "CmpSnippetPreview" } },
-        virt_text_pos = "eol",
-      })
-    end)
+			vim.api.nvim_buf_set_extmark(0, ns, row, col, {
+				virt_text = { { preview, "CmpSnippetPreview" } },
+				virt_text_pos = "eol",
+			})
+		end)
 
-    cmp.event:on("menu_closed", function()
-      vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
-    end)
+		cmp.event:on("menu_closed", function()
+			vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
+		end)
 
-    ------------------------------------------------------------------
-    -- cmdline
-    ------------------------------------------------------------------
-    cmp.setup.cmdline("/", {
-      mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources({
-        { name = "nvim_lsp_document_symbol" },
-        { name = "cmdline" },
-        { name = "ghq" },
-      }, {
-        { name = "buffer" },
-      }),
-      completion = {
-        completeopt = "menu,menuone,noselect",
-      },
-    })
+		------------------------------------------------------------------
+		-- cmdline
+		------------------------------------------------------------------
+		cmp.setup.cmdline("/", {
+			mapping = cmp.mapping.preset.cmdline(),
+			sources = cmp.config.sources({
+				{ name = "nvim_lsp_document_symbol" },
+				{ name = "cmdline" },
+				{ name = "ghq" },
+			}, {
+				{ name = "buffer" },
+			}),
+			completion = {
+				completeopt = "menu,menuone,noselect",
+			},
+		})
 
-    cmp.setup.cmdline(":", {
-      mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources(
-        { { name = "async_path" } },
-        { { name = "cmdline" }, { { name = "cmdline_history" } } }
-      ),
-      completion = {
-        completeopt = "menu,menuone,noselect",
-      },
-    })
-  end,
+		cmp.setup.cmdline(":", {
+			mapping = cmp.mapping.preset.cmdline(),
+			sources = cmp.config.sources(
+				{ { name = "async_path" } },
+				{ { name = "cmdline" }, { { name = "cmdline_history" } } }
+			),
+			completion = {
+				completeopt = "menu,menuone,noselect",
+			},
+		})
+	end,
 }

@@ -1,5 +1,5 @@
 return {
-  "numToStr/Comment.nvim",
-  event = "BufReadPost",
-  config = true
+	"numToStr/Comment.nvim",
+	event = "BufReadPost",
+	config = true,
 }

@@ -1,4 +1,4 @@
 return {
-  "matsui54/denops-signature_help",
-  event = "VeryLazy",
+	"matsui54/denops-signature_help",
+	event = "VeryLazy",
 }

@@ -4,7 +4,7 @@
 local M = {}
 
 function M.setup()
-  print("module loaded")
+	print("module loaded")
 end
 
 return M

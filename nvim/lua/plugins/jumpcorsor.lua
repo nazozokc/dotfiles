@@ -1,4 +1,4 @@
 return {
-  "skanehira/jumpcursor.vim",
-  event = "VeryLazy",
+	"skanehira/jumpcursor.vim",
+	event = "VeryLazy",
 }
