@@ -32,4 +32,4 @@ jobs:
 
       - name: luacheck
         run: |
-          nix shell nixpkgs#lua54Packages.luacheck --command luacheck nvim/ --globals vim --no-warnings
+          nix shell nixpkgs#lua54Packages.luacheck --command luacheck nvim/ --globals vim
