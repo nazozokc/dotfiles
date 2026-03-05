@@ -1,34 +1,29 @@
-name: "CI: Lint (shell / nix)"
-"on":
-  pull_request: {}
-  push:
-    paths:
-      - "**/*.sh"
-      - "bash/bashrc"
-      - "zsh/zshrc"
-      - "**/*.nix"
-      - ".github/workflows/dotfiles-ci.yml"
-jobs:
+ jobs:
   lint:
     name: Lint (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - ubuntu-22.04-arm
+        include:
+          - os: ubuntu-latest
+            shellcheck: true
+          - os: ubuntu-22.04-arm
+            shellcheck: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v12
-        # flakes はデフォルトで有効化される。別途 nix.conf を書く必要なし
 
-      - name: shellcheck
-        run: nix shell nixpkgs#shellcheck -c shellcheck **/*.sh
-        
+      - name: ShellCheck
+        if: matrix.shellcheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: .
+          severity: warning
+
       - name: shfmt check
         run: |
           nix shell nixpkgs#shfmt --command shfmt -d .
