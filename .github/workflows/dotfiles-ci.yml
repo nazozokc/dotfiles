@@ -37,4 +37,4 @@ jobs:
       - name: Nix syntax check
         run: |
           find . -name "*.nix" ! -path "./.git/*" -print0 \
-            | xargs -0 -I{} sh -c 'nix-instantiate --parse "$1" > /dev/null' _ {}
+            | xargs -0 -I{} sh -c "nix-instantiate --parse \"\$1\" > /dev/null" _ {}
