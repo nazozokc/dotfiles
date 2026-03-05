@@ -1,7 +1,7 @@
 name: Update flake.lock (auto-merge)
 on:
   schedule:
-    - cron: "0 12 * * *" # 毎日 21:00 JST
+    - cron: "0 6 * * *" # 毎日 21:00 JST
   workflow_dispatch:
 permissions:
   contents: write
