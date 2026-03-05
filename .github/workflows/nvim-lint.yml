@@ -28,7 +28,6 @@ jobs:
           title: "style: auto-fix StyLua formatting"
           body: "StyLua によるフォーマット自動修正"
           branch: "fix/stylua-auto-format"
-          delete-branch: true
 
       - name: luacheck
         run: |
