@@ -26,7 +26,7 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v12
       - name: ShellCheck
-        if: matrix.shellcheck
+        if: ${{ matrix.shellcheck }}
         uses: ludeeus/action-shellcheck@2.0.0
         with:
           scandir: .
