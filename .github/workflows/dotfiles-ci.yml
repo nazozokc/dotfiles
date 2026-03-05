@@ -22,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-     - name: Install Nix
+      - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v12
         # flakes はデフォルトで有効化される。別途 nix.conf を書く必要なし
 
