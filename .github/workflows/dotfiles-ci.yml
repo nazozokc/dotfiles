@@ -21,21 +21,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v12
-      - name: Enable flakes
-        run: |
-          mkdir -p ~/.config/nix
-          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+        # flakes はデフォルトで有効化される。別途 nix.conf を書く必要なし
+
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0
         with:
           scandir: .
           severity: warning
+
       - name: shfmt check
         run: |
-          nix shell nixpkgs#shfmt -c shfmt -d .
+          nix shell nixpkgs#shfmt --command shfmt -d .
+
       - name: Nix syntax check
         run: |
-          find . -name "*.nix" ! -path "./.git/*" \
-            -exec nix-instantiate --parse {} \; > /dev/null
+          find . -name "*.nix" ! -path "./.git/*" -print0 \
+            | xargs -0 -I{} sh -c 'nix-instantiate --parse "$1" > /dev/null' _ {}
