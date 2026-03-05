@@ -1,3 +1,3 @@
 return {
-  "stevearc/overseer.nvim",
+	"stevearc/overseer.nvim",
 }

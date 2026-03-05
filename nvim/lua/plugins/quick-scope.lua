@@ -1,4 +1,4 @@
 return {
-  "unblevable/quick-scope",
-  event = "BufReadPost",
+	"unblevable/quick-scope",
+	event = "BufReadPost",
 }
