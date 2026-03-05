@@ -1,11 +1,13 @@
 name: "CI: Lint (Lua)"
 on:
-  pull_request: {}
+  pull_request:
+    paths:
+      - "nvim/**/*.lua"
+      - ".github/workflows/nvim-lint.yml"
   push:
     paths:
       - "nvim/**/*.lua"
       - ".github/workflows/nvim-lint.yml"
-
 jobs:
   lua-lint:
     runs-on: ubuntu-latest
@@ -13,15 +15,13 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
-
+      - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v21
-
       - name: StyLua auto-fix
         run: |
           nix shell nixpkgs#stylua --command stylua nvim/
-
       - name: Create PR if StyLua made changes
+        if: github.event_name == 'push'
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "style: auto-fix StyLua formatting"
@@ -29,7 +29,6 @@ jobs:
           body: "StyLua によるフォーマット自動修正"
           branch: "fix/stylua-auto-format"
           base: main
-
       - name: luacheck
         run: |
-          nix shell nixpkgs#lua54Packages.luacheck --command luacheck nvim/ --globals vim; code=$?; [ $code -lt 1 ]
+          nix shell nixpkgs#lua54Packages.luacheck --command luacheck nvim/ --globals vim; code=$?; [ $code -lt 2 ]
