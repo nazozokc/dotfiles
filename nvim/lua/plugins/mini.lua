@@ -37,12 +37,14 @@ return {
 		version = false,
 		event = "BufReadPost", -- バッファ読み込み後に描画
 		config = function()
-			require("mini.indentscope").setup({ draw = {
-				delay = 100,
-				animation = function()
-					return 0
-				end,
-			} })
+			require("mini.indentscope").setup({
+				draw = {
+					delay = 100,
+					animation = function()
+						return 0
+					end,
+				},
+			})
 		end,
 	},
 
