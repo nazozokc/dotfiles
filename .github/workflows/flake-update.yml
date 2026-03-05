@@ -1,43 +1,30 @@
 name: Update flake.lock (auto-merge)
-
 on:
   schedule:
-    - cron: "0 15 * * *" # 毎日 21:00 JST
+    - cron: "0 12 * * *" # 毎日 21:00 JST
   workflow_dispatch:
-
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
   update-flake:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v6
-
+      - uses: actions/checkout@v4
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v21
-
-      - name: Enable flakes
-        run: |
-          echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
-
+        uses: DeterminateSystems/nix-installer-action@v14
       - name: Update flake.lock
         run: nix flake update
-
       - name: Check flake
         run: nix flake check
-
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore(nix): update flake.lock"
           title: "chore(nix): update flake.lock"
           body: |
             Automated flake.lock update.
-
             - nix flake update
             - nix flake check passed
           branch: flake-update
@@ -47,4 +34,8 @@ jobs:
             dependencies
             bot
           token: ${{ secrets.GITHUB_TOKEN }}
- 
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        run: gh pr merge --auto --squash "${{ steps.cpr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
