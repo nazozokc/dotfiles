@@ -1,5 +1,4 @@
 name: "CI: Lint (shell / nix)"
-
 "on":
   pull_request: {}
   push:
@@ -8,45 +7,33 @@ name: "CI: Lint (shell / nix)"
       - "**/*.bash"
       - "**/*.zsh"
       - "**/*.nix"
-      - ".github/workflows/lint.yml"
-
+      - ".github/workflows/dotfiles-ci.yml"
 jobs:
   lint:
     name: Lint (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: false
       matrix:
         os:
           - ubuntu-latest
-          - ubuntu-24.04-arm64
-
+          - ubuntu-24.04-arm  # ここを修正
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v12
-
       - name: Enable flakes
         run: |
           mkdir -p ~/.config/nix
           echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-
-      # shellcheck
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@v2
         with:
           scandir: .
           severity: warning
-
-      # shfmt（差分チェックのみ）
       - name: shfmt check
         run: |
           nix shell nixpkgs#shfmt -c shfmt -d .
-
-      # nix 構文チェック
       - name: Nix syntax check
         run: nix eval --parse flake.nix
-
