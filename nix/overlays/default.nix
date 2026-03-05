@@ -7,7 +7,4 @@ let
     ./node-packages.nix
   ];
 in
-prev.lib.composeManyExtensions
-  (map (file: import file) overlayFiles)
-  final
-  prev
+prev.lib.composeManyExtensions (map (file: import file) overlayFiles) final prev
