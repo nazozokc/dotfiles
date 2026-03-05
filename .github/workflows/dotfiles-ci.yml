@@ -22,7 +22,7 @@ jobs:
             shellcheck: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v21
       - name: ShellCheck
