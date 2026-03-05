@@ -4,8 +4,8 @@ name: "CI: Lint (shell / nix)"
   push:
     paths:
       - "**/*.sh"
-      - "**/*.bash"
-      - "**/*.zsh"
+      - "bash/bashrc"
+      - "zsh/zshrc"
       - "**/*.nix"
       - ".github/workflows/dotfiles-ci.yml"
 jobs:
