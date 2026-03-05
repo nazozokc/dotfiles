@@ -6,10 +6,7 @@ in
 {
   home.username = username;
 
-  home.homeDirectory =
-    if pkgs.stdenv.isDarwin
-    then "/Users/${username}"
-    else "/home/${username}";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
 
   home.stateVersion = "24.05";
 
@@ -17,4 +14,3 @@ in
 
   programs.home-manager.enable = true;
 }
-
