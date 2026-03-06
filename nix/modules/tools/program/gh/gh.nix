@@ -16,7 +16,6 @@
       pkgs.gh-do
 
       # Custom extensions from overlay
-      pkgs.gh-graph
       pkgs.gh-nippou
     ];
   };
