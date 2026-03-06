@@ -7,7 +7,7 @@
 
 # 管理方法
 このディレクトリは、`Nix`により管理しています。具体的な管理方法は
-- `nix/AGENTS.md`
+- `nix/CLAUDE.md`
 - `README.md`
 を参照してください。
 
@@ -15,7 +15,10 @@
 - neovim
 - fish
 - zsh
+- lazygit
 - wezterm
+- ghostty
+- opencode
 - starship
 - bash
 - efm-langserver
