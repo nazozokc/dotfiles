@@ -9,14 +9,19 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: homeConfigurations.nazozo.activationPackage
+          - os: macos-latest
+            target: darwinConfigurations.nazozo.system  # flake.nixの実際のattribute名に合わせて
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix flake check
         run: nix flake check --no-build
-      - name: Build home-manager config (dry-run)
-        run: |
-          nix build .#homeConfigurations.nazozo.activationPackage \
-            --dry-run 2>&1 || true
+      - name: Build config (dry-run)
+        run: nix build .#${{ matrix.target }} --dry-run
