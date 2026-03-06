@@ -5,6 +5,7 @@
   # nix-darwin 基本設定
   ########################################
   system.stateVersion = 4;
+  system.primaryUser = "nazozokc"; # darwin-rebuild を実行するユーザー名
 
   ########################################
   # Nix 自体の設定
@@ -36,7 +37,7 @@
   ########################################
   # macOS セキュリティ / 権限
   ########################################
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   ########################################
   # macOS システム設定（最低限）
