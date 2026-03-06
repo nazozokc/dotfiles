@@ -172,3 +172,6 @@ fish_add_path /home/nazozokc/.opencode/bin
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+
+# OpenClaw Completion
+source "/home/nazozokc/.openclaw/completions/openclaw.fish"

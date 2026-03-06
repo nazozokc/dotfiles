@@ -187,3 +187,4 @@ if [[ -f ~/.config/broot/launcher/bash/br ]]; then
   # shellcheck source=/dev/null
   source ~/.config/broot/launcher/bash/br
 fi
+export PATH="$HOME/.npm-global/bin:$PATH"
