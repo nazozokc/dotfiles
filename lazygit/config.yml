@@ -24,7 +24,6 @@ git:
   commit:
     signOff: false
     autoWrapCommitMessage: true
-  # ※ 新仕様では lazygit が自動で pagers に移行する
   pagers:
     - colorArg: always
       pager: delta --dark --line-numbers --side-by-side
