@@ -86,3 +86,4 @@ if [[ -t 0 ]]; then
   stty stop undef
   stty start undef
 fi
+export PATH="$HOME/.npm-global/bin:$PATH"
