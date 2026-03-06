@@ -5,7 +5,6 @@ with pkgs;
   # python
   python312
   pipx
-  python3
 
   # JS,TS
   nodejs
