@@ -31,6 +31,7 @@ with pkgs;
   ncdu
   delta
   tldr
+  pet
   bottom
   just
 
