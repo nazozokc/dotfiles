@@ -15,8 +15,6 @@
       pkgs.gh-notify
       pkgs.gh-do
 
-      # Custom extensions from overlay
-      pkgs.gh-nippou
     ];
   };
 }
