@@ -12,3 +12,6 @@ with pkgs;
   tor-browser
   obsidian
 ]
+++ lib.optionals pkgs.stdenv.isLinux [
+  ghostty
+]
