@@ -7,7 +7,6 @@ with pkgs;
   audacity
   spotify
   discord
-  ghostty
   google-chrome
   tor-browser
   obsidian
