@@ -8,10 +8,16 @@ name: "CI: Lint (shell / nix)"
       - "zsh/zshrc"
       - "**/*.nix"
       - ".github/workflows/dotfiles-ci.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:

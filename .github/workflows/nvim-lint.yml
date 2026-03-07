@@ -8,9 +8,15 @@ on:
     paths:
       - "nvim/**/*.lua"
       - ".github/workflows/nvim-lint.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lua-lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write

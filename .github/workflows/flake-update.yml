@@ -3,12 +3,19 @@ on:
   schedule:
     - cron: "0 15 * * *" # 毎日 0:00 JST
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
+
 jobs:
   update-flake:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Install Nix

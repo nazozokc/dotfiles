@@ -9,9 +9,14 @@ on:
       - "**/*.nix"
       - ".github/workflows/nixfmt.yml"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   nixfmt:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write

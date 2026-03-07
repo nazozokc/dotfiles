@@ -6,9 +6,20 @@ on:
       - "flake.nix"
       - "flake.lock"
       - ".github/workflows/nix-build.yml"
+  push:
+    branches: [main]
+    paths:
+      - "nix/**"
+      - "flake.nix"
+      - "flake.lock"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    timeout-minutes: 15
     strategy:
       matrix:
         include:
@@ -20,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v21
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@v5
       - name: nix flake check
         run: nix flake check --no-build
       - name: Build config (dry-run)
