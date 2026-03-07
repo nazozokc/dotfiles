@@ -24,9 +24,9 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            target: homeConfigurations.nazozo.activationPackage
+            target: homeConfigurations.nazozokc.activationPackage
           - os: macos-latest
-            target: darwinConfigurations.nazozo.system  # flake.nixの実際のattribute名に合わせて
+            target: darwinConfigurations.nazozokc.system  # flake.nixの実際のattribute名に合わせて
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
