@@ -1,0 +1,17 @@
+name: Bot Config
+description: Generate nazozokc-updater-bot token
+
+outputs:
+  token:
+    description: "Generated token"
+    value: ${{ steps.app-token.outputs.token }}
+
+runs:
+  using: composite
+  steps:
+    - name: Generate token
+      id: app-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ secrets.APP_ID }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }}
