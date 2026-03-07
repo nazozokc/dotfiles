@@ -3,21 +3,23 @@ on:
   schedule:
     - cron: "0 15 * * *" # 毎日 0:00 JST
   workflow_dispatch:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
   update-flake:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Bot Config
+        id: bot
+        uses: ./.github/actions/bot-config
       - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.bot.outputs.token }}
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v21
       - name: Update flake.lock
@@ -42,9 +44,9 @@ jobs:
             nix
             dependencies
             bot
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.bot.outputs.token }}
       - name: Enable auto-merge
         if: steps.cpr.outputs.pull-request-number != ''
         run: gh pr merge --auto --squash "${{ steps.cpr.outputs.pull-request-number }}"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
