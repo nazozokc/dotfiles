@@ -8,9 +8,9 @@ with pkgs;
   spotify
   discord
   google-chrome
-  tor-browser
   obsidian
 ]
 ++ lib.optionals pkgs.stdenv.isLinux [
   ghostty
+  tor-browser
 ]
