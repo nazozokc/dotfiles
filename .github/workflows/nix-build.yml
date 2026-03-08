@@ -19,6 +19,7 @@ concurrency:
 
 jobs:
   build:
+    runs-on: ${{ matrix.os }}  # ← ここに移動
     timeout-minutes: 15
     strategy:
       matrix:
@@ -26,8 +27,8 @@ jobs:
           - os: ubuntu-latest
             target: homeConfigurations.nazozokc.activationPackage
           - os: macos-latest
-            target: darwinConfigurations.nazozokc.system  
-            runs-on: ${{ matrix.os }}
+            target: darwinConfigurations.nazozokc.system
+            # ↑ ここから runs-on を削除
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v21
