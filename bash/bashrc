@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach
 
 export LC_ALL='ja_JP.UTF-8'
 export LANG='ja_JP.UTF-8'
@@ -19,30 +20,28 @@ export GOBIN=$GOPATH/bin
 export POETRY_PATH="$HOME/.poetry/bin"
 export NODEBREWBIN="$HOME/.nodebrew/current/bin"
 export BUNBIN="$HOME/.bun/bin"
-# export CARGOBIN="$HOME/.cargo/bin"
 export NIMBLEBIN="$HOME/.nimble/bin"
 export GNUBIN="/usr/local/opt/coreutils/libexec/gnubin"
 export XCODEBIN="/Applications/Xcode.app/Contents/Developer/usr/bin"
 export HOMEBREW_X86_64_BIN="/usr/local/bin"
 export HOMEBREW_ARM_BIN="/opt/homebrew/bin"
 export CURLBIN="/usr/local/opt/curl/bin"
-export BANBIN="$HOME/.bun/bin"
 export PKG_CONFIG_PATH="/usr/local/opt/sqlite/lib/pkgconfig"
 export SCRIPTS_PATH="$HOME/.scripts"
 export SCRIPTS_BIN_PATH="$HOME/.scripts/bin"
 export ZIG_PATH="$HOME/zig"
 export CODONBIN="$HOME/.codon/bin"
 PATH=${HOMEBREW_ARM_BIN}:${HOMEBREW_X86_64_BIN}:${LOCALBIN}:/usr/bin:/bin:/opt/local/sbin:${PATH}
-PATH=${SCRIPTS_PATH}:${AQUA_BIN_PATH}:${BUNBIN}:${ZIG_PATH}:${BUNBIN}:${NODEBREWBIN}:${CODONBIN}:${GOBIN}:${GOPATH}:${POETRY_PATH}:${CUSTOM_SCRIPTS_PATH}:${CURLBIN}:${CARGOBIN}:${NIMBLEBIN}:${GNUBIN}:${PATH}:${XCODEBIN}
+PATH=${SCRIPTS_PATH}:${AQUA_BIN_PATH}:${BUNBIN}:${ZIG_PATH}:${NODEBREWBIN}:${CODONBIN}:${GOBIN}:${GOPATH}:${POETRY_PATH}:${CUSTOM_SCRIPTS_PATH}:${CURLBIN}:${NIMBLEBIN}:${GNUBIN}:${PATH}:${XCODEBIN}
 # aqua
 export AQUA_GLOBAL_CONFIG=${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml
 # languages
 # c++
 export CPPFLAGS=-I/opt/X11/include
-export LDFLAGS="$LDFLAGS -L/usr/local/opt/zlib/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/zlib/lib -L/usr/local/opt/sqlite/lib -L/usr/local/opt/binutils/lib -L/opt/homebrew/lib"
+export LDFLAGS="$LDFLAGS -L/usr/local/opt/zlib/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/sqlite/lib -L/usr/local/opt/binutils/lib -L/opt/homebrew/lib"
 _sdk=$(xcrun --show-sdk-path 2>/dev/null)
 export CFLAGS="-I/usr/local/opt/zlib/include -I${_sdk} $CFLAGS"
-export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/zlib/include -I/usr/local/opt/readline/include -I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite/include -I${_sdk} -I/usr/local/opt/binutils/include -I/opt/homebrew/include"
+export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/zlib/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I${_sdk} -I/usr/local/opt/binutils/include -I/opt/homebrew/include"
 unset _sdk
 export LDFLAGS="$LDFLAGS -L/usr/local/opt/openblas/lib -L/usr/local/opt/lapack/lib"
 export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/openblas/include -I/usr/local/opt/lapack/include"
@@ -107,7 +106,7 @@ alias clr=clear
 alias q=exit
 
 if command -v eza &> /dev/null; then
-    alias ls='eza -lh --icons'
+    alias ls='eza -lh --icons --color=always'
 fi
 
 # Git
@@ -222,9 +221,12 @@ __git_info() {
   porcelain=$(git status --porcelain 2>/dev/null)
 
   local modified untracked staged
-  modified=$(echo "$porcelain" | grep -c '^ M\|^M ' || echo 0)
-  untracked=$(echo "$porcelain" | grep -c '^??' || echo 0)
-  staged=$(echo "$porcelain" | grep -c '^[MADRCU]' || echo 0)
+  modified=$(echo "$porcelain" | grep -c '^ M\|^M ' || true)
+  untracked=$(echo "$porcelain" | grep -c '^??' || true)
+  staged=$(echo "$porcelain" | grep -c '^[MADRCU]' || true)
+  modified=${modified:-0}
+  untracked=${untracked:-0}
+  staged=${staged:-0}
 
   status_str=""
   [ "$staged"    -gt 0 ] && status_str+=" \[\e[1;32m\]+${staged}\[\e[0m\]"
@@ -268,3 +270,4 @@ __set_ps1() {
 }
 
 PROMPT_COMMAND='__set_ps1'
+[[ ${BLE_VERSION-} ]] && ble-attach
