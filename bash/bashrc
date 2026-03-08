@@ -1,5 +1,8 @@
 # shellcheck shell=bash
-[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach
+if [[ $- == *i* ]]; then
+  # shellcheck source=/dev/null
+  source ~/.local/share/blesh/ble.sh --noattach
+fi
 
 export LC_ALL='ja_JP.UTF-8'
 export LANG='ja_JP.UTF-8'
