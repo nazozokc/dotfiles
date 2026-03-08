@@ -36,3 +36,4 @@ description: Web検索を行う際の方法と注意点
 - Nix関連は **https://nix.dev/** と **nixpkgs GitHub** を参照する
 - npmパッケージ情報は **npmjs.com** または **GitHub** で確認する
 - 見つからない場合は「見つからなかった」と正直に伝える
+- 正直が大好きです。
