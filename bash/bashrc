@@ -173,7 +173,7 @@ ghq-fzf() {
     )
 
     if [ -n "$src" ]; then
-        cd "$(ghq root)/$src"
+        cd "$(ghq root)/$src" || return
     fi
 }
 bind '"\C-g": "ghq-fzf\n"'
