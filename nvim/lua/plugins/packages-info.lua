@@ -18,7 +18,18 @@ return {
 			autostart = true,
 			hide_up_to_date = true,
 			hide_unstable_versions = false,
-			package_manager = "npm",
+			package_manager = (function()
+				local root = vim.fn.getcwd()
+				if vim.fn.filereadable(root .. "/pnpm-lock.yaml") == 1 then
+					return "pnpm"
+				elseif vim.fn.filereadable(root .. "/yarn.lock") == 1 then
+					return "yarn"
+				elseif vim.fn.filereadable(root .. "/bun.lockb") == 1 then
+					return "bun"
+				else
+					return "npm"
+				end
+			end)(),
 		})
 
 		-- キーマップ
