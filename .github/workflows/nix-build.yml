@@ -26,8 +26,8 @@ jobs:
           - os: ubuntu-latest
             target: homeConfigurations.nazozokc.activationPackage
           - os: macos-latest
-            target: darwinConfigurations.nazozokc.system  # flake.nixの実際のattribute名に合わせて
-    runs-on: ${{ matrix.os }}
+            target: darwinConfigurations.nazozokc.system  
+            runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v21
