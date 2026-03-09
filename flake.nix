@@ -181,18 +181,12 @@
       # macOS
       ########################################
       darwinConfigurations.${username} = darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        specialArgs = { inherit username; };
         modules = [
           nix-index-database.darwinModules.nix-index
           ./nix/modules/darwin/darwin.nix
           ./nix/modules/darwin/system.nix
 
-          agent-skills-nix.homeManagerModules.default
-          ./nix/modules/home-manager/agent-skills.nix
-
           home-manager.darwinModules.home-manager
-
           {
             home-manager.users.${username} = {
               imports = [
@@ -201,6 +195,8 @@
                   pkgs = darwinPkgs;
                 })
                 ./nix/modules/home-manager/symlinks.nix
+                agent-skills-nix.homeManagerModules.default # ← ✅
+                ./nix/modules/home-manager/agent-skills.nix # ← ✅
               ];
             };
           }
