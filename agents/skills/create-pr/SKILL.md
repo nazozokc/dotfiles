@@ -79,3 +79,4 @@ EOF
 - PR作成前に `git log --oneline origin/main..HEAD` で差分コミットを確認
 - `--force-push` 系は使用禁止
 - 既にオープン中のPRがないか `gh pr list` で確認してから作成
+- CIが動いていないかを確認。
