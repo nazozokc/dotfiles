@@ -6,6 +6,7 @@ return {
 		"hrsh7th/cmp-nvim-lsp",
 		"hrsh7th/cmp-buffer",
 		"hrsh7th/cmp-path",
+		"hrsh7th/cmp-cmdline",
 		"hrsh7th/cmp-calc",
 
 		-- スニペット
@@ -144,5 +145,33 @@ return {
 		cmp.event:on("menu_closed", function()
 			vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
 		end)
+
+		------------------------------------------------------------------
+		-- cmdline
+		------------------------------------------------------------------
+		cmp.setup.cmdline("/", {
+			mapping = cmp.mapping.preset.cmdline(),
+			sources = cmp.config.sources({
+				{ name = "nvim_lsp_document_symbol" },
+				{ name = "cmdline" },
+				{ name = "ghq" },
+			}, {
+				{ name = "buffer" },
+			}),
+			completion = {
+				completeopt = "menu,menuone,noselect",
+			},
+		})
+
+		cmp.setup.cmdline(":", {
+			mapping = cmp.mapping.preset.cmdline(),
+			sources = cmp.config.sources(
+				{ { name = "async_path" } },
+				{ { name = "cmdline" }, { { name = "cmdline_history" } } }
+			),
+			completion = {
+				completeopt = "menu,menuone,noselect",
+			},
+		})
 	end,
 }
