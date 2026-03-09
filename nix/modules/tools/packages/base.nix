@@ -55,6 +55,7 @@ with pkgs;
   ghq
   lazygit
   git-wt
+  jujutsu
   gitui
   git-secrets
   tig
