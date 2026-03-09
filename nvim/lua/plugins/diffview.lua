@@ -51,7 +51,7 @@ return {
 			},
 
 			hooks = {
-				diff_buf_read = function(bufnr)
+				diff_buf_read = function(_bufnr)
 					vim.opt_local.wrap = false
 					vim.opt_local.relativenumber = false
 				end,
