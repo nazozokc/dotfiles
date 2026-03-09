@@ -6,6 +6,5 @@ return {
 		"lewis6991/fileline.nvim",
 		"nvim-lua/plenary.nvim",
 	},
-	lazy = false,
 	config = true,
 }
