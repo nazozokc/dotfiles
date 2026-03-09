@@ -54,6 +54,10 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    agent-skills-nix = {
+      url = "github:Kyure-A/agent-skills-nix";
+    };
   };
 
   outputs =
@@ -68,6 +72,7 @@
       gh-brag,
       nix-index-database,
       llm-agents,
+      agent-skills-nix,
       ...
     }:
     let
@@ -148,6 +153,9 @@
           })
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
+
+          agent-skills-nix.homeManagerModules.default
+          ./nix/modules/home-manager/agent-skills.nix
         ];
       };
 
@@ -162,6 +170,8 @@
           (import ./nix/modules/home-manager/tools-read.nix {
             pkgs = linuxAarch64Pkgs;
           })
+          agent-skills-nix.homeManagerModules.default
+          ./nix/modules/home-manager/agent-skills.nix
           ./nix/modules/home-manager/linux.nix
           ./nix/modules/home-manager/symlinks.nix
         ];
@@ -177,6 +187,9 @@
           nix-index-database.darwinModules.nix-index
           ./nix/modules/darwin/darwin.nix
           ./nix/modules/darwin/system.nix
+
+          agent-skills-nix.homeManagerModules.default
+          ./nix/modules/home-manager/agent-skills.nix
 
           home-manager.darwinModules.home-manager
 
