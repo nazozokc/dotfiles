@@ -1,6 +1,6 @@
 return {
 	"T-b-t-nchos/Aquavium.nvim",
-	lazy = false,
+	lazy = true,
 	priority = 5000,
 	config = function()
 		local aquavium = require("Aquavium")
