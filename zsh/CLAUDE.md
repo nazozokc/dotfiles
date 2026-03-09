@@ -38,6 +38,7 @@
 ```
 zsh/
 ├── CLAUDE.md
+|-- AGENTS.md -> CLAUDE.md
 ├── zshrc              # main zshrc (Oh My Zsh 後の設定)
 └── zshrc.pre-oh-my-zsh # Oh My Zsh 前用の簡易設定
 ```
