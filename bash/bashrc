@@ -98,6 +98,7 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 
 alias vim=nvim
 alias ll='ls -lh'
+alias ls='eza -lh --icons'
 alias lah='ls -lah'
 alias la='eza -lah'
 alias l='ls -CF'
