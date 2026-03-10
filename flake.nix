@@ -249,6 +249,7 @@
                   (import ./nix/modules/home-manager/tools-read.nix {
                     pkgs = pkgsFor "aarch64-darwin";
                   })
+                  ./nix/modules/home-manager/darwin.nix
                   ./nix/modules/home-manager/symlinks.nix
                   agent-skills-nix.homeManagerModules.default
                   ./nix/modules/home-manager/agent-skills.nix
