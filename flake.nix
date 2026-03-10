@@ -1,6 +1,10 @@
 {
   description = "nazozo dotfiles (multi-system, apps + nom)";
 
+  # ---------------------------------------------------------------------------
+  # Binary cache の設定
+  # nixConfig はリテラルセットである必要があるためここに直接書く
+  # ---------------------------------------------------------------------------
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos.org/"
@@ -12,54 +16,76 @@
     ];
   };
 
+  # ---------------------------------------------------------------------------
+  # Flake inputs
+  # ---------------------------------------------------------------------------
   inputs = {
+    # Nix パッケージセット (unstable チャンネル)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # flake を複数モジュールに分割するためのフレームワーク
     flake-parts.url = "github:hercules-ci/flake-parts";
+
+    # Nix ファイルフィルタリングユーティリティ
     nix-filter.url = "github:numtide/nix-filter";
+
+    # LLM エージェントツール群
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # ユーザー環境管理 (nixpkgs に追従)
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # macOS システム設定管理
     darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # フォーマッタ統合ツール
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
+    # nixpkgs 未収録の Zen Browser
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # GitHub CLI 拡張: コントリビューショングラフ表示
     gh-graph = {
       url = "github:kawarimidoll/gh-graph";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # GitHub CLI 拡張: 日報生成
     gh-nippou = {
       url = "github:ryoppippi/gh-nippou";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # GitHub CLI 拡張: 自慢ツール (flake 非対応なので flake = false)
     gh-brag = {
       url = "github:jackchuka/gh-brag";
       flake = false;
     };
 
+    # nix-index の DB をビルド済みで提供 (nix-index 自体のビルドをスキップ)
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Claude Code 用スキル管理フレームワーク
     agent-skills-nix = {
       url = "github:Kyure-A/agent-skills-nix";
     };
   };
 
+  # ---------------------------------------------------------------------------
+  # Flake outputs
+  # ---------------------------------------------------------------------------
   outputs =
     inputs@{
       self,
@@ -77,14 +103,19 @@
     }:
     let
       username = "nazozokc";
+
+      # カスタム overlay (./nix/overlays/default.nix)
       overlay = import ./nix/overlays;
 
+      # システム文字列から nixpkgs インスタンスを生成するヘルパー
+      # overlay と unfree パッケージを一括で適用する
       pkgsFor =
         system:
         import nixpkgs {
           localSystem.system = system;
           config.allowUnfree = true;
           overlays = [
+            # llm-agents を pkgs._llm-agents として参照できるようにする
             (_: _: { _llm-agents = llm-agents; })
             overlay
             gh-graph.overlays.default
@@ -92,46 +123,61 @@
           ];
         };
 
+      # Linux 向け home-manager 設定を生成するヘルパー
+      # x86_64 / aarch64 で共通のモジュール構成を使い回す
       mkLinuxHomeConfig =
         system:
         home-manager.lib.homeManagerConfiguration {
           pkgs = pkgsFor system;
           modules = [
             nix-index-database.homeModules.nix-index
-            ./nix/shared.nix
+            ./nix/shared.nix # Linux/macOS 共通設定
             (import ./nix/modules/home-manager/tools-read.nix {
               pkgs = pkgsFor system;
             })
-            ./nix/modules/home-manager/linux.nix
-            ./nix/modules/home-manager/symlinks.nix
+            ./nix/modules/home-manager/linux.nix # Linux 固有設定
+            ./nix/modules/home-manager/symlinks.nix # dotfiles シンボリックリンク
             agent-skills-nix.homeManagerModules.default
-            ./nix/modules/home-manager/agent-skills.nix
+            ./nix/modules/home-manager/agent-skills.nix # Claude Code スキル設定
           ];
         };
 
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
+      # このフレークがサポートするシステム一覧
       systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "aarch64-darwin"
+        "x86_64-linux" # メイン PC (Arch Linux)
+        "aarch64-linux" # ARM Linux (VPS など)
+        "aarch64-darwin" # macOS (Apple Silicon)
       ];
 
+      # -------------------------------------------------------------------
+      # perSystem: systems に列挙した各システムで自動展開されるセクション
+      # apps はここに書くことで nix run .#switch などが全システムで使える
+      # -------------------------------------------------------------------
       perSystem =
         { system, ... }:
         let
           pkgs = pkgsFor system;
+
+          # システム判定
           isDarwin = builtins.match ".*-darwin" system != null;
+
+          # nix run .#build で参照するビルドターゲット
           hmConfig =
             if isDarwin then
               "darwinConfigurations.${username}.system"
             else
               "homeConfigurations.${username}.activationPackage";
+
+          # nix run .#switch で渡す --flake ターゲット
           flakeTarget =
             if isDarwin then
               ".#${username}"
             else
               ".#${username}${if system == "aarch64-linux" then "-aarch64" else ""}";
+
+          # app 実行時に表示する人間向けのシステム名
           sysLabel =
             if system == "x86_64-linux" then
               "Linux (x86_64)"
@@ -141,6 +187,9 @@
               "macOS (Apple Silicon)"
             else
               system;
+
+          # 各 app の冒頭で実行情報を表示する共通関数
+          # 引数 cmd: app 名の文字列 (例: "switch")
           printInfo = cmd: ''
             echo "  system : ${sysLabel}"
             echo "  target : ${flakeTarget}"
@@ -150,6 +199,8 @@
         in
         {
           apps = {
+            # nix run .#switch
+            # home-manager / darwin の設定を適用する
             switch = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "switch" ''
@@ -164,6 +215,8 @@
               ''}/bin/switch";
             };
 
+            # nix run .#build
+            # switch の前に差分確認したいときに使う
             build = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "build" ''
@@ -173,6 +226,8 @@
               ''}/bin/build";
             };
 
+            # nix run .#update
+            # flake.lock を最新に更新する
             update = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "update" ''
@@ -184,19 +239,24 @@
           };
         };
 
+      # -------------------------------------------------------------------
+      # flake: perSystem に乗らない静的な出力 (homeConfigurations など)
+      # -------------------------------------------------------------------
       flake = {
+        # Linux 向け home-manager 設定
         homeConfigurations = {
           ${username} = mkLinuxHomeConfig "x86_64-linux";
           "${username}-aarch64" = mkLinuxHomeConfig "aarch64-linux";
         };
 
+        # macOS 向け nix-darwin 設定
         darwinConfigurations.${username} = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = { inherit username; };
           modules = [
             nix-index-database.darwinModules.nix-index
-            ./nix/modules/darwin/darwin.nix
-            ./nix/modules/darwin/system.nix
+            ./nix/modules/darwin/darwin.nix # darwin 基本設定
+            ./nix/modules/darwin/system.nix # macOS システム設定
 
             home-manager.darwinModules.home-manager
             {
