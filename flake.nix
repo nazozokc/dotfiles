@@ -182,6 +182,7 @@
       ########################################
       darwinConfigurations.${username} = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
+        specialArgs = { inherit username; };
         modules = [
           nix-index-database.darwinModules.nix-index
           ./nix/modules/darwin/darwin.nix
