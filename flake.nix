@@ -181,6 +181,7 @@
       # macOS
       ########################################
       darwinConfigurations.${username} = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
         modules = [
           nix-index-database.darwinModules.nix-index
           ./nix/modules/darwin/darwin.nix
