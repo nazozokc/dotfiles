@@ -17,7 +17,6 @@ in
     ln -sfn "${dotfilesDir}/ghostty"     "${homeDir}/.config/ghostty"
     ln -sfn "${dotfilesDir}/zsh/zshrc"     "${homeDir}/.zshrc"
     ln -sfn "${dotfilesDir}/bash/bashrc"     "${homeDir}/.bashrc"
-    ln -sfn "${dotfilesDir}/agents"     "${homeDir}/.agents"
     ln -sfn "${dotfilesDir}/opencode"     "${homeDir}/.config/opencode"
     ln -sfn "${dotfilesDir}/lazygit"     "${homeDir}/.config/lazygit"
   '';
