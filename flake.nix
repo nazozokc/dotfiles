@@ -61,12 +61,12 @@
   };
 
   outputs =
-    {
+    inputs@{
       self,
       nixpkgs,
+      flake-parts,
       home-manager,
       darwin,
-      zen-browser,
       gh-graph,
       gh-nippou,
       gh-brag,
@@ -92,188 +92,110 @@
           ];
         };
 
-      linuxPkgs = pkgsFor "x86_64-linux";
-      linuxAarch64Pkgs = pkgsFor "aarch64-linux";
-      darwinPkgs = pkgsFor "aarch64-darwin";
-
-      banner = title: ''
-        echo
-        echo "======================================"
-        echo "   🚀 ${title}"
-        echo "======================================"
-        echo "   User   : ${username}"
-        echo "   Host   : $(hostname)"
-        echo "   System : $(uname -m)-$(uname -s)"
-        echo "======================================"
-        echo
-      '';
+      # Linux homeConfigurations を DRY 化
+      mkLinuxHomeConfig =
+        system:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = pkgsFor system;
+          modules = [
+            nix-index-database.homeModules.nix-index
+            ./nix/shared.nix
+            (import ./nix/modules/home-manager/tools-read.nix {
+              pkgs = pkgsFor system;
+            })
+            ./nix/modules/home-manager/linux.nix
+            ./nix/modules/home-manager/symlinks.nix
+            agent-skills-nix.homeManagerModules.default
+            ./nix/modules/home-manager/agent-skills.nix
+          ];
+        };
 
     in
-    {
-      ########################################
-      # Packages (via overlays)
-      ########################################
-      packages.x86_64-linux = {
-        inherit (linuxPkgs)
-          nix-index
-          typescript
-          eslint
-          prettier
-          ;
-      };
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
 
-      packages.aarch64-linux = {
-        inherit (linuxAarch64Pkgs)
-          nix-index
-          typescript
-          eslint
-          prettier
-          ;
-      };
-
-      packages.aarch64-darwin = {
-        inherit (darwinPkgs)
-          nix-index
-          typescript
-          eslint
-          prettier
-          ;
-      };
-
-      ########################################
-      # Linux (x86)
-      ########################################
-      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        pkgs = linuxPkgs;
-        modules = [
-          nix-index-database.homeModules.nix-index
-          ./nix/shared.nix
-          (import ./nix/modules/home-manager/tools-read.nix {
-            pkgs = linuxPkgs;
-          })
-          ./nix/modules/home-manager/linux.nix
-          ./nix/modules/home-manager/symlinks.nix
-
-          agent-skills-nix.homeManagerModules.default
-          ./nix/modules/home-manager/agent-skills.nix
-        ];
-      };
-
-      ########################################
-      # Linux (ARM)
-      ########################################
-      homeConfigurations."${username}-aarch64" = home-manager.lib.homeManagerConfiguration {
-        pkgs = linuxAarch64Pkgs;
-        modules = [
-          nix-index-database.homeModules.nix-index
-          ./nix/shared.nix
-          (import ./nix/modules/home-manager/tools-read.nix {
-            pkgs = linuxAarch64Pkgs;
-          })
-          agent-skills-nix.homeManagerModules.default
-          ./nix/modules/home-manager/agent-skills.nix
-          ./nix/modules/home-manager/linux.nix
-          ./nix/modules/home-manager/symlinks.nix
-        ];
-      };
-
-      ########################################
-      # macOS
-      ########################################
-      darwinConfigurations.${username} = darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        specialArgs = { inherit username; };
-        modules = [
-          nix-index-database.darwinModules.nix-index
-          ./nix/modules/darwin/darwin.nix
-          ./nix/modules/darwin/system.nix
-
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.users.${username} = {
-              imports = [
-                ./nix/shared.nix
-                (import ./nix/modules/home-manager/tools-read.nix {
-                  pkgs = darwinPkgs;
-                })
-                ./nix/modules/home-manager/symlinks.nix
-                agent-skills-nix.homeManagerModules.default
-                ./nix/modules/home-manager/agent-skills.nix
-              ];
+      perSystem =
+        { system, ... }:
+        let
+          pkgs = pkgsFor system;
+          isDarwin = builtins.match ".*-darwin" system != null;
+          hmConfig =
+            if isDarwin then
+              "darwinConfigurations.${username}.system"
+            else
+              "homeConfigurations.${username}.activationPackage";
+          flakeTarget =
+            if isDarwin then
+              ".#${username}"
+            else
+              ".#${username}${if system == "aarch64-linux" then "-aarch64" else ""}";
+        in
+        {
+          apps = {
+            switch = {
+              type = "app";
+              program = "${pkgs.writeShellScriptBin "switch" ''
+                set -eo pipefail
+                ${
+                  if isDarwin then
+                    "sudo nix run nix-darwin -- switch --flake ${flakeTarget}"
+                  else
+                    "nix run nixpkgs#home-manager -- switch --flake ${flakeTarget}"
+                } |& ${pkgs.nix-output-monitor}/bin/nom
+              ''}/bin/switch";
             };
-          }
-        ];
-      };
 
-      ########################################
-      # Apps
-      ########################################
-      apps = {
+            build = {
+              type = "app";
+              program = "${pkgs.writeShellScriptBin "build" ''
+                set -e
+                ${pkgs.nix-output-monitor}/bin/nom build .#${hmConfig}
+              ''}/bin/build";
+            };
 
-        "x86_64-linux" = {
-          switch = {
-            type = "app";
-            program = "${linuxPkgs.writeShellScriptBin "hm-switch" ''
-              set -e
-              ${banner "Home Manager Switch (x86_64-linux)"}
-              nix run nixpkgs#home-manager -- switch --flake .#${username} \
-                |& ${linuxPkgs.nix-output-monitor}/bin/nom
-            ''}/bin/hm-switch";
-          };
-
-          update = {
-            type = "app";
-            program = "${linuxPkgs.writeShellScriptBin "flake-update" ''
-              set -e
-              ${banner "Flake Update (x86_64-linux)"}
-              nix flake update \
-                |& ${linuxPkgs.nix-output-monitor}/bin/nom
-            ''}/bin/flake-update";
+            update = {
+              type = "app";
+              program = "${pkgs.writeShellScriptBin "update" ''
+                set -e
+                nix flake update |& ${pkgs.nix-output-monitor}/bin/nom
+              ''}/bin/update";
+            };
           };
         };
 
-        "aarch64-linux" = {
-          switch = {
-            type = "app";
-            program = "${linuxAarch64Pkgs.writeShellScriptBin "hm-switch" ''
-              set -e
-              ${banner "Home Manager Switch (aarch64-linux)"}
-              nix run nixpkgs#home-manager -- switch --flake .#${username}-aarch64 \
-                |& ${linuxAarch64Pkgs.nix-output-monitor}/bin/nom
-            ''}/bin/hm-switch";
-          };
-
-          update = {
-            type = "app";
-            program = "${linuxAarch64Pkgs.writeShellScriptBin "flake-update" ''
-              set -e
-              ${banner "Flake Update (aarch64-linux)"}
-              nix flake update \
-                |& ${linuxAarch64Pkgs.nix-output-monitor}/bin/nom
-            ''}/bin/flake-update";
-          };
+      flake = {
+        homeConfigurations = {
+          ${username} = mkLinuxHomeConfig "x86_64-linux";
+          "${username}-aarch64" = mkLinuxHomeConfig "aarch64-linux";
         };
 
-        "aarch64-darwin" = {
-          switch = {
-            type = "app";
-            program = "${darwinPkgs.writeShellScriptBin "darwin-switch" ''
-              set -e
-              ${banner "Darwin Switch (aarch64-darwin)"}
-              sudo nix run nix-darwin -- switch --flake .#${username} \
-                |& ${darwinPkgs.nix-output-monitor}/bin/nom
-            ''}/bin/darwin-switch";
-          };
+        darwinConfigurations.${username} = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = { inherit username; };
+          modules = [
+            nix-index-database.darwinModules.nix-index
+            ./nix/modules/darwin/darwin.nix
+            ./nix/modules/darwin/system.nix
 
-          update = {
-            type = "app";
-            program = "${darwinPkgs.writeShellScriptBin "flake-update" ''
-              set -e
-              ${banner "Flake Update (aarch64-darwin)"}
-              nix flake update \
-                |& ${darwinPkgs.nix-output-monitor}/bin/nom
-            ''}/bin/flake-update";
-          };
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.users.${username} = {
+                imports = [
+                  ./nix/shared.nix
+                  (import ./nix/modules/home-manager/tools-read.nix {
+                    pkgs = pkgsFor "aarch64-darwin";
+                  })
+                  ./nix/modules/home-manager/symlinks.nix
+                  agent-skills-nix.homeManagerModules.default
+                  ./nix/modules/home-manager/agent-skills.nix
+                ];
+              };
+            }
+          ];
         };
       };
     };
