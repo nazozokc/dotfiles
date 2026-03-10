@@ -80,6 +80,7 @@
     # Claude Code 用スキル管理フレームワーク
     agent-skills-nix = {
       url = "github:Kyure-A/agent-skills-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
