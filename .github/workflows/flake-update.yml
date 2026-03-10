@@ -36,8 +36,6 @@ jobs:
         with:
           commit-message: "chore(nix): update flake.lock"
           title: "chore(nix): update flake.lock"
-          committer: "nazozokc-updater-bot <nazozokc-update-bot@users.noreply.github.com>"
-          author: "nazozokc-updater-bot <nazozokc-update-bot@users.noreply.github.com>"
           body: |
             Automated flake.lock update.
             - nix flake update
