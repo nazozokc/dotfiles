@@ -5,7 +5,7 @@
     enable = true;
 
     sources.local = {
-      path = ./../../../agents/skills/; # dotfiles内のskillsディレクトリ
+      path = ./../../../agents/skills; # dotfiles内のskillsディレクトリ
       subdir = ".";
     };
 

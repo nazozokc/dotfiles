@@ -155,7 +155,7 @@
           ./nix/modules/home-manager/symlinks.nix
 
           agent-skills-nix.homeManagerModules.default
-          ./nix/modules/home-manager/agents-skills.nix
+          ./nix/modules/home-manager/agent-skills.nix
         ];
       };
 
