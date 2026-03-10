@@ -92,7 +92,6 @@
           ];
         };
 
-      # Linux homeConfigurations を DRY 化
       mkLinuxHomeConfig =
         system:
         home-manager.lib.homeManagerConfiguration {
@@ -133,6 +132,21 @@
               ".#${username}"
             else
               ".#${username}${if system == "aarch64-linux" then "-aarch64" else ""}";
+          sysLabel =
+            if system == "x86_64-linux" then
+              "Linux (x86_64)"
+            else if system == "aarch64-linux" then
+              "Linux (aarch64)"
+            else if system == "aarch64-darwin" then
+              "macOS (Apple Silicon)"
+            else
+              system;
+          printInfo = cmd: ''
+            echo "  system : ${sysLabel}"
+            echo "  target : ${flakeTarget}"
+            echo "  cmd    : ${cmd}"
+            echo ""
+          '';
         in
         {
           apps = {
@@ -140,6 +154,7 @@
               type = "app";
               program = "${pkgs.writeShellScriptBin "switch" ''
                 set -eo pipefail
+                ${printInfo "switch"}
                 ${
                   if isDarwin then
                     "sudo nix run nix-darwin -- switch --flake ${flakeTarget}"
@@ -153,6 +168,7 @@
               type = "app";
               program = "${pkgs.writeShellScriptBin "build" ''
                 set -e
+                ${printInfo "build"}
                 ${pkgs.nix-output-monitor}/bin/nom build .#${hmConfig}
               ''}/bin/build";
             };
@@ -161,6 +177,7 @@
               type = "app";
               program = "${pkgs.writeShellScriptBin "update" ''
                 set -e
+                ${printInfo "update"}
                 nix flake update |& ${pkgs.nix-output-monitor}/bin/nom
               ''}/bin/update";
             };
