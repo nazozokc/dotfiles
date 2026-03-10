@@ -155,7 +155,7 @@
           ./nix/modules/home-manager/symlinks.nix
 
           agent-skills-nix.homeManagerModules.default
-          ./nix/modules/home-manager/agent-skills.nix
+          ./nix/modules/home-manager/agents-skills.nix
         ];
       };
 
@@ -195,8 +195,8 @@
                   pkgs = darwinPkgs;
                 })
                 ./nix/modules/home-manager/symlinks.nix
-                agent-skills-nix.homeManagerModules.default # ← ✅
-                ./nix/modules/home-manager/agent-skills.nix # ← ✅
+                agent-skills-nix.homeManagerModules.default
+                ./nix/modules/home-manager/agent-skills.nix
               ];
             };
           }
