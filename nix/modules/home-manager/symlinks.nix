@@ -9,6 +9,7 @@ in
   home.activation.linkDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     echo "Linking extra dotfiles..."
     ln -sfn "${dotfilesDir}/fish"        "${homeDir}/.config/fish"
+    ln -sfn "${dotfilesDir}/codex"        "${homeDir}/.config/codex"
     ln -sfn "${dotfilesDir}/claude"        "${homeDir}/.config/claude"
     ln -sfn "${dotfilesDir}/nvim"        "${homeDir}/.config/nvim"
     ln -sfn "${dotfilesDir}/wezterm"     "${homeDir}/.config/wezterm"
