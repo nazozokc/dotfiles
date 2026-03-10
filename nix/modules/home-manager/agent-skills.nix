@@ -15,5 +15,14 @@
       dest = ".config/claude/skills";
       structure = "link";
     };
+    targets.opencode = {
+      dest = ".config/opencode/skills";
+      structure = "link";
+    };
+    targets.codex = {
+      dest = ".config/codex/skills";
+      structure = "link";
+    };
+
   };
 }
