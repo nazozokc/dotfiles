@@ -1,7 +1,3 @@
-# 最初にやること
-`~/.agents/CLAUDE.md`
-- 上のファイルをしっかり読み込んであなたがタスクを実行する際にしっかり参考にしてください。
-
 # Neovim Configuration
 
 このディレクトリは [nazozokc/dotfiles](https://github.com/nazozokc/dotfiles) の Neovim 設定です。  

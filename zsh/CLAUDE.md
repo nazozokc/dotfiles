@@ -1,6 +1,3 @@
-# 最初にやること
-/home/nazozokc/agents/CLAUDE.mdを読み込んでください
-
 # Zsh Configuration
 
 このディレクトリは nazozokc の Zsh 設定です。
