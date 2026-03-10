@@ -26,9 +26,6 @@
     # flake を複数モジュールに分割するためのフレームワーク
     flake-parts.url = "github:hercules-ci/flake-parts";
 
-    # Nix ファイルフィルタリングユーティリティ
-    nix-filter.url = "github:numtide/nix-filter";
-
     # LLM エージェントツール群
     llm-agents.url = "github:numtide/llm-agents.nix";
 
@@ -41,15 +38,6 @@
     # macOS システム設定管理
     darwin = {
       url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # フォーマッタ統合ツール
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-
-    # nixpkgs 未収録の Zen Browser
-    zen-browser = {
-      url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -129,18 +117,19 @@
       # x86_64 / aarch64 で共通のモジュール構成を使い回す
       mkLinuxHomeConfig =
         system:
-        home-manager.lib.homeManagerConfiguration {
+        let
           pkgs = pkgsFor system;
+        in
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
           modules = [
             nix-index-database.homeModules.nix-index
-            ./nix/shared.nix # Linux/macOS 共通設定
-            (import ./nix/modules/home-manager/tools-read.nix {
-              pkgs = pkgsFor system;
-            })
-            ./nix/modules/home-manager/linux.nix # Linux 固有設定
-            ./nix/modules/home-manager/symlinks.nix # dotfiles シンボリックリンク
+            ./nix/shared.nix
+            (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
+            ./nix/modules/home-manager/linux.nix
+            ./nix/modules/home-manager/symlinks.nix
             agent-skills-nix.homeManagerModules.default
-            ./nix/modules/home-manager/agent-skills.nix # Claude Code スキル設定
+            ./nix/modules/home-manager/agent-skills.nix
           ];
         };
 
@@ -155,7 +144,6 @@
 
       # -------------------------------------------------------------------
       # perSystem: systems に列挙した各システムで自動展開されるセクション
-      # apps はここに書くことで nix run .#switch などが全システムで使える
       # -------------------------------------------------------------------
       perSystem =
         { system, ... }:
@@ -190,8 +178,6 @@
             else
               system;
 
-          # 各 app の冒頭で実行情報を表示する共通関数
-          # 引数 cmd: app 名の文字列 (例: "switch")
           printInfo = cmd: ''
             echo "  system : ${sysLabel}"
             echo "  target : ${flakeTarget}"
@@ -202,7 +188,6 @@
         {
           apps = {
             # nix run .#switch
-            # home-manager / darwin の設定を適用する
             switch = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "switch" ''
@@ -218,7 +203,6 @@
             };
 
             # nix run .#build
-            # switch の前に差分確認したいときに使う
             build = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "build" ''
@@ -229,7 +213,6 @@
             };
 
             # nix run .#update
-            # flake.lock を最新に更新する
             update = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "update" ''
@@ -257,9 +240,7 @@
           specialArgs = { inherit username; };
           modules = [
             nix-index-database.darwinModules.nix-index
-            ./nix/modules/darwin/darwin.nix # darwin 基本設定
-            ./nix/modules/darwin/system.nix # macOS システム設定
-
+            ./nix/modules/darwin/system.nix
             home-manager.darwinModules.home-manager
             {
               home-manager.users.${username} = {
