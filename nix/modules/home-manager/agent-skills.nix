@@ -3,14 +3,11 @@
 {
   programs.agent-skills = {
     enable = true;
-
     sources.local = {
-      path = ./../../../agents/skills; # dotfiles内のskillsディレクトリ
+      path = ./../../../agents/skills;
       subdir = ".";
     };
-
     skills.enableAll = [ "local" ];
-
     targets.claude = {
       dest = ".config/claude/skills";
       structure = "link";
@@ -23,6 +20,9 @@
       dest = ".config/codex/skills";
       structure = "link";
     };
-
+    targets.agents = {
+      dest = ".agents/skills";
+      structure = "link";
+    };
   };
 }
