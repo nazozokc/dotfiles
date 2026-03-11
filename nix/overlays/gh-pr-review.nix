@@ -16,7 +16,7 @@ final: prev: {
       sed -i '/^toolchain/d' go.mod
     '';
 
-    GOFLAGS = "-mod=mod"; # ← これを追加
+    GOFLAGS = [ "-mod=mod" ];
 
     proxyVendor = true;
 
