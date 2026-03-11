@@ -27,7 +27,7 @@ final: prev: {
     );
 
     proxyVendor = true;
-    vendorHash = prev.lib.fakeHash; # ← 一旦これでビルドして出た正しいハッシュに差し替える
+    vendorHash = "sha256-k9OksW+WVZqaYdFNPe9LLSKzDSp0mECR/X1qJeVSJvQ="; # ← 一旦これでビルドして出た正しいハッシュに差し替える
 
     meta = with prev.lib; {
       description = "TUI PR reviewer for GitHub";
