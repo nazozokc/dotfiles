@@ -75,8 +75,11 @@ EOF
 )"
 ```
 
+## PR作成前チェック
+- `gh pr list --base main --head AI-agent` でオープンPRがあれば新規作成しない
+- 既存PRがある場合はコミットを積み増しして対応する
+
 ## 注意点
 - PR作成前に `git log --oneline origin/main..HEAD` で差分コミットを確認
 - `--force-push` 系は使用禁止
-- 既にオープン中のPRがないか `gh pr list` で確認してから作成
-- CIが動いていないかを確認。
+- CIがパスしているかを確認
