@@ -1,4 +1,3 @@
-# nix/overlays/gh-pr-review.nix
 final: prev: {
   gh-pr-review = prev.buildGoModule {
     pname = "gh-pr-review";
@@ -26,7 +25,8 @@ final: prev: {
     );
 
     vendorHash = "sha256-k9OksW+WVZqaYdFNPe9LLSKzDSp0mECR/X1qJeVSJvQ=";
-    proxyVendor = true; # ← これを追加
+    proxyVendor = true;
+    env.GOFLAGS = "-mod=mod"; # ← 追加
 
     meta = with prev.lib; {
       description = "TUI PR reviewer for GitHub";
