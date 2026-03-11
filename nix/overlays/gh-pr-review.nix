@@ -1,3 +1,4 @@
+# nix/overlays/gh-pr-review.nix
 final: prev: {
   gh-pr-review = prev.buildGoModule {
     pname = "gh-pr-review";
@@ -14,6 +15,8 @@ final: prev: {
       substituteInPlace go.mod --replace "go 1.26.0" "go 1.24"
       sed -i '/^toolchain/d' go.mod
     '';
+
+    GOFLAGS = "-mod=mod"; # ← これを追加
 
     proxyVendor = true;
 
