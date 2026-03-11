@@ -7,7 +7,7 @@ final: prev: {
       owner = "yukikotani231";
       repo = "gh-pr-review";
       rev = "v0.1.0";
-      hash = prev.lib.fakeHash;
+      hash = "sha256-b2liYeyutBmdg/lTwhFcuhGXHOa7HWquihh/nONbzAM=";
     };
 
     vendorHash = prev.lib.fakeHash;
