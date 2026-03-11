@@ -17,7 +17,7 @@ final: prev: {
 
     proxyVendor = true;
 
-    vendorHash = prev.lib.fakeHash;
+    vendorHash = "sha256-k9OksW+WVZqaYdFNPe9LLSKzDSp0mECR/X1qJeVSJvQ=";
 
     meta = with prev.lib; {
       description = "TUI PR reviewer for GitHub";
