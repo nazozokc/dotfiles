@@ -11,6 +11,7 @@
       pkgs.gh-markdown-preview
       pkgs.gh-dash
       pkgs.gh-actions-cache
+      pkgs.gh-pr-review
       pkgs.gh-poi
       pkgs.gh-notify
       pkgs.gh-do
