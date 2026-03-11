@@ -12,6 +12,7 @@
       pkgs.gh-dash
       pkgs.gh-actions-cache
       pkgs.gh-poi
+      pkgs.gh-pr-review
       pkgs.gh-notify
       pkgs.gh-do
 
