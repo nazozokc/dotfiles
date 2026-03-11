@@ -1,0 +1,22 @@
+final: prev: {
+  gh-pr-review = prev.buildGoModule {
+    pname = "gh-pr-review";
+    version = "0.1.0";
+
+    src = prev.fetchFromGitHub {
+      owner = "yukikotani231";
+      repo = "gh-pr-review";
+      rev = "v0.1.0";
+      hash = prev.lib.fakeHash;
+    };
+
+    vendorHash = prev.lib.fakeHash;
+
+    meta = with prev.lib; {
+      description = "TUI PR reviewer for GitHub";
+      homepage = "https://github.com/yukikotani231/gh-pr-review";
+      license = licenses.mit;
+      mainProgram = "gh-pr-review";
+    };
+  };
+}
