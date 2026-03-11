@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  Pkgs = import ../tools/packages { inherit pkgs; };
+  Pkgs = import ./tools/packages/ { inherit pkgs; };
 in
 {
   imports = [
