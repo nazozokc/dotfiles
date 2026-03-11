@@ -15,7 +15,7 @@ final: prev: {
       sed -i '/^toolchain/d' go.mod
     '';
 
-    GOFLAGS = "-mod=mod";
+    GOFLAGS = [ "-mod=mod" ];
 
     vendorHash = prev.lib.fakeHash;
 
