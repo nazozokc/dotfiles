@@ -16,11 +16,18 @@ final: prev: {
       sed -i '/^toolchain/d' go.mod
     '';
 
-    GOFLAGS = [ "-mod=mod" ];
+    # モジュール取得 derivation にも同じパッチを当てる
+    overrideModAttrs = (
+      _: {
+        postPatch = ''
+          substituteInPlace go.mod --replace "go 1.26.0" "go 1.24"
+          sed -i '/^toolchain/d' go.mod
+        '';
+      }
+    );
 
     proxyVendor = true;
-
-    vendorHash = "sha256-k9OksW+WVZqaYdFNPe9LLSKzDSp0mECR/X1qJeVSJvQ=";
+    vendorHash = prev.lib.fakeHash; # ← 一旦これでビルドして出た正しいハッシュに差し替える
 
     meta = with prev.lib; {
       description = "TUI PR reviewer for GitHub";
