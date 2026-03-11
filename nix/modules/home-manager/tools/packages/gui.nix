@@ -9,7 +9,6 @@ with pkgs;
   discord
   google-chrome
   obsidian
-  opencode-desktop
 ]
 ++ lib.optionals pkgs.stdenv.isLinux [
   ghostty
