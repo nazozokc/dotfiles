@@ -10,6 +10,10 @@ final: prev: {
       hash = "sha256-b2liYeyutBmdg/lTwhFcuhGXHOa7HWquihh/nONbzAM=";
     };
 
+    postPatch = ''
+      substituteInPlace go.mod --replace "go 1.26.0" "go 1.25"
+    '';
+
     vendorHash = prev.lib.fakeHash;
 
     meta = with prev.lib; {
