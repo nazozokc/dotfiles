@@ -8,11 +8,11 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos.org/"
-      "https://numtide.cachix.org"
+      "https://cache.numtide.com" # ← これ
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" # ← これ
     ];
   };
 
