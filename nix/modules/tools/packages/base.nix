@@ -65,7 +65,5 @@ with pkgs;
   #other
   rename
   inetutils
-  age
-  sops
   comma
 ]
