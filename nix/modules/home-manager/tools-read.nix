@@ -5,7 +5,7 @@ let
 in
 {
   imports = [
-    ../tools/program/gh/gh.nix
+    ./tools/program/gh/gh.nix
   ];
 
   home.packages = Pkgs;
