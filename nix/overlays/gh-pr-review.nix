@@ -1,4 +1,3 @@
-# nix/overlays/gh-pr-review.nix
 final: prev: {
   gh-pr-review = prev.buildGoModule {
     pname = "gh-pr-review";
@@ -16,7 +15,6 @@ final: prev: {
       sed -i '/^toolchain/d' go.mod
     '';
 
-    # モジュール取得 derivation にも同じパッチを当てる
     overrideModAttrs = (
       _: {
         postPatch = ''
@@ -26,8 +24,8 @@ final: prev: {
       }
     );
 
-    proxyVendor = true;
-    vendorHash = "sha256-k9OksW+WVZqaYdFNPe9LLSKzDSp0mECR/X1qJeVSJvQ="; # ← 一旦これでビルドして出た正しいハッシュに差し替える
+    vendorHash = "sha256-k9OksW+WVZqaYdFNPe9LLSKzDSp0mECR/X1qJeVSJvQ=";
+    # proxyVendor は削除
 
     meta = with prev.lib; {
       description = "TUI PR reviewer for GitHub";
