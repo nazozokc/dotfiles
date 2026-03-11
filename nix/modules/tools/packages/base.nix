@@ -32,7 +32,6 @@ with pkgs;
   delta
   tldr
   pet
-  bottom
   just
 
   # filer
@@ -59,7 +58,6 @@ with pkgs;
   gitui
   git-secrets
   tig
-  gibo
 
   #util
   presenterm
@@ -67,4 +65,5 @@ with pkgs;
   #other
   rename
   inetutils
+  comma
 ]
