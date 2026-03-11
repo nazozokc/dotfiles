@@ -12,7 +12,7 @@
     skills.enableAll = [ "local" ];
 
     targets.claude = {
-      dest = "~/.claude/skills";
+      dest = ".config/claude/skills";
       structure = "link";
     };
     targets.opencode = {
