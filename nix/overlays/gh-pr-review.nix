@@ -11,9 +11,11 @@ final: prev: {
     };
 
     postPatch = ''
-      substituteInPlace go.mod --replace "go 1.26.0" "go 1.25"
+      substituteInPlace go.mod --replace "go 1.26.0" "go 1.24"
       sed -i '/^toolchain/d' go.mod
     '';
+
+    GOFLAGS = "-mod=mod";
 
     vendorHash = prev.lib.fakeHash;
 
