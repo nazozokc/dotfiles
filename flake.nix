@@ -111,7 +111,6 @@
           localSystem.system = system;
           config.allowUnfree = true;
           overlays = [
-            # llm-agents を pkgs._llm-agents として参照できるようにする
             (_: _: { _llm-agents = llm-agents; })
             overlay
             gh-graph.overlays.default
