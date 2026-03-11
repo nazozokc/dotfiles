@@ -71,6 +71,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ---------------------------------------------------------------------------
@@ -88,6 +93,7 @@
       gh-brag,
       nix-index-database,
       llm-agents,
+      treefmt-nix,
       agent-skills-nix,
       ...
     }:
@@ -135,7 +141,10 @@
 
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      # このフレークがサポートするシステム一覧
+
+      imports = [
+        ./nix/modules/tools/packages/treefmt.nix
+      ];
       systems = [
         "x86_64-linux" # メイン PC (Arch Linux)
         "aarch64-linux" # ARM Linux (VPS など)
