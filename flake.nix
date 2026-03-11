@@ -65,6 +65,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Claude Code 用スキル管理フレームワーク
     agent-skills-nix = {
       url = "github:Kyure-A/agent-skills-nix";
@@ -88,6 +93,7 @@
       gh-brag,
       nix-index-database,
       llm-agents,
+      sops-nix,
       agent-skills-nix,
       ...
     }:
@@ -130,6 +136,8 @@
             ./nix/modules/home-manager/symlinks.nix
             agent-skills-nix.homeManagerModules.default
             ./nix/modules/home-manager/agent-skills.nix
+            sops-nix.homeManagerModules.sops
+            ./nix/modules/home-manager/secrets.nix
           ];
         };
 
@@ -253,6 +261,8 @@
                   ./nix/modules/home-manager/symlinks.nix
                   agent-skills-nix.homeManagerModules.default
                   ./nix/modules/home-manager/agent-skills.nix
+                  sops-nix.homeManagerModules.sops
+                  ./nix/modules/home-manager/secrets.nix
                 ];
               };
             }
