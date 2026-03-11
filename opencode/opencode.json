@@ -5,7 +5,19 @@
       "models": {
         "glm-5:cloud": {
           "_launch": true,
+          "limit": {
+            "context": 202752,
+            "output": 131072
+          },
           "name": "glm-5:cloud"
+        },
+        "qwen3-coder-next:cloud": {
+          "_launch": true,
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "name": "qwen3-coder-next:cloud"
         }
       },
       "name": "Ollama",

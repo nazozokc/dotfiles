@@ -17,15 +17,27 @@ description: Gitコミット・プッシュ・PR作成時のルール
 - **コミットをする前に必ずコードレビュー**: コードレビューは../code-review/SKILL.mdを参照
 
 ## コミットメッセージ形式
+
 ```
-<内容(20~40文字以内)>:<日付(JST)>
+<type>: <summary>
 ```
+
+### type 一覧
+| type | 用途 |
+|------|------|
+| `feat` | 新機能追加 |
+| `fix` | バグ修正 |
+| `refactor` | リファクタリング |
+| `docs` | ドキュメント変更 |
+| `chore` | ビルド・設定変更 |
+| `style` | フォーマット・スタイル変更 |
 
 ### 例
 ```
-add neovim config:20260101
-fix fish greeting:20260101
-update flake.lock:20260101
+feat: add neovim telescope config
+fix: resolve fish greeting display bug
+chore: update flake.lock
+refactor: simplify home-manager modules
 ```
 
 ## 注意点
