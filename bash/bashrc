@@ -34,8 +34,7 @@ export SCRIPTS_PATH="$HOME/.scripts"
 export SCRIPTS_BIN_PATH="$HOME/.scripts/bin"
 export ZIG_PATH="$HOME/zig"
 export CODONBIN="$HOME/.codon/bin"
-PATH=${HOMEBREW_ARM_BIN}:${HOMEBREW_X86_64_BIN}:${LOCALBIN}:/usr/bin:/bin:/opt/local/sbin:${PATH}
-PATH=${SCRIPTS_PATH}:${AQUA_BIN_PATH}:${BUNBIN}:${ZIG_PATH}:${NODEBREWBIN}:${CODONBIN}:${GOBIN}:${GOPATH}:${POETRY_PATH}:${CUSTOM_SCRIPTS_PATH}:${CURLBIN}:${NIMBLEBIN}:${GNUBIN}:${PATH}:${XCODEBIN}
+PATH=${HOMEBREW_ARM_BIN}:${HOMEBREW_X86_64_BIN}:${LOCALBIN}:/usr/bin:/bin:/opt/local/sbin:${SCRIPTS_PATH}:${AQUA_BIN_PATH}:${BUNBIN}:${ZIG_PATH}:${NODEBREWBIN}:${CODONBIN}:${GOBIN}:${GOPATH}:${POETRY_PATH}:${CUSTOM_SCRIPTS_PATH}:${CURLBIN}:${NIMBLEBIN}:${GNUBIN}:${XCODEBIN}:${PATH}
 # aqua
 export AQUA_GLOBAL_CONFIG=${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml
 # languages
@@ -102,7 +101,7 @@ alias ls='eza -lh --icons'
 alias lah='ls -lah'
 alias la='eza -lah'
 alias l='ls -CF'
-alias rm='rm -rf'
+alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 alias grep='grep --color=auto'
