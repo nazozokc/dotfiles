@@ -8,6 +8,8 @@ $directory\
 $git_branch\
 $git_status\
 $direnv\
+$nix_shell\
+$nodejs\
 $python\
 $aws\
 $fill\
@@ -16,88 +18,112 @@ $time\
 \n$character\
 """
 
-# Enable if it appears on the same line as the command
-# right_format = """
-# $cmd_duration\
-# $time\
-# """
-
 # ----------------------------------------------------
 # left module
 # ----------------------------------------------------
-[python]
-format = """
-[](fg:#ffcb6b)\
-[$virtualenv]($style)\
-[](fg:#ffcb6b)\
-"""
-style = "bold fg:#313244 bg:#ffcb6b"
-
-[fill]
-symbol = '─'
-
 [directory]
 truncation_length = 6
-truncation_symbol = ' '
+truncation_symbol = '…/'
 truncate_to_repo = false
 home_symbol = '~'
-read_only = ' 󰌾 '
+read_only = '  '
 format = """
-[](fg:#80EBDF)\
+[](fg:#7e9cd8)\
 [$path]($style)\
 [$read_only]($read_only_style)\
-[](fg:#80EBDF)\
+[](fg:#7e9cd8)\
 """
-style = 'bold fg:#313244 bg:#80EBDF'
-read_only_style = 'bold fg:#313244 bg:#80EBDF'
-
-[direnv]
-disabled = false
-format = """
-[](fg:#89dceb)\
-[$symbol$allowed]($style)\
-[](fg:#89dceb)\
-"""
-style = "bold fg:#313244 bg:#89dceb"
+style = 'bold fg:#1f1f28 bg:#7e9cd8'
+read_only_style = 'bold fg:#e46876 bg:#7e9cd8'
 
 [git_branch]
-symbol = ""
-style = "fg:#769ff0 bg:#1d2230"
+symbol = ""
+style = "fg:#957fb8 bg:#2d4f67"
 format = """
-[](fg:#1d2230)\
+[](fg:#2d4f67)\
 [$symbol $branch]($style)\
 """
 
 [git_status]
-style = "fg:#769ff0 bg:#1d2230"
+style = "fg:#957fb8 bg:#2d4f67"
+ahead = "⇡$count"
+behind = "⇣$count"
+diverged = "⇡$ahead_count⇣$behind_count"
+modified = "!$count"
+untracked = "?$count"
+staged = "+$count"
 format = """
 [$all_status$ahead_behind]($style)\
-[](fg:#1d2230)\
+[](fg:#2d4f67)\
 """
+
+[direnv]
+disabled = false
+format = """
+[](fg:#6a9589)\
+[$symbol$allowed]($style)\
+[](fg:#6a9589)\
+"""
+style = "bold fg:#1f1f28 bg:#6a9589"
+
+[nix_shell]
+disabled = false
+symbol = "❄️ "
+impure_msg = "impure"
+pure_msg = "pure"
+format = """
+[](fg:#658594)\
+[$symbol$state]($style)\
+[](fg:#658594)\
+"""
+style = "bold fg:#1f1f28 bg:#658594"
+
+[nodejs]
+symbol = " "
+format = """
+[](fg:#98bb6c)\
+[$symbol$version]($style)\
+[](fg:#98bb6c)\
+"""
+style = "bold fg:#1f1f28 bg:#98bb6c"
+
+[python]
+format = """
+[](fg:#dca561)\
+[$virtualenv]($style)\
+[](fg:#dca561)\
+"""
+style = "bold fg:#1f1f28 bg:#dca561"
+
+[fill]
+symbol = '─'
+style = 'fg:#54546d'
 
 # ----------------------------------------------------
 # right module
 # ----------------------------------------------------
 [cmd_duration]
 min_time = 1
-style = 'fg:#e0af68'
-format = "[ $duration]($style)" # nf-pl-right_soft_divider, nf-mdi-clock
+style = 'fg:#c0a36e'
+format = "[ $duration]($style)"
 
 [time]
 disabled = false
-time_format = "%R" # Hour:Minute Format
-format = '[[  $time](fg:#a0a9cb)]($style)'
+time_format = "%R"
+format = '[ $time](fg:#717c7c)'
 
 # ----------------------------------------------------
 # prompt module
 # ----------------------------------------------------
 [character]
-vimcmd_symbol = '[V](bold green) '
+success_symbol = '[❯](bold fg:#98bb6c)'
+error_symbol = '[❯](bold fg:#e46876)'
+vimcmd_symbol = '[❮](bold fg:#957fb8)'
 
 # ----------------------------------------------------
 # AWS module
 # ----------------------------------------------------
 [aws]
 format = '[$symbol $profile ]($style)'
-symbol = "💭"
-style = "bold fg:#ffcb6b"
+symbol = "☁"
+style = "bold fg:#dca561"
