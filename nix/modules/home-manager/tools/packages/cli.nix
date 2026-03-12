@@ -6,6 +6,8 @@ with pkgs;
   crush
   ollama
   opencode
+  claude-code
+  claude-monitor
 
   #other
   pay-respects
