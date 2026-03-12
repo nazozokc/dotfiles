@@ -14,7 +14,7 @@
 
 ## パッケージ管理のアーキテクチャ
 
-### 共通パッケージ (`nix/modules/tools/packages.nix`)
+### 共通パッケージ (`nix/modules/home-manager/packages/default.nix`)
 
 以下のパッケージは両OS共通でインストールされます:
 
@@ -27,7 +27,7 @@
 - Git関連: git, gh, ghq, lazygit, gitui
 - GUI: wezterm, audacity, spotify, discord, ghostty
 
-### Linux専用パッケージ (`nix/modules/home-manager/linux.nix`)
+### Linux専用パッケージ (`nix/modules/linux/system.nix`)
 
 - xclip, wl-clipboard (クリップボード)
 - pulseaudio, pavucontrol (音声)
@@ -48,33 +48,29 @@
 nix/
 ├── modules/
 │   ├── darwin/
-│   │   ├── darwin.nix
 │   │   └── system.nix
 │   ├── home-manager/
 │   │   ├── darwin.nix
-│   │   ├── linux.nix
 │   │   ├── symlinks.nix
-│   │   └── tools-read.nix
-│   └── tools/
-│       ├── packages/
-│       │   ├── base.nix
-│       │   ├── cli.nix
-│       │   ├── default.nix
-│       │   ├── dev.nix
-│       │   └── gui.nix
-│       └── program/
-│           ├── gh/
-│           │   └── gh.nix
-│           └── gh.nix
+│   │   ├── tools-read.nix
+│   │   ├── agent-skills.nix
+│   │   ├── packages/
+│   │   │   ├── base.nix
+│   │   │   ├── cli.nix
+│   │   │   ├── default.nix
+│   │   │   ├── dev.nix
+│   │   │   ├── gui.nix
+│   │   │   └── treefmt.nix
+│   │   └── program/
+│   │       └── gh/
+│   │           └── gh.nix
+│   └── linux/
+│       └── system.nix
 ├── overlays/
 │   ├── ai-tools.nix
 │   ├── default.nix
-│   └── gh.nix
-├── packages/
-│   └── node/
-│       ├── default.nix
-│       └── update.sh
-├── AGENT.md
+│   ├── node-packages.nix
+│   └── nix-index.nix
 ├── README.md
 ├── cachix.nix
 └── shared.nix
