@@ -5,6 +5,7 @@ with pkgs;
   wezterm
   audacity
   obsidian
+  raycast
 ]
 ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
   ghostty
