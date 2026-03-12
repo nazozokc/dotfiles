@@ -142,7 +142,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       imports = [
-        ./nix/modules/home-manager/tools/packages/treefmt.nix
+        ./nix/modules/home-manager/packages/treefmt.nix
       ];
       systems = [
         "x86_64-linux" # メイン PC (Arch Linux)
