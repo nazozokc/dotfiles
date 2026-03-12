@@ -118,4 +118,3 @@ languages:
         - "%f:%l:%c: %m"
     - format-command: "google-java-format -"
       format-stdin: true
-

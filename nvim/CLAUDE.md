@@ -40,59 +40,59 @@ nvim/
 
 ### LSP / 補完
 
-| プラグイン | 用途 |
-|-----------|------|
-| nvim-lspconfig | LSP設定 |
-| nvim-cmp | 補完エンジン |
-| LuaSnip | スニペット |
-| Lspsaga | LSP UI拡張 |
+| プラグイン      | 用途                       |
+| --------------- | -------------------------- |
+| nvim-lspconfig  | LSP設定                    |
+| nvim-cmp        | 補完エンジン               |
+| LuaSnip         | スニペット                 |
+| Lspsaga         | LSP UI拡張                 |
 | actions-preview | コードアクションプレビュー |
 
 ### Fuzzy Finder / ナビゲーション
 
-| プラグイン | 用途 |
-|-----------|------|
-| snacks.nvim | Picker, Dashboard, Zen mode |
-| telescope.nvim | ファジーファインダー |
-| oil.nvim | ファイルエクスプローラー |
-| dropbar.nvim | Winbar / パンくずリスト |
-| flash.nvim | ジャンプ |
+| プラグイン     | 用途                        |
+| -------------- | --------------------------- |
+| snacks.nvim    | Picker, Dashboard, Zen mode |
+| telescope.nvim | ファジーファインダー        |
+| oil.nvim       | ファイルエクスプローラー    |
+| dropbar.nvim   | Winbar / パンくずリスト     |
+| flash.nvim     | ジャンプ                    |
 
 ### UI / 見た目
 
-| プラグイン | 用途 |
-|-----------|------|
-| kanagawa.nvim | カラースキーム |
-| lualine.nvim | ステータスライン |
-| noice.nvim | コマンドラインUI |
-| nvim-notify | 通知 |
-| nvim-scrollbar | スクロールバー |
+| プラグイン     | 用途             |
+| -------------- | ---------------- |
+| kanagawa.nvim  | カラースキーム   |
+| lualine.nvim   | ステータスライン |
+| noice.nvim     | コマンドラインUI |
+| nvim-notify    | 通知             |
+| nvim-scrollbar | スクロールバー   |
 
 ### Git
 
-| プラグイン | 用途 |
-|-----------|------|
-| gitsigns.nvim | Git sign |
-| lazygit.nvim | LazyGit 統合 |
-| octo.nvim | GitHub 統合 |
+| プラグイン    | 用途         |
+| ------------- | ------------ |
+| gitsigns.nvim | Git sign     |
+| lazygit.nvim  | LazyGit 統合 |
+| octo.nvim     | GitHub 統合  |
 
 ### エディタ機能
 
-| プラグイン | 用途 |
-|-----------|------|
+| プラグイン      | 用途                   |
+| --------------- | ---------------------- |
 | nvim-treesitter | シンタックスハイライト |
-| nvim-autopairs | 括弧補完 |
-| Comment.nvim | コメントアウト |
-| substitute.nvim | 置換 |
-| which-key.nvim | キーマップヘルプ |
-| toggleterm.nvim | ターミナル |
+| nvim-autopairs  | 括弧補完               |
+| Comment.nvim    | コメントアウト         |
+| substitute.nvim | 置換                   |
+| which-key.nvim  | キーマップヘルプ       |
+| toggleterm.nvim | ターミナル             |
 
 ### デバッグ / テスト
 
-| プラグイン | 用途 |
-|-----------|------|
-| nvim-dap | デバッガー |
-| neotest | テストランナー |
+| プラグイン | 用途           |
+| ---------- | -------------- |
+| nvim-dap   | デバッガー     |
+| neotest    | テストランナー |
 
 ---
 
@@ -104,51 +104,51 @@ nvim/
 
 ### 基本
 
-| キー | 動作 |
-|-----|------|
-| `<Leader><Leader>` | ファイル検索 |
-| `<Leader>g` | Grep |
-| `<Leader>b` | バッファ一覧 |
-| `<Leader>r` | 最近使ったファイル |
-| `<Leader>h` | 検索ハイライト解除 |
-| `<Leader>z` | Zen mode |
+| キー               | 動作               |
+| ------------------ | ------------------ |
+| `<Leader><Leader>` | ファイル検索       |
+| `<Leader>g`        | Grep               |
+| `<Leader>b`        | バッファ一覧       |
+| `<Leader>r`        | 最近使ったファイル |
+| `<Leader>h`        | 検索ハイライト解除 |
+| `<Leader>z`        | Zen mode           |
 
 ### LSP
 
-| キー | 動作 |
-|-----|------|
-| `K` | ホバー |
-| `gd` | 定義へ移動 |
-| `ga` | コードアクション (Lspsaga) |
+| キー         | 動作                       |
+| ------------ | -------------------------- |
+| `K`          | ホバー                     |
+| `gd`         | 定義へ移動                 |
+| `ga`         | コードアクション (Lspsaga) |
 | `<Leader>ca` | コードアクション (preview) |
-| `<Leader>gd` | 定義へ移動 |
-| `<Leader>gr` | 参照一覧 |
+| `<Leader>gd` | 定義へ移動                 |
+| `<Leader>gr` | 参照一覧                   |
 
 ### UI
 
-| キー | 動作 |
-|-----|------|
-| `<Leader>t` | ターミナル |
-| `<Leader>c` | dotfiles を Oil で開く |
-| `<Leader>e` | Trouble (診断一覧) |
-| `<Leader>so` | SymbolsOutline |
-| `<Leader>;` | Dropbar pick |
-| `<F2>` | Twilight |
+| キー         | 動作                   |
+| ------------ | ---------------------- |
+| `<Leader>t`  | ターミナル             |
+| `<Leader>c`  | dotfiles を Oil で開く |
+| `<Leader>e`  | Trouble (診断一覧)     |
+| `<Leader>so` | SymbolsOutline         |
+| `<Leader>;`  | Dropbar pick           |
+| `<F2>`       | Twilight               |
 
 ### DAP
 
-| キー | 動作 |
-|-----|------|
-| `<F5>` | 実行 / 継続 |
-| `<F10>` | ステップオーバー |
-| `<F11>` | ステップイン |
-| `<F12>` | ステップアウト |
+| キー         | 動作                 |
+| ------------ | -------------------- |
+| `<F5>`       | 実行 / 継続          |
+| `<F10>`      | ステップオーバー     |
+| `<F11>`      | ステップイン         |
+| `<F12>`      | ステップアウト       |
 | `<Leader>db` | ブレークポイント切替 |
 
 ### ウィンドウ移動
 
-| キー | 動作 |
-|-----|------|
+| キー    | 動作     |
+| ------- | -------- |
 | `<C-h>` | 左へ移動 |
 | `<C-j>` | 下へ移動 |
 | `<C-k>` | 上へ移動 |

@@ -6,16 +6,18 @@
 
 ## システム構成
 
-| コンポーネント | Linux, ARM-linux| macOS |
-|--------------|-------|-------|
-| システム設定 | home-manager | nix-darwin |
-| ユーザーパッケージ | home-manager | home-manager (nix-darwin統合) |
-| シェル | fish | fish |
+| コンポーネント     | Linux, ARM-linux | macOS                         |
+| ------------------ | ---------------- | ----------------------------- |
+| システム設定       | home-manager     | nix-darwin                    |
+| ユーザーパッケージ | home-manager     | home-manager (nix-darwin統合) |
+| シェル             | fish             | fish                          |
 
 ## パッケージ管理のアーキテクチャ
 
 ### 共通パッケージ (`nix/modules/tools/packages.nix`)
+
 以下のパッケージは両OS共通でインストールされます:
+
 - エディタ: neovim, vscode, zed
 - シェル: fish, zsh, bash, starship
 - CLIツール: jq, bat, curl, wget, zoxide, fzf, tmux, eza, yazi, bottom, just
@@ -26,15 +28,18 @@
 - GUI: wezterm, audacity, spotify, discord, ghostty
 
 ### Linux専用パッケージ (`nix/modules/home-manager/linux.nix`)
+
 - xclip, wl-clipboard (クリップボード)
 - pulseaudio, pavucontrol (音声)
 - unzip, zip (アーカイブ)
 - nmap (ネットワーク)
 
 ### macOS専用パッケージ (`nix/modules/home-manager/darwin.nix`)
+
 - coreutils, gnused, gawk, inetutils (基本コマンド)
 
 ### macOSシステムパッケージ (`nix/modules/darwin/system.nix`)
+
 - git (nix-darwinのenvironment.systemPackagesで管理)
 
 ## モジュール構造
@@ -94,6 +99,7 @@ nix run .#update-node-packages
 - **macOS**: nix-darwinのモジュールとしてhome-managerを統合 (`home-manager.useUserPackages = true`)
 
 ## 参考リポジトリ
+
 下のリンクが私のdotfilesレポジトリです。必要に応じて参照してください
 <https://github.com/nazozokc/Dotfiles>
 
@@ -104,5 +110,5 @@ nix run .#update-node-packages
 **少し参照**
 <https://github.com/mozumasu/dotfiles>
 
-**あまり参照はないが参考にはなりそう** 
+**あまり参照はないが参考にはなりそう**
 <https://github.com/ntsk/dotfiles>

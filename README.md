@@ -118,4 +118,5 @@ nix run .#update
 ![Alt](https://repobeats.axiom.co/api/embed/c4db566c918002010974abbbcc1ee5150bed51da.svg "Repobeats analytics image")
 
 # LICENSE
+
 MIT
