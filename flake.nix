@@ -131,7 +131,7 @@
             nix-index-database.homeModules.nix-index
             ./nix/shared.nix
             (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
-            ./nix/modules/home-manager/linux.nix
+            ./nix/modules/linux/system.nix
             ./nix/modules/home-manager/symlinks.nix
             agent-skills-nix.homeManagerModules.default
             ./nix/modules/home-manager/agent-skills.nix
