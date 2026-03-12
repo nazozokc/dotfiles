@@ -7,7 +7,7 @@ description: Nix設定を管理するときのガイドライン
 
 ## flake.lock の更新手順
 
-```bash
+````bash
 # 1. 更新を実行（このコマンドが flake に定義されている場合のみ実行）
 nix run .#update
 
@@ -23,7 +23,7 @@ git push
 ## 代替手順（nix run が定義されていない場合）
 ```bash
 nix flake update
-```
+````
 
 ## ビルド確認
 
