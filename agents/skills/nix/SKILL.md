@@ -7,7 +7,11 @@ description: Nix設定を管理するときのガイドライン
 
 ## flake.lock の更新手順
 
+<<<<<<< HEAD
 ````bash
+=======
+```bash
+>>>>>>> 5f392b1 (fix: remove merge conflict markers from skills)
 # 1. 更新を実行（このコマンドが flake に定義されている場合のみ実行）
 nix run .#update
 
@@ -23,7 +27,11 @@ git push
 ## 代替手順（nix run が定義されていない場合）
 ```bash
 nix flake update
+<<<<<<< HEAD
 ````
+=======
+```
+>>>>>>> 5f392b1 (fix: remove merge conflict markers from skills)
 
 ## ビルド確認
 
