@@ -1,6 +1,6 @@
 return {
 	"b0o/incline.nvim",
-	event = "UIEnter",
+	event = "VeryLazy",
 	config = function()
 		require("incline").setup({
 			debounce_threshold = {

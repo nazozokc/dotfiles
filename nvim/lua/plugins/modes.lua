@@ -1,7 +1,7 @@
 return {
 	{
 		"mvllow/modes.nvim",
-		event = "VimEnter",
+		event = "VeryLazy",
 		config = function()
 			require("modes").setup({
 				-- モードごとの色（Kanagawa準拠）
