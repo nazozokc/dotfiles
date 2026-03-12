@@ -1,7 +1,6 @@
 add_newline = true
-
 format = """
-$os\
+╭─$os\
 $username\
 $hostname\
 $directory\
@@ -21,22 +20,20 @@ $battery\
 $memory_usage\
 $cmd_duration\
 $time\
-\n$status\
+╮\
+\n╰─$status\
 $character\
 """
-
 [os]
 disabled = false
 format = "[$symbol]($style) "
 style = "fg:#7e9cd8"
-
 [os.symbols]
 Arch = " "
 NixOS = " "
 Macos = " "
 Linux = " "
 Windows = " "
-
 [username]
 disabled = false
 show_always = false
@@ -47,7 +44,6 @@ format = """
 """
 style_user = "bold fg:#7e9cd8 bg:#2d4f67"
 style_root = "bold fg:#e46876 bg:#2d4f67"
-
 [hostname]
 disabled = false
 ssh_only = true
@@ -56,7 +52,6 @@ format = """
 [@$hostname](bold fg:#957fb8 bg:#2d4f67)\
 [](fg:#2d4f67)\
 """
-
 [directory]
 truncation_length = 5
 truncation_symbol = '…/'
@@ -71,7 +66,6 @@ format = """
 """
 style = 'bold fg:#1f1f28 bg:#7e9cd8'
 read_only_style = 'bold fg:#e46876 bg:#7e9cd8'
-
 [git_branch]
 symbol = " "
 style = "bold fg:#957fb8 bg:#2d4f67"
@@ -79,7 +73,6 @@ format = """
 [](fg:#2d4f67)\
 [$symbol$branch(:$remote_branch)]($style)\
 """
-
 [git_status]
 style = "bold fg:#c8c093 bg:#2d4f67"
 ahead = "⇡$count"
@@ -95,13 +88,11 @@ format = """
 [ $all_status$ahead_behind]($style)\
 [](fg:#2d4f67)\
 """
-
 [git_metrics]
 disabled = false
 added_style = "bold fg:#98bb6c"
 deleted_style = "bold fg:#e46876"
 format = '[+$added]($added_style)[/-$deleted]($deleted_style) '
-
 [direnv]
 disabled = false
 symbol = " "
@@ -111,7 +102,6 @@ format = """
 [](fg:#6a9589)\
 """
 style = "bold fg:#1f1f28 bg:#6a9589"
-
 [nix_shell]
 disabled = false
 symbol = " "
@@ -123,7 +113,6 @@ format = """
 [](fg:#658594)\
 """
 style = "bold fg:#1f1f28 bg:#658594"
-
 [nodejs]
 symbol = " "
 format = """
@@ -132,7 +121,6 @@ format = """
 [](fg:#98bb6c)\
 """
 style = "bold fg:#1f1f28 bg:#98bb6c"
-
 [rust]
 symbol = " "
 format = """
@@ -141,7 +129,6 @@ format = """
 [](fg:#dca561)\
 """
 style = "bold fg:#1f1f28 bg:#dca561"
-
 [python]
 symbol = " "
 format = """
@@ -150,7 +137,6 @@ format = """
 [](fg:#e6c384)\
 """
 style = "bold fg:#1f1f28 bg:#e6c384"
-
 [package]
 symbol = "󰏗 "
 format = """
@@ -160,17 +146,14 @@ format = """
 """
 style = "bold fg:#c8c093 bg:#54546d"
 disabled = false
-
 [fill]
 symbol = '─'
 style = 'fg:#363646'
-
 [jobs]
 symbol = "󰆅 "
 style = "bold fg:#7fb4ca"
 format = "[$symbol$number]($style) "
 threshold = 1
-
 [battery]
 format = "[$symbol$percentage]($style) "
 [[battery.display]]
@@ -186,37 +169,31 @@ threshold = 100
 style = "fg:#6a9589"
 discharging_symbol = "󰁹 "
 charging_symbol = " "
-
 [memory_usage]
 disabled = false
 threshold = 60
 symbol = "󰍛 "
 style = "bold fg:#957fb8"
 format = "[$symbol${ram}]($style) "
-
 [cmd_duration]
 min_time = 1
 style = 'bold fg:#c0a36e'
 format = "[ $duration]($style) "
-
 [time]
 disabled = false
 time_format = "%R"
 format = '[ $time](fg:#717c7c)'
-
 [status]
 disabled = false
 symbol = "✘ "
 format = "[$symbol$status]($style) "
 style = "bold fg:#e46876"
-
 [character]
 success_symbol = '[❯](bold fg:#98bb6c)'
 error_symbol = '[❯](bold fg:#e46876)'
 vimcmd_symbol = '[❮](bold fg:#957fb8)'
 vimcmd_replace_one_symbol = '[❮](bold fg:#e46876)'
 vimcmd_visual_symbol = '[❮](bold fg:#dca561)'
-
 [aws]
 format = """
 [](fg:#dca561)\
