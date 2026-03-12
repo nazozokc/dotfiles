@@ -82,11 +82,11 @@ nix/
 # 環境切り替え (OS自動検出)
 nix run .#switch
 
+# ビルドのみ (切り替えなし)
+nix run .#build
+
 # flake更新
 nix run .#update
-
-# Node.jsパッケージ更新
-nix run .#update-node-packages
 ```
 
 ## home-managerの動作
