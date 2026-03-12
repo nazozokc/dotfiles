@@ -10,6 +10,7 @@
 ## 主要機能
 
 ### テーマ & プラグイン
+
 - テーマ: Powerlevel10k
 - Oh My Zsh 経由で以下のプラグインをロード:
   - git, zsh-autosuggestions, zsh-syntax-highlighting
@@ -18,16 +19,18 @@
   - zsh-autocomplete, zsh-history-enquirer, fast-syntax-highlighting
 
 ### カスタム関数
+
 - `chpwd()`: ディレクトリ移動時に `eza -lah --icons --git` を実行
 - `list()`: eza でファイル一覧表示
 - `cdf()`: fzf でディレクトリ選択して移動
 
 ### アリASES
-| alias | コマンド |
-|-------|----------|
-| vim | nvim |
-| clr | clear |
-| q | exit |
+
+| alias                  | コマンド                                                        |
+| ---------------------- | --------------------------------------------------------------- |
+| vim                    | nvim                                                            |
+| clr                    | clear                                                           |
+| q                      | exit                                                            |
 | typescript-environment | sudo npm i -D typescript ts-node-dev @types/node @types/express |
 
 ## ディレクトリ構成

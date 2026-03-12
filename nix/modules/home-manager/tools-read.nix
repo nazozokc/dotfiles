@@ -1,11 +1,11 @@
 { pkgs, ... }:
 
 let
-  Pkgs = import ../tools/packages { inherit pkgs; };
+  Pkgs = import ./packages { inherit pkgs; };
 in
 {
   imports = [
-    ../tools/program/gh/gh.nix
+    ./program/gh/gh.nix
   ];
 
   home.packages = Pkgs;

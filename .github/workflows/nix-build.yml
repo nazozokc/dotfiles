@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}  # ← ここに移動
+    runs-on: ${{ matrix.os }} # ← ここに移動
     timeout-minutes: 15
     strategy:
       matrix:

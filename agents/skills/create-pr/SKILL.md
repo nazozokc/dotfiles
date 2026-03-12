@@ -6,10 +6,12 @@ description: PRを作成する際のテンプレート、注意点、手順
 # PR 作成ガイドライン
 
 ## いつ使うか
+
 - `gh pr create` でPRを作成するとき
 - PRのタイトル・本文を書くとき
 
 ## 基本ルール
+
 - **ブランチは必ず AI-agent**: `AI-agent` → `main` へのPR
 - **日本語禁止**: タイトル・本文ともに英語のみ
 - **1PR = 1目的**: 複数の無関係な変更を混ぜない
@@ -17,21 +19,24 @@ description: PRを作成する際のテンプレート、注意点、手順
 - **コードレビュー済みであること**: ../code-review/SKILL.md に従ってレビュー済みであること
 
 ## PRタイトル形式
+
 ```
 <type>: <summary>
 ```
 
 ### type 一覧
-| type | 用途 |
-|------|------|
-| `feat` | 新機能追加 |
-| `fix` | バグ修正 |
-| `refactor` | リファクタリング |
-| `docs` | ドキュメント変更 |
-| `chore` | ビルド・設定変更 |
-| `style` | フォーマット・スタイル変更 |
+
+| type       | 用途                       |
+| ---------- | -------------------------- |
+| `feat`     | 新機能追加                 |
+| `fix`      | バグ修正                   |
+| `refactor` | リファクタリング           |
+| `docs`     | ドキュメント変更           |
+| `chore`    | ビルド・設定変更           |
+| `style`    | フォーマット・スタイル変更 |
 
 ### 例
+
 ```
 feat: add neovim telescope config
 fix: resolve fish greeting display bug
@@ -39,6 +44,7 @@ chore: update flake.lock
 ```
 
 ## PR本文テンプレート
+
 ```markdown
 ## Summary
 
@@ -46,7 +52,7 @@ chore: update flake.lock
 
 ## Changes
 
-- 
+-
 
 ## Notes
 
@@ -54,6 +60,7 @@ chore: update flake.lock
 ```
 
 ## 作成コマンド
+
 ```bash
 # ドラフトで確認しながら作成
 gh pr create \
@@ -67,7 +74,7 @@ gh pr create \
 
 ## Changes
 
-- 
+-
 
 ## Notes
 
@@ -76,14 +83,25 @@ EOF
 ```
 
 ## PR作成前チェック
+
+# <<<<<<< HEAD
+
+> > > > > > > main
+
 - `gh pr list --base main --head AI-agent` でオープンPRがあれば新規作成しない
 - 既存PRがある場合はコミットを積み増しして対応する
 
 ## 注意点
+
 - PR作成前に `git log --oneline origin/main..HEAD` で差分コミットを確認
 - `--force-push` 系は使用禁止
 - CIがパスしているかを確認
 
 ## ルール違反・判断できない場合
+
+# <<<<<<< HEAD
+
+> > > > > > > main
+
 - 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
 - スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する

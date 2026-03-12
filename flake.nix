@@ -8,11 +8,11 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos.org/"
-      "https://numtide.cachix.org"
+      "https://cache.numtide.com" # ← これ
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" # ← これ
     ];
   };
 
@@ -71,6 +71,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ---------------------------------------------------------------------------
@@ -88,6 +93,7 @@
       gh-brag,
       nix-index-database,
       llm-agents,
+      treefmt-nix,
       agent-skills-nix,
       ...
     }:
@@ -105,7 +111,6 @@
           localSystem.system = system;
           config.allowUnfree = true;
           overlays = [
-            # llm-agents を pkgs._llm-agents として参照できるようにする
             (_: _: { _llm-agents = llm-agents; })
             overlay
             gh-graph.overlays.default
@@ -135,7 +140,10 @@
 
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      # このフレークがサポートするシステム一覧
+
+      imports = [
+        ./nix/modules/home-manager/packages/treefmt.nix
+      ];
       systems = [
         "x86_64-linux" # メイン PC (Arch Linux)
         "aarch64-linux" # ARM Linux (VPS など)
