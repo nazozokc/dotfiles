@@ -5,7 +5,6 @@ with pkgs;
   wezterm
   audacity
   obsidian
-  raycast
 ]
 ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
   ghostty
@@ -17,5 +16,6 @@ with pkgs;
 ++ lib.optionals pkgs.stdenv.isDarwin [
   spotify
   discord
+  raycast
   google-chrome
 ]
