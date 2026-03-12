@@ -132,7 +132,7 @@ impure_msg = "impure"
 pure_msg = "pure"
 format = """
 [](fg:#658594)\
-[$symbol$state( \($name\))]($style)\
+[$symbol$state( ($name))]($style)\
 [](fg:#658594)\
 """
 style = "bold fg:#1f1f28 bg:#658594"
