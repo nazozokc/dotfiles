@@ -39,6 +39,9 @@
               "*.ts"
               "*.js"
             ];
+            excludes = [
+              "nvim/template/*"
+            ];
           };
         };
 
