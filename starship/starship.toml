@@ -4,61 +4,120 @@ add_newline = true
 # format
 # ----------------------------------------------------
 format = """
+$os\
+$username\
+$hostname\
 $directory\
 $git_branch\
 $git_status\
+$git_metrics\
 $direnv\
 $nix_shell\
 $nodejs\
 $python\
+$rust\
+$package\
 $aws\
 $fill\
+$jobs\
+$battery\
+$memory_usage\
 $cmd_duration\
 $time\
-\n$character\
+\n$status\
+$character\
 """
 
 # ----------------------------------------------------
-# left module
+# OS badge
+# ----------------------------------------------------
+[os]
+disabled = false
+format = "[$symbol]($style)"
+style = "fg:#7e9cd8"
+
+[os.symbols]
+Arch = " "
+NixOS = " "
+Macos = " "
+Linux = " "
+Windows = " "
+
+[username]
+disabled = false
+show_always = false  # SSH時のみ表示
+format = """
+[](fg:#2d4f67)\
+[ $user]($style)\
+"""
+style_user = "bold fg:#7e9cd8 bg:#2d4f67"
+style_root = "bold fg:#e46876 bg:#2d4f67"
+
+[hostname]
+disabled = false
+ssh_only = true
+format = """
+[@$hostname ](bold fg:#957fb8 bg:#2d4f67)\
+[](fg:#2d4f67)\
+"""
+
+# ----------------------------------------------------
+# directory
 # ----------------------------------------------------
 [directory]
-truncation_length = 6
+truncation_length = 5
 truncation_symbol = '…/'
 truncate_to_repo = false
 home_symbol = '~'
 read_only = '  '
 format = """
 [](fg:#7e9cd8)\
-[$path]($style)\
+[ $path]($style)\
 [$read_only]($read_only_style)\
 [](fg:#7e9cd8)\
 """
 style = 'bold fg:#1f1f28 bg:#7e9cd8'
 read_only_style = 'bold fg:#e46876 bg:#7e9cd8'
 
+# ----------------------------------------------------
+# git
+# ----------------------------------------------------
 [git_branch]
-symbol = ""
-style = "fg:#957fb8 bg:#2d4f67"
+symbol = " "
+style = "bold fg:#957fb8 bg:#2d4f67"
 format = """
 [](fg:#2d4f67)\
-[$symbol $branch]($style)\
+[$symbol$branch(:$remote_branch)]($style)\
 """
 
 [git_status]
-style = "fg:#957fb8 bg:#2d4f67"
+style = "bold fg:#c8c093 bg:#2d4f67"
 ahead = "⇡$count"
 behind = "⇣$count"
 diverged = "⇡$ahead_count⇣$behind_count"
-modified = "!$count"
-untracked = "?$count"
-staged = "+$count"
+conflicted = "=$count"
+modified = " !$count"
+untracked = " ?$count"
+staged = " +$count"
+deleted = " ✘$count"
+stashed = " 󰏗$count"
 format = """
-[$all_status$ahead_behind]($style)\
+[ $all_status$ahead_behind]($style)\
 [](fg:#2d4f67)\
 """
 
+[git_metrics]
+disabled = false
+added_style = "bold fg:#98bb6c"
+deleted_style = "bold fg:#e46876"
+format = '[+$added]($added_style)[/-$deleted]($deleted_style) '
+
+# ----------------------------------------------------
+# env / lang modules
+# ----------------------------------------------------
 [direnv]
 disabled = false
+symbol = " "
 format = """
 [](fg:#6a9589)\
 [$symbol$allowed]($style)\
@@ -68,12 +127,12 @@ style = "bold fg:#1f1f28 bg:#6a9589"
 
 [nix_shell]
 disabled = false
-symbol = "❄️ "
+symbol = " "
 impure_msg = "impure"
 pure_msg = "pure"
 format = """
 [](fg:#658594)\
-[$symbol$state]($style)\
+[$symbol$state( \($name\))]($style)\
 [](fg:#658594)\
 """
 style = "bold fg:#1f1f28 bg:#658594"
@@ -87,25 +146,77 @@ format = """
 """
 style = "bold fg:#1f1f28 bg:#98bb6c"
 
-[python]
+[rust]
+symbol = " "
 format = """
 [](fg:#dca561)\
-[$virtualenv]($style)\
+[$symbol$version]($style)\
 [](fg:#dca561)\
 """
 style = "bold fg:#1f1f28 bg:#dca561"
 
-[fill]
-symbol = '─'
-style = 'fg:#54546d'
+[python]
+symbol = " "
+format = """
+[](fg:#e6c384)\
+[$symbol$virtualenv]($style)\
+[](fg:#e6c384)\
+"""
+style = "bold fg:#1f1f28 bg:#e6c384"
+
+[package]
+symbol = "󰏗 "
+format = """
+[](fg:#54546d)\
+[$symbol$version]($style)\
+[](fg:#54546d)\
+"""
+style = "bold fg:#c8c093 bg:#54546d"
+disabled = false
 
 # ----------------------------------------------------
-# right module
+# fill
 # ----------------------------------------------------
+[fill]
+symbol = '─'
+style = 'fg:#363646'
+
+# ----------------------------------------------------
+# right side modules
+# ----------------------------------------------------
+[jobs]
+symbol = "󰆅 "
+style = "bold fg:#7fb4ca"
+format = "[$symbol$number]($style) "
+threshold = 1
+
+[battery]
+format = "[$symbol$percentage]($style) "
+[[battery.display]]
+threshold = 20
+style = "bold fg:#e46876"
+discharging_symbol = "󰁺 "
+[[battery.display]]
+threshold = 50
+style = "bold fg:#dca561"
+discharging_symbol = "󰁿 "
+[[battery.display]]
+threshold = 100
+style = "fg:#6a9589"
+discharging_symbol = "󰁹 "
+charging_symbol = " "
+
+[memory_usage]
+disabled = false
+threshold = 60
+symbol = "󰍛 "
+style = "bold fg:#957fb8"
+format = "[$symbol${ram}]($style) "
+
 [cmd_duration]
 min_time = 1
-style = 'fg:#c0a36e'
-format = "[ $duration]($style)"
+style = 'bold fg:#c0a36e'
+format = "[ $duration]($style) "
 
 [time]
 disabled = false
@@ -113,17 +224,28 @@ time_format = "%R"
 format = '[ $time](fg:#717c7c)'
 
 # ----------------------------------------------------
-# prompt module
+# prompt character
 # ----------------------------------------------------
+[status]
+disabled = false
+symbol = "✘ "
+format = "[$symbol$status]($style) "
+style = "bold fg:#e46876"
+
 [character]
 success_symbol = '[❯](bold fg:#98bb6c)'
 error_symbol = '[❯](bold fg:#e46876)'
 vimcmd_symbol = '[❮](bold fg:#957fb8)'
+vimcmd_replace_one_symbol = '[❮](bold fg:#e46876)'
+vimcmd_visual_symbol = '[❮](bold fg:#dca561)'
 
 # ----------------------------------------------------
-# AWS module
+# AWS
 # ----------------------------------------------------
 [aws]
-format = '[$symbol $profile ]($style)'
-symbol = "☁"
-style = "bold fg:#dca561"
+format = """
+[](fg:#dca561)\
+[☁  $profile]($style)\
+[](fg:#dca561)\
+"""
+style = "bold fg:#1f1f28 bg:#dca561"
