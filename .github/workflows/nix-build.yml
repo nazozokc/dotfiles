@@ -19,16 +19,17 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }} # ← ここに移動
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
             target: homeConfigurations.nazozokc.activationPackage
+          - os: ubuntu-24.04-arm
+            target: homeConfigurations.nazozokc-aarch64.activationPackage
           - os: macos-latest
             target: darwinConfigurations.nazozokc.system
-            # ↑ ここから runs-on を削除
     steps:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v21
