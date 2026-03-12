@@ -8,6 +8,7 @@ description: Nix設定を管理するときのガイドライン
 ## flake.lock の更新手順
 
 <<<<<<< HEAD
+
 ````bash
 =======
 ```bash
@@ -29,8 +30,10 @@ git push
 nix flake update
 <<<<<<< HEAD
 ````
+
 =======
-```
+
+````
 >>>>>>> 5f392b1 (fix: remove merge conflict markers from skills)
 
 ## ビルド確認
@@ -41,7 +44,7 @@ nix build .#<target>
 
 # home-manager の場合（hostは設定名に置き換え）
 home-manager switch --flake .#<host>
-```
+````
 
 ## コード変更時の心得
 
