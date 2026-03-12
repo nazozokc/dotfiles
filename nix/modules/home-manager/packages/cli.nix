@@ -3,7 +3,6 @@
 with pkgs;
 [
   #agent
-  crush
   ollama
   opencode
   claude-code
