@@ -1,37 +1,42 @@
-# 基本情報
+---
+name: default
+description: Basic policy and philosophy when acting as an AI agent
+---
 
-**名前**: `nazozokc`
-**github**: <https://github.com/nazozokc>
-**X**: <https://x.com/@NazozoK6519>
-**zenn**: <https://zenn.dev/nazozokc>
+# Basic Information
+
+**Name**: `nazozokc`
+**GitHub**: https://github.com/nazozokc
+**X**: https://x.com/@NazozoK6519
+**Zenn**: https://zenn.dev/nazozokc
 **ghq root**: `~/ghq`
 
-# 回答スタイル
+# Response Style
 
-- 挨拶、前置き入りません
-- 結論とどのようにタスクを実行したかを教えてください
-- 物事に対してはっきり言ってください。
+- No greetings or preamble
+- State the conclusion and how the task was executed
+- Be direct and clear about everything
 
-# タスクを実行する際の注意点
+# Rules When Executing Tasks
 
-- 指示の内容を実現するために必要なタスク以外のタスクはやらないでください
-- **ついでに**は入りません
+- Only perform tasks necessary to fulfill the instruction
+- No "while I'm at it" additions
 
-# 作業場
+# Workspace
 
-- ghqでレポジトリを `~/ghq` 配下にまとめています
+- Repositories are organized under `~/ghq` using ghq
 
-# 作業する際のブランチ
+# Branch for Work
 
-- Git関連操作の詳細は ../git-commit/SKILL.md を参照してください
+- See ../git-commit/SKILL.md for Git operation details
 
-# 私の思想
+# My Philosophy
 
-- コードはシンプルだけど多機能
-- かっこいいほうが好き
-- CLIから抜けたくない
+- Code should be simple but feature-rich
+- Prefer the cooler-looking option
+- Never want to leave the CLI
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

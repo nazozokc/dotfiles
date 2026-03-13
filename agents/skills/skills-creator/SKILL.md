@@ -1,85 +1,82 @@
 ---
-name: skills-creater
-description: skills/以下のSKILL.mdを新規作成・更新するときのテンプレートと注意点
+name: skills-creator
+description: Template and notes when creating or updating SKILL.md files under skills/
 ---
 
-# スキル作成ガイドライン
+# Skill Creation Guidelines
 
-## いつ使うか
+## When to Use
 
-- 新しい `skills/*/SKILL.md` を作成するとき
-- 既存のスキルを改善・更新するとき
+- When creating a new `skills/*/SKILL.md`
+- When improving or updating an existing skill
 
-## SKILL.md の基本構造
-
+## Basic SKILL.md Structure
 ```markdown
 ---
-name: <スキル名（ディレクトリ名と一致させる）>
-description: <いつ・何のために使うかを1行で>
+name: <skill name (match directory name)>
+description: <one-line summary of when and why to use it>
 ---
 
-# <タイトル>
+# <Title>
 
-## いつ使うか
-
-- ...
-
-## 基本ルール
+## When to Use
 
 - ...
 
-## 注意点
+## Basic Rules
+
+- ...
+
+## Notes
 
 - ...
 ```
 
-## 書き方のルール
+## Writing Rules
 
-- **日本語で書く**: このdotfilesのスキルは日本語統一
-- **箇条書きを使う**: 長文NGy、端的に
-- **いつ使うか を必ず書く**: エージェントがトリガーを判断するため最重要
-- **禁止事項を明確に**: 「〜はやらない」「〜は禁止」をはっきり書く
-- **例を入れる**: コマンドやフォーマットは具体例付きで
+- **Write in English**: All skills in this dotfiles repo use English
+- **Use bullet points**: No long prose — keep it concise
+- **Always write "When to Use"**: Critical for agents to determine trigger conditions
+- **Be explicit about prohibitions**: Clearly state "don't do X" or "X is forbidden"
+- **Include examples**: Commands and formats should have concrete examples
 
-## やってはいけないこと
+## What Not to Do
 
-- `description` を空にする（トリガーされなくなる）
-- 曖昧な表現（「〜かもしれない」「場合によっては」）を使う
-- 1つのスキルに複数の役割を詰め込む
-- 他のスキルと重複する内容を書く（参照で済む場合は `../other/SKILL.md を参照` と書く）
+- Leave `description` empty (skill will never be triggered)
+- Use vague expressions ("might", "depending on the case")
+- Pack multiple roles into one skill
+- Duplicate content from other skills (use `see ../other/SKILL.md` instead)
 
-## description の書き方
+## How to Write description
 
-### 良い例
+### Good Examples
 
-- `Gitコミット・プッシュを行うとき`
-- `PRを gh cli で作成するとき`
-- `Nix関連のコード生成・flake編集・home-manager操作を行うとき`
+- `When performing Git commits and pushes`
+- `When creating a PR with gh cli`
+- `When generating Nix code, editing flakes, or operating home-manager`
 
-### 悪い例
+### Bad Examples
 
-- `git関連` （抽象的すぎる）
-- `コミットに関する情報` （条件文になっていない）
+- `git stuff` (too abstract)
+- `information about commits` (not a conditional statement)
 
-## CLAUDE.md への登録
+## Registering in CLAUDE.md
 
-新しいスキルを作ったら `agents/CLAUDE.md` に追記する：
-
+After creating a new skill, add an entry to `agents/CLAUDE.md`:
 ```markdown
 ## ./skills/<name>/SKILL.md
 
-これはあなたが<用途>を行う際の<何が書いてあるか>が記載されています。
+Always refer to this skill when <use case>.
 ```
 
-## ファイル配置
-
+## File Layout
 ```
 skills/
 └── <name>/
-    └── SKILL.md   ← これだけでOK（シンプルに）
+    └── SKILL.md   ← This is all you need (keep it simple)
 ```
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

@@ -1,45 +1,45 @@
 ---
 name: code-review
-description: コードレビューを行う際の観点和足則
+description: Perspectives and rules when conducting a code review
 ---
 
-# コードレビューラインガイドライン
+# Code Review Guidelines
 
-## レビュー観点（優先度順）
+## Review Perspectives (by priority)
 
-### 1. セキュリティ
+### 1. Security
 
-- 機密情報（APIキー、パスワード）のハードコードがないか
-- Injection 攻撃のリスクがないか
-- 権限の過剰な付与がないか
+- No hardcoded secrets (API keys, passwords)
+- No risk of injection attacks
+- No excessive permission grants
 
-### 2. パフォーマンス
+### 2. Performance
 
-- 不要なループや再帰がないか
-- メモリリークのリスクがないか
-- 非同期処理の適切な取り扱い
+- No unnecessary loops or recursion
+- No risk of memory leaks
+- Proper handling of async operations
 
-### 3. 保守性
+### 3. Maintainability
 
-- コード重複はないか
-- 命名は明確か
-- コメント過多・コメント不足がないか
-- 関数/コンポーネントの粒度は適切か
+- No code duplication
+- Are names clear and meaningful?
+- No over-commenting or under-commenting
+- Is function/component granularity appropriate?
 
-### 4. パターン一致
+### 4. Pattern Consistency
 
-- 既存コードのスタイル一致
-- このプロジェクト特有の慣習に沿っているか
-- テストが適切か
-- 同じ役割を持つものがないか
+- Matches existing code style
+- Follows project-specific conventions
+- Tests are appropriate
+- No duplicate roles
 
-## レビューの心構え
+## Review Mindset
 
-- **礼儀正しく**: 提案は 命令形ではなく 提案形で
-- **理由を書く**: 「なぜ」を説明すると接受的やすい
-- **大局的**: 個人趣向より 一貫性を重視
+- **Be respectful**: Use suggestion form, not imperative form
+- **Explain why**: Reasoning makes feedback easier to accept
+- **Big picture**: Prioritize consistency over personal preference
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

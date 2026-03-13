@@ -1,50 +1,47 @@
 ---
 name: create-pr
-description: PRを作成する際のテンプレート、注意点、手順
+description: Template, notes, and procedure when creating a Pull Request
 ---
 
-# PR 作成ガイドライン
+# PR Creation Guidelines
 
-## いつ使うか
+## When to Use
 
-- `gh pr create` でPRを作成するとき
-- PRのタイトル・本文を書くとき
+- When creating a PR with `gh pr create`
+- When writing a PR title or body
 
-## 基本ルール
+## Basic Rules
 
-- **ブランチは必ず AI-agent**: `AI-agent` → `main` へのPR
-- **日本語禁止**: タイトル・本文ともに英語のみ
-- **1PR = 1目的**: 複数の無関係な変更を混ぜない
-- **コミット済みであること**: PR作成前に全変更がコミット・プッシュ済みであることを確認
-- **コードレビュー済みであること**: ../code-review/SKILL.md に従ってレビュー済みであること
+- **Branch must be AI-agent**: PR from `AI-agent` → `main`
+- **English only**: Titles and body must be in English
+- **1 PR = 1 purpose**: Do not mix unrelated changes
+- **All changes must be committed**: Confirm all changes are committed and pushed before creating a PR
+- **Code review required**: Must be reviewed per ../code-review/SKILL.md
 
-## PRタイトル形式
-
+## PR Title Format
 ```
 <type>: <summary>
 ```
 
-### type 一覧
+### Type List
 
-| type       | 用途                       |
-| ---------- | -------------------------- |
-| `feat`     | 新機能追加                 |
-| `fix`      | バグ修正                   |
-| `refactor` | リファクタリング           |
-| `docs`     | ドキュメント変更           |
-| `chore`    | ビルド・設定変更           |
-| `style`    | フォーマット・スタイル変更 |
+| type       | usage                        |
+| ---------- | ---------------------------- |
+| `feat`     | New feature                  |
+| `fix`      | Bug fix                      |
+| `refactor` | Refactoring                  |
+| `docs`     | Documentation change         |
+| `chore`    | Build/config change          |
+| `style`    | Formatting/style change      |
 
-### 例
-
+### Examples
 ```
 feat: add neovim telescope config
 fix: resolve fish greeting display bug
 chore: update flake.lock
 ```
 
-## PR本文テンプレート
-
+## PR Body Template
 ```markdown
 ## Summary
 
@@ -59,10 +56,8 @@ chore: update flake.lock
 <!-- Anything reviewers should know (optional) -->
 ```
 
-## 作成コマンド
-
+## Creation Command
 ```bash
-# ドラフトで確認しながら作成
 gh pr create \
   --base main \
   --head AI-agent \
@@ -82,18 +77,18 @@ EOF
 )"
 ```
 
-## PR作成前チェック
+## Pre-creation Checklist
 
-- `gh pr list --base main --head AI-agent` でオープンPRがあれば新規作成しない
-- 既存PRがある場合はコミットを積み増しして対応する
+- Run `gh pr list --base main --head AI-agent` — if an open PR exists, do not create a new one
+- If an existing PR is found, add commits to it instead
 
-## 注意点
+## Notes
 
-- PR作成前に `git log --oneline origin/main..HEAD` で差分コミットを確認
-- `--force-push` 系は使用禁止
-- CIがパスしているかを確認
+- Confirm diff commits with `git log --oneline origin/main..HEAD` before creating a PR
+- Never use `--force-push`
+- Verify CI is passing
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

@@ -1,42 +1,50 @@
-# ./skills/について
+# ./skills/
 
-あなたがこのファイルを読み込んだということはskills/以下のファイルを操作タスクを行う際に必ず参照しなければなりません。
-ユーザーから指示されていないからと言って参照しないは禁止です。絶対に禁止です。
-skillsはあなたが、自律的に様々なことを行うための、ルールや手順があります。
-あなたは、このディレクトリにある様々なSKILL.mdを必要に応じて読み込むことで、より正しい操作を行うことができます。
+When you read this file, you must always refer to files under skills/ when performing tasks.
+Never skip referencing them even if not explicitly instructed. Absolutely forbidden.
+Skills contain rules and procedures for you to act autonomously.
+By loading the appropriate SKILL.md files as needed, you can perform tasks more accurately.
 
 ## ./skills/default/SKILL.md
 
-AIエージェントとして動作する基本方針・思想を理解するとき、必ずこのスキルを参照すること。
+Always refer to this skill when understanding the basic policy and philosophy of acting as an AI agent.
 
 ## ./skills/nix/SKILL.md
 
-Nix関連のコード生成・flake編集・home-manager操作を行うとき、必ずこのスキルを参照すること。
+Always refer to this skill when generating Nix code, editing flakes, or operating home-manager.
 
 ## ./skills/git-commit/SKILL.md
 
-Gitのファイル変更をコミット・プッシュするとき、必ずこのスキルを参照すること。
+Always refer to this skill when committing or pushing Git file changes.
 
 ## ./skills/typescript/SKILL.md
 
-TypeScript/JavaScriptプロジェクトのコード生成・修正を行うとき、必ずこのスキルを参照すること。
+Always refer to this skill when generating or modifying TypeScript/JavaScript project code.
 
 ## ./skills/arch-linux/SKILL.md
 
-Arch Linux環境でファイル操作を行うとき、必ずこのスキルを参照すること。
+Always refer to this skill when performing file operations in an Arch Linux environment.
 
 ## ./skills/code-review/SKILL.md
 
-Pull Requestのコードレビューを行うとき、必ずこのスキルを参照すること。
+Always refer to this skill when conducting a Pull Request code review.
 
 ## ./skills/create-pr/SKILL.md
 
-Pull Requestを gh cli で作成するとき、必ずこのスキルを参照すること。
+Always refer to this skill when creating a Pull Request with gh cli.
 
 ## ./skills/websearch/SKILL.md
 
-最新情報・エラー対処法をWeb検索するとき、必ずこのスキルを参照すること。
+Always refer to this skill when searching the web for latest information or error solutions.
 
 ## ./skills/skills-creator/SKILL.md
 
-skills/ディレクトリに新しいスキルを作成・更新するとき、必ずこのスキルを参照すること。
+Always refer to this skill when creating or updating skills under the skills/ directory.
+
+## ./skills/neovim/SKILL.md
+
+Always refer to this skill when editing Neovim config, adding plugins, or optimizing startup time.
+
+## ./skills/github-actions/SKILL.md
+
+Always refer to this skill when creating, editing, or debugging GitHub Actions workflow YAML files.

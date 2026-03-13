@@ -1,48 +1,46 @@
 ---
 name: git-commit
-description: Gitコミット・プッシュ・PR作成時のルール
+description: Rules for Git commits, pushes, and PR creation
 ---
 
-# Git 運用ガイドライン
+# Git Operation Guidelines
 
-## いつ使うか
+## When to Use
 
-- ファイルをコミットするとき
-- リモートにプッシュするとき
+- When committing files
+- When pushing to remote
 
-## 基本ルール
+## Basic Rules
 
-- **日本語コミット禁止**: 英語のみ使用
-- **1コミット = 1論理変更**: 複数の異なる変更を混在させない
-- **意味のある粒度**: 大きすぎる変更は分割する
-- **必ずブランチはAI-agent**: かならずAI-agentにコミットとプッシュしてください
-- **コミットをする前に必ずコードレビュー**: コードレビューは../code-review/SKILL.mdを参照
+- **No Japanese in commits**: English only
+- **1 commit = 1 logical change**: Do not mix multiple different changes
+- **Meaningful granularity**: Split large changes
+- **Branch must always be AI-agent**: Always commit and push to AI-agent
+- **Code review before committing**: See ../code-review/SKILL.md
 
-## ブランチ戦略
+## Branch Strategy
 
-- **作業ブランチ**: 常に `AI-agent` ブランチを使用
-- **PR target**: `AI-agent` → `main` へのマージ
-- **ブランチ作成**: `AI-agent` がなければ作成から開始
+- **Working branch**: Always use `AI-agent`
+- **PR target**: Merge `AI-agent` → `main`
+- **Branch creation**: If `AI-agent` doesn't exist, create it first
 
-## コミットメッセージ形式
-
+## Commit Message Format
 ```
 <type>: <summary>
 ```
 
-### type 一覧
+### Type List
 
-| type       | 用途                       |
-| ---------- | -------------------------- |
-| `feat`     | 新機能追加                 |
-| `fix`      | バグ修正                   |
-| `refactor` | リファクタリング           |
-| `docs`     | ドキュメント変更           |
-| `chore`    | ビルド・設定変更           |
-| `style`    | フォーマット・スタイル変更 |
+| type       | usage                        |
+| ---------- | ---------------------------- |
+| `feat`     | New feature                  |
+| `fix`      | Bug fix                      |
+| `refactor` | Refactoring                  |
+| `docs`     | Documentation change         |
+| `chore`    | Build/config change          |
+| `style`    | Formatting/style change      |
 
-### 例
-
+### Examples
 ```
 feat: add neovim telescope config
 fix: resolve fish greeting display bug
@@ -50,13 +48,13 @@ chore: update flake.lock
 refactor: simplify home-manager modules
 ```
 
-## 注意点
+## Notes
 
-- コミット前に `git status` で変更内容を確認
-- コミット後に自動生成されたファイル（含めて良いか判断）は別途コミット
-- PR作成前に `--force` 系のコマンドは使用禁止
+- Run `git status` before committing to confirm changes
+- Auto-generated files should be committed separately
+- Never use `--force` variants before creating a PR
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

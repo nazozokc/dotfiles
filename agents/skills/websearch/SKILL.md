@@ -1,49 +1,49 @@
 ---
 name: websearch
-description: Web検索を行う際の方法と注意点
+description: Method and notes when performing web searches
 ---
 
-# Web検索ガイドライン
+# Web Search Guidelines
 
-## いつ使うか
+## When to Use
 
-- 最新情報が必要なとき（パッケージバージョン、リリースノートなど）
-- エラーメッセージの解決策を探すとき
-- ドキュメントや公式サイトを参照するとき
-- 自分の知識に自信がないとき
+- When latest information is needed (package versions, release notes, etc.)
+- When looking for solutions to error messages
+- When referencing documentation or official sites
+- When not confident in own knowledge
 
-## 基本ルール
+## Basic Rules
 
-- **一次情報を優先**: 公式ドキュメント・GitHubリポジトリ・公式ブログを最優先
-- **情報の鮮度を確認**: 日付が古い記事は参考程度にとどめる
-- **憶測で補完しない**: 検索結果にない情報は「わからない」と伝える
-- **複数ソースで裏取り**: 重要な情報は1ソースで断定しない
+- **Prioritize primary sources**: Official docs, GitHub repos, and official blogs first
+- **Check information freshness**: Treat old articles as reference only
+- **No speculation**: If it's not in the search results, say "I don't know"
+- **Verify with multiple sources**: Don't make definitive claims from a single source
 
-## 検索クエリの作り方
+## How to Form Search Queries
 
-- **短く・具体的に**: 1〜6ワード程度
-- **英語で検索**: 技術情報は英語クエリのほうが精度が高い
-- **バージョンを含める**: `neovim 0.10 treesitter` のように具体的に
-- **エラーは原文そのまま**: エラーメッセージは翻訳せず貼り付ける
+- **Short and specific**: Around 1–6 words
+- **Search in English**: Technical queries return better results in English
+- **Include version numbers**: Be specific, e.g. `neovim 0.10 treesitter`
+- **Paste error messages as-is**: Don't translate error messages
 
-## 優先する情報ソース
+## Preferred Information Sources
 
-| 優先度 | ソース                                       |
-| ------ | -------------------------------------------- |
-| 最高   | 公式ドキュメント、公式GitHub                 |
-| 高     | Arch Wiki、NixOS Wiki                        |
-| 中     | Zenn、個人技術ブログ（日付確認必須）         |
-| 低     | Stack Overflow（古い回答に注意）、フォーラム |
+| Priority | Source |
+| -------- | ------ |
+| Highest  | Official documentation, official GitHub |
+| High     | Arch Wiki, NixOS Wiki |
+| Medium   | Zenn, personal tech blogs (check date) |
+| Low      | Stack Overflow (watch for old answers), forums |
 
-## 注意点
+## Notes
 
-- Arch Linux関連は必ず **Arch Wiki** を参照する
-- Nix関連は **https://nix.dev/** と **nixpkgs GitHub** を参照する
-- npmパッケージ情報は **npmjs.com** または **GitHub** で確認する
-- 見つからない場合は「見つからなかった」と正直に伝える
-- 正直が大好きです。
+- For Arch Linux, always refer to **Arch Wiki**
+- For Nix, refer to **https://nix.dev/** and **nixpkgs GitHub**
+- For npm packages, check **npmjs.com** or **GitHub**
+- If nothing is found, honestly say "I couldn't find it"
+- Honesty is everything.
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

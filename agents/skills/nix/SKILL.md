@@ -1,56 +1,52 @@
 ---
 name: nix
-description: Nix設定を管理するときのガイドライン
+description: Guidelines when managing Nix configuration
 ---
 
-# Nix 運用ガイドライン
+# Nix Operation Guidelines
 
-## flake.lock の更新手順
-
+## flake.lock Update Procedure
 ```bash
-# 1. 更新を実行（このコマンドが flake に定義されている場合のみ実行）
+# 1. Run update (only if this command is defined in the flake)
 nix run .#update
 
-# 2. 変更をステージング
+# 2. Stage changes
 git add .
 
-# 3. コミット（日本語禁止）
+# 3. Commit (English only)
 git commit -m "update flake.lock:YYYYMMDD"
 
-# 4. リモートにプッシュ
+# 4. Push to remote
 git push
-
 ```
 
-## 代替手順（nix run が定義されていない場合）
-
+## Alternative (if nix run is not defined)
 ```bash
 nix flake update
 ```
 
-## ビルド確認
-
+## Build Verification
 ```bash
-# nixpkgs overlay など
+# nixpkgs overlay etc.
 nix build .#<target>
 
-# home-manager の場合（hostは設定名に置き換え）
+# For home-manager (replace host with config name)
 home-manager switch --flake .#<host>
 ```
 
-## コード変更時の心得
+## Principles When Changing Code
 
-- **設計は崩さない**: 既存のnixの構造を尊重する
-- **自己レビュー**: 自分のコードを過信しない、徹底的に確認する
-- **シンプルさ**: 複雑化せず、読みやすいコードを優先
-- **情報源**: 困ったら https://nix.dev/ を参照
+- **Respect the design**: Honor the existing Nix structure
+- **Self-review**: Never over-trust your own code — verify thoroughly
+- **Simplicity**: Prioritize readable code over complexity
+- **Reference**: When in doubt, refer to https://nix.dev/
 
-## 注意点
+## Notes
 
-- nixは宣言的な構成管理。副作用のある操作は慎重に
-- パッチやオーバーレイは最小限に
+- Nix is declarative config management — be careful with side-effectful operations
+- Keep patches and overlays to a minimum
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

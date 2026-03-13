@@ -1,41 +1,41 @@
 ---
 name: typescript
-description: TypeScript/TS関連ツール使用時のガイドライン
+description: Guidelines when working on TypeScript/JS projects
 ---
 
-# TypeScript 開発ガイドライン
+# TypeScript Development Guidelines
 
-## 基本方針
+## Basic Principles
 
-- **タイプセーフティ重視**: `any` は避ける、型を明示的に定義
-- **エラー放置禁止**: TSエラーは放置せず対処する
-- **Strict モード**: 可能な限り厳格な型チェック
+- **Type safety first**: Avoid `any` — define types explicitly
+- **Never leave errors**: Address all TypeScript errors immediately
+- **Strict mode**: Use strict type checking whenever possible
 
-## コーディング規約
+## Coding Conventions
 
-- 明示的な型宣言を優先（推論に任せない）
-- 第三方ライブラリの 型定義は `@types/*` で導入
-- Unknown 型には `typeof` やguards を使用
-- オプショナルプロパティは `?` で表現
+- Prefer explicit type declarations over relying on inference
+- Use `@types/*` packages for third-party type definitions
+- Use `typeof` or type guards for `unknown` types
+- Express optional properties with `?`
 
-## エラー対処優先度
+## Error Handling Priority
 
-1. 型はその場で修正
-2. 警告（warning）は可能な限り解消
-3. 放置可能な警告はコメントで根拠を記載
+1. Fix type errors on the spot
+2. Resolve warnings whenever possible
+3. If a warning must remain, document the reason in a comment
 
 ## Lint / Format
 
-- プロジェクトルートに `biome.json` があれば `biome check` を使用
-- なければ `eslint . --ext .ts` を使用
-- どちらもなければユーザーに確認する
+- If `biome.json` exists at project root, use `biome check`
+- Otherwise use `eslint . --ext .ts`
+- If neither exists, ask the user
 
-## 確認すべきこと
+## What to Verify
 
-- `tsc --noEmit` でエラーがないことを確認
-- 該当プロジェクトの lint ルールを確認
+- Confirm no errors with `tsc --noEmit`
+- Check the project's lint rules before starting
 
-## ルール違反・判断できない場合
+## On Rule Violations / Uncertain Cases
 
-- 禁止事項に該当する操作を求められた場合は、実行せずユーザーに理由を説明して確認を取る
-- スキルの手順に従えない状況（コマンドが存在しないなど）は、スキップせず必ずユーザーに報告する
+- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
+- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user
