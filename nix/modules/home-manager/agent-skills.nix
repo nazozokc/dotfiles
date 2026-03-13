@@ -1,13 +1,8 @@
 # nix/modules/home-manager/agent-skills.nix
-{ ... }:
-{
-  programs.agent-skills = {
-    enable = true;
-    sources.local = {
-      path = ./../../../agents/skills;
-      subdir = ".";
-    };
-    skills.enableAll = [ "local" ];
+{ pkgs, ... }:
+
+let
+  targets = {
     targets.claude = {
       dest = ".claude/skills";
       structure = "link";
@@ -25,4 +20,15 @@
       structure = "link";
     };
   };
+in
+{
+  programs.agent-skills = {
+    enable = true;
+    sources.local = {
+      path = ./../../../agents/skills;
+      subdir = ".";
+    };
+    skills.enableAll = [ "local" ];
+  }
+  // targets;
 }
