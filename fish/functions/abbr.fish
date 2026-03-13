@@ -32,6 +32,11 @@ function claude-ollama
     ollama launch claude
 end
 
+function codex-ollama
+    ollama launch codex
+end
+
+
 function 1
     wlr-randr --output eDP-1 --scale 1.0
 end
