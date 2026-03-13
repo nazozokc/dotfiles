@@ -33,7 +33,7 @@ nix build .#<target>
 
 # home-manager の場合（hostは設定名に置き換え）
 home-manager switch --flake .#<host>
-````
+```
 
 ## コード変更時の心得
 
