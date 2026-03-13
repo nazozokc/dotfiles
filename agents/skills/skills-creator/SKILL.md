@@ -11,6 +11,7 @@ description: Template and notes when creating or updating SKILL.md files under s
 - When improving or updating an existing skill
 
 ## Basic SKILL.md Structure
+
 ```markdown
 ---
 name: <skill name (match directory name)>
@@ -63,6 +64,7 @@ description: <one-line summary of when and why to use it>
 ## Registering in CLAUDE.md
 
 After creating a new skill, add an entry to `agents/CLAUDE.md`:
+
 ```markdown
 ## ./skills/<name>/SKILL.md
 
@@ -70,6 +72,7 @@ Always refer to this skill when <use case>.
 ```
 
 ## File Layout
+
 ```
 skills/
 └── <name>/

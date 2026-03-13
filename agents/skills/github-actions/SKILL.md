@@ -19,20 +19,20 @@ description: When creating, editing, or debugging GitHub Actions workflow YAML f
 
 ## Runner Name Cheatsheet
 
-| Use Case | Runner Name |
-| -------- | ----------- |
+| Use Case     | Runner Name     |
+| ------------ | --------------- |
 | Latest Linux | `ubuntu-latest` |
-| Pinned Linux | `ubuntu-24.04` |
-| macOS | `macos-latest` |
+| Pinned Linux | `ubuntu-24.04`  |
+| macOS        | `macos-latest`  |
 
 ## Common Mistakes and Fixes
 
-| Mistake | Fix |
-| ------- | --- |
-| Wrong `runs-on` runner name | Check the cheatsheet above |
-| SC2155: declare and assign separately | Split into `local var; var=$(cmd)` |
-| SC2148: missing shebang | Not needed for inline scripts; add `#!/usr/bin/env bash` for files |
-| luacheck exits non-zero | Check `--no-unused-args` option or `.luacheckrc` |
+| Mistake                               | Fix                                                                |
+| ------------------------------------- | ------------------------------------------------------------------ |
+| Wrong `runs-on` runner name           | Check the cheatsheet above                                         |
+| SC2155: declare and assign separately | Split into `local var; var=$(cmd)`                                 |
+| SC2148: missing shebang               | Not needed for inline scripts; add `#!/usr/bin/env bash` for files |
+| luacheck exits non-zero               | Check `--no-unused-args` option or `.luacheckrc`                   |
 
 ## flake.lock Auto-update PR
 

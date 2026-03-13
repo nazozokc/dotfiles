@@ -6,6 +6,7 @@ description: Guidelines when managing Nix configuration
 # Nix Operation Guidelines
 
 ## flake.lock Update Procedure
+
 ```bash
 # 1. Run update (only if this command is defined in the flake)
 nix run .#update
@@ -21,11 +22,13 @@ git push
 ```
 
 ## Alternative (if nix run is not defined)
+
 ```bash
 nix flake update
 ```
 
 ## Build Verification
+
 ```bash
 # nixpkgs overlay etc.
 nix build .#<target>

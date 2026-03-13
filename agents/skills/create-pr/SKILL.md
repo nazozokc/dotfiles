@@ -19,22 +19,24 @@ description: Template, notes, and procedure when creating a Pull Request
 - **Code review required**: Must be reviewed per ../code-review/SKILL.md
 
 ## PR Title Format
+
 ```
 <type>: <summary>
 ```
 
 ### Type List
 
-| type       | usage                        |
-| ---------- | ---------------------------- |
-| `feat`     | New feature                  |
-| `fix`      | Bug fix                      |
-| `refactor` | Refactoring                  |
-| `docs`     | Documentation change         |
-| `chore`    | Build/config change          |
-| `style`    | Formatting/style change      |
+| type       | usage                   |
+| ---------- | ----------------------- |
+| `feat`     | New feature             |
+| `fix`      | Bug fix                 |
+| `refactor` | Refactoring             |
+| `docs`     | Documentation change    |
+| `chore`    | Build/config change     |
+| `style`    | Formatting/style change |
 
 ### Examples
+
 ```
 feat: add neovim telescope config
 fix: resolve fish greeting display bug
@@ -42,6 +44,7 @@ chore: update flake.lock
 ```
 
 ## PR Body Template
+
 ```markdown
 ## Summary
 
@@ -57,6 +60,7 @@ chore: update flake.lock
 ```
 
 ## Creation Command
+
 ```bash
 gh pr create \
   --base main \

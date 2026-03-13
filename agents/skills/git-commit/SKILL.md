@@ -25,22 +25,24 @@ description: Rules for Git commits, pushes, and PR creation
 - **Branch creation**: If `AI-agent` doesn't exist, create it first
 
 ## Commit Message Format
+
 ```
 <type>: <summary>
 ```
 
 ### Type List
 
-| type       | usage                        |
-| ---------- | ---------------------------- |
-| `feat`     | New feature                  |
-| `fix`      | Bug fix                      |
-| `refactor` | Refactoring                  |
-| `docs`     | Documentation change         |
-| `chore`    | Build/config change          |
-| `style`    | Formatting/style change      |
+| type       | usage                   |
+| ---------- | ----------------------- |
+| `feat`     | New feature             |
+| `fix`      | Bug fix                 |
+| `refactor` | Refactoring             |
+| `docs`     | Documentation change    |
+| `chore`    | Build/config change     |
+| `style`    | Formatting/style change |
 
 ### Examples
+
 ```
 feat: add neovim telescope config
 fix: resolve fish greeting display bug

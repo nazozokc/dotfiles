@@ -26,13 +26,13 @@ description: When editing Neovim config, adding plugins, or optimizing startup t
 
 ## lazy.nvim Event Guide
 
-| Event | Use Case |
-| ----- | -------- |
-| `VeryLazy` | Colorschemes, UI plugins |
-| `BufReadPre` | File reading plugins |
-| `InsertEnter` | Completion, snippets |
-| `LspAttach` | LSP-dependent plugins |
-| `cmd` | Command-triggered only |
+| Event         | Use Case                 |
+| ------------- | ------------------------ |
+| `VeryLazy`    | Colorschemes, UI plugins |
+| `BufReadPre`  | File reading plugins     |
+| `InsertEnter` | Completion, snippets     |
+| `LspAttach`   | LSP-dependent plugins    |
+| `cmd`         | Command-triggered only   |
 
 ## Notes
 

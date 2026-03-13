@@ -28,11 +28,11 @@ description: Method and notes when performing web searches
 
 ## Preferred Information Sources
 
-| Priority | Source |
-| -------- | ------ |
-| Highest  | Official documentation, official GitHub |
-| High     | Arch Wiki, NixOS Wiki |
-| Medium   | Zenn, personal tech blogs (check date) |
+| Priority | Source                                         |
+| -------- | ---------------------------------------------- |
+| Highest  | Official documentation, official GitHub        |
+| High     | Arch Wiki, NixOS Wiki                          |
+| Medium   | Zenn, personal tech blogs (check date)         |
 | Low      | Stack Overflow (watch for old answers), forums |
 
 ## Notes
