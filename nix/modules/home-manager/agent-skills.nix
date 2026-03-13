@@ -9,7 +9,7 @@
     };
     skills.enableAll = [ "local" ];
     targets.claude = {
-      dest = "~/.claude/skills";
+      dest = ".claude/skills";
       structure = "link";
     };
     targets.opencode = {
