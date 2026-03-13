@@ -15,7 +15,6 @@ with pkgs;
   # CLI tools
   jq
   bat
-  trash-cli
   curl
   wget
   zoxide
@@ -59,10 +58,11 @@ with pkgs;
   git-secrets
   tig
 
-  #util
+  # util
   presenterm
+  trash-cli
 
-  #other
+  # other
   rename
   inetutils
   comma
