@@ -41,6 +41,8 @@ with pkgs;
   cmake
   ninja
 
-  #front end tools
+]
+++ lib.optionals pkgs.stdenv.isLinux [
+  # front end tools
   vite
 ]
