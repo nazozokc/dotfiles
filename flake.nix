@@ -214,7 +214,7 @@
             build = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "build" ''
-                set -e
+                set -eo pipefail
                 ${printInfo "build"}
                 ${pkgs.nix-output-monitor}/bin/nom build .#${hmConfig}
               ''}/bin/build";
@@ -224,7 +224,7 @@
             update = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "update" ''
-                set -e
+                set -eo pipefail
                 ${printInfo "update"}
                 nix flake update |& ${pkgs.nix-output-monitor}/bin/nom
               ''}/bin/update";
