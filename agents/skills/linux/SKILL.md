@@ -1,9 +1,9 @@
 ---
-name: arch-linux
-description: Constraints when operating files in an Arch Linux environment
+name: linux
+description: Constraints when operating files in an Linux environment
 ---
 
-# Arch Linux File Operation Guidelines
+# Linux File Operation Guidelines
 
 ## Forbidden Areas (Absolutely Prohibited)
 
