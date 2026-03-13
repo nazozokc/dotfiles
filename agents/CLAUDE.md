@@ -21,7 +21,7 @@ Always refer to this skill when committing or pushing Git file changes.
 
 Always refer to this skill when generating or modifying TypeScript/JavaScript project code.
 
-## ./skills/arch-linux/SKILL.md
+## ./skills/linux/SKILL.md
 
 Always refer to this skill when performing file operations in an Arch Linux environment.
 
