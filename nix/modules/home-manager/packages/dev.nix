@@ -40,4 +40,7 @@ with pkgs;
   cargo
   cmake
   ninja
+
+  #front end tools
+  vite
 ]
