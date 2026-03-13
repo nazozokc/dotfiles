@@ -20,7 +20,10 @@ git commit -m "update flake.lock:YYYYMMDD"
 # 4. リモートにプッシュ
 git push
 
+```
+
 ## 代替手順（nix run が定義されていない場合）
+
 ```bash
 nix flake update
 ```
