@@ -22,6 +22,7 @@
       "Bash(which:*)",
       "Bash(gh:*)",
       "Bash(node:*)",
+      "Bash(vite:*)",
       "Bash(bun:*)",
       "Bash(deno:*)"
     ],
