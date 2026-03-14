@@ -1,26 +1,5 @@
 # nix/modules/home-manager/agent-skills.nix
-{ pkgs, ... }:
-
-let
-  targets = {
-    targets.claude = {
-      dest = ".claude/skills";
-      structure = "link";
-    };
-    targets.opencode = {
-      dest = ".config/opencode/skills";
-      structure = "link";
-    };
-    targets.codex = {
-      dest = ".config/codex/skills";
-      structure = "link";
-    };
-    targets.agents = {
-      dest = ".agents/skills";
-      structure = "link";
-    };
-  };
-in
+{ ... }:
 {
   programs.agent-skills = {
     enable = true;
@@ -29,6 +8,23 @@ in
       subdir = ".";
     };
     skills.enableAll = [ "local" ];
-  }
-  // targets;
+    targets = {
+      claude = {
+        dest = ".claude/skills";
+        structure = "link";
+      };
+      opencode = {
+        dest = ".config/opencode/skills";
+        structure = "link";
+      };
+      codex = {
+        dest = ".config/codex/skills";
+        structure = "link";
+      };
+      agents = {
+        dest = ".agents/skills";
+        structure = "link";
+      };
+    };
+  };
 }
