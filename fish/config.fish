@@ -1,5 +1,6 @@
 if status is-interactive
 
+    fish_vi_key_bindings
     eza -lh --icons
     # ==================================
     # ghq-fzf keybind
