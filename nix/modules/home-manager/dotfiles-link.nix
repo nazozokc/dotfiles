@@ -15,7 +15,6 @@ in
     ".config/ghostty".source = link "${dotfilesDir}/ghostty";
     ".zshrc".source = link "${dotfilesDir}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDir}/bash/bashrc";
-    ".config/opencode".source = link "${dotfilesDir}/opencode";
     ".config/lazygit".source = link "${dotfilesDir}/lazygit";
   };
 }
