@@ -10,7 +10,8 @@ description: Method and notes when performing web searches
 - When latest information is needed (package versions, release notes, etc.)
 - When looking for solutions to error messages
 - When referencing documentation or official sites
-- When not confident in own knowledge
+- When dealing with recently released technologies (within last 6 months)
+- When encountering ambiguous error messages not found in local documentation
 
 ## Basic Rules
 
