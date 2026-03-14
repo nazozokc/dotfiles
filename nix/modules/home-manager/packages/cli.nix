@@ -7,7 +7,6 @@ with pkgs;
   opencode
   claude-code
   claude-monitor
-
   #other
   pay-respects
 
