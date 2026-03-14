@@ -6,6 +6,7 @@ description: Perspectives and rules when conducting a code review
 # Code Review Guidelines
 
 ## Related Skills
+
 - For PR creation guidelines, see ../create-pr/SKILL.md
 - For Git commit guidelines, see ../git-commit/SKILL.md
 
