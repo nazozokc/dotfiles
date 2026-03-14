@@ -8,7 +8,6 @@ in
 {
   home.file = {
     ".config/fish".source = link "${dotfilesDir}/fish";
-    ".config/codex".source = link "${dotfilesDir}/codex";
     ".config/claude".source = link "${dotfilesDir}/claude";
     ".config/nvim".source = link "${dotfilesDir}/nvim";
     ".config/wezterm".source = link "${dotfilesDir}/wezterm";
