@@ -52,10 +52,17 @@ if status is-interactive
     # PATH 設定
     # =========================
 
-    # ~/.local/bin を PATH に追加
-    if not contains $HOME/.local/bin $PATH
-        set -x PATH $HOME/.local/bin $PATH
-    end
+# ~/.local/bin を PATH に追加
+if not contains $HOME/.local/bin $PATH
+    set -x PATH $HOME/.local/bin $PATH
+end
+
+# Homebrew を PATH に追加 (Linux)
+if test -d /home/linuxbrew/.linuxbrew
+    set -x PATH /home/linuxbrew/.linuxbrew/bin $PATH
+    set -x MANPATH /home/linuxbrew/.linuxbrew/share/man $MANPATH
+    set -x INFOPATH /home/linuxbrew/.linuxbrew/share/info $INFOPATH
+end
 
     # =========================
     # ユーティリティ設定
