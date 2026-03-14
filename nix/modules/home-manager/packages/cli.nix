@@ -5,7 +5,6 @@ with pkgs;
   #agent
   ollama
   opencode
-  claude-code
   claude-monitor
 
   #other
