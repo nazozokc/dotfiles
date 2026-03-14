@@ -15,7 +15,7 @@ nix run .#update
 git add .
 
 # 3. Commit (English only)
-git commit -m "update flake.lock:YYYYMMDD"
+<type>: <summary>
 
 # 4. Push to remote
 git push
