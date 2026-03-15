@@ -1,20 +1,58 @@
 {
 	$schema: 'https://docs.renovatebot.com/renovate-schema.json',
 	extends: ['config:recommended'],
+
+	// ラベル
+	labels: ['dependencies', 'renovate'],
 	vulnerabilityAlerts: {
 		labels: ['security'],
 	},
-	labels: ['dependencies', 'renovate'],
-	platformAutomerge: true,
+
+	// PR 管理
 	dependencyDashboard: false,
 	automerge: true,
+	platformAutomerge: true,
 	branchConcurrentLimit: 0,
+	prConcurrentLimit: 0,
+
+	// 安定版のみ
 	minimumReleaseAge: '3 days',
+	ignoreUnstable: true,
+
+	// nix は flake-update.yml で管理
 	nix: {
 		enabled: false,
 	},
 	lockFileMaintenance: {
 		enabled: false,
 	},
-	packageRules: [],
+
+	packageRules: [
+		// GitHub Actions — patch/minor は即 automerge
+		{
+			matchManagers: ['github-actions'],
+			automerge: true,
+			minimumReleaseAge: '0 days',
+			labels: ['dependencies', 'renovate', 'github-actions'],
+		},
+
+		{
+			matchUpdateTypes: ['major'],
+			automerge: true,
+			labels: ['dependencies', 'renovate', 'major'],
+		},
+
+		{
+			matchCategories: ['security'],
+			automerge: true,
+			minimumReleaseAge: '0 days',
+		},
+
+		{
+			matchDepTypes: ['devDependencies'],
+			matchUpdateTypes: ['minor', 'patch'],
+			automerge: true,
+		},
+	],
 }
+
