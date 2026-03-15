@@ -21,18 +21,18 @@ description: When writing fish shell scripts, functions, abbreviations, or editi
 
 ## fish Syntax Cheatsheet
 
-| Task                   | fish syntax                              | ❌ Bash (don't use)          |
-| ---------------------- | ---------------------------------------- | ----------------------------- |
-| Set variable           | `set var value`                          | `var=value`                   |
-| Set env variable       | `set -x VAR value`                       | `export VAR=value`            |
-| Local variable         | `set -l var value`                       | `local var=value`             |
-| Condition              | `if test $var = "foo"`                   | `if [ "$var" = "foo" ]`       |
-| String compare         | `if string match -q "foo" $var`          | `if [[ $var == foo ]]`        |
-| Command substitution   | `set result (cmd)`                       | `result=$(cmd)`               |
-| Source a file          | `source file.fish`                       | `source file` / `. file`      |
-| Append to PATH         | `fish_add_path /some/dir`                | `export PATH="$PATH:/some/dir"` |
-| Return value           | `return 0`                               | same                          |
-| Function args          | `$argv[1]`, `$argv`                      | `$1`, `$@`                    |
+| Task                 | fish syntax                     | ❌ Bash (don't use)             |
+| -------------------- | ------------------------------- | ------------------------------- |
+| Set variable         | `set var value`                 | `var=value`                     |
+| Set env variable     | `set -x VAR value`              | `export VAR=value`              |
+| Local variable       | `set -l var value`              | `local var=value`               |
+| Condition            | `if test $var = "foo"`          | `if [ "$var" = "foo" ]`         |
+| String compare       | `if string match -q "foo" $var` | `if [[ $var == foo ]]`          |
+| Command substitution | `set result (cmd)`              | `result=$(cmd)`                 |
+| Source a file        | `source file.fish`              | `source file` / `. file`        |
+| Append to PATH       | `fish_add_path /some/dir`       | `export PATH="$PATH:/some/dir"` |
+| Return value         | `return 0`                      | same                            |
+| Function args        | `$argv[1]`, `$argv`             | `$1`, `$@`                      |
 
 ## Function File Layout
 

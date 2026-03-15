@@ -54,4 +54,5 @@ Always refer to this skill when creating, editing, or debugging GitHub Actions w
 Always refer to this skill when generating or writing code in any language.
 
 ## ./skills/shell/SKILL.md
+
 Always refer to this skill when writing fish shell scripts, functions, abbreviations, or editing shell configuration.
