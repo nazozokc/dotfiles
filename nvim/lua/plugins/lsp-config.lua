@@ -77,6 +77,14 @@ return {
 			})
 
 			-- ===== 有効化 =====
+
+			-- ===== Java =====
+			vim.lsp.config("jdtls", {
+				capabilities = capabilities,
+				cmd = { "jdtls" },
+				root_dir = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }),
+			})
+
 			vim.lsp.enable({
 				"html",
 				"lua_ls",
@@ -85,6 +93,7 @@ return {
 				"ts_ls",
 				"clang",
 				"nixd",
+				"jdtls",
 			})
 		end,
 	},

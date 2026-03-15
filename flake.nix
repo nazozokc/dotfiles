@@ -132,7 +132,7 @@
             ./nix/shared.nix
             (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
             ./nix/modules/linux/system.nix
-            ./nix/modules/home-manager/symlinks.nix
+            ./nix/modules/home-manager/dotfiles-link.nix
             agent-skills-nix.homeManagerModules.default
             ./nix/modules/home-manager/agent-skills.nix
           ];
@@ -258,7 +258,7 @@
                     pkgs = pkgsFor "aarch64-darwin";
                   })
                   ./nix/modules/home-manager/darwin.nix
-                  ./nix/modules/home-manager/symlinks.nix
+                  ./nix/modules/home-manager/dotfiles-link.nix
                   agent-skills-nix.homeManagerModules.default
                   ./nix/modules/home-manager/agent-skills.nix
                 ];

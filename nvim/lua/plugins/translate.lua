@@ -1,7 +1,7 @@
 return {
 	{
 		"uga-rosa/translate.nvim",
-		event = "VeryLazy",
+		cmd = { "Translate" },
 		config = function()
 			require("translate").setup({
 				default = {
