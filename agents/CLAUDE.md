@@ -56,3 +56,7 @@ Always refer to this skill when generating or writing code in any language.
 ## ./skills/shell/SKILL.md
 
 Always refer to this skill when writing fish shell scripts, functions, abbreviations, or editing shell configuration.
+
+## ./skills/cli/SKILL.md
+
+Always refer to this skill when creating Node.js/TypeScript CLI tools.
