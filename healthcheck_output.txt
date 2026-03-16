@@ -1,1 +1,0 @@
-timeout: コマンド `NVIM_APPNAME=nvim-nazozokc' の実行に失敗しました: そのようなファイルやディレクトリはありません
