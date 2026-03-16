@@ -42,6 +42,7 @@ return {
 			pattern = "oil",
 			callback = function()
 				vim.b.snacks_main = true
+				vim.wo.signcolumn = "yes:2"
 			end,
 		})
 	end,
