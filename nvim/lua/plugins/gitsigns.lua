@@ -10,7 +10,7 @@ return {
 			changedelete = { text = "▎" },
 		},
 
-		signcolumn = true, -- 左端に常時表示
+		signcolumn = "yes:2",
 		watch_gitdir = {
 			follow_files = true,
 		},
