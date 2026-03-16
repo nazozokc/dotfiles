@@ -35,7 +35,9 @@ return {
 
 	config = function(_, opts)
 		require("oil").setup(opts)
-		require("oil-git-status").setup()
+		vim.schedule(function()
+			require("oil-git-status").setup()
+		end)
 
 		-- Oil 用 autocmd
 		vim.api.nvim_create_autocmd("FileType", {
