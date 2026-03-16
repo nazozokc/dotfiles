@@ -16,6 +16,8 @@ return {
 				"lua",
 				"vim",
 				"vimdoc",
+				"regex",
+				"bash",
 			},
 
 			highlight = {
