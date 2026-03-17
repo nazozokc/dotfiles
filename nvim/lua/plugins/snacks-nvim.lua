@@ -5,6 +5,14 @@ return {
 
 	opts = {
 		-- =========================
+		-- Notifier
+		-- =========================
+		notifier = {
+			enabled = true,
+			timeout = 3000,
+			style = "compact",
+		},
+		-- =========================
 		-- Dashboard
 		-- =========================
 		dashboard = {
@@ -30,14 +38,14 @@ return {
 				},
 
 				header = [[
-                 _
-  ___     ___    ___   __  __ /\_\    ___ ___
- / _ `\  / __`\ / __`\/\ \/\ \\/\ \  / __` __`\
-/\ \/\ \/\  __//\ \_\ \ \ \_/ |\ \ \/\ \/\ \/\ \
-\ \_\ \_\ \____\ \____/\ \___/  \ \_\ \_\ \_\ \_\
- \/_/\/_/\/____/\/___/  \/__/    \/_/\/_/\/_/\/_/
+                  _
+   ___     ___    ___   __  __ /\_\    ___ ___
+  / _ `\  / __`\ / __`\/\ \/\ \\/\ \  / __` __`\
+ /\ \/\ \/\  __//\ \_\ \ \ \_/ |\ \ \/\ \/\ \/\ \
+ \ \_\ \_\ \____\ \____/\ \___/  \ \_\ \_\ \_\ \_\
+  \/_/\/_/\/____/\/___/  \/__/    \/_/\/_/\/_/\/_/
 
-        ]],
+          ]],
 			},
 		},
 
@@ -142,6 +150,14 @@ return {
 	},
 
 	config = function(_, opts)
-		require("snacks").setup(opts)
+		local snacks = require("snacks")
+		snacks.setup(opts)
+
+		-- Replace vim.notify with snacks notifier
+		vim.notify = function(msg, level, notif_opts)
+			snacks.notify(msg, vim.tbl_extend("force", notif_opts or {}, {
+				level = level,
+			}))
+		end
 	end,
 }

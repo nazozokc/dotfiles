@@ -26,9 +26,9 @@ return {
 				enabled = true,
 				backend = "nui", -- cmp の補完でも動く
 			},
-			notify = {
-				enabled = true, -- vim.notify を有効
-			},
+		notify = {
+			enabled = false, -- delegate to snacks.nvim instead
+		},
 			lsp = {
 				progress = { enabled = true, view = "mini" },
 				hover = { enabled = true },
