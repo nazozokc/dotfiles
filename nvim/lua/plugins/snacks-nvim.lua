@@ -154,13 +154,19 @@ return {
 		snacks.setup(opts)
 
 		-- Replace vim.notify with snacks notifier
-		vim.notify = function(msg, level, notif_opts)
+		local notify = vim.notify
+		local function new_notify(msg, level, notif_opts)
+			-- Temporarily restore original notify to avoid recursion
+			vim.notify = notify
 			snacks.notify(
 				msg,
 				vim.tbl_extend("force", notif_opts or {}, {
 					level = level,
 				})
 			)
+			-- Restore our override
+			vim.notify = new_notify
 		end
+		vim.notify = new_notify
 	end,
 }
