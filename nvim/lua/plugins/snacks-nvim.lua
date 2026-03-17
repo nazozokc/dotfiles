@@ -155,9 +155,12 @@ return {
 
 		-- Replace vim.notify with snacks notifier
 		vim.notify = function(msg, level, notif_opts)
-			snacks.notify(msg, vim.tbl_extend("force", notif_opts or {}, {
-				level = level,
-			}))
+			snacks.notify(
+				msg,
+				vim.tbl_extend("force", notif_opts or {}, {
+					level = level,
+				})
+			)
 		end
 	end,
 }
