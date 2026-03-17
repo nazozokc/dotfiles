@@ -44,16 +44,18 @@ return {
 				bottom_search = true, -- /検索は下に表示
 				command_palette = true, -- cmdline と補完をいい感じに
 				long_message_to_split = true, -- 長い出力は split に
-				-- Noice の Float 背景殺す
-				vim.api.nvim_create_autocmd("ColorScheme", {
-					callback = function()
-						vim.cmd([[
-      highlight NoicePopup guibg=none
-      highlight NoicePopupBorder guibg=none
-    ]])
-					end,
-				}),
 			},
 		},
+		config = function(_, opts)
+			require("noice").setup(opts)
+			vim.api.nvim_create_autocmd("ColorScheme", {
+				callback = function()
+					vim.cmd([[
+          highlight NoicePopup guibg=none
+          highlight NoicePopupBorder guibg=none
+        ]])
+				end,
+			})
+		end,
 	},
 }

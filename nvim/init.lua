@@ -70,13 +70,7 @@ map("n", "<leader>ca", function()
 	require("actions-preview").code_actions()
 end, { desc = "Code Action (preview)" })
 
--- ---------------------------------------------------------
--- Substitute.nvim
--- ---------------------------------------------------------
-map("n", "s", require("substitute").operator, { noremap = true })
-map("n", "ss", require("substitute").line, { noremap = true })
-map("n", "S", require("substitute").eol, { noremap = true })
-map("x", "s", require("substitute").visual, { noremap = true })
+
 
 -- ---------------------------------------------------------
 -- Snacks.nvim (Picker / Zen)
