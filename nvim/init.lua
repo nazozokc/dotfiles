@@ -70,8 +70,6 @@ map("n", "<leader>ca", function()
 	require("actions-preview").code_actions()
 end, { desc = "Code Action (preview)" })
 
-
-
 -- ---------------------------------------------------------
 -- Snacks.nvim (Picker / Zen)
 -- ---------------------------------------------------------
