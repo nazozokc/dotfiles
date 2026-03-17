@@ -142,6 +142,17 @@ return {
 	},
 
 	config = function(_, opts)
-		require("snacks").setup(opts)
+		local snacks = require("snacks")
+		snacks.setup(opts)
+
+		-- Replace vim.notify with snacks notifier
+		vim.notify = function(msg, level, notif_opts)
+			snacks.notify(
+				msg,
+				vim.tbl_extend("force", notif_opts or {}, {
+					level = level,
+				})
+			)
+		end
 	end,
 }
