@@ -11,7 +11,7 @@ return {
  				changedelete = { text = "▎" },
  			},
 
- 			signcolumn = "yes:2",
+ 			signcolumn = true,
  			watch_gitdir = {
  				follow_files = true,
  			},
