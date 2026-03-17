@@ -40,11 +40,7 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -- Load configs
 -- =========================================================
 require("vim-options")
-require("lazy").setup("plugins", {
-	rocks = {
-		enabled = false,
-	},
-})
+require("lazy").setup("plugins")
 
 -- =========================================================
 -- Keymaps
@@ -54,10 +50,10 @@ local map = vim.keymap.set
 -- ---------------------------------------------------------
 -- UI / Toggle
 -- ---------------------------------------------------------
-map("n", "<leader>t", ":ToggleTerm<CR>", {})
-map("n", "<leader>c", ":Oil ~/ghq/github.com/nazozokc/dotfiles/<CR>", {})
-map("n", "<leader>so", ":SymbolsOutline<CR>")
-map("n", "<F2>", ":Twilight<CR>", {})
+map("n", "<leader>t", ":ToggleTerm<CR>", { desc = "Toggle terminal" })
+map("n", "<leader>c", ":Oil $HOME/dotfiles<CR>", { desc = "Open dotfiles in Oil" })
+map("n", "<leader>so", ":AerialToggle!<CR>")
+map("n", "<F2>", ":echo 'Twilight plugin not installed'<CR>", { desc = "Toggle Twilight (not installed)" })
 map("n", "<leader>e", ":TroubleToggle<CR>")
 
 -- ---------------------------------------------------------
@@ -69,6 +65,10 @@ map("n", "gd", "<cmd>Lspsaga goto_definition<CR>")
 map("n", "<leader>ca", function()
 	require("actions-preview").code_actions()
 end, { desc = "Code Action (preview)" })
+
+-- ---------------------------------------------------------
+-- Substitute.nvim
+-- ---------------------------------------------------------
 
 -- ---------------------------------------------------------
 -- Snacks.nvim (Picker / Zen)
