@@ -14,7 +14,7 @@ return {
 				lua_ls = "lua-language-server",
 				solargraph = "solargraph",
 				efm = "efm-langserver",
-				clang = "clangd",
+				clangd = "clangd",
 				nixd = "nixd",
 				jdtls = "jdtls",
 			}
@@ -67,7 +67,7 @@ return {
 				capabilities = capabilities,
 			})
 
-			vim.lsp.config("clang", {
+			vim.lsp.config("clangd", {
 				capabilities = capabilities,
 			})
 
