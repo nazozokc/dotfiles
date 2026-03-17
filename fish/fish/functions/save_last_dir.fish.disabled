@@ -1,0 +1,4 @@
+# ターミナル終了時にカレントディレクトリを保存
+function save_last_dir --on-event fish_postexec
+    echo (pwd) > ~/.last_dir
+end
