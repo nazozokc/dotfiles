@@ -57,46 +57,4 @@ return {
 			require("mini.jump").setup({ mappings = { repeat_forward = ";", repeat_backward = "," } })
 		end,
 	},
-
-	{
-		"nvim-mini/mini.diff",
-		event = "BufReadPre",
-		config = function()
-			require("mini.diff").setup({
-				-- 差分の基準
-				source = require("mini.diff").gen_source.git(),
-
-				-- 表示設定
-				view = {
-					style = "number",
-				},
-
-				-- 差分更新の遅延(ms)
-				delay = {
-					text_change = 200,
-				},
-
-				-- マッピング
-				mappings = {
-					apply = "gh", -- 変更を適用
-					reset = "gH", -- 元に戻す
-					textobject = "gh", -- hunk選択
-					goto_first = "[H",
-					goto_prev = "[h",
-					goto_next = "]h",
-					goto_last = "]H",
-				},
-
-				-- overlay設定
-				options = {
-					wrap_goto = true,
-				},
-			})
-
-			-- overlayトグル（これ重要）
-			vim.keymap.set("n", "<leader>do", function()
-				require("mini.diff").toggle_overlay()
-			end, { desc = "Toggle diff overlay" })
-		end,
-	},
 }
