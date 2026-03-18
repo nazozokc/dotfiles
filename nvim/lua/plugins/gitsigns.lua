@@ -6,22 +6,43 @@ return {
 			signs = {
 				add = { text = "▎" },
 				change = { text = "▎" },
-				delete = { text = "" },
-				topdelete = { text = "" },
+				delete = { text = "▎" }, -- ← VSCodeは全部同じバー
+				topdelete = { text = "▎" },
 				changedelete = { text = "▎" },
 			},
 
 			signcolumn = true,
+			numhl = false,
+			linehl = true, -- ← これで行にうっすら色付く（重要）
+
 			watch_gitdir = {
 				follow_files = true,
 			},
 
-			current_line_blame = false, -- ← 後で有効にする
-			word_diff = false, -- 🔥 単語単位差分
+			current_line_blame = false, -- ← VSCodeはデフォOFF
+			word_diff = false,
 			update_debounce = 100,
+
+			current_line_blame_opts = {
+				delay = 500,
+			},
 		})
 
-		vim.keymap.set("n", "<leader>gp", ":Gitsigns preview_hunk<CR>", {})
-		vim.keymap.set("n", "<leader>gt", ":Gitsigns toggle_current_line_blame<CR>", {})
+		-- VSCode風キーマップ
+		vim.keymap.set("n", "]c", function()
+			require("gitsigns").next_hunk()
+		end)
+
+		vim.keymap.set("n", "[c", function()
+			require("gitsigns").prev_hunk()
+		end)
+
+		vim.keymap.set("n", "<leader>gp", function()
+			require("gitsigns").preview_hunk()
+		end)
+
+		vim.keymap.set("n", "<leader>gt", function()
+			require("gitsigns").toggle_current_line_blame()
+		end)
 	end,
 }
