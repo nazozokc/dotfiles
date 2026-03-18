@@ -13,7 +13,7 @@ return {
 
 			signcolumn = true,
 			numhl = false,
-			linehl = true, -- ← これで行にうっすら色付く（重要）
+			linehl = true,
 
 			watch_gitdir = {
 				follow_files = true,
