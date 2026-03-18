@@ -17,7 +17,7 @@ return {
 			},
 
 			current_line_blame = false, -- ← 後で有効にする
-			word_diff = true, -- 🔥 単語単位差分
+			word_diff = false, -- 🔥 単語単位差分
 			update_debounce = 100,
 		})
 
