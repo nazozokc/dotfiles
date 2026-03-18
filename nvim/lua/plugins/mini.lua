@@ -68,12 +68,7 @@ return {
 
 				-- 表示設定
 				view = {
-					style = "sign", -- sign / number / line
-					signs = {
-						add = "┃",
-						change = "┃",
-						delete = "_",
-					},
+					style = "number",
 				},
 
 				-- 差分更新の遅延(ms)
