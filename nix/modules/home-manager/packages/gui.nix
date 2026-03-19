@@ -9,6 +9,7 @@ with pkgs;
   ghostty
   tor-browser
   vicinae
+  partitionmanager
 ]
 ++ lib.optionals pkgs.stdenv.isDarwin [
   raycast
