@@ -28,6 +28,10 @@ with pkgs;
   nixd
   pkgs.nixfmt
 
+  # Go-lang
+  go
+  go-tools
+
   # lua
   stylua
 
