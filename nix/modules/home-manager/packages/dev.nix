@@ -2,6 +2,9 @@
 
 with pkgs;
 [
+  #general
+  prettier
+
   # python
   python312
   pipx
@@ -14,8 +17,7 @@ with pkgs;
   pnpm
   bun
   deno
-
-  # C
+  yarn
   clang
   clang-tools
 

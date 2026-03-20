@@ -17,5 +17,4 @@ with pkgs;
 
   #downloader
   aria2
-  yarn
 ]
