@@ -35,7 +35,3 @@ description: Guidelines when working on TypeScript/JS projects
 - Confirm no errors with `tsc --noEmit`
 - Check the project's lint rules before starting
 
-## On Rule Violations / Uncertain Cases
-
-- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
-- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

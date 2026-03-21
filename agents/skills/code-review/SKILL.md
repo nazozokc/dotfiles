@@ -44,7 +44,3 @@ description: Perspectives and rules when conducting a code review
 - **Explain why**: Reasoning makes feedback easier to accept
 - **Big picture**: Prioritize consistency over personal preference
 
-## On Rule Violations / Uncertain Cases
-
-- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
-- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user
