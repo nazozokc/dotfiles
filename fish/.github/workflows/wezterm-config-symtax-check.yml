@@ -1,0 +1,22 @@
+name: "CI: WezTerm config check"
+
+on:
+  pull_request:
+    paths:
+      - "wezterm/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wezterm-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+
+      - name: WezTerm config syntax check
+        run: |
+          nix shell nixpkgs#wezterm --command wezterm --config-file wezterm/wezterm.lua show-keys > /dev/null

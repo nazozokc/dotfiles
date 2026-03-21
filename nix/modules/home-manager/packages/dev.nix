@@ -2,6 +2,9 @@
 
 with pkgs;
 [
+  #general
+  prettier
+
   # python
   python312
   pipx
@@ -10,11 +13,11 @@ with pkgs;
   nodejs
   typescript-language-server
   typescript-go
+  typescript
   pnpm
   bun
   deno
-
-  # C
+  yarn
   clang
   clang-tools
 
@@ -26,6 +29,10 @@ with pkgs;
   nil
   nixd
   pkgs.nixfmt
+
+  # Go-lang
+  go
+  go-tools
 
   # lua
   stylua

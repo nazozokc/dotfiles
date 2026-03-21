@@ -1,6 +1,6 @@
 ---
-name: github-release-note
-description: When generating GitHub release notes or changelogs from git log or CHANGELOG.md
+name: github-release-notes
+description: Automatically generate GitHub release notes from git log commit history or CHANGELOG.md. Use this skill whenever the user says "write release notes", "generate a changelog", "create release notes for v1.0.0", or "I want to make a release document from git log". Supports Conventional Commits (feat:, fix:, perf:, etc.).
 ---
 
 # GitHub Release Notes Skill

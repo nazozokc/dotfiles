@@ -14,7 +14,6 @@
       pkgs.gh-poi
       pkgs.gh-notify
       pkgs.gh-do
-
     ];
   };
 }

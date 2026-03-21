@@ -137,7 +137,7 @@
   },
   "fzf-lua": {
     "branch": "main",
-    "commit": "6e41ba7505f35a6f054ca682b043aa0cea36c2ef"
+    "commit": "54669c347fe94d5be41322bd5526095f3e528713"
   },
   "garbage-day.nvim": {
     "branch": "main",
@@ -223,6 +223,10 @@
     "branch": "main",
     "commit": "597d32ed2c9fbfbf9a250bec7c6b9035f71214f5"
   },
+  "mini.diff": {
+    "branch": "main",
+    "commit": "ff3cd5e76e812fa18bde0f8126d6f3bb62008c79"
+  },
   "mini.icons": {
     "branch": "main",
     "commit": "5b9076dae1bfbe47ba4a14bc8b967cde0ab5d77e"
@@ -233,11 +237,11 @@
   },
   "mini.jump": {
     "branch": "main",
-    "commit": "e79d45a15097bf3a5101e917be73e9e43f80f1b7"
+    "commit": "03ede6bfdc913c67dcb6ad812981a64f01349378"
   },
   "mini.nvim": {
     "branch": "main",
-    "commit": "9990c41f10f54f29a888d13024c9f765037bde23"
+    "commit": "28d993854bdcde7d06f0990cfe6a2c6577f3f8ab"
   },
   "mini.surround": {
     "branch": "main",
@@ -333,7 +337,7 @@
   },
   "nvim-lspconfig": {
     "branch": "master",
-    "commit": "dc2f86d2b66a6e01a98c37cdadd3be3e90f8ab9a"
+    "commit": "702f69fb167e9119f14adc4dfd4fcadf4d1b07a0"
   },
   "nvim-neoclip.lua": {
     "branch": "main",
@@ -361,7 +365,7 @@
   },
   "nvim-treesitter": {
     "branch": "main",
-    "commit": "c9fea86a5a3c2d7f52e5cd53448edfaf7953bc75"
+    "commit": "2b50ab5ccbcd9e5708deb351308edd738adbf84c"
   },
   "nvim-treesitter-context": {
     "branch": "master",
@@ -553,7 +557,7 @@
   },
   "vscode-js-debug": {
     "branch": "main",
-    "commit": "b53b28c5faeab5dc8f52b3246a3714686e57f9b7"
+    "commit": "87dc281736d0049381f462d4691cd19c0b68b27b"
   },
   "which-key.nvim": {
     "branch": "main",

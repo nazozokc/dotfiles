@@ -1,0 +1,41 @@
+name: "CI: Format check (treefmt)"
+on:
+  pull_request:
+    paths:
+      - "**/*.nix"
+      - "**/*.lua"
+      - "**/*.fish"
+      - "**/*.sh"
+      - "**/*.md"
+      - "**/*.json"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "**/*.ts"
+      - ".github/workflows/treefmt.yml"
+  push:
+    paths:
+      - "**/*.nix"
+      - "**/*.lua"
+      - "**/*.fish"
+      - "**/*.sh"
+      - "**/*.md"
+      - "**/*.json"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "**/*.ts"
+      - ".github/workflows/treefmt.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  treefmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - name: treefmt check
+        run: nix fmt -- --ci

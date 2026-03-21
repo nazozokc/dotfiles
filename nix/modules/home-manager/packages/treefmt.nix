@@ -41,6 +41,7 @@
             ];
             excludes = [
               "nvim/template/*"
+              "fish/nvim/template/*"
             ];
           };
         };
