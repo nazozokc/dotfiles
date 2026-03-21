@@ -32,15 +32,15 @@ git log <previous-tag>..HEAD --pretty=format:"%h %s (%an)"
 
 Categorize commits based on Conventional Commits prefixes:
 
-| Prefix | Section |
-|---|---|
-| `feat:`, `feat(scope):` | ✨ Features |
-| `fix:`, `fix(scope):` | 🐛 Bug Fixes |
-| `perf:`, `perf(scope):` | ⚡ Performance |
-| `docs:` | 📝 Documentation (optional) |
-| `refactor:` | ♻️ Refactoring (optional) |
-| `chore:`, `build:`, `ci:` | 🔧 Chores (usually omitted) |
-| `BREAKING CHANGE` | 💥 Breaking Changes (always include) |
+| Prefix                    | Section                              |
+| ------------------------- | ------------------------------------ |
+| `feat:`, `feat(scope):`   | ✨ Features                          |
+| `fix:`, `fix(scope):`     | 🐛 Bug Fixes                         |
+| `perf:`, `perf(scope):`   | ⚡ Performance                       |
+| `docs:`                   | 📝 Documentation (optional)          |
+| `refactor:`               | ♻️ Refactoring (optional)            |
+| `chore:`, `build:`, `ci:` | 🔧 Chores (usually omitted)          |
+| `BREAKING CHANGE`         | 💥 Breaking Changes (always include) |
 
 For non-Conventional Commits, infer the appropriate section from the message content. Skip obviously trivial commits (`fix typo`, `wip`, etc.).
 
@@ -70,6 +70,7 @@ For non-Conventional Commits, infer the appropriate section from the message con
 - Performance improvement description
 
 <!-- only if applicable -->
+
 ### 💥 Breaking Changes
 
 - What changed and how to migrate
