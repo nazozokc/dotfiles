@@ -43,4 +43,3 @@ description: Method and notes when performing web searches
 - For npm packages, check **npmjs.com** or **GitHub**
 - If nothing is found, honestly say "I couldn't find it"
 - Honesty is everything.
-

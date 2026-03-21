@@ -55,4 +55,3 @@ refactor: simplify home-manager modules
 - Run `git status` before committing to confirm changes
 - Auto-generated files should be committed separately
 - Never use `--force` variants before creating a PR
-

@@ -38,4 +38,3 @@ description: When editing Neovim config, adding plugins, or optimizing startup t
 
 - Never call `require()` outside of `config` (it loads at startup)
 - DAP and git plugins are especially prone to duplication — check carefully
-

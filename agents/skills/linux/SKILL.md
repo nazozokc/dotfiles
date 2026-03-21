@@ -30,4 +30,3 @@ description: Constraints when operating files in an Linux environment
 
 "Is this a system config?" → If unsure, don't touch it
 "Is this a personal config?" → OK if it's within dotfiles
-

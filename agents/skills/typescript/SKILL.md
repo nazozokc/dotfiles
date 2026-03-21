@@ -34,4 +34,3 @@ description: Guidelines when working on TypeScript/JS projects
 
 - Confirm no errors with `tsc --noEmit`
 - Check the project's lint rules before starting
-

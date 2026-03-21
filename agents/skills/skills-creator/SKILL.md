@@ -78,4 +78,3 @@ skills/
 └── <name>/
     └── SKILL.md   ← This is all you need (keep it simple)
 ```
-

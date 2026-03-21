@@ -43,4 +43,3 @@ description: Perspectives and rules when conducting a code review
 - **Be respectful**: Use suggestion form, not imperative form
 - **Explain why**: Reasoning makes feedback easier to accept
 - **Big picture**: Prioritize consistency over personal preference
-

@@ -45,4 +45,3 @@ description: When creating, editing, or debugging GitHub Actions workflow YAML f
 - Only use `${{ secrets.NAME }}` format for secrets
 - Verify `github.event_name` carefully in `if:` conditions
 - Matrix builds increase diff size — confirm before changing
-
