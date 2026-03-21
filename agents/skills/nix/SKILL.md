@@ -5,6 +5,36 @@ description: Guidelines when managing Nix configuration
 
 # Nix Operation Guidelines
 
+## Home-Manager Module Pattern
+
+```nix
+# Standard module structure used in this repo
+{ config, pkgs, ... }: {
+  programs.<name> = {
+    enable = true;
+    # options...
+  };
+}
+```
+
+**Always verify with `home-manager switch --flake .#<host>` after changes.**
+
+## Adding a New Package
+
+```bash
+# 1. Add to home.packages or the appropriate programs.<name> block
+# 2. Run:
+home-manager switch --flake .#<host>
+# 3. Verify the binary is available:
+which <package>
+```
+
+## Common Pitfalls
+
+- Do not use `with pkgs;` at the top level — it pollutes scope and makes deps unclear
+- Avoid `pkgs.writeShellScriptBin` for complex scripts — use a dedicated derivation instead
+- If a build fails with 'untrusted substituter', check `nix.conf` or pass `--accept-flake-config`
+
 ## flake.lock Update Procedure
 
 ```bash
@@ -48,8 +78,3 @@ home-manager switch --flake .#<host>
 
 - Nix is declarative config management — be careful with side-effectful operations
 - Keep patches and overlays to a minimum
-
-## On Rule Violations / Uncertain Cases
-
-- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
-- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user
