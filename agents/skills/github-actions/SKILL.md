@@ -46,7 +46,3 @@ description: When creating, editing, or debugging GitHub Actions workflow YAML f
 - Verify `github.event_name` carefully in `if:` conditions
 - Matrix builds increase diff size — confirm before changing
 
-## On Rule Violations / Uncertain Cases
-
-- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
-- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user

@@ -18,11 +18,18 @@ description: When creating Node.js/TypeScript CLI tools
 - **Exit codes**: Use proper exit codes (0 for success, 1 for errors, 2 for invalid args)
 - **No interactive by default**: CLI tools should be non-interactive unless explicitly requested
 
+## Project-Specific Patterns
+
+- **Storage**: prefer JSON files under `~/.local/share/<tool-name>/` for persistent data
+- **External tools**: integrate with `fzf` for selection UIs, `nvim` for editing flows
+- **Packaging**: every CLI tool must have a Nix flake — see ../nix/SKILL.md
+- **Output**: default to clean stdout; use stderr for errors and progress
+
 ## User Experience
 
 - **Clear error messages**: Show helpful error messages with actionable solutions
-- **Progress indicators**: Use `ora` or `listr` for long-running operations
-- **Interactive prompts**: Use `inquirer` or `enquirer` when user input is required
+- **Progress indicators**: Use `ora` for long-running operations
+- **Interactive prompts**: Use `inquirer` when user input is required
 - **Color output**: Use `chalk` or `kleur` for meaningful color coding
 - **Verbose mode**: Support `--verbose` flag for detailed logging
 
@@ -33,6 +40,7 @@ description: When creating Node.js/TypeScript CLI tools
 - **ESM support**: Include `"type": "module"` for ESM support
 - **Cross-platform**: Avoid platform-specific commands unless necessary
 - **Version bumping**: Use `version` command or automated versioning
+- **After build, verify the binary works via `nix run .#<tool>` if a flake is present**
 
 ## File Structure
 
@@ -58,8 +66,3 @@ cli/
 - For general code generation, see ../code-gen/SKILL.md
 - For TypeScript rules, see ../typescript/SKILL.md
 - For Nix packaging, see ../nix/SKILL.md
-
-## On Rule Violations / Uncertain Cases
-
-- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
-- If unable to follow the skill's procedure, do not skip it — report to the user

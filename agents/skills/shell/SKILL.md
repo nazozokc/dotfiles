@@ -88,8 +88,5 @@ config.fish
 
 - For Nix/home-manager fish module config, see ../nix/SKILL.md
 - For dotfiles file operations, see ../linux/SKILL.md
-
-## On Rule Violations / Uncertain Cases
-
+- See default/SKILL.md for general rule violation handling.
 - If asked to write POSIX/bash syntax for a fish script, clarify that fish uses different syntax and rewrite correctly
-- If unable to follow the skill's procedure, do not skip it — report to the user

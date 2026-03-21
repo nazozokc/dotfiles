@@ -44,7 +44,3 @@ description: Method and notes when performing web searches
 - If nothing is found, honestly say "I couldn't find it"
 - Honesty is everything.
 
-## On Rule Violations / Uncertain Cases
-
-- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
-- If unable to follow the skill's procedure (e.g. command not found), do not skip it — report to the user
