@@ -17,6 +17,19 @@ description: When generating or writing code in any language
 - **Language-agnostic**: These rules apply to all languages unless a language-specific skill overrides them
 - **No placeholder logic**: Never write `// TODO: implement this` — either implement it or ask
 
+## Project Conventions
+
+- Follow the file structure conventions already established in the target project — read existing files before writing new ones
+- For TypeScript projects: see ../typescript/SKILL.md
+- For Nix expressions: see ../nix/SKILL.md
+- For fish shell scripts: see ../shell/SKILL.md
+
+## Before Writing Code
+
+- Read at least 2–3 existing files in the project to understand naming and style conventions
+- Check if a similar utility or function already exists — do not duplicate
+- If the target project has a lint config (`biome.json`, `.eslintrc`, `.luacheckrc`), check it first
+
 ## Error Handling
 
 - Always handle errors explicitly — never silently swallow them
@@ -41,8 +54,3 @@ description: When generating or writing code in any language
 - For TypeScript-specific rules, see ../typescript/SKILL.md
 - For Nix-specific rules, see ../nix/SKILL.md
 - For Neovim Lua config, see ../neovim/SKILL.md
-
-## On Rule Violations / Uncertain Cases
-
-- If asked to perform a forbidden operation, do not execute it — explain the reason and confirm with the user
-- If unable to follow the skill's procedure, do not skip it — report to the user
