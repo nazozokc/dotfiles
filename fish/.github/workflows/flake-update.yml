@@ -25,7 +25,7 @@ jobs:
         with:
           token: ${{ steps.bot.outputs.token }}
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v21
+        uses: DeterminateSystems/nix-installer-action@v22
       - name: Update flake.lock
         run: nix flake update
       - name: Check flake
