@@ -63,7 +63,7 @@ description: <one-line summary of when and why to use it>
 
 ## Registering in CLAUDE.md
 
-After creating a new skill, add an entry to `agents/CLAUDE.md`:
+After creating a new skill, add an entry to `~/ghq/github.com/nazozokc/dotfiles/agents/CLAUDE.md`:
 
 ```markdown
 ## ./skills/<name>/SKILL.md

@@ -60,3 +60,6 @@ Always refer to this skill when writing fish shell scripts, functions, abbreviat
 ## ./skills/cli/SKILL.md
 
 Always refer to this skill when creating Node.js/TypeScript CLI tools.
+
+## ./agents/skills/merge-main/SKILL.md
+Always refer to this skill when merging main branch into current branch.

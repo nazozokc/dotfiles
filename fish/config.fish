@@ -1,5 +1,7 @@
 if status is-interactive
 
+    fish_add_path /nix/var/nix/profiles/default/bin
+    fish_add_path /home/nazozokc/.nix-profile/bin
     fish_vi_key_bindings
     eza -lh --icons
     # ==================================
