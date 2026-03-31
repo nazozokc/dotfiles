@@ -7,6 +7,9 @@ vim.o.background = "dark"
 
 vim.opt.swapfile = false
 
+vim.opt.modeline = false
+vim.opt.modelines = 0
+
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site")
 
 -- Navigate vim panes better
