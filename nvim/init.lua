@@ -3,7 +3,7 @@
 -- =========================================================
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
 		"clone",
@@ -56,7 +56,7 @@ local map = vim.keymap.set
 -- ---------------------------------------------------------
 map("n", "<leader>t", ":ToggleTerm<CR>", {})
 map("n", "<leader>c", ":Oil ~/ghq/github.com/nazozokc/dotfiles/<CR>", {})
-map("n", "<leader>so", ":SymbolsOutline<CR>")
+map("n", "<leader>so", ":SymbolsOutline<CR>", { desc = "Symbols Outline" })
 map("n", "<F2>", ":Twilight<CR>", {})
 map("n", "<leader>e", ":TroubleToggle<CR>")
 
