@@ -34,3 +34,5 @@ devenv.lock
 
 node_modules/
 *.env
+
+.omc/
