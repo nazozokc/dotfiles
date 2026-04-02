@@ -31,6 +31,7 @@
           # Markdown / JSON / YAML / TypeScript
           prettier = {
             enable = true;
+            package = pkgs.prettier;
             includes = [
               "*.md"
               "*.json"

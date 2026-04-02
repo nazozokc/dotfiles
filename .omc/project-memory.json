@@ -1,0 +1,214 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1775091128625,
+  "projectRoot": "/home/nazozokc/ghq/github.com/nazozokc/dotfiles",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "ERROR-LOGS": {
+      "path": "ERROR-LOGS",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775091128606,
+      "keyFiles": []
+    },
+    "agents": {
+      "path": "agents",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128607,
+      "keyFiles": [
+        "CLAUDE.md"
+      ]
+    },
+    "bash": {
+      "path": "bash",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128608,
+      "keyFiles": [
+        "bashrc"
+      ]
+    },
+    "claude": {
+      "path": "claude",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128611,
+      "keyFiles": [
+        "settings.json"
+      ]
+    },
+    "codex": {
+      "path": "codex",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128612,
+      "keyFiles": [
+        "config.toml"
+      ]
+    },
+    "efm-langserver": {
+      "path": "efm-langserver",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128613,
+      "keyFiles": [
+        "config.yaml"
+      ]
+    },
+    "fish": {
+      "path": "fish",
+      "purpose": null,
+      "fileCount": 6,
+      "lastAccessed": 1775091128613,
+      "keyFiles": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "config.fish",
+        "fish_plugins",
+        "fish_variables"
+      ]
+    },
+    "ghostty": {
+      "path": "ghostty",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128614,
+      "keyFiles": [
+        "config"
+      ]
+    },
+    "lazygit": {
+      "path": "lazygit",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128614,
+      "keyFiles": [
+        "config.yml"
+      ]
+    },
+    "my_scripts": {
+      "path": "my_scripts",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775091128615,
+      "keyFiles": []
+    },
+    "nix": {
+      "path": "nix",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1775091128615,
+      "keyFiles": [
+        "README.md",
+        "cachix.nix",
+        "shared.nix"
+      ]
+    },
+    "nvim": {
+      "path": "nvim",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1775091128617,
+      "keyFiles": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "README.md",
+        "init.lua",
+        "lazy-lock.json"
+      ]
+    },
+    "opencode": {
+      "path": "opencode",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1775091128617,
+      "keyFiles": [
+        "opencode.json",
+        "tui.json"
+      ]
+    },
+    "starship": {
+      "path": "starship",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1775091128618,
+      "keyFiles": [
+        "CLAUDE.md",
+        "starship.toml"
+      ]
+    },
+    "wezterm": {
+      "path": "wezterm",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1775091128618,
+      "keyFiles": [
+        "CLAUDE.md",
+        "README.md",
+        "wezterm.lua"
+      ]
+    },
+    "zsh": {
+      "path": "zsh",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1775091128619,
+      "keyFiles": [
+        "CLAUDE.md",
+        "zshrc",
+        "zshrc.pre-oh-my-zsh"
+      ]
+    },
+    "wezterm/config": {
+      "path": "wezterm/config",
+      "purpose": "Configuration files",
+      "fileCount": 6,
+      "lastAccessed": 1775091128624,
+      "keyFiles": [
+        "appearance.lua",
+        "font.lua",
+        "keys.lua"
+      ]
+    },
+    "wezterm/utils": {
+      "path": "wezterm/utils",
+      "purpose": "Utility functions",
+      "fileCount": 1,
+      "lastAccessed": 1775091128624,
+      "keyFiles": [
+        "platform.lua"
+      ]
+    }
+  },
+  "hotPaths": [],
+  "userDirectives": []
+}
