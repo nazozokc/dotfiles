@@ -8,6 +8,7 @@ with pkgs;
   claude-monitor
   claude-code
   qwen-code
+  codex
 
   #other
   pay-respects
