@@ -7,7 +7,8 @@ SETUVAR Z_DATA_DIR:/home/nazozokc/\x2elocal/share/z
 SETUVAR Z_EXCLUDE:\x5e/home/nazozokc\x24
 SETUVAR --export __fish_git_prompt_char_branch:\ue0a0
 SETUVAR --export __fish_git_prompt_color_branch:magenta
-SETUVAR __fish_initialized:4300
+SETUVAR __fish_initialized:3800
 SETUVAR fish_autosuggestion_strategy:history\x1ecompletion
 SETUVAR fish_greeting:
+SETUVAR fish_key_bindings:fish_vi_key_bindings
 SETUVAR fish_user_paths:/home/nazozokc/\x2enix\x2dprofile/bin\x1e/nix/var/nix/profiles/default/bin

@@ -10,7 +10,7 @@ with pkgs;
   pipx
 
   # JS,TS
-  nodejs
+  nodejs_latest
   typescript-language-server
   typescript-go
   typescript
