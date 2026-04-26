@@ -43,6 +43,7 @@
             excludes = [
               "nvim/template/*"
               "fish/nvim/template/*"
+              "**/lazy-lock.json"
             ];
           };
         };
