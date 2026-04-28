@@ -18,4 +18,5 @@ with pkgs;
 
   #downloader
   aria2
+  mise
 ]
