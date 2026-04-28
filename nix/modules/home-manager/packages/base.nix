@@ -47,7 +47,6 @@ with pkgs;
   lazydocker
 
   # github
-  bit
   git
   gh
   ghq
