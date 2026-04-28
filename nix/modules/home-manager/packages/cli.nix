@@ -9,6 +9,9 @@ with pkgs;
   claude-code
   qwen-code
   codex
+  cmake
+  gnumake
+  gcc
 
   #other
   pay-respects
