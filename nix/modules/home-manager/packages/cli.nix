@@ -11,7 +11,6 @@ with pkgs;
   codex
   cmake
   gnumake
-  gcc
 
   #other
   pay-respects
