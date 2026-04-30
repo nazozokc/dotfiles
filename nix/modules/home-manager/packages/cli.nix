@@ -9,8 +9,7 @@ with pkgs;
   claude-code
   qwen-code
   codex
-  cmake
-  gnumake
+  pi-coding-agent
 
   #other
   pay-respects
@@ -21,4 +20,6 @@ with pkgs;
   #downloader
   aria2
   mise
+  cmake
+  gnumake
 ]
