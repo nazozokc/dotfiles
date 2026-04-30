@@ -16,7 +16,6 @@ with pkgs;
   typescript
   pnpm
   bun
-  deno
   yarn
   clang
   clang-tools
