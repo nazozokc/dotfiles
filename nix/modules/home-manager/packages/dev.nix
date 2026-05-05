@@ -27,7 +27,6 @@ with pkgs;
 
   # clang
   clang
-  gcc
 
   # nix
   nil
