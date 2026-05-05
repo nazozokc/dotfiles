@@ -25,6 +25,10 @@ with pkgs;
   rustc
   rust-analyzer
 
+  # clang
+  clang
+  gcc
+
   # nix
   nil
   nixd
