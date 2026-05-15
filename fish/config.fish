@@ -1,7 +1,7 @@
 if status is-interactive
 
     fish_add_path /nix/var/nix/profiles/default/bin
-    fish_add_path /home/nazozokc/.nix-profile/bin
+    fish_add_path $HOME/.nix-profile/bin
     fish_vi_key_bindings
     eza -lh --icons
     # ==================================
@@ -26,9 +26,6 @@ if status is-interactive
     end
 
     bind \cg ghq-fzf
-    # =========================
-    # 基本設定
-    # =========================
 
     if test -f ~/.last_dir
         set last_dir (cat ~/.last_dir)
@@ -102,12 +99,6 @@ if status is-interactive
         eza -lh --icons
     end
 
-    # ===========================
-    # コマンド補完
-    # ===========================
-    # Ctrl+G に fzf 選択をバインド
-    bind \cg fzf_select_candidate
-
     # =========================
     # Git プロンプト設定
     # =========================
@@ -177,11 +168,11 @@ if status is-interactive
 end
 
 # opencode
-fish_add_path /home/nazozokc/.opencode/bin
+fish_add_path $HOME/.opencode/bin
 
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
 # OpenClaw Completion
-source "/home/nazozokc/.openclaw/completions/openclaw.fish"
+source "$HOME/.openclaw/completions/openclaw.fish"

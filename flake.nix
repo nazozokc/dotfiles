@@ -98,6 +98,8 @@
       ...
     }:
     let
+      # username is defined in nix/shared.nix
+      # This local definition is for flake-level references only
       username = "nazozokc";
 
       # カスタム overlay (./nix/overlays/default.nix)

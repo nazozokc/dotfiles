@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 let
   username = "nazozokc";
@@ -13,4 +13,8 @@ in
   xdg.enable = true;
 
   programs.home-manager.enable = true;
+
+  home.sessionVariables = lib.mkIf (username != null) {
+    DOTFILES_USERNAME = username;
+  };
 }

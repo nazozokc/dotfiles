@@ -20,6 +20,4 @@ with pkgs;
   #downloader
   aria2
   mise
-  cmake
-  gnumake
 ]

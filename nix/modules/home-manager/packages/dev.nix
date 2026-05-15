@@ -25,13 +25,10 @@ with pkgs;
   rustc
   rust-analyzer
 
-  # clang
-  clang
-
   # nix
   nil
   nixd
-  pkgs.nixfmt
+  nixfmt-rfc-style
 
   # Go-lang
   go
