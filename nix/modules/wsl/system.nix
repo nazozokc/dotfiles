@@ -5,9 +5,6 @@
   # WSL 専用パッケージ
   ########################################
   home.packages = with pkgs; [
-    # WSL固有ツール
-    wslu
-
     # アーカイブ（Linuxから引き継ぎ）
     unzip
     zip

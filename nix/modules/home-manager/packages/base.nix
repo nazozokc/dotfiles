@@ -4,9 +4,6 @@ with pkgs;
 [
   # Editor
   neovim
-  vscode
-  emacs
-  zed
 
   # shell
   fish
