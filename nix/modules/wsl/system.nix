@@ -5,15 +5,12 @@
   # WSL 専用パッケージ
   ########################################
   home.packages = with pkgs; [
-    # アーカイブ（Linuxから引き継ぎ）
+    # アーカイブ
     unzip
     zip
 
     # ネットワーク
     nmap
-
-    # WSL相互運用
-    wslu # WSL <-> Windows 相互運用ツール
   ];
 
   ########################################
@@ -23,8 +20,11 @@
     # Windows連携
     WSLENV = "HOME/p:USERPROFILE/p";
 
-    # デフォルトブラウザをWSL側に委譲
-    BROWSER = "wslview";
+    # Windowsの.exe実行を許可
+    WSLEXECPATH = "1";
+
+    # ブラウザ
+    BROWSER = "xdg-open";
 
     # エディタ
     EDITOR = "nvim";
@@ -36,19 +36,11 @@
   ########################################
   programs.git = {
     extraConfig = {
-      # 改行コード: WSLではLF統一
+      # LF統一
       core.autocrlf = "input";
-      # ファイルモード変更を検知しない（WSLのファイルシステム問題回避）
+
+      # WSL権限差分問題回避
       core.filemode = false;
     };
-  };
-
-  ########################################
-  # Windows相互運用
-  ########################################
-  # WindowsコマンドをWSLから呼び出すための設定
-  home.sessionVariables = {
-    # Windowsの.exeをPATHから検索可能にする（デフォルト有効な場合が多いが明示）
-    WSLEXECPATH = "1";
   };
 }
