@@ -138,6 +138,25 @@
           ];
         };
 
+      # WSL 向け home-manager 設定を生成するヘルパー
+      mkWSLHomeConfig =
+        system:
+        let
+          pkgs = pkgsFor system;
+        in
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            nix-index-database.homeModules.nix-index
+            ./nix/shared.nix
+            (import ./nix/modules/home-manager/tools-read-wsl.nix { inherit pkgs; })
+            ./nix/modules/wsl/system.nix
+            ./nix/modules/home-manager/dotfiles-link.nix
+            agent-skills-nix.homeManagerModules.default
+            ./nix/modules/home-manager/agent-skills.nix
+          ];
+        };
+
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
@@ -192,6 +211,17 @@
             echo "  cmd    : ${cmd}"
             echo ""
           '';
+
+          # Shared shell helpers for runtime environment detection
+          detectHelpers = ''
+            is_wsl() {
+              [ -d /run/WSL ] || grep -qi microsoft /proc/version 2>/dev/null
+            }
+
+            is_darwin() {
+              [ "$(uname)" = "Darwin" ]
+            }
+          '';
         in
         {
           apps = {
@@ -200,13 +230,28 @@
               type = "app";
               program = "${pkgs.writeShellScriptBin "switch" ''
                 set -eo pipefail
-                ${printInfo "switch"}
-                ${
-                  if isDarwin then
-                    "sudo nix run nix-darwin -- switch --flake ${flakeTarget}"
-                  else
-                    "nix run nixpkgs#home-manager -- switch --flake ${flakeTarget}"
-                } |& ${pkgs.nix-output-monitor}/bin/nom
+
+                ${detectHelpers}
+
+                if is_wsl; then
+                  echo "  system : WSL (x86_64)"
+                  echo "  target : .#${username}-wsl"
+                  echo "  cmd    : switch"
+                  echo ""
+                  nix run nixpkgs#home-manager -- switch --flake .#${username}-wsl |& ${pkgs.nix-output-monitor}/bin/nom
+                elif is_darwin; then
+                  echo "  system : ${sysLabel}"
+                  echo "  target : ${flakeTarget}"
+                  echo "  cmd    : switch"
+                  echo ""
+                  sudo nix run nix-darwin -- switch --flake ${flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+                else
+                  echo "  system : ${sysLabel}"
+                  echo "  target : ${flakeTarget}"
+                  echo "  cmd    : switch"
+                  echo ""
+                  nix run nixpkgs#home-manager -- switch --flake ${flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+                fi
               ''}/bin/switch";
             };
 
@@ -215,8 +260,28 @@
               type = "app";
               program = "${pkgs.writeShellScriptBin "build" ''
                 set -eo pipefail
-                ${printInfo "build"}
-                ${pkgs.nix-output-monitor}/bin/nom build .#${hmConfig}
+
+                ${detectHelpers}
+
+                if is_wsl; then
+                  echo "  system : WSL (x86_64)"
+                  echo "  target : .#${username}-wsl"
+                  echo "  cmd    : build"
+                  echo ""
+                  ${pkgs.nix-output-monitor}/bin/nom build .#homeConfigurations.${username}-wsl.activationPackage
+                elif is_darwin; then
+                  echo "  system : ${sysLabel}"
+                  echo "  target : ${hmConfig}"
+                  echo "  cmd    : build"
+                  echo ""
+                  ${pkgs.nix-output-monitor}/bin/nom build .#${hmConfig}
+                else
+                  echo "  system : ${sysLabel}"
+                  echo "  target : ${hmConfig}"
+                  echo "  cmd    : build"
+                  echo ""
+                  ${pkgs.nix-output-monitor}/bin/nom build .#${hmConfig}
+                fi
               ''}/bin/build";
             };
 
@@ -240,6 +305,7 @@
         homeConfigurations = {
           ${username} = mkLinuxHomeConfig "x86_64-linux";
           "${username}-aarch64" = mkLinuxHomeConfig "aarch64-linux";
+          "${username}-wsl" = mkWSLHomeConfig "x86_64-linux";
         };
 
         # macOS 向け nix-darwin 設定
