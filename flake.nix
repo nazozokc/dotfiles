@@ -329,6 +329,7 @@
             home-manager.darwinModules.home-manager
             {
               nixpkgs.config.allowUnfree = true;
+              home-manager.useGlobalPkgs = true;
               home-manager.users.${username} = {
                 imports = [
                   sops-nix.homeManagerModules.sops
