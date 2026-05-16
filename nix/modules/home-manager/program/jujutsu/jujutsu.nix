@@ -38,12 +38,28 @@
       };
 
       aliases = {
-        st = [ "log" "-r" "@+" ];
-        br = [ "branch" "list" ];
+        st = [
+          "log"
+          "-r"
+          "@+"
+        ];
+        br = [
+          "branch"
+          "list"
+        ];
         co = [ "new" ];
-        ci = [ "commit" "-m" ];
-        ps = [ "git" "push" ];
-        pl = [ "git" "fetch" ];
+        ci = [
+          "commit"
+          "-m"
+        ];
+        ps = [
+          "git"
+          "push"
+        ];
+        pl = [
+          "git"
+          "fetch"
+        ];
       };
     };
   };

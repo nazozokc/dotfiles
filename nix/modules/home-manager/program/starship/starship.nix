@@ -63,7 +63,7 @@
           "docker-compose.yaml"
           "Dockerfile"
         ];
-        detect_extensions = [];
+        detect_extensions = [ ];
       };
 
       nodejs = {

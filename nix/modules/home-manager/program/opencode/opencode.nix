@@ -100,8 +100,18 @@ in
             extensions = [ "lua" ];
           };
           typescript = {
-            command = [ "${pkgs.typescript-language-server}/bin/typescript-language-server" "--stdio" ];
-            extensions = [ "ts" "tsx" "js" "jsx" "mjs" "cjs" ];
+            command = [
+              "${pkgs.typescript-language-server}/bin/typescript-language-server"
+              "--stdio"
+            ];
+            extensions = [
+              "ts"
+              "tsx"
+              "js"
+              "jsx"
+              "mjs"
+              "cjs"
+            ];
           };
           rust = {
             command = [ "${pkgs.rust-analyzer}/bin/rust-analyzer" ];
@@ -113,7 +123,10 @@ in
           };
           c = {
             command = [ "${pkgs.clang-tools}/bin/clangd" ];
-            extensions = [ "c" "h" ];
+            extensions = [
+              "c"
+              "h"
+            ];
           };
         };
 
@@ -123,12 +136,30 @@ in
             extensions = [ "nix" ];
           };
           lua = {
-            command = [ "${pkgs.stylua}/bin/stylua" "-" ];
+            command = [
+              "${pkgs.stylua}/bin/stylua"
+              "-"
+            ];
             extensions = [ "lua" ];
           };
           typescript = {
-            command = [ "${pkgs.prettier}/bin/prettier" "--stdin-filepath" ];
-            extensions = [ "ts" "tsx" "js" "jsx" "mjs" "cjs" "css" "json" "md" "yaml" "yml" ];
+            command = [
+              "${pkgs.prettier}/bin/prettier"
+              "--stdin-filepath"
+            ];
+            extensions = [
+              "ts"
+              "tsx"
+              "js"
+              "jsx"
+              "mjs"
+              "cjs"
+              "css"
+              "json"
+              "md"
+              "yaml"
+              "yml"
+            ];
           };
           rust = {
             command = [ "${pkgs.rustfmt}/bin/rustfmt" ];
@@ -139,7 +170,11 @@ in
         mcp = {
           context7 = {
             type = "local";
-            command = [ "${pkgs.bun}/bin/bunx" "-y" "@upstash/context7-mcp" ];
+            command = [
+              "${pkgs.bun}/bin/bunx"
+              "-y"
+              "@upstash/context7-mcp"
+            ];
             enabled = true;
           };
         };

@@ -42,7 +42,10 @@
 
       open = {
         rules = [
-          { name = "*/"; use = "edit"; }
+          {
+            name = "*/";
+            use = "edit";
+          }
         ];
       };
     };
@@ -50,17 +53,26 @@
     keymap = {
       manager.prepend_keymap = [
         {
-          on = [ "g" "c" ];
+          on = [
+            "g"
+            "c"
+          ];
           run = "cd ~/.config";
           desc = "Go to config directory";
         }
         {
-          on = [ "g" "d" ];
+          on = [
+            "g"
+            "d"
+          ];
           run = "cd ~/Downloads";
           desc = "Go to downloads directory";
         }
         {
-          on = [ "g" "p" ];
+          on = [
+            "g"
+            "p"
+          ];
           run = "cd ~/ghq/github.com/nazozokc";
           desc = "Go to projects directory";
         }
