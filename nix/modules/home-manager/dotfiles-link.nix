@@ -7,7 +7,6 @@ let
 in
 {
   home.file = {
-    ".config/claude".source = link "${dotfilesDir}/claude";
     "commitlint.config.js".source = link "${dotfilesDir}/commitlint.config.js";
     ".config/nvim".source = link "${dotfilesDir}/nvim";
     ".config/wezterm".source = link "${dotfilesDir}/wezterm";

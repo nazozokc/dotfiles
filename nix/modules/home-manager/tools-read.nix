@@ -17,6 +17,8 @@ in
     ./program/yazi/yazi.nix
     ./program/jujutsu/jujutsu.nix
     ./program/sops/sops.nix
+    ./program/opencode/opencode.nix
+    ./program/claude-code/claude-code.nix
   ];
 
   home.packages = Pkgs;
