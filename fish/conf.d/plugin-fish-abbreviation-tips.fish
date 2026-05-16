@@ -1,0 +1,1 @@
+/nix/store/53nfssngx6fvklkry2051ms5xz01lpc2-home-manager-files/.config/fish/conf.d/plugin-fish-abbreviation-tips.fish
