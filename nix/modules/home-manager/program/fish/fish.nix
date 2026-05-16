@@ -1,35 +1,16 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
+
+let
+  homeDir = config.home.homeDirectory;
+  dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
+in
 {
   programs.fish = {
     enable = true;
 
     interactiveShellInit = ''
-      # Enable vi mode
-      fish_vi_key_bindings
-
-      # Abbreviations
-      abbr -a g git
-      abbr -a gc 'git commit'
-      abbr -a ga 'git add'
-      abbr -a gp 'git push'
-      abbr -a gs 'git status'
-      abbr -a gl 'git log --oneline --graph --decorate'
-      abbr -a d docker
-      abbr -a dc 'docker compose'
-      abbr -a n nix
-      abbr -a nb 'nix build'
-      abbr -a ns 'nix shell'
-      abbr -a nf 'nix flake'
-      abbr -a hm home-manager
-      abbr -a c clear
-      abbr -a ll 'eza -la --icons'
-      abbr -a ls 'eza --icons'
-      abbr -a lt 'eza -T --icons'
-      abbr -a cat bat
-      abbr -a ps 'btop'
-      abbr -a lg lazygit
-      abbr -a y yazi
-      abbr -a z zoxide
+      # Load config from dotfiles directory
+      source ${dotfilesDir}/fish/config.fish
     '';
 
     plugins = [
@@ -71,18 +52,15 @@
           sha256 = "sha256-RG/0rfhgq6aEKNZ0XwIqOaZ6K5S4+/Y5EEMnIdtfPhk=";
         };
       }
+      {
+        name = "fish-na";
+        src = pkgs.fetchFromGitHub {
+          owner = "ryoppippi";
+          repo = "fish-na";
+          rev = "main";
+          sha256 = "sha256-wh7HupHGYqo0dPc3bJMPPXuCxJN51dXPOeYkS6nm/Do=";
+        };
+      }
     ];
-
-    functions = {
-      nixgc = ''
-        nix-collect-garbage -d
-      '';
-      nixupdate = ''
-        nix flake update
-      '';
-      mkcd = ''
-        mkdir -p $argv[1]; and cd $argv[1]
-      '';
-    };
   };
 }

@@ -9,7 +9,6 @@ in
   home.file = {
     "commitlint.config.js".source = link "${dotfilesDir}/commitlint.config.js";
     ".config/nvim".source = link "${dotfilesDir}/nvim";
-    ".config/fish".source = link "${dotfilesDir}/fish";
     ".config/wezterm".source = link "${dotfilesDir}/wezterm";
     ".config/ghostty".source = link "${dotfilesDir}/ghostty";
     ".zshrc".source = link "${dotfilesDir}/zsh/zshrc";
