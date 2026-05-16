@@ -13,7 +13,6 @@
       github.copilot-chat
       # Language support
       jnoortheen.nix-ide
-      ms-vscode.vscode-typescript-next
       rust-lang.rust-analyzer
       ms-python.python
       ms-python.vscode-pylance
