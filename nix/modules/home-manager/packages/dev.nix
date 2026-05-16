@@ -28,7 +28,7 @@ with pkgs;
   # nix
   nil
   nixd
-  nixfmt-rfc-style
+  nixfmt
 
   # Go-lang
   go

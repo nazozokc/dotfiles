@@ -76,6 +76,12 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # 秘密鍵管理
+    sops-nix = {
+      url = "github:mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ---------------------------------------------------------------------------
@@ -95,6 +101,7 @@
       llm-agents,
       treefmt-nix,
       agent-skills-nix,
+      sops-nix,
       ...
     }:
     let
@@ -131,6 +138,7 @@
           inherit pkgs;
           modules = [
             nix-index-database.homeModules.nix-index
+            sops-nix.homeManagerModules.sops
             ./nix/shared.nix
             (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
             ./nix/modules/linux/system.nix
@@ -321,6 +329,7 @@
             {
               home-manager.users.${username} = {
                 imports = [
+                  sops-nix.homeManagerModules.sops
                   ./nix/shared.nix
                   (import ./nix/modules/home-manager/tools-read.nix {
                     pkgs = pkgsFor "aarch64-darwin";
