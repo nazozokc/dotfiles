@@ -26,7 +26,7 @@ with pkgs;
   tmux
   uv
   ncdu
-  delta
+  # delta -> managed by programs.delta
   tldr
   pet
   just

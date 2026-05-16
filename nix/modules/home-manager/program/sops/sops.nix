@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   homeDir = config.home.homeDirectory;
 in
 {
-  sops = {
+  sops = lib.mkIf pkgs.stdenv.isLinux {
     age = {
       keyFile = "${homeDir}/.config/sops/age/keys.txt";
       generateKey = false;

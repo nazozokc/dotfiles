@@ -119,7 +119,7 @@ in
 
         formatter = {
           nix = {
-            command = [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];
+            command = [ "${pkgs.nixfmt}/bin/nixfmt" ];
             extensions = [ "nix" ];
           };
           lua = {
