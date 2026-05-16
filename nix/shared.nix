@@ -8,7 +8,7 @@ in
 
   home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
 
-  home.stateVersion = "24.05";
+  home.stateVersion = "26.05";
 
   xdg.enable = true;
 
