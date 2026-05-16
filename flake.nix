@@ -329,6 +329,7 @@
             {
               home-manager.users.${username} = {
                 imports = [
+                  sops-nix.homeManagerModules.sops
                   ./nix/shared.nix
                   (import ./nix/modules/home-manager/tools-read.nix {
                     pkgs = pkgsFor "aarch64-darwin";
