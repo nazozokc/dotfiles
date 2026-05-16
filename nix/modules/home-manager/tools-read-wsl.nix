@@ -6,7 +6,6 @@ in
 {
   imports = [
     ./program/gh/gh.nix
-    ./program/fish/fish.nix
     ./program/git/git.nix
     ./program/lazygit/lazygit.nix
     ./program/starship/starship.nix
