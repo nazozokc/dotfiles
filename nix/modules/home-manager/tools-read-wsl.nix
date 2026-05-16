@@ -18,7 +18,6 @@ in
     ./program/sops/sops.nix
     ./program/opencode/opencode.nix
     ./program/claude-code/claude-code.nix
-    ./program/vscode/vscode.nix
     ./program/docker/docker.nix
   ];
 
