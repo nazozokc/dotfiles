@@ -5,6 +5,10 @@
   # WSL 専用パッケージ
   ########################################
   home.packages = with pkgs; [
+    # クリップボード
+    xclip
+    wl-clipboard
+
     # アーカイブ
     unzip
     zip
@@ -12,8 +16,35 @@
     # ネットワーク
     nmap
 
-    # Windows連携ツール (win32yank.exeはWindows側から直接利用可能)
+    # システム監視
+    btop
+
+    # フォント
+    fontconfig
+
+    # セキュリティ/認証
+    gnupg
+    openssh
+
+    # XDG/デスクトップ統合
+    file
+    libnotify
+    xdg-user-dirs
+    xdg-utils
   ];
+
+  ########################################
+  # フォント設定
+  ########################################
+  fonts.fontconfig.enable = true;
+
+  ########################################
+  # XDG ディレクトリ設定
+  ########################################
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+  };
 
   ########################################
   # WSL 向け環境変数

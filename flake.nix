@@ -158,6 +158,7 @@
           inherit pkgs;
           modules = [
             nix-index-database.homeModules.nix-index
+            sops-nix.homeManagerModules.sops
             ./nix/shared.nix
             (import ./nix/modules/home-manager/tools-read-wsl.nix { inherit pkgs; })
             ./nix/modules/wsl/system.nix
