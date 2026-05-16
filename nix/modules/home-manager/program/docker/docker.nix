@@ -4,18 +4,21 @@ let
 in
 {
   # ===== Docker CLI config =====
-  home.file.".docker/config.json".text = builtins.toJSON {
-    auths = { };
-    detachKeys = "ctrl-\\,ctrl-\\";
-    credsStore = "pass";
-    experimental = "enabled";
-    features = {
-      buildkit = true;
+  home.file.".docker/config.json" = {
+    text = builtins.toJSON {
+      auths = { };
+      detachKeys = "ctrl-\\,ctrl-\\";
+      credsStore = "pass";
+      experimental = "enabled";
+      features = {
+        buildkit = true;
+      };
+      plugins = { };
+      aliases = {
+        "docker:docker-compose" = "compose";
+      };
     };
-    plugins = { };
-    aliases = {
-      "docker:docker-compose" = "compose";
-    };
+    force = true;
   };
 
   # ===== Lazydocker config =====
