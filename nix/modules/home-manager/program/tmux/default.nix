@@ -31,7 +31,7 @@
       bind -n M-Down select-pane -D
 
       # ===== Pane management =====
-      bind Tab next-pane
+      bind Tab select-pane -t :.+
       bind C-o rotate-window
       bind Space next-layout
 
