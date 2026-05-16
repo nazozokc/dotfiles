@@ -7,7 +7,7 @@
 
     extensions = with pkgs.vscode-extensions; [
       # Theme
-      tomphilbin.kanagawa
+      catppuccin.catppuccin-vsc
       # AI
       github.copilot
       github.copilot-chat
@@ -65,7 +65,7 @@
       };
 
       # ===== Workbench =====
-      "workbench.colorTheme" = "Kanagawa";
+      "workbench.colorTheme" = "Catppuccin Mocha";
       "workbench.iconTheme" = "vscode-icons";
       "workbench.startupEditor" = "none";
       "workbench.statusBar.visible" = true;
