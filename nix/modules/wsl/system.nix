@@ -2,6 +2,40 @@
 
 {
   ########################################
+  # ロケール設定
+  ########################################
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
+
+  home.sessionVariables = {
+    # ロケール
+    LANG = "ja_JP.UTF-8";
+    LC_ALL = "ja_JP.UTF-8";
+
+    # Windows連携
+    WSLENV = "HOME/p:USERPROFILE/p";
+
+    # Windowsの.exe実行を許可
+    WSLEXECPATH = "1";
+
+    # ブラウザ
+    BROWSER = "xdg-open";
+
+    # エディタ
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+
+    # パフォーマンス最適化
+    WSL_INTEROP = "/run/WSL";
+  };
+
+  ########################################
   # WSL 専用パッケージ
   ########################################
   home.packages = with pkgs; [
@@ -44,27 +78,6 @@
   xdg.userDirs = {
     enable = true;
     createDirectories = true;
-  };
-
-  ########################################
-  # WSL 向け環境変数
-  ########################################
-  home.sessionVariables = {
-    # Windows連携
-    WSLENV = "HOME/p:USERPROFILE/p";
-
-    # Windowsの.exe実行を許可
-    WSLEXECPATH = "1";
-
-    # ブラウザ
-    BROWSER = "xdg-open";
-
-    # エディタ
-    EDITOR = "nvim";
-    VISUAL = "nvim";
-
-    # パフォーマンス最適化
-    WSL_INTEROP = "/run/WSL";
   };
 
   ########################################
