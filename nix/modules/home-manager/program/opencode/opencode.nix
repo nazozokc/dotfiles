@@ -189,9 +189,6 @@ in
           dotfiles = {
             repository = "github:nazozokc/dotfiles";
           };
-          ryoppippi = {
-            repository = "github:ryoppippi/dotfiles";
-          };
         };
 
         compaction = {
@@ -208,7 +205,6 @@ in
 
         watcher = {
           ignore = [
-            "node_modules/**"
             ".git/**"
             "result/**"
             "result-*"
@@ -238,7 +234,7 @@ in
     ".config/opencode/tui.json" = {
       text = builtins.toJSON {
         "\$schema" = "https://opencode.ai/tui.json";
-        theme = "system";
+        theme = "kanagawa";
       };
     };
   };
