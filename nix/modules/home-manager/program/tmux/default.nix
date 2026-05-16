@@ -72,7 +72,7 @@
 
       # Window status
       set -g window-status-format "#[fg=#54546D]#[fg=#C8C093,bg=#54546D] #I:#W #[fg=#54546D]"
-      set -g window-status-current-format "#[fg=#1F1F28,bg=#7e9cd8,nobold]#[fg=#1F1F28,bg=#7e9cd8,bold] #I:#W #[fg=#7e9cd8,bg=#1F1F28,nobold]"
+      set -g window-status-current-format "#[fg=#1F1F28,bg=#7e9cd8,nobold]#[fg=#1F1F28,bg=#7e9cd8,bold] #I:#W #[fg=#7e9cd8,bg=#1F1F28,nobold]"
       set -g window-status-separator ""
       set -g window-status-bell-style "fg=#E46876,bg=#1F1F28"
 
