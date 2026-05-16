@@ -10,6 +10,7 @@ with pkgs;
   qwen-code
   codex
   pi-coding-agent
+  grok-cli
 
   #other
   pay-respects
