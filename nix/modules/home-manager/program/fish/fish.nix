@@ -26,7 +26,7 @@
       abbr -a ls 'eza --icons'
       abbr -a lt 'eza -T --icons'
       abbr -a cat bat
-      abbr -a ps 'bottom'
+      abbr -a ps 'btop'
       abbr -a lg lazygit
       abbr -a y yazi
       abbr -a z zoxide
