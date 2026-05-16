@@ -43,7 +43,7 @@
       bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
       # ===== Reload config =====
-      bind r source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded!"
+      bind r source-file ''${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf \; display-message "Config reloaded!"
 
       # ===== Window numbering starts at 1 =====
       set -g base-index 1
