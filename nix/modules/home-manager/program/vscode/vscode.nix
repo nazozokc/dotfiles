@@ -8,6 +8,7 @@
     extensions = with pkgs.vscode-extensions; [
       # Theme
       catppuccin.catppuccin-vsc
+      vscode-icons-team.vscode-icons
       # AI
       github.copilot
       github.copilot-chat
