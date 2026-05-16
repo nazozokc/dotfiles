@@ -12,9 +12,6 @@ in
 
         shell = "${pkgs.fish}/bin/fish";
 
-        model = "ollama/qwen3-coder-next:cloud";
-        small_model = "ollama/glm-5:cloud";
-
         default_agent = "build";
 
         permission = {
@@ -31,34 +28,6 @@ in
           todowrite = "allow";
           question = "ask";
           lsp = "allow";
-        };
-
-        provider = {
-          ollama = {
-            name = "Ollama";
-            npm = "@ai-sdk/openai-compatible";
-            options = {
-              baseURL = "http://127.0.0.1:11434/v1";
-            };
-            models = {
-              "glm-5:cloud" = {
-                _launch = true;
-                limit = {
-                  context = 202752;
-                  output = 131072;
-                };
-                name = "glm-5:cloud";
-              };
-              "qwen3-coder-next:cloud" = {
-                _launch = true;
-                limit = {
-                  context = 262144;
-                  output = 32768;
-                };
-                name = "qwen3-coder-next:cloud";
-              };
-            };
-          };
         };
 
         agent = {
