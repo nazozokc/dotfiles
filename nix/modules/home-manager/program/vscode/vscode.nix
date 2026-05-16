@@ -16,7 +16,6 @@
       rust-lang.rust-analyzer
       ms-python.python
       ms-python.vscode-pylance
-      ms-vscode.vscode-json
       # Quality of life
       dbaeumer.vscode-eslint
       esbenp.prettier-vscode
