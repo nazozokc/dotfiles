@@ -5,21 +5,21 @@ let
 in
 {
   imports = [
-    ./program/gh/gh.nix
-    ./program/git/git.nix
-    ./program/lazygit/lazygit.nix
-    ./program/starship/starship.nix
-    ./program/direnv/direnv.nix
-    ./program/fzf/fzf.nix
-    ./program/bat/bat.nix
-    ./program/tmux/tmux.nix
-    ./program/yazi/yazi.nix
-    ./program/jujutsu/jujutsu.nix
-    ./program/sops/sops.nix
-    ./program/opencode/opencode.nix
-    ./program/claude-code/claude-code.nix
-    ./program/vscode/vscode.nix
-    ./program/docker/docker.nix
+    ./program/gh/
+    ./program/git/
+    ./program/lazygit/
+    ./program/starship/
+    ./program/direnv/
+    ./program/fzf/
+    ./program/bat/
+    ./program/tmux/
+    ./program/yazi/
+    ./program/jujutsu/
+    ./program/sops/
+    ./program/opencode/
+    ./program/claude-code/
+    ./program/vscode/
+    ./program/docker/
   ];
 
   home.packages = Pkgs;
