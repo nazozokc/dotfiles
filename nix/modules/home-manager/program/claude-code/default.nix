@@ -2,12 +2,12 @@
   config,
   pkgs,
   lib,
+  dotfilesDir,
   ...
 }:
 
 let
   homeDir = config.home.homeDirectory;
-  dotfilesDir = "${homeDir}/ghq/github.com/nazozokc/dotfiles";
   claudeConfigDir = "${homeDir}/.config/claude";
   link = config.lib.file.mkOutOfStoreSymlink;
 
