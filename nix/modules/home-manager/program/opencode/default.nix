@@ -151,7 +151,7 @@ in
             command = [
               "${pkgs.playwright-mcp}/bin/playwright-mcp"
               "--browser"
-              "chrome"
+              "chromium"
               "--no-sandbox"
             ];
             env = {

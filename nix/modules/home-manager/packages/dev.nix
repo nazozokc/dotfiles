@@ -50,6 +50,7 @@ with pkgs;
 
   # playwright
   playwright-driver
+  chromium
 ]
 ++ lib.optionals pkgs.stdenv.isLinux [
   # front end tools

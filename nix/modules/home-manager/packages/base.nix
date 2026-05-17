@@ -8,11 +8,9 @@ with pkgs;
   # shell
   fish
   zsh
-  # starship -> managed by programs.starship
 
   # CLI tools
   jq
-  # bat -> managed by programs.bat
   curl
   wget
   zoxide
@@ -22,11 +20,9 @@ with pkgs;
   onefetch
   eza
   which
-  # fzf -> managed by programs.fzf
   tmux
   uv
   ncdu
-  # delta -> managed by programs.delta
   tldr
   pet
   just
@@ -36,7 +32,6 @@ with pkgs;
 
   # nix
   nix-tree
-  # direnv -> managed by programs.direnv
   cachix
   niv
 
@@ -45,10 +40,8 @@ with pkgs;
   lazydocker
 
   # github
-  # git -> managed by programs.git
   gh
   ghq
-  # lazygit -> managed by programs.lazygit
   git-wt
   jujutsu
   gitui
