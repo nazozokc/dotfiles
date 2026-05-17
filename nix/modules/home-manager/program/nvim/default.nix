@@ -61,5 +61,22 @@ in
   };
 
   # dotfilesリポジトリのnvim/を~/.config/nvimにsymlink
-  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink nvimDotfilesDir;
+  home.activation.linkNvim = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    dotfilesDir="${nvimDotfilesDir}"
+    target="$HOME/.config/nvim"
+
+    if [ -L "$target" ]; then
+      # 既存のsymlinkを貼り直し
+      rm -f "$target"
+      ln -s "$dotfilesDir" "$target"
+    elif [ -e "$target" ]; then
+      # 実ファイル/ディレクトリがある場合は退避
+      backup="$target.bak.$(date +%Y%m%d%H%M%S)"
+      echo "WARNING: $target exists. Moving to $backup"
+      mv "$target" "$backup"
+      ln -s "$dotfilesDir" "$target"
+    else
+      ln -s "$dotfilesDir" "$target"
+    fi
+  '';
 }
