@@ -146,6 +146,15 @@ in
             ];
             enabled = true;
           };
+          playwright = {
+            type = "local";
+            command = [
+              "${pkgs.playwright-mcp}/bin/playwright-mcp"
+              "--cdp-endpoint"
+              "http://localhost:9222"
+            ];
+            enabled = true;
+          };
         };
 
         skills = {

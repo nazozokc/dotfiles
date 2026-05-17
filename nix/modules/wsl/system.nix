@@ -108,5 +108,6 @@
 
     [network]
     generateResolvConf = true
+    networkingMode = mirrored
   '';
 }
