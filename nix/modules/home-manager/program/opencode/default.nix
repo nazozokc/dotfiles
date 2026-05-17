@@ -161,6 +161,11 @@ in
           };
         };
 
+        instructions = [
+          "${dotfilesDir}/opencode/rules/*.md"
+          "${dotfilesDir}/opencode/output-style/*.md"
+        ];
+
         skills = {
           paths = [
             "${dotfilesDir}/opencode/skills"
