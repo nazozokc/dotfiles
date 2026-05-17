@@ -50,9 +50,6 @@
     # ネットワーク
     nmap
 
-    # システム監視
-    btop
-
     # フォント
     fontconfig
 
