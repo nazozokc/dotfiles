@@ -48,6 +48,8 @@ with pkgs;
   cmake
   ninja
 
+  # playwright
+  playwright-driver
 ]
 ++ lib.optionals pkgs.stdenv.isLinux [
   # front end tools
