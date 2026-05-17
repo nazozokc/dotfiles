@@ -150,9 +150,13 @@ in
             type = "local";
             command = [
               "${pkgs.playwright-mcp}/bin/playwright-mcp"
-              "--cdp-endpoint"
-              "http://localhost:9222"
+              "--browser"
+              "chrome"
+              "--no-sandbox"
             ];
+            env = {
+              PWMCP_PROFILES_DIR_FOR_TEST = "${homeDir}/.local/share/playwright-mcp/profiles";
+            };
             enabled = true;
           };
         };
