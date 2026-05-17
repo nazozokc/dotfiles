@@ -9,7 +9,7 @@ in
     ./program/git
     ./program/lazygit
     ./program/starship
-    ./program/direnv
+    ./program/direnv.nix
     ./program/fzf
     ./program/bat
     ./program/tmux
@@ -19,6 +19,7 @@ in
     ./program/opencode
     ./program/claude-code
     ./program/vscode
+    ./program/ghostty.nix
     ./program/docker
   ];
 
