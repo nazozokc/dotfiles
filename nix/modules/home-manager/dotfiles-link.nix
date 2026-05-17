@@ -1,7 +1,6 @@
-{ config, ... }:
+{ config, dotfilesDir, ... }:
 
 let
-  dotfilesDir = "${config.home.homeDirectory}/ghq/github.com/nazozokc/dotfiles";
   link = config.lib.file.mkOutOfStoreSymlink;
 in
 {

@@ -136,6 +136,10 @@
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
+          extraSpecialArgs = {
+            inherit username;
+            dotfilesDir = self.outPath;
+          };
           modules = [
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
@@ -157,6 +161,10 @@
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
+          extraSpecialArgs = {
+            inherit username;
+            dotfilesDir = self.outPath;
+          };
           modules = [
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
@@ -324,7 +332,10 @@
         # macOS 向け nix-darwin 設定
         darwinConfigurations.${username} = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          specialArgs = { inherit username; };
+          specialArgs = {
+            inherit username;
+            dotfilesDir = self.outPath;
+          };
           modules = [
             nix-index-database.darwinModules.nix-index
             ./nix/modules/darwin/system.nix

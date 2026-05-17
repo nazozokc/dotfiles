@@ -1,8 +1,4 @@
-{ pkgs, ... }:
-
-let
-  username = "nazozokc";
-in
+{ pkgs, username, ... }:
 {
   home.username = username;
 
