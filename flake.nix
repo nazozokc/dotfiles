@@ -343,6 +343,10 @@
             {
               nixpkgs.config.allowUnfree = true;
               home-manager.useGlobalPkgs = true;
+              home-manager.extraSpecialArgs = {
+                inherit username;
+                dotfilesDir = self.outPath;
+              };
               home-manager.users.${username} = {
                 imports = [
                   sops-nix.homeManagerModules.sops
