@@ -2,9 +2,6 @@
 
 with pkgs;
 [
-  # Editor
-  neovim
-
   # shell
   fish
   zsh
