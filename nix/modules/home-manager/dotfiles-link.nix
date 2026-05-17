@@ -11,5 +11,6 @@ in
     ".config/ghostty".source = link "${dotfilesDir}/ghostty";
     ".zshrc".source = link "${dotfilesDir}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDir}/bash/bashrc";
+    ".scripts".source = link "${dotfilesDir}/my_scripts";
   };
 }
