@@ -5,7 +5,7 @@
   # nix-darwin 基本設定
   ########################################
   system.stateVersion = 4;
-  system.primaryUser = "nazozokc";
+  system.primaryUser = username;
 
   ########################################
   # Nix 設定の強化

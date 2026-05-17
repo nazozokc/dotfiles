@@ -44,7 +44,6 @@
     nmap
 
     # システム監視
-    btop
     iotop
     lm_sensors
     sysstat

@@ -2,14 +2,14 @@
 
 with pkgs;
 [
-  #general
+  # general
   prettier
 
   # python
   python312
   pipx
 
-  # JS,TS
+  # js,ts
   nodejs_latest
   typescript-language-server
   typescript-go
@@ -30,17 +30,17 @@ with pkgs;
   nixd
   nixfmt
 
-  # Go-lang
+  # go
   go
   go-tools
 
   # lua
   stylua
 
-  #Java
+  # java
   jdk
 
-  #yaml
+  # yaml
   yamlfmt
 
   # package tools

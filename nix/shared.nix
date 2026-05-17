@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 let
   username = "nazozokc";
@@ -14,7 +14,7 @@ in
 
   programs.home-manager.enable = true;
 
-  home.sessionVariables = lib.mkIf (username != null) {
+  home.sessionVariables = {
     DOTFILES_USERNAME = username;
   };
 }
