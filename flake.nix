@@ -143,6 +143,7 @@
             (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
             ./nix/modules/linux/system.nix
             ./nix/modules/home-manager/dotfiles-link.nix
+            ./nix/modules/home-manager/program/nvim/default.nix
             agent-skills-nix.homeManagerModules.default
             ./nix/modules/home-manager/agent-skills.nix
           ];
@@ -163,6 +164,7 @@
             (import ./nix/modules/home-manager/tools-read-wsl.nix { inherit pkgs; })
             ./nix/modules/wsl/system.nix
             ./nix/modules/home-manager/dotfiles-link.nix
+            ./nix/modules/home-manager/program/nvim/default.nix
             agent-skills-nix.homeManagerModules.default
             ./nix/modules/home-manager/agent-skills.nix
           ];
@@ -339,6 +341,7 @@
                   })
                   ./nix/modules/home-manager/darwin.nix
                   ./nix/modules/home-manager/dotfiles-link.nix
+                  ./nix/modules/home-manager/program/nvim/default.nix
                   agent-skills-nix.homeManagerModules.default
                   ./nix/modules/home-manager/agent-skills.nix
                 ];
