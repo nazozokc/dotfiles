@@ -1,4 +1,12 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  ...
+}:
+let
+  isLinux = pkgs.stdenv.isLinux;
+  isDarwin = pkgs.stdenv.isDarwin;
+in
 {
   programs.git = {
     enable = true;
@@ -10,17 +18,47 @@
       };
 
       init.defaultBranch = "main";
+
       core = {
         editor = "nvim";
         pager = "delta";
+        autocorrect = 10;
       };
+
       pull.rebase = true;
-      push.autoSetupRemote = true;
+      push = {
+        autoSetupRemote = true;
+        default = "current";
+      };
       fetch.prune = true;
       merge.ff = "only";
-      rebase.autoStash = true;
-      # credential helper is platform-specific:
-      # macOS uses osxkeychain by default, Linux users should configure separately
+      rebase = {
+        autoStash = true;
+        updateRefs = true;
+      };
+      rerere.enabled = true;
+
+      help.autocorrect = 10;
+
+      diff = {
+        colorMoved = "zebra";
+        algorithm = "histogram";
+      };
+
+      branch.sort = "-committerdate";
+
+      status = {
+        short = true;
+        branch = true;
+        showStash = true;
+      };
+
+      # credential helper is platform-specific
+      credential = lib.mkMerge [
+        (lib.mkIf isDarwin { helper = "osxkeychain"; })
+        (lib.mkIf isLinux { helper = "${pkgs.git}/bin/git-credential-libsecret"; })
+      ];
+
       commit.gpgSign = false;
 
       alias = {
@@ -29,7 +67,8 @@
         c = "commit";
         d = "diff";
         l = "log --oneline --graph --decorate";
-        la = "log --oneline --graph --decorate --all";
+        ll = "log --oneline --graph --decorate --all";
+        la = "log --all --graph --decorate --format='%C(auto)%h%C(reset) %C(blue)%an%C(reset) %C(green)%ar%C(reset) %s'";
         p = "push";
         pl = "pull";
         co = "checkout";
@@ -39,6 +78,8 @@
         cm = "commit -m";
         ca = "commit --amend";
         can = "commit --amend --no-edit";
+        fixup = "!f() { git commit --fixup \"$(git rev-parse --abbrev-ref HEAD)\"; }; f";
+        squash = "!f() { git rebase -i --autosquash \"${"1:-HEAD~5"}\"; }; f";
         rs = "reset";
         rh = "reset HEAD~1";
         rsh = "reset --hard HEAD~1";
@@ -73,11 +114,14 @@
 
   programs.delta = {
     enable = true;
+    enableGitIntegration = true;
     options = {
       line-numbers = true;
       side-by-side = true;
       navigate = true;
       features = "decorations";
+      true-color = "always";
+      hyperlinks = true;
       decorations = {
         commit-decoration-style = "bold yellow box ul";
         file-decoration-style = "none";
