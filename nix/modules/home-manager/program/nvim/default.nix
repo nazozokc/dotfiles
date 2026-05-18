@@ -7,7 +7,28 @@
 let
   nvimDotfilesDir = "${dotfilesDir}/nvim";
 
-  treesitterGrammars = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
+  treesitterGrammars = pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: [
+    plugins.nix
+    plugins.lua
+    plugins.typescript
+    plugins.tsx
+    plugins.javascript
+    plugins.python
+    plugins.rust
+    plugins.go
+    plugins.json
+    plugins.yaml
+    plugins.toml
+    plugins.markdown
+    plugins.markdown_inline
+    plugins.html
+    plugins.css
+    plugins.bash
+    plugins.dockerfile
+    plugins.gitignore
+    plugins.regex
+    plugins.diff
+  ]);
 in
 {
   programs.neovim = {

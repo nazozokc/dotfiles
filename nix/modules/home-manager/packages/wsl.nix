@@ -1,5 +1,5 @@
 { pkgs }:
-
+# WSL packages: same as default but without GUI apps
 let
   inherit (pkgs.lib) flatten;
 in

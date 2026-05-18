@@ -9,7 +9,5 @@
       style = "numbers,changes,header";
       tabs = "2";
     };
-
-    extraPackages = [ ];
   };
 }

@@ -140,31 +140,38 @@ in
         };
       };
 
-      mcp = {
-        context7 = {
-          type = "local";
-          command = [
-            "${pkgs.bun}/bin/bunx"
-            "-y"
-            "@upstash/context7-mcp"
-          ];
-          enabled = true;
-        };
-        playwright = {
-          type = "local";
-          command = [
-            "${pkgs.playwright-mcp}/bin/playwright-mcp"
-            "--browser"
-            "chromium"
-            "--no-sandbox"
-          ];
-          env = {
-            PWMCP_PROFILES_DIR_FOR_TEST = "${homeDir}/.local/share/playwright-mcp/profiles";
+      mcp =
+        let
+          linuxMcp = {
+            playwright = {
+              type = "local";
+              command = [
+                "${pkgs.playwright-mcp}/bin/playwright-mcp"
+                "--browser"
+                "chromium"
+                "--no-sandbox"
+              ];
+              env = {
+                PWMCP_PROFILES_DIR_FOR_TEST = "${homeDir}/.local/share/playwright-mcp/profiles";
+              };
+              enabled = true;
+            };
           };
-          enabled = true;
-        };
-      };
+        in
+        {
+          context7 = {
+            type = "local";
+            command = [
+              "${pkgs.bun}/bin/bunx"
+              "-y"
+              "@upstash/context7-mcp"
+            ];
+            enabled = true;
+          };
+        }
+        // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux linuxMcp;
 
+      # These paths are glob patterns resolved by opencode at runtime, not by Nix
       instructions = [
         "${dotfilesDir}/opencode/rules/*.md"
         "${dotfilesDir}/opencode/output-style/*.md"

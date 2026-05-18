@@ -5,6 +5,7 @@
 
   home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
 
+  # Keep in sync with your nixpkgs channel version
   home.stateVersion = "26.05";
 
   xdg.enable = true;

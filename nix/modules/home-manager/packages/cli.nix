@@ -2,7 +2,7 @@
 
 with pkgs;
 [
-  #agent
+  # agent
   ollama
   opencode
   claude-monitor
@@ -12,13 +12,13 @@ with pkgs;
   pi-coding-agent
   grok-cli
 
-  #other
+  # other
   pay-respects
 
-  #nix
+  # nix
   nix-output-monitor
 
-  #downloader
+  # downloader
   aria2
   mise
 ]

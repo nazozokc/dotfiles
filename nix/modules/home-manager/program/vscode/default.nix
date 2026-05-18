@@ -1,4 +1,10 @@
 { pkgs, ... }:
+let
+  langFormat = formatter: {
+    "editor.defaultFormatter" = formatter;
+    "editor.formatOnSave" = true;
+  };
+in
 {
   programs.vscode = {
     enable = true;
@@ -144,32 +150,13 @@
         ];
 
         # ===== Language specific =====
-        "[typescript]" = {
-          "editor.defaultFormatter" = "esbenp.prettier-vscode";
-          "editor.formatOnSave" = true;
-        };
-        "[typescriptreact]" = {
-          "editor.defaultFormatter" = "esbenp.prettier-vscode";
-          "editor.formatOnSave" = true;
-        };
-        "[javascript]" = {
-          "editor.defaultFormatter" = "esbenp.prettier-vscode";
-          "editor.formatOnSave" = true;
-        };
-        "[json]" = {
-          "editor.defaultFormatter" = "esbenp.prettier-vscode";
-          "editor.formatOnSave" = true;
-        };
-        "[nix]" = {
-          "editor.defaultFormatter" = "jnoortheen.nix-ide";
-          "editor.formatOnSave" = true;
-        };
-        "[python]" = {
-          "editor.defaultFormatter" = "ms-python.python";
-          "editor.formatOnSave" = true;
-        };
-        "[markdown]" = {
-          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+        "[typescript]" = langFormat "esbenp.prettier-vscode";
+        "[typescriptreact]" = langFormat "esbenp.prettier-vscode";
+        "[javascript]" = langFormat "esbenp.prettier-vscode";
+        "[json]" = langFormat "esbenp.prettier-vscode";
+        "[nix]" = langFormat "jnoortheen.nix-ide";
+        "[python]" = langFormat "ms-python.python";
+        "[markdown]" = (langFormat "esbenp.prettier-vscode") // {
           "editor.wordWrap" = "on";
         };
 
