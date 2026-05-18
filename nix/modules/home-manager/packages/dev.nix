@@ -50,9 +50,10 @@ with pkgs;
 
   # playwright
   playwright-driver
+
+  # front end tools (Linux only)
 ]
-++ pkgs.lib.optionals pkgs.stdenv.isLinux [
-  # front end tools
+++ lib.optionals stdenv.isLinux [
   vite
   chromium
 ]

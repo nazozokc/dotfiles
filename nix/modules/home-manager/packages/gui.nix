@@ -1,4 +1,5 @@
 { pkgs }:
+
 with pkgs;
 [
   wezterm
@@ -6,15 +7,16 @@ with pkgs;
   vscode
   zed
 ]
-++ pkgs.lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
+++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
+  # x86_64 only: ARM Linux builds unavailable for these packages
   ghostty
   tor-browser
   vicinae
 ]
-++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+++ lib.optionals stdenv.isDarwin [
   raycast
 ]
-++ pkgs.lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux" || pkgs.stdenv.isDarwin) [
+++ lib.optionals (stdenv.isLinux || stdenv.isDarwin) [
   spotify
   discord
   google-chrome

@@ -51,28 +51,46 @@ nix/
 │   │   └── system.nix
 │   ├── home-manager/
 │   │   ├── darwin.nix
-│   │   ├── symlinks.nix
+│   │   ├── dotfiles-link.nix
 │   │   ├── tools-read.nix
+│   │   ├── tools-read-wsl.nix
 │   │   ├── agent-skills.nix
+│   │   ├── programs-common.nix
 │   │   ├── packages/
 │   │   │   ├── base.nix
 │   │   │   ├── cli.nix
 │   │   │   ├── default.nix
 │   │   │   ├── dev.nix
 │   │   │   ├── gui.nix
-│   │   │   └── treefmt.nix
+│   │   │   ├── treefmt.nix
+│   │   │   └── wsl.nix
 │   │   └── program/
-│   │       └── gh/
-│   │           └── gh.nix
-│   └── linux/
+│   │       ├── bat/
+│   │       ├── claude-code/
+│   │       ├── docker/
+│   │       ├── fzf/
+│   │       ├── gh/
+│   │       ├── git/
+│   │       ├── jujutsu/
+│   │       ├── lazygit/
+│   │       ├── nvim/
+│   │       ├── opencode/
+│   │       ├── sops/
+│   │       ├── starship/
+│   │       ├── tmux/
+│   │       ├── vscode/
+│   │       ├── yazi/
+│   │       ├── direnv.nix
+│   │       └── ghostty.nix
+│   ├── linux/
+│   │   └── system.nix
+│   └── wsl/
 │       └── system.nix
 ├── overlays/
 │   ├── ai-tools.nix
 │   ├── default.nix
-│   ├── node-packages.nix
-│   └── nix-index.nix
+│   └── node-packages.nix
 ├── README.md
-├── cachix.nix
 └── shared.nix
 ```
 

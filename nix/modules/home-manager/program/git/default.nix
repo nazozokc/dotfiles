@@ -19,7 +19,8 @@
       fetch.prune = true;
       merge.ff = "only";
       rebase.autoStash = true;
-      credential.helper = "store";
+      # credential helper is platform-specific:
+      # macOS uses osxkeychain by default, Linux users should configure separately
       commit.gpgSign = false;
 
       alias = {

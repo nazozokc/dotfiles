@@ -43,7 +43,8 @@ let
         "Bash(sudo:*)"
         "Bash(curl:*)"
         "Bash(wget:*)"
-        "Bash(rm -rf /:*)"
+        "Bash(rm -rf /*:*)"
+        "Bash(rm -rf ~/*:*)"
       ];
     };
   };
