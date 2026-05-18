@@ -183,7 +183,6 @@ in
         ];
       };
 
-
       reference = {
         dotfiles = {
           repository = "github:nazozokc/dotfiles";
@@ -214,7 +213,6 @@ in
           ".cache/**"
         ];
       };
-
 
       autoupdate = "notify";
 
