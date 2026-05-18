@@ -1,6 +1,6 @@
 # nix/overlays/default.nix
 final: prev:
 prev.lib.composeManyExtensions [
-  ./ai-tools.nix
-  ./node-packages.nix
+  (import ./ai-tools.nix)
+  (import ./node-packages.nix)
 ] final prev
