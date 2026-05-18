@@ -18,7 +18,7 @@ with pkgs;
 ++ lib.optionals stdenv.isDarwin [
   raycast
 ]
-++ lib.optionals (stdenv.isLinux || stdenv.isDarwin) [
+++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux" || stdenv.isDarwin) [
   spotify
   discord
   google-chrome
