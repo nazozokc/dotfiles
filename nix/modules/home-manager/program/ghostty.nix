@@ -1,91 +1,85 @@
+{ ... }:
+
 {
-  programs.ghostty = {
-    enable = true;
+  xdg.configFile."ghostty/config".text = ''
+    # ====================
+    # Font
+    # ====================
+    font-family = "JetBrainsMono Nerd Font"
+    font-size = 13
+    adjust-cell-height = 5%
+    adjust-cell-width = 0%
 
-    settings = {
-      # ====================
-      # Font
-      # ====================
-      font-family = "JetBrainsMono Nerd Font";
-      font-size = 13;
-      adjust-cell-height = "5%";
-      adjust-cell-width = "0%";
+    # ====================
+    # Colors
+    # ====================
+    background-opacity = 0.90
+    foreground = #C5C9C5
+    background = #181616
+    cursor-color = #C5C9C5
+    selection-foreground = #C5C9C5
+    selection-background = #2D4F67
 
-      # ====================
-      # Colors
-      # ====================
-      background-opacity = 0.90;
-      foreground = "#C5C9C5";
-      background = "#181616";
-      cursor-color = "#C5C9C5";
-      selection-foreground = "#C5C9C5";
-      selection-background = "#2D4F67";
+    # ANSI colors
+    palette = 0=#0D0C0C
+    palette = 1=#C4746E
+    palette = 2=#8A9A7B
+    palette = 3=#C4B28A
+    palette = 4=#8BA4B0
+    palette = 5=#A292A3
+    palette = 6=#8EA4A2
+    palette = 7=#C5C9C5
+    palette = 8=#A6A69C
+    palette = 9=#E46876
+    palette = 10=#87A987
+    palette = 11=#E6C384
+    palette = 12=#7FB4CA
+    palette = 13=#938AA9
+    palette = 14=#7AA89F
+    palette = 15=#C5C9C5
 
-      # ANSI colors
-      palette = [
-        "0=#0D0C0C"
-        "1=#C4746E"
-        "2=#8A9A7B"
-        "3=#C4B28A"
-        "4=#8BA4B0"
-        "5=#A292A3"
-        "6=#8EA4A2"
-        "7=#C5C9C5"
-        "8=#A6A69C"
-        "9=#E46876"
-        "10=#87A987"
-        "11=#E6C384"
-        "12=#7FB4CA"
-        "13=#938AA9"
-        "14=#7AA89F"
-        "15=#C5C9C5"
-      ];
+    # ====================
+    # Window
+    # ====================
+    window-padding-x = 6
+    window-padding-y = 4
+    window-decoration = true
 
-      # ====================
-      # Window
-      # ====================
-      window-padding-x = 6;
-      window-padding-y = 4;
-      window-decoration = true;
+    # ====================
+    # Mouse
+    # ====================
+    mouse-hide-while-typing = true
 
-      # ====================
-      # Mouse
-      # ====================
-      mouse-hide-while-typing = true;
+    # ====================
+    # Tabs
+    # ====================
+    title = "$PWD"
 
-      # ====================
-      # Tabs
-      # ====================
-      title = "$PWD";
-
-      # ====================
-      # Keybinds
-      # ====================
-      keybind = [
-        "ctrl+shift+t=new_tab"
-        "ctrl+shift+w=close_tab"
-        "ctrl+shift+q=close_surface"
-        "ctrl+shift+e=new_split:right"
-        "ctrl+shift+d=new_split:down"
-        "ctrl+shift+z=toggle_split_zoom"
-        "ctrl+shift+page_up=previous_tab"
-        "ctrl+shift+page_down=next_tab"
-        "ctrl+shift+enter=toggle_fullscreen"
-        "ctrl+shift+n=new_window"
-        "ctrl+shift+c=copy_to_clipboard"
-        "ctrl+shift+v=paste_from_clipboard"
-        "ctrl+shift+r=reload_config"
-        # Pane navigation (vim-style)
-        "ctrl+shift+h=goto_split:left"
-        "ctrl+shift+j=goto_split:bottom"
-        "ctrl+shift+k=goto_split:top"
-        "ctrl+shift+l=goto_split:right"
-        # Pane resize (vim-style)
-        "ctrl+shift+alt+h=resize_split:left,20"
-        "ctrl+shift+alt+j=resize_split:down,20"
-        "ctrl+shift+alt+k=resize_split:up,20"
-        "ctrl+shift+alt+l=resize_split:right,20"
-      ];
-    };
-  };
+    # ====================
+    # Keybinds
+    # ====================
+    keybind = ctrl+shift+t=new_tab
+    keybind = ctrl+shift+w=close_tab
+    keybind = ctrl+shift+q=close_surface
+    keybind = ctrl+shift+e=new_split:right
+    keybind = ctrl+shift+d=new_split:down
+    keybind = ctrl+shift+z=toggle_split_zoom
+    keybind = ctrl+shift+page_up=previous_tab
+    keybind = ctrl+shift+page_down=next_tab
+    keybind = ctrl+shift+enter=toggle_fullscreen
+    keybind = ctrl+shift+n=new_window
+    keybind = ctrl+shift+c=copy_to_clipboard
+    keybind = ctrl+shift+v=paste_from_clipboard
+    keybind = ctrl+shift+r=reload_config
+    # Pane navigation (vim-style)
+    keybind = ctrl+shift+h=goto_split:left
+    keybind = ctrl+shift+j=goto_split:bottom
+    keybind = ctrl+shift+k=goto_split:top
+    keybind = ctrl+shift+l=goto_split:right
+    # Pane resize (vim-style)
+    keybind = ctrl+shift+alt+h=resize_split:left,20
+    keybind = ctrl+shift+alt+j=resize_split:down,20
+    keybind = ctrl+shift+alt+k=resize_split:up,20
+    keybind = ctrl+shift+alt+l=resize_split:right,20
+  '';
 }
