@@ -281,13 +281,11 @@
               name = "dotfiles-editors";
               packages = with pkgs; [
                 stylua
-                lua-language-server
                 nodejs_24
               ];
               shellHook = ''
                 echo "[devShell:editors]"
                 stylua --version
-                lua-language-server --version
                 node --version
               '';
             };
