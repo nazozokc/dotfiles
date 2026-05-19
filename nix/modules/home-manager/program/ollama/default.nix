@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   ...
 }:
@@ -14,5 +12,6 @@
 
   home.packages = with pkgs; [
     oterm
+    aider-chat-full
   ];
 }
