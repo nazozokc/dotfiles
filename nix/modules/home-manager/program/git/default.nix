@@ -32,33 +32,9 @@ in
       };
       fetch.prune = true;
       merge.ff = "only";
-      rebase = {
-        autoStash = true;
-        updateRefs = true;
-      };
-      rerere.enabled = true;
-
-      help.autocorrect = 10;
-
-      diff = {
-        colorMoved = "zebra";
-        algorithm = "histogram";
-      };
-
-      branch.sort = "-committerdate";
-
-      status = {
-        short = true;
-        branch = true;
-        showStash = true;
-      };
-
-      # credential helper is platform-specific
-      credential = lib.mkMerge [
-        (lib.mkIf isDarwin { helper = "osxkeychain"; })
-        (lib.mkIf isLinux { helper = "${pkgs.git}/bin/git-credential-libsecret"; })
-      ];
-
+      rebase.autoStash = true;
+      # credential helper is platform-specific:
+      # macOS uses osxkeychain by default, Linux users should configure separately
       commit.gpgSign = false;
 
       alias = {

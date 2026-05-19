@@ -16,6 +16,7 @@
     ./program/opencode
     ./program/claude-code
     ./program/ghostty.nix
+    ./program/ollama
     ./program/docker
   ];
 }
