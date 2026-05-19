@@ -12,6 +12,7 @@ on:
       - "**/*.yml"
       - "**/*.ts"
       - ".github/workflows/treefmt.yml"
+      - ".github/workflows/_nix-ci.yml"
   push:
     paths:
       - "**/*.nix"
@@ -24,6 +25,7 @@ on:
       - "**/*.yml"
       - "**/*.ts"
       - ".github/workflows/treefmt.yml"
+      - ".github/workflows/_nix-ci.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,11 +33,7 @@ concurrency:
 
 jobs:
   treefmt:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - name: treefmt check
-        run: nix fmt -- --ci
+    uses: ./.github/workflows/_nix-ci.yml
+    with:
+      run-command: nix fmt -- --ci
+      timeout-minutes: 10

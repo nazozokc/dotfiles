@@ -7,6 +7,7 @@ on:
       - "flake.nix"
       - "flake.lock"
       - ".github/workflows/flake-check.yml"
+      - ".github/workflows/_nix-ci.yml"
   pull_request:
 
 concurrency:
@@ -15,10 +16,7 @@ concurrency:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - run: nix flake check --no-build
+    uses: ./.github/workflows/_nix-ci.yml
+    with:
+      run-command: nix flake check --no-build
+      timeout-minutes: 10
