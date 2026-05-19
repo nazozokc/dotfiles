@@ -81,5 +81,12 @@ end
 abbr --add df df\ -h
 abbr --add du du\ -h
 
+# Ollama
+abbr --add o ollama
+abbr --add ol 'ollama list'
+abbr --add ops 'ollama ps'
+abbr --add or 'ollama run'
+abbr --add op 'ollama pull'
+
 # nix
 abbr --add ns nix-shell
