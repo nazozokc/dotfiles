@@ -8,6 +8,9 @@ on:
     paths:
       - ".github/workflows/**"
       - ".github/actionlint.yaml"
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,10 +18,7 @@ concurrency:
 
 jobs:
   actionlint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - name: actionlint
-        run: nix shell nixpkgs#actionlint --command actionlint
+    uses: ./.github/workflows/_nix-ci.yml
+    with:
+      run-command: nix shell nixpkgs#actionlint --command actionlint
+      timeout-minutes: 10
