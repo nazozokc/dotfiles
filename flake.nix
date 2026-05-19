@@ -119,6 +119,9 @@
         import nixpkgs {
           localSystem.system = system;
           config.allowUnfree = true;
+          config.problems = {
+            handlers.dlinfo.broken = "warn";
+          };
           overlays = [
             (_: _: { _llm-agents = llm-agents; })
             overlay
@@ -342,6 +345,9 @@
             home-manager.darwinModules.home-manager
             {
               nixpkgs.config.allowUnfree = true;
+              nixpkgs.config.problems = {
+                handlers.dlinfo.broken = "warn";
+              };
               home-manager.useGlobalPkgs = true;
               home-manager.extraSpecialArgs = {
                 inherit username;
