@@ -147,7 +147,7 @@
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           extraSpecialArgs = {
-            inherit username;
+            inherit pkgs username;
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
@@ -172,7 +172,7 @@
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           extraSpecialArgs = {
-            inherit username;
+            inherit pkgs username;
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
@@ -396,6 +396,7 @@
               };
               home-manager.useGlobalPkgs = true;
               home-manager.extraSpecialArgs = {
+                pkgs = pkgsFor "aarch64-darwin";
                 inherit username;
                 dotfilesDir = self.outPath;
               };
