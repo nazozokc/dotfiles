@@ -107,7 +107,7 @@ nix run .#update
 
 - **シェル**: fish
 - **エディタ**: Neovim, VSCode 設定
-- **CLIツール**: `nix/modules/tools/packages.nix`
+- **CLIツール**: `nix/modules/home-manager/packages/default.nix`
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理 (`checkFilesChanged`, `checkLinkTargets`)
 - **macOS限定**: nix-darwin によるシステム設定
 
