@@ -406,7 +406,6 @@
                   (import ./nix/modules/home-manager/tools-read.nix {
                     pkgs = pkgsFor "aarch64-darwin";
                   })
-                  ./nix/modules/home-manager/darwin.nix
                   ./nix/modules/home-manager/dotfiles-link.nix
                   ./nix/modules/home-manager/program/nvim/default.nix
                   agent-skills-nix.homeManagerModules.default
