@@ -11,6 +11,15 @@ let
   hasSecretsFile = builtins.pathExists secretsFile;
 in
 {
+  home.file.".config/secrets/.keep".text = "";
+
+  home.sessionVariables = {
+    SOPS_AGE_KEY_FILE = "${homeDir}/.config/sops/age/keys.txt";
+    GITHUB_TOKEN_PATH = "${homeDir}/.config/secrets/github_token";
+    OPENAI_API_KEY_PATH = "${homeDir}/.config/secrets/openai_api_key";
+    ANTHROPIC_API_KEY_PATH = "${homeDir}/.config/secrets/anthropic_api_key";
+  };
+
   sops = lib.mkIf pkgs.stdenv.isLinux {
     age = {
       keyFile = "${homeDir}/.config/sops/age/keys.txt";
