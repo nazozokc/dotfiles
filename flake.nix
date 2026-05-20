@@ -140,10 +140,8 @@
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
             ./nix/shared.nix
-            ./nix/modules/home-manager/dotfiles-link.nix
-            ./nix/modules/home-manager/program/nvim/default.nix
+            ./nix/home
             agent-skills-nix.homeManagerModules.default
-            ./nix/modules/home-manager/agent-skills.nix
           ];
         in
         home-manager.lib.homeManagerConfiguration {
@@ -153,8 +151,8 @@
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
-            (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
-            ./nix/modules/linux/system.nix
+            (import ./nix/home/tools-read.nix { inherit pkgs; })
+            ./nix/systems/linux.nix
           ];
         };
 
@@ -167,10 +165,8 @@
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
             ./nix/shared.nix
-            ./nix/modules/home-manager/dotfiles-link.nix
-            ./nix/modules/home-manager/program/nvim/default.nix
+            ./nix/home
             agent-skills-nix.homeManagerModules.default
-            ./nix/modules/home-manager/agent-skills.nix
           ];
         in
         home-manager.lib.homeManagerConfiguration {
@@ -180,8 +176,8 @@
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
-            (import ./nix/modules/home-manager/tools-read-wsl.nix { inherit pkgs; })
-            ./nix/modules/wsl/system.nix
+            (import ./nix/home/tools-read-wsl.nix { inherit pkgs; })
+            ./nix/systems/wsl.nix
           ];
         };
 
@@ -189,7 +185,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       imports = [
-        ./nix/modules/home-manager/packages/treefmt.nix
+        ./nix/home/packages/treefmt.nix
       ];
       systems = [
         "x86_64-linux" # メイン PC (Arch Linux)
@@ -391,7 +387,7 @@
           };
           modules = [
             nix-index-database.darwinModules.nix-index
-            ./nix/modules/darwin/system.nix
+            ./nix/systems/darwin.nix
             home-manager.darwinModules.home-manager
             {
               nixpkgs.config.allowUnfree = true;
@@ -407,13 +403,11 @@
                 imports = [
                   sops-nix.homeManagerModules.sops
                   ./nix/shared.nix
-                  (import ./nix/modules/home-manager/tools-read.nix {
+                  (import ./nix/home/tools-read.nix {
                     pkgs = pkgsFor "aarch64-darwin";
                   })
-                  ./nix/modules/home-manager/dotfiles-link.nix
-                  ./nix/modules/home-manager/program/nvim/default.nix
+                  ./nix/home
                   agent-skills-nix.homeManagerModules.default
-                  ./nix/modules/home-manager/agent-skills.nix
                 ];
               };
             }
