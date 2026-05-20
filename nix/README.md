@@ -127,3 +127,33 @@ nix run .#update
 
 **あまり参照はないが参考にはなりそう**
 <https://github.com/ntsk/dotfiles>
+
+## 運用ポリシー（追加）
+
+### CI品質ゲート
+
+- PR の必須チェックは以下。
+  - `nix flake check`
+  - `nix fmt -- --ci`
+- 上記は Linux / macOS の両方で実行する。
+
+### sops-nix シークレット運用
+
+- 暗号化ファイルは `secrets/common.yaml` を使用する。
+- home-manager の展開先:
+  - `api/github_token` → `~/.config/secrets/github_token`
+  - `api/openai_api_key` → `~/.config/secrets/openai_api_key`
+  - `api/anthropic_api_key` → `~/.config/secrets/anthropic_api_key`
+- AGE鍵は `~/.config/sops/age/keys.txt`。
+- `secrets/common.yaml` がない環境では secret を読まない（復号不要のCIを壊さないため）。
+
+### home.stateVersion 更新ルール
+
+- 定義位置: `nix/shared.nix`
+- 現在値: `26.05`
+- 互換性優先のため普段は固定する。
+- 更新時は以下を必須にする。
+  1. 変更理由をPR本文に明記
+  2. `nix flake check` 通過
+  3. `nix run .#build` 通過
+  4. dotfilesリンク・主要CLI起動確認結果をPRに記録
