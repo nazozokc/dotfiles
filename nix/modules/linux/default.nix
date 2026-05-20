@@ -1,3 +1,5 @@
+# nix/modules/linux/default.nix
+# Linux 固有の home-manager 設定
 { pkgs, ... }:
 
 {

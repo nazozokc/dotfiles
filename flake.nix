@@ -140,7 +140,7 @@
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
             ./nix/shared.nix
-            ./nix/home
+            ./nix/modules/home
             agent-skills-nix.homeManagerModules.default
           ];
         in
@@ -151,8 +151,8 @@
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
-            (import ./nix/home/tools-read.nix { inherit pkgs; })
-            ./nix/systems/linux.nix
+            (import ./nix/modules/home/tools-read.nix { inherit pkgs; })
+            ./nix/modules/linux
           ];
         };
 
@@ -165,7 +165,7 @@
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
             ./nix/shared.nix
-            ./nix/home
+            ./nix/modules/home
             agent-skills-nix.homeManagerModules.default
           ];
         in
@@ -176,8 +176,8 @@
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
-            (import ./nix/home/tools-read-wsl.nix { inherit pkgs; })
-            ./nix/systems/wsl.nix
+            (import ./nix/modules/home/tools-read-wsl.nix { inherit pkgs; })
+            ./nix/modules/wsl
           ];
         };
 
@@ -185,7 +185,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       imports = [
-        ./nix/home/packages/treefmt.nix
+        ./nix/modules/home/packages/treefmt.nix
       ];
       systems = [
         "x86_64-linux" # メイン PC (Arch Linux)
@@ -387,7 +387,7 @@
           };
           modules = [
             nix-index-database.darwinModules.nix-index
-            ./nix/systems/darwin.nix
+            ./nix/modules/macos
             home-manager.darwinModules.home-manager
             {
               nixpkgs.config.allowUnfree = true;
@@ -404,10 +404,10 @@
                 imports = [
                   sops-nix.homeManagerModules.sops
                   ./nix/shared.nix
-                  (import ./nix/home/tools-read.nix {
+                  (import ./nix/modules/home/tools-read.nix {
                     pkgs = pkgsFor "aarch64-darwin";
                   })
-                  ./nix/home
+                  ./nix/modules/home
                   agent-skills-nix.homeManagerModules.default
                 ];
               };

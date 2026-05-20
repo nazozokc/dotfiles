@@ -1,3 +1,5 @@
+# nix/modules/macos/default.nix
+# macOS 固有の nix-darwin 設定
 { pkgs, username, ... }:
 
 {

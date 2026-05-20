@@ -1,3 +1,5 @@
+# nix/modules/wsl/default.nix
+# WSL 固有の home-manager 設定
 { pkgs, ... }:
 
 {

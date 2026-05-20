@@ -1,4 +1,4 @@
-# nix/home/default.nix
+# nix/modules/home/default.nix
 # home-manager設定のエントリーポイント
 # 各プラットフォーム共通のモジュールをここで集約する
 {

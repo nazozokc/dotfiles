@@ -14,7 +14,7 @@
 
 ## パッケージ管理のアーキテクチャ
 
-### 共通パッケージ (`nix/home/packages/default.nix`)
+### 共通パッケージ (`nix/modules/home/packages/default.nix`)
 
 以下のパッケージは両OS共通でインストールされます:
 
@@ -27,18 +27,18 @@
 - Git関連: git, gh, ghq, lazygit, gitui
 - GUI: wezterm, audacity, spotify, discord, ghostty
 
-### Linux専用パッケージ (`nix/systems/linux.nix`)
+### Linux専用パッケージ (`nix/modules/linux/default.nix`)
 
 - xclip, wl-clipboard (クリップボード)
 - pulseaudio, pavucontrol (音声)
 - unzip, zip (アーカイブ)
 - nmap (ネットワーク)
 
-### macOS専用パッケージ (`nix/home/packages/gui.nix`)
+### macOS専用パッケージ (`nix/modules/home/packages/gui.nix`)
 
 - raycast (GUIランチャー)
 
-### macOSシステムパッケージ (`nix/systems/darwin.nix`)
+### macOSシステムパッケージ (`nix/modules/macos/default.nix`)
 
 - git (nix-darwinのenvironment.systemPackagesで管理)
 
@@ -46,46 +46,49 @@
 
 ```
 nix/
-├── home/                          # home-manager 関連
-│   ├── default.nix                # エントリーポイント
-│   ├── dotfiles-link.nix
-│   ├── tools-read.nix
-│   ├── tools-read-wsl.nix
-│   ├── agent-skills.nix
-│   ├── programs-common.nix
-│   ├── packages/                  # パッケージインストール
-│   │   ├── base.nix
-│   │   ├── cli.nix
-│   │   ├── default.nix
-│   │   ├── dev.nix
-│   │   ├── gui.nix
-│   │   ├── treefmt.nix
-│   │   └── wsl.nix
-│   └── programs/                  # プログラム設定
-│       ├── bat/
-│       ├── claude-code/
-│       ├── docker/
-│       ├── fzf/
-│       ├── gh/
-│       ├── git/
-│       ├── jujutsu/
-│       ├── lazygit/
-│       ├── nvim/
-│       │   └── default.nix
-│       ├── ollama/
-│       ├── opencode/
-│       ├── sops/
-│       ├── starship/
-│       ├── tmux/
-│       ├── vscode/
-│       ├── yazi/
-│       ├── direnv.nix
-│       └── ghostty.nix
-├── systems/                       # OS固有システム設定
-│   ├── darwin.nix
-│   ├── linux.nix
-│   └── wsl.nix
-├── overlays/                      # カスタムoverlay
+├── modules/
+│   ├── home/                          # home-manager 関連
+│   │   ├── default.nix                # エントリーポイント
+│   │   ├── dotfiles-link.nix
+│   │   ├── tools-read.nix
+│   │   ├── tools-read-wsl.nix
+│   │   ├── agent-skills.nix
+│   │   ├── programs-common.nix
+│   │   ├── packages/                  # パッケージインストール
+│   │   │   ├── base.nix
+│   │   │   ├── cli.nix
+│   │   │   ├── default.nix
+│   │   │   ├── dev.nix
+│   │   │   ├── gui.nix
+│   │   │   ├── treefmt.nix
+│   │   │   └── wsl.nix
+│   │   └── programs/                  # プログラム設定
+│   │       ├── bat/
+│   │       ├── claude-code/
+│   │       ├── docker/
+│   │       ├── fzf/
+│   │       ├── gh/
+│   │       ├── git/
+│   │       ├── jujutsu/
+│   │       ├── lazygit/
+│   │       ├── nvim/
+│   │       │   └── default.nix
+│   │       ├── ollama/
+│   │       ├── opencode/
+│   │       ├── sops/
+│   │       ├── starship/
+│   │       ├── tmux/
+│   │       ├── vscode/
+│   │       ├── yazi/
+│   │       ├── direnv.nix
+│   │       └── ghostty.nix
+│   ├── linux/                         # Linux固有設定
+│   │   └── default.nix
+│   ├── macos/                         # macOS固有設定
+│   │   └── default.nix
+│   └── wsl/                           # WSL固有設定
+│       └── default.nix
+├── overlays/                          # カスタムoverlay
 │   ├── ai-tools.nix
 │   ├── default.nix
 │   └── node-packages.nix
