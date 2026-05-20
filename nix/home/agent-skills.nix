@@ -4,7 +4,7 @@
   programs.agent-skills = {
     enable = true;
     sources.local = {
-      path = ./../../../agents/skills;
+      path = ../../agents/skills;
       subdir = ".";
     };
     skills.enableAll = [ "local" ];
