@@ -147,7 +147,6 @@ nix fmt -- --ci
   2. 変更PRで `nix flake check` と `nix run .#build` を通過。
   3. 既存dotfilesリンク・シェル起動・主要CLI（git, gh, nvim）動作確認を記録。
 
-
 # Activity
 
 ![Alt](https://repobeats.axiom.co/api/embed/c4db566c918002010974abbbcc1ee5150bed51da.svg "Repobeats analytics image")
