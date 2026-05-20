@@ -34,9 +34,9 @@
 - unzip, zip (アーカイブ)
 - nmap (ネットワーク)
 
-### macOS専用パッケージ (`nix/modules/home-manager/darwin.nix`)
+### macOS専用パッケージ (`nix/modules/home-manager/packages/gui.nix`)
 
-- coreutils, gnused, gawk, inetutils (基本コマンド)
+- raycast (GUIランチャー)
 
 ### macOSシステムパッケージ (`nix/modules/darwin/system.nix`)
 
@@ -50,7 +50,6 @@ nix/
 │   ├── darwin/
 │   │   └── system.nix
 │   ├── home-manager/
-│   │   ├── darwin.nix
 │   │   ├── dotfiles-link.nix
 │   │   ├── tools-read.nix
 │   │   ├── tools-read-wsl.nix
