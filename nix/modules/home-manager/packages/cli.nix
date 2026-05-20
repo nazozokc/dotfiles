@@ -10,7 +10,6 @@ with pkgs;
   qwen-code
   codex
   pi-coding-agent
-  stack
   grok-cli
 
   # other
