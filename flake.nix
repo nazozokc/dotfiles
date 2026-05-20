@@ -152,12 +152,10 @@
             inherit username;
             dotfilesDir = self.outPath;
           };
-          modules =
-            commonHomeModules
-            ++ [
-              (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
-              ./nix/modules/linux/system.nix
-            ];
+          modules = commonHomeModules ++ [
+            (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
+            ./nix/modules/linux/system.nix
+          ];
         };
 
       # WSL 向け home-manager 設定を生成するヘルパー
@@ -181,12 +179,10 @@
             inherit username;
             dotfilesDir = self.outPath;
           };
-          modules =
-            commonHomeModules
-            ++ [
-              (import ./nix/modules/home-manager/tools-read-wsl.nix { inherit pkgs; })
-              ./nix/modules/wsl/system.nix
-            ];
+          modules = commonHomeModules ++ [
+            (import ./nix/modules/home-manager/tools-read-wsl.nix { inherit pkgs; })
+            ./nix/modules/wsl/system.nix
+          ];
         };
 
     in
