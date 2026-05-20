@@ -136,6 +136,15 @@
         system:
         let
           pkgs = pkgsFor system;
+          commonHomeModules = [
+            nix-index-database.homeModules.nix-index
+            sops-nix.homeManagerModules.sops
+            ./nix/shared.nix
+            ./nix/modules/home-manager/dotfiles-link.nix
+            ./nix/modules/home-manager/program/nvim/default.nix
+            agent-skills-nix.homeManagerModules.default
+            ./nix/modules/home-manager/agent-skills.nix
+          ];
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -143,16 +152,9 @@
             inherit username;
             dotfilesDir = self.outPath;
           };
-          modules = [
-            nix-index-database.homeModules.nix-index
-            sops-nix.homeManagerModules.sops
-            ./nix/shared.nix
+          modules = commonHomeModules ++ [
             (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
             ./nix/modules/linux/system.nix
-            ./nix/modules/home-manager/dotfiles-link.nix
-            ./nix/modules/home-manager/program/nvim/default.nix
-            agent-skills-nix.homeManagerModules.default
-            ./nix/modules/home-manager/agent-skills.nix
           ];
         };
 
@@ -161,6 +163,15 @@
         system:
         let
           pkgs = pkgsFor system;
+          commonHomeModules = [
+            nix-index-database.homeModules.nix-index
+            sops-nix.homeManagerModules.sops
+            ./nix/shared.nix
+            ./nix/modules/home-manager/dotfiles-link.nix
+            ./nix/modules/home-manager/program/nvim/default.nix
+            agent-skills-nix.homeManagerModules.default
+            ./nix/modules/home-manager/agent-skills.nix
+          ];
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -168,16 +179,9 @@
             inherit username;
             dotfilesDir = self.outPath;
           };
-          modules = [
-            nix-index-database.homeModules.nix-index
-            sops-nix.homeManagerModules.sops
-            ./nix/shared.nix
+          modules = commonHomeModules ++ [
             (import ./nix/modules/home-manager/tools-read-wsl.nix { inherit pkgs; })
             ./nix/modules/wsl/system.nix
-            ./nix/modules/home-manager/dotfiles-link.nix
-            ./nix/modules/home-manager/program/nvim/default.nix
-            agent-skills-nix.homeManagerModules.default
-            ./nix/modules/home-manager/agent-skills.nix
           ];
         };
 

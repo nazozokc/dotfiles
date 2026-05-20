@@ -2,6 +2,9 @@
 {
   programs.direnv = {
     enable = true;
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+    enableZshIntegration = true;
 
     nix-direnv.enable = true;
 
@@ -12,6 +15,7 @@
         load_dotenv = true;
         strict_env = false;
         warn_timeout = "5m";
+        disable_stdin = true;
       };
     };
 
@@ -44,4 +48,5 @@
       }
     '';
   };
+
 }
