@@ -49,11 +49,4 @@
     '';
   };
 
-  home.file.".config/direnv/direnvrc".text = ''
-    # Prefer flake-based environments in every project.
-    source_up_if_exists .envrc
-    if [[ -f flake.nix ]]; then
-      use flake
-    fi
-  '';
 }
