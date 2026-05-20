@@ -2,21 +2,21 @@
 
 {
   imports = [
-    ./program/gh
-    ./program/git
-    ./program/lazygit
-    ./program/starship
-    ./program/direnv.nix
-    ./program/fzf
-    ./program/bat
-    ./program/tmux
-    ./program/yazi
-    ./program/jujutsu
-    ./program/sops
-    ./program/opencode
-    ./program/claude-code
-    ./program/ghostty.nix
-    ./program/ollama
-    ./program/docker
+    ./programs/gh
+    ./programs/git
+    ./programs/lazygit
+    ./programs/starship
+    ./programs/direnv.nix
+    ./programs/fzf
+    ./programs/bat
+    ./programs/tmux
+    ./programs/yazi
+    ./programs/jujutsu
+    ./programs/sops
+    ./programs/opencode
+    ./programs/claude-code
+    ./programs/ghostty.nix
+    ./programs/ollama
+    ./programs/docker
   ];
 }
