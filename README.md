@@ -118,6 +118,35 @@ nix run .#update
 - OS本体やカーネルは pacman（Linux）や macOS 標準管理に任せる
 - Home Manager によるリンクや設定は既存の dotfiles を上書きする場合があります
 
+## 運用ルール（品質ゲート）
+
+- PR では **Nix Flake Check**（`nix flake check`）と **treefmt check**（`nix fmt -- --ci`）を必須とします。
+- ローカルでも PR 前に次を実行してください。
+
+```bash
+nix flake check
+nix fmt -- --ci
+```
+
+## シークレット管理（sops-nix）
+
+- シークレットは `secrets/common.yaml` を **sops で暗号化**して管理します。
+- 展開先（Linux / WSL）は以下です。
+  - `api/github_token` → `~/.config/secrets/github_token`
+  - `api/openai_api_key` → `~/.config/secrets/openai_api_key`
+  - `api/anthropic_api_key` → `~/.config/secrets/anthropic_api_key`
+- 鍵は `~/.config/sops/age/keys.txt` を使用します。
+- `secrets/common.yaml` が存在しない場合、secret は読み込まれません（CIの非復号チェックを壊さないため）。
+
+## home.stateVersion ポリシー
+
+- 現在値は `nix/shared.nix` の `home.stateVersion = "26.05";`。
+- 互換性維持のため、**通常運用で上げない**。
+- 上げるのは以下を満たす場合のみ。
+  1. Home Manager / nixpkgs 更新で新規 stateVersion が必要。
+  2. 変更PRで `nix flake check` と `nix run .#build` を通過。
+  3. 既存dotfilesリンク・シェル起動・主要CLI（git, gh, nvim）動作確認を記録。
+
 # Activity
 
 ![Alt](https://repobeats.axiom.co/api/embed/c4db566c918002010974abbbcc1ee5150bed51da.svg "Repobeats analytics image")

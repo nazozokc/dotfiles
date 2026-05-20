@@ -1,4 +1,3 @@
-# .github/workflows/flake-check.yml
 name: Nix Flake Check
 on:
   push:
@@ -6,6 +5,7 @@ on:
     paths:
       - "flake.nix"
       - "flake.lock"
+      - "nix/**"
       - ".github/workflows/flake-check.yml"
       - ".github/workflows/_nix-ci.yml"
   pull_request:
@@ -16,7 +16,27 @@ concurrency:
 
 jobs:
   check:
+    name: flake-check (${{ matrix.os }})
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
     uses: ./.github/workflows/_nix-ci.yml
     with:
-      run-command: nix flake check --no-build
+      runs-on: ${{ matrix.os }}
+      run-command: nix flake check
+      timeout-minutes: 20
+
+  fmt-check:
+    name: treefmt-ci (${{ matrix.os }})
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    uses: ./.github/workflows/_nix-ci.yml
+    with:
+      runs-on: ${{ matrix.os }}
+      run-command: nix fmt -- --ci
       timeout-minutes: 10
