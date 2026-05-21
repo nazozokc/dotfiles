@@ -3,6 +3,6 @@
 # nix-darwin システム設定をここで集約
 {
   imports = [
-    ./darwin-system.nix
+    ./system.nix
   ];
 }
