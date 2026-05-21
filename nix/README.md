@@ -27,7 +27,7 @@
 - Git関連: git, gh, ghq, lazygit, gitui
 - GUI: wezterm, audacity, spotify, discord, ghostty
 
-### Linux専用パッケージ (`nix/modules/linux/default.nix`)
+### Linux専用パッケージ (`nix/modules/linux/packages.nix`)
 
 - xclip, wl-clipboard (クリップボード)
 - pulseaudio, pavucontrol (音声)
@@ -38,7 +38,7 @@
 
 - raycast (GUIランチャー)
 
-### macOSシステムパッケージ (`nix/modules/macos/default.nix`)
+### macOSシステムパッケージ (`nix/modules/macos/darwin-system.nix`)
 
 - git (nix-darwinのenvironment.systemPackagesで管理)
 
@@ -83,11 +83,17 @@ nix/
 │   │       ├── direnv.nix
 │   │       └── ghostty.nix
 │   ├── linux/                         # Linux固有設定
-│   │   └── default.nix
+│   │   ├── default.nix                # エントリーポイント
+│   │   ├── packages.nix               # Linux専用パッケージ
+│   │   └── programs.nix               # ロケール・XDG・セッション変数
 │   ├── macos/                         # macOS固有設定
-│   │   └── default.nix
+│   │   ├── default.nix                # エントリーポイント
+│   │   ├── darwin-system.nix          # nix-darwin システム設定
+│   │   └── darwin-home.nix            # macOS 固有 home-manager 設定
 │   └── wsl/                           # WSL固有設定
-│       └── default.nix
+│       ├── default.nix                # エントリーポイント
+│       ├── packages.nix               # WSL専用パッケージ
+│       └── programs.nix               # WSL固有設定（sessionVariables, Git, .wslconfig）
 ├── overlays/                          # カスタムoverlay
 │   ├── ai-tools.nix
 │   ├── default.nix

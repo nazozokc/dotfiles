@@ -404,6 +404,7 @@
                 imports = [
                   sops-nix.homeManagerModules.sops
                   ./nix/shared.nix
+                  ./nix/modules/macos/darwin-home.nix
                   (import ./nix/modules/home/tools-read.nix {
                     pkgs = pkgsFor "aarch64-darwin";
                   })
