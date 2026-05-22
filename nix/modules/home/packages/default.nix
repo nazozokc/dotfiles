@@ -5,9 +5,10 @@ let
 in
 {
   home.packages = flatten [
-    (import ./base.nix { inherit pkgs; })
-    (import ./dev.nix { inherit pkgs; })
-    (import ./cli.nix { inherit pkgs; })
-    (import ./gui.nix { inherit pkgs; })
+    (import ./base { inherit pkgs; })
+    (import ./dev { inherit pkgs; })
+    (import ./ai { inherit pkgs; })
+    (import ./gui { inherit pkgs; })
+    (import ./experimental { inherit pkgs; })
   ];
 }

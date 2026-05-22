@@ -31,6 +31,7 @@ with pkgs;
   nix-tree
   cachix
   niv
+  nix-output-monitor
 
   # docker
   docker
@@ -53,4 +54,6 @@ with pkgs;
   rename
   inetutils
   comma
+  aria2
+  mise
 ]
