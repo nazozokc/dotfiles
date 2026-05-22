@@ -176,7 +176,7 @@
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
-            (import ./nix/modules/home/tools-read-wsl.nix { inherit pkgs; })
+            (import ./nix/modules/wsl/tools-read.nix { inherit pkgs; })
             ./nix/modules/wsl
           ];
         };
