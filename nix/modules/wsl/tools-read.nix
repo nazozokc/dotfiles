@@ -1,11 +1,11 @@
 { pkgs, ... }:
 
 let
-  Pkgs = import ./packages/wsl.nix { inherit pkgs; };
+  Pkgs = import ../home/packages/wsl.nix { inherit pkgs; };
 in
 {
   imports = [
-    ./programs-common.nix
+    ../home/programs-common.nix
   ];
 
   home.packages = Pkgs;
