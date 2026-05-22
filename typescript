@@ -1,0 +1,136 @@
+Script started on 2026-05-22 23:02:57+09:00 [TERM="wezterm" TTY="/dev/pts/0" COLUMNS="190" LINES="47"]
+[?u[>0q]11;?\[?1049hP+q696e646e\P+q71756572792d6f732d6e616d65\[?1049l[0c[6 q]7;file://MAIN-NAZOKANA/home/nazozokc/ghq/github.com/nazozokc/dotfiles]0;~/g/g/n/dotfiles[m]11;?\[6n[0c[?2004h[?2031h[>4;1m=]133;A;click_events=1\[32;1m[I][m [36;2m~/g/g/n/[36;1mdotfiles[m [35mmain[m・❯ ]133;B[K[29Cc[30C[38;2;114;113;105mlear[39m[30Cl[38;2;114;113;105mear[39m[31C[2D[38;2;228;104;118mcl[38;2;114;113;105mear[39m[31C[38;2;228;104;118mr[39m[K[32C[3D[38;2;126;156;216mclr[39m[32C[32C[?2004l[?2031l[>4;0m>[3Dclear[34C[5D[38;2;126;156;216mclear[39m[34C
+[m]133;C;cmdline_url=clear[2 q]0;clear ~/g/g/n/dotfiles[m[H[J]133;D;0[6 q[?25h[2m¶[m                                                                                                                                                                                             ¶ [K]7;file://MAIN-NAZOKANA/home/nazozokc/ghq/github.com/nazozokc/dotfiles]0;~/g/g/n/dotfiles[m]11;?\[6n[0c[?2004h[?2031h[>4;1m=]133;A;click_events=1[32;1m[I][m [36;2m~/g/g/n/[36;1mdotfiles[m [35mmain[m・❯ ]133;B[K[29C.[30C[38;2;114;113;105m.[39m[30C[38;2;126;156;216m.[38;2;114;113;105m.[39m[30C[38;2;126;156;216m/[39m[31C[38;2;114;113;105magents/[39m[31C[38;2;126;156;216mm[39m[K[32C[3D[38;2;228;104;118m./m[39m[32C[38;2;114;113;105my_scripts/[39m[32C[38;2;228;104;118my[38;2;114;113;105m_scripts/[39m[33C[4D./my_scripts/[42C[13D[38;2;126;156;216m./my_scripts/[39m[42C[38;2;114;113;105mcleanup-nix.sh [39m[42C[38;2;126;156;216mu[39m[K[43C[14D[38;2;228;104;118m./my_scripts/u[39m[43C[38;2;228;104;118mp[39m[44C[38;2;228;104;118md[39m[45C[38;2;228;104;118ma[39m[46C[38;2;228;104;118mt[39m[47C[38;2;228;104;118me[39m[48C[38;2;228;104;118m\[39m[49C[K[48C[K[47C[K[46C[K[45C[K[44C[K[43C[K[42C[13D[38;2;126;156;216m./my_scripts/[39m[42C[41C[40C[39C[38C[37C[36C[35C[34C[33C[32C[31C[30C[29Cl[38;2;126;156;216m./my_scripts/[39m[30C[38;2;228;104;118ml./my_scripts/[39m[30C[38;2;228;104;118ms./my_scripts/[39m[31C[38;2;228;104;118m ./my_scripts/[39m[32C[3Deza -lh --icons[38;2;228;104;118m ./my_scripts/[39m[45C[16D[38;2;126;156;216meza[39m [38;2;192;163;110m-lh[39m [38;2;192;163;110m--icons[39m [38;2;152;187;108m./my_scripts/[39m[45C[?2004l[?2031l[>4;0m>[58C
+[m]133;C;cmdline_url=eza%20-lh%20--icons%20./my_scripts/[2 q]0;eza -lh --icons ./my ~/g/g/n/dotfiles[m[4mPermissions[0m [4mSize[0m [4mUser[0m     [4mDate Modified[0m [4mName[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m  [1;32m1.2k[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mcleanup-nix.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m   [32m710[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mdot-build.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m  [1;32m1.1k[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mdot-flake-update.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m   [32m817[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mdot-update.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m  [1;32m1.4k[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mextract.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m   [32m667[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mgh-new.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m   [32m361[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mgh-pr.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m   [32m342[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mmkcd.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m   [32m796[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mnvim-update.sh[0m
+.[1;33mr[31mw[4;32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m   [32m910[0m [1;33mnazozokc[0m [34m16 May 22:56[0m  [32m [1mport-check.sh[0m
+]133;D;0[6 q[?25h[2m¶[m                                                                                                                                                                                             ¶ [K]7;file://MAIN-NAZOKANA/home/nazozokc/ghq/github.com/nazozokc/dotfiles]0;~/g/g/n/dotfiles[m]11;?\[6n[0c[?2004h[?2031h[>4;1m=]133;A;click_events=1[32;1m[I][m [36;2m~/g/g/n/[36;1mdotfiles[m [35mmain[m・❯ ]133;B[K[29C.[30C[38;2;114;113;105m.[39m[30C[38;2;126;156;216m.[38;2;114;113;105m.[39m[30C[38;2;126;156;216m/[39m[31C[38;2;114;113;105magents/[39m[31C[38;2;126;156;216mm[39m[K[32C[3D[38;2;228;104;118m./m[39m[32C[38;2;114;113;105my_scripts/[39m[32C[3D./my_scripts/[42C[13D[38;2;126;156;216m./my_scripts/[39m[42C[38;2;114;113;105mcleanup-nix.sh [39m[42C[38;2;126;156;216md[39m[K[43C[14D[38;2;228;104;118m./my_scripts/d[39m[43C[38;2;114;113;105mot-build.sh [39m[43C[38;2;228;104;118mo[38;2;114;113;105mt-build.sh [39m[44C[38;2;228;104;118mt[38;2;114;113;105m-build.sh [39m[45C[38;2;228;104;118m0[39m[K[46C[38;2;114;113;105m-build.sh [39m[45C[38;2;228;104;118m^[39m[K[46C[38;2;114;113;105m-build.sh [39m[45C[38;2;228;104;118m-[38;2;114;113;105mbuild.sh [39m[46C[38;2;228;104;118mu[39m[K[47C[38;2;114;113;105mpdate.sh [39m[47C[38;2;228;104;118mp[38;2;114;113;105mdate.sh [39m[48C[38;2;228;104;118md[38;2;114;113;105mate.sh [39m[49C[38;2;228;104;118ma[38;2;114;113;105mte.sh [39m[50C[38;2;228;104;118mt[38;2;114;113;105me.sh [39m[51C[38;2;228;104;118me[38;2;114;113;105m.sh [39m[52C[38;2;228;104;118m.[38;2;114;113;105msh [39m[53C[38;2;228;104;118ms[38;2;114;113;105mh [39m[54C[38;2;228;104;118mh[38;2;114;113;105m [39m[55C[26D[38;2;126;156;216m./my_scripts/dot-update.sh[38;2;114;113;105m [39m[55C[?2004l[?2031l[>4;0m>[K[55C
+[m]133;C;cmdline_url=./my_scripts/dot-update.sh[2 q]0;./my_scripts/dot-upd ~/g/g/n/dotfiles[m=========================================
+  Dotfiles Update (nix run .#switch)
+=========================================
+
+Current branch: main
+
+Applying configuration...
+[0m[K[K[35;1mwarning:[0m ignoring untrusted substituter 'https://cache.numtide.com', you are not a trusted user.
+Run `man nix.conf` for more information on the `substituters` configuration option.[0m
+[K[35;1mwarning:[0m ignoring the client-specified setting 'trusted-public-keys', because it is a restricted setting and you are not a trusted user[0m
+[K  system : WSL (x86_64)
+  target : .#nazozokc-wsl
+  cmd    : switch
+
+[?25l[0m[K[K[?2026hUsing saved setting for 'extra-substituters = https://cache.nixos.org/ https://cache.numtide.com' from ~/.local/share/nix/trusted-settings.json.
+Using saved setting for 'extra-trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=' from ~/.local/share/nix/trusted-settings.json.
+warning: ignoring untrusted substituter 'https://cache.numtide.com', you are not a trusted user.
+Run `man nix.conf` for more information on the `substituters` configuration option.
+warning: ignoring the client-specified setting 'trusted-public-keys', because it is a restricted setting and you are not a trusted user
+[1m⏱ 0s[0m[?2026l[?2026h[1G[2K[1m⏱ 1s[0m[?2026l[?2026h[1G[2KStarting Home Manager activation
+[1m⏱ 1s[0m[?2026l[?2026h[1G[2KActivating checkFilesChanged
+[1m⏱ 2s[0m[?2026l[?2026h[1G[2KActivating checkLinkTargets
+[1m⏱ 2s[0m[?2026l[?2026h[1G[2KActivating writeBoundary
+[1m⏱ 2s[0m[?2026l[?2026h[1G[2KActivating migrateGhAccounts
+Activating linkGeneration
+Cleaning up orphan links from /home/nazozokc
+Creating home file links in /home/nazozokc
+[1m⏱ 2s[0m[?2026l[?2026h[1G[2K[1m⏱ 3s[0m[?2026l[?2026h[1G[2KActivating batCache
+[1m⏱ 3s[0m[?2026l[?2026h[1G[2KNo themes were found in '/home/nazozokc/.config/bat/themes', using the default set
+[1m⏱ 3s[0m[?2026l[?2026h[1G[2KNo syntaxes were found in '/home/nazozokc/.config/bat/syntaxes', using the default set.
+[1m⏱ 3s[0m[?2026l[?2026h[1G[2KWriting theme set to /home/nazozokc/.cache/bat/themes.bin ... okay
+[1m⏱ 4s[0m[?2026l[?2026h[1G[2KWriting syntax set to /home/nazozokc/.cache/bat/syntaxes.bin ... okay
+Writing metadata to folder /home/nazozokc/.cache/bat ... okay
+Activating claudeCodeSettings
+Activating createXdgUserDirectories
+[1m⏱ 4s[0m[?2026l[?2026h[1G[2KActivating installPackages
+replacing old 'home-manager-path'
+installing 'home-manager-path'
+[1m⏱ 4s[0m[?2026l[?2026h[1G[2KActivating onFilesChange
+[1m⏱ 4s[0m[?2026l[?2026h[1G[2KActivating reloadSystemd
+The user systemd session is degraded:
+  UNIT           LOAD   ACTIVE SUB    DESCRIPTION
+● ollama.service loaded failed failed Server for local large language models
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+1 loaded units listed.
+Attempting to reload services anyway...
+The service manager is degraded.
+Failed services: ollama.service
+Attempting to continue anyway...
+[1m⏱ 4s[0m[?2026l[?2026h[1G[2KStarting units: ollama.service
+[1m⏱ 4s[0m[?2026l[?2026h[1G[2Kwarning: ignoring untrusted substituter 'https://cache.numtide.com', you are not a trusted user.
+Run `man nix.conf` for more information on the `substituters` configuration option.
+warning: ignoring the client-specified setting 'trusted-public-keys', because it is a restricted setting and you are not a trusted user
+[1m⏱ 5s[0m[?2026l[?2026h[1G[2K
+There are 384 unread and relevant news items.
+Read them by running the command "home-manager news".
+
+[1m⏱ 5s[0m[?2026l[?2026h[1G[2K[1m[32mFinished at 23:03:51 after 5s[0m[0m[?2026l[?25h
+
+=========================================
+  Update complete!
+=========================================
+]133;D;0[6 q[?25h[2m¶[m                                                                                                                                                                                             ¶ [K]7;file://MAIN-NAZOKANA/home/nazozokc/ghq/github.com/nazozokc/dotfiles]0;~/g/g/n/dotfiles[m]11;?\[6n[0c[?2004h[?2031h[>4;1m=]133;A;click_events=1[32;1m[I][m [36;2m~/g/g/n/[36;1mdotfiles[m [35mmain[m・❯ ]133;B[K[29C[?2004l[?2031l[>4;0m>[?2004h[?2031h[>4;1m=./my_scripts/dot-update.sh[55C[26D[38;2;126;156;216m./my_scripts/dot-update.sh[39m[55C[K[54C[25D[38;2;228;104;118m./my_scripts/dot-update.s[39m[54C[K[53C[K[52C[K[51C[K[50C[K[49C[K[48C[K[47C[K[46C[K[45C[K[44C[K[43C[K[42C[13D[38;2;126;156;216m./my_scripts/[39m[42C[38;2;126;156;216md[39m[43C[38;2;114;113;105mot-update.sh[39m[43C[14D[38;2;228;104;118m./my_scripts/d[38;2;114;113;105mot-update.sh[39m[43C[38;2;228;104;118mo[38;2;114;113;105mt-update.sh[39m[44C[38;2;228;104;118mt[38;2;114;113;105m-update.sh[39m[45C[38;2;228;104;118m-[38;2;114;113;105mupdate.sh[39m[46C[38;2;228;104;118mf[39m[K[47C[38;2;114;113;105mlake-update.sh [39m[47C[38;2;228;104;118ml[38;2;114;113;105make-update.sh [39m[48C[38;2;228;104;118ma[38;2;114;113;105mke-update.sh [39m[49C[38;2;228;104;118mk[38;2;114;113;105me-update.sh [39m[50C[38;2;228;104;118me[38;2;114;113;105m-update.sh [39m[51C[22D./my_scripts/dot-flake-update.sh [62C[33D[38;2;126;156;216m./my_scripts/dot-flake-update.sh[39m [62C[?2004l[?2031l[>4;0m>
+[m]133;C;cmdline_url=./my_scripts/dot-flake-update.sh%20[2 q]0;./my_scripts/dot-fla ~/g/g/n/dotfiles[m=========================================
+  Flake Update (nix run .#update)
+=========================================
+
+Current flake.lock changes:
+-----------------------------------------
+]10;?]11;?[c
+Updating flake inputs...
+[0m[K[K[35;1mwarning:[0m ignoring untrusted substituter 'https://cache.numtide.com', you are not a trusted user.
+Run `man nix.conf` for more information on the `substituters` configuration option.[0m
+[K[35;1mwarning:[0m ignoring the client-specified setting 'trusted-public-keys', because it is a restricted setting and you are not a trusted user[0m
+[K  system : Linux (x86_64)
+  target : .#nazozokc
+  cmd    : update
+
+[?25l[0m[K[K[?2026hUsing saved setting for 'extra-substituters = https://cache.nixos.org/ https://cache.numtide.com' from ~/.local/share/nix/trusted-settings.json.
+Using saved setting for 'extra-trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=' from ~/.local/share/nix/trusted-settings.json.
+[1m⏱ 0s[0m[?2026l[?2026h[1G[2Kwarning: ignoring untrusted substituter 'https://cache.numtide.com', you are not a trusted user.
+Run `man nix.conf` for more information on the `substituters` configuration option.
+warning: ignoring the client-specified setting 'trusted-public-keys', because it is a restricted setting and you are not a trusted user
+[1m⏱ 0s[0m[?2026l[?2026h[1G[2K[1m⏱ 1s[0m[?2026l[?2026h[1G[2K[1m⏱ 2s[0m[?2026l[?2026h[1G[2K[1m⏱ 3s[0m[?2026l[?2026h[1G[2K[1m⏱ 4s[0m[?2026l[?2026h[1G[2Kunpacking 'github:numtide/llm-agents.nix/d5e015f500cd96da65f6483dd9584749760d59a0' into the Git cache...
+[1m⏱ 4s[0m[?2026l[?2026h[1G[2K[1m⏱ 5s[0m[?2026l[?2026h[1G[2K[1m⏱ 6s[0m[?2026l[?2026h[1G[2K[1m⏱ 7s[0m[?2026l[?2026h[1G[2Kwarning: updating lock file "/home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock":
+• Updated input 'llm-agents':
+    'github:numtide/llm-agents.nix/710ce07208cbfe9fc0b9f15c8d0f7602b8aa56bf?narHash=sha256-MiCxxwf0v41G9p3Eq5Z9NQKdJotroeFwKCZjT6FGCLg%3D' (2026-05-22)
+  → 'github:numtide/llm-agents.nix/d5e015f500cd96da65f6483dd9584749760d59a0?narHash=sha256-fVx/o3O8qquM38aSQm6IIgLMGZgzwSjeaQAR/OTDb2E%3D' (2026-05-22)
+[1m⏱ 7s[0m[?2026l[?2026h[1G[2K[1m[32mFinished at 23:04:22 after 7s[0m[0m[?2026l[?25h
+
+=========================================
+  Flake update complete!
+=========================================
+
+Changes in flake.lock:
+-----------------------------------------
+]10;?]11;?[c
+[1;33mΔ ]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\flake.lock]8;;\[0m
+
+[36m──────────────────[0m[36m┐[0m
+[33m•[0m ]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\[33mflake.lock[0m:[36m327[0m]8;;\: [36m│[0m
+[36m──────────────────[0m[36m┘[0m
+[34m│[38;2;68;68;68m 327[34m│[38;2;248;248;242m        "treefmt-nix": "treefmt-nix_2"[0m                                                   [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 327]8;;\[34m│[38;2;248;248;242m        "treefmt-nix": "treefmt-nix_2"[0m
+[34m│[38;2;68;68;68m 328[34m│[38;2;248;248;242m      },[0m                                                                                 [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 328]8;;\[34m│[38;2;248;248;242m      },[0m
+[34m│[38;2;68;68;68m 329[34m│[38;2;248;248;242m      "locked": {[0m                                                                        [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 329]8;;\[34m│[38;2;248;248;242m      "locked": {[0m
+[34m│[38;5;88m 330[34m│[48;2;63;0;1;38;2;248;248;242m        "lastModified": [48;2;144;16;17m1779440763[48;2;63;0;1m,[0m[48;2;63;0;1m                                                      [0m[34m│[38;5;28m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 330]8;;\[34m│[48;2;0;40;0;38;2;248;248;242m        "lastModified": [48;2;0;96;0m1779453342[48;2;0;40;0m,[0m[48;2;0;40;0m[0K[0m
+[34m│[38;5;88m 331[34m│[48;2;63;0;1;38;2;248;248;242m        "narHash": "sha256-MiCxxwf0v41G9p3Eq5Z9NQKdJotroeFwKCZjT6FGCLg=",[0m[48;2;63;0;1m                [0m[34m│[38;5;28m    [34m│[0m
+[34m│[38;5;88m    [34m│[0m                                                                                         [34m│[38;5;28m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 331]8;;\[34m│[48;2;0;40;0;38;2;248;248;242m        "narHash": "sha256-fVx/o3O8qquM38aSQm6IIgLMGZgzwSjeaQAR/OTDb2E=",[0m[48;2;0;40;0m[0K[0m
+[34m│[38;2;68;68;68m 332[34m│[38;2;248;248;242m        "owner": "numtide",[0m                                                              [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 332]8;;\[34m│[38;2;248;248;242m        "owner": "numtide",[0m
+[34m│[38;2;68;68;68m 333[34m│[38;2;248;248;242m        "repo": "llm-agents.nix",[0m                                                        [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 333]8;;\[34m│[38;2;248;248;242m        "repo": "llm-agents.nix",[0m
+[34m│[38;5;88m 334[34m│[48;2;63;0;1;38;2;248;248;242m        "rev": "710ce07208cbfe9fc0b9f15c8d0f7602b8aa56bf",[0m[48;2;63;0;1m                               [0m[34m│[38;5;28m    [34m│[0m
+[34m│[38;5;88m    [34m│[0m                                                                                         [34m│[38;5;28m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 334]8;;\[34m│[48;2;0;40;0;38;2;248;248;242m        "rev": "d5e015f500cd96da65f6483dd9584749760d59a0",[0m[48;2;0;40;0m[0K[0m
+[34m│[38;2;68;68;68m 335[34m│[38;2;248;248;242m        "type": "github"[0m                                                                 [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 335]8;;\[34m│[38;2;248;248;242m        "type": "github"[0m
+[34m│[38;2;68;68;68m 336[34m│[38;2;248;248;242m      },[0m                                                                                 [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 336]8;;\[34m│[38;2;248;248;242m      },[0m
+[34m│[38;2;68;68;68m 337[34m│[38;2;248;248;242m      "original": {[0m                                                                      [34m│[38;2;68;68;68m]8;;file:///home/nazozokc/ghq/github.com/nazozokc/dotfiles/flake.lock\ 337]8;;\[34m│[38;2;248;248;242m      "original": {[0m
+]133;D;0[6 q[?25h[2m¶[m                                                                                                                                                                                             ¶ [K]7;file://MAIN-NAZOKANA/home/nazozokc/ghq/github.com/nazozokc/dotfiles]0;~/g/g/n/dotfiles[m]11;?\[6n[0c[?2004h[?2031h[>4;1m=]133;A;click_events=1[32;1m[I][m [36;2m~/g/g/n/[36;1mdotfiles[m [35mmain[m・❯ ]133;B[K[29Cc[30C[38;2;114;113;105mlear[39m[30Cl[38;2;114;113;105mear[39m[31Cr[K[32C[3D[38;2;126;156;216mclr[39m[32C[?2004l[?2031l[>4;0m>[3Dclear[34C[5D[38;2;126;156;216mclear[39m[34C
+[m]133;C;cmdline_url=clear[2 q]0;clear ~/g/g/n/dotfiles[m[H[J]133;D;0[6 q[?25h[2m¶[m                                                                                                                                                                                             ¶ [K]7;f
