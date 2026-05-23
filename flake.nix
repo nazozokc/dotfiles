@@ -140,7 +140,6 @@
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
             ./nix/shared.nix
-            ./nix/modules/home
             agent-skills-nix.homeManagerModules.default
           ];
         in
@@ -151,6 +150,7 @@
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
+            ./nix/modules/home
             (import ./nix/modules/home/tools-read.nix { inherit pkgs; })
             ./nix/modules/linux
           ];
@@ -165,7 +165,6 @@
             nix-index-database.homeModules.nix-index
             sops-nix.homeManagerModules.sops
             ./nix/shared.nix
-            ./nix/modules/home
             agent-skills-nix.homeManagerModules.default
           ];
         in
@@ -176,6 +175,7 @@
             dotfilesDir = self.outPath;
           };
           modules = commonHomeModules ++ [
+            ./nix/modules/home/wsl.nix
             (import ./nix/modules/wsl/tools-read.nix { inherit pkgs; })
             ./nix/modules/wsl
           ];
