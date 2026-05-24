@@ -11,8 +11,16 @@ function M.apply(config)
 		{ label = "Fish", args = { "fish" } },
 		{ label = "Zsh", args = { "zsh" } },
 		{ label = "Bash", args = { "bash" } },
-		{ label = "Dotfiles", cwd = (os.getenv("HOME") or os.getenv("USERPROFILE")) .. "/ghq/github.com/nazozokc/dotfiles" },
 	}
+
+	-- Guard: HOME/USERPROFILE might be nil on some Windows environments
+	local home = os.getenv("HOME") or os.getenv("USERPROFILE")
+	if home then
+		table.insert(config.launch_menu, {
+			label = "Dotfiles",
+			cwd = home .. "/ghq/github.com/nazozokc/dotfiles",
+		})
+	end
 
 	-- Platform-specific entries
 	if platform.is_linux() then
