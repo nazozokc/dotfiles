@@ -12,6 +12,7 @@
     settings = {
       manager = {
         show_hidden = true;
+        show_symlink = true;
         sort_by = "natural";
         sort_sensitive = true;
         sort_dir_first = true;
@@ -43,7 +44,7 @@
       open = {
         rules = [
           {
-            name = "*/";
+            url = "*/";
             use = "edit";
           }
         ];
@@ -87,7 +88,6 @@
     theme = {
       manager = {
         border_symbol = "│";
-        show_symlink = true;
       };
     };
   };
