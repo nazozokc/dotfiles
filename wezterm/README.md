@@ -133,13 +133,3 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 現在のワークスペースを `wezterm.state` に保存。次回起動時に自動復元。
 対応範囲はワークスペースのみ（ペインレイアウトの復元は対象外）。
 
----
-=======
-| キー           | アクション                |
-| -------------- | ------------------------- |
-| `Ctrl+Shift+R` | 設定リロード              |
-| `Ctrl+Shift+P` | コマンドパレット          |
-| `Ctrl+Shift+F` | 透明度トグル（90% ↔ 75%） |
-
-- [公式ドキュメント](https://wezterm.org/)
-- [設定リファレンス](https://wezterm.org/config/lua.html)
