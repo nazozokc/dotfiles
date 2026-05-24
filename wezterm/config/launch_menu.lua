@@ -13,7 +13,7 @@ function M.apply(config)
 		{ label = "Bash", args = { "bash" } },
 		{ label = "Dotfiles", cwd = os.getenv("HOME") .. "/ghq/github.com/nazozokc/dotfiles" },
 	}
-
+  
 	-- Platform-specific entries
 	if platform.is_linux() then
 		table.insert(config.launch_menu, { label = "Htop", args = { "htop" } })
