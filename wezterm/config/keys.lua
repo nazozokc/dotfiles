@@ -199,8 +199,7 @@ function M.apply(config)
 				local base = platform.default_window_opacity()
 				local transparent = transparent_opacity()
 
-				if overrides.window_background_opacity == nil
-					or overrides.window_background_opacity == base then
+				if overrides.window_background_opacity == nil or overrides.window_background_opacity == base then
 					-- Current is default → switch to transparent
 					overrides.window_background_opacity = transparent
 				else
