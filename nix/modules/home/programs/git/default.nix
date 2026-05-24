@@ -4,12 +4,20 @@
   ...
 }:
 let
-  isLinux = pkgs.stdenv.isLinux;
-  isDarwin = pkgs.stdenv.isDarwin;
+  aliasesFile = ./aliases;
+  trash = lib.getExe pkgs.trash-cli;
 in
 {
   programs.git = {
     enable = true;
+
+    lfs.enable = true;
+
+    signing = {
+      format = "ssh";
+      signByDefault = true;
+      key = null;
+    };
 
     settings = {
       user = {
@@ -22,69 +30,216 @@ in
       core = {
         editor = "nvim";
         pager = "delta";
-        autocorrect = 10;
+        autocrlf = "input";
+        ignorecase = false;
+        untrackedCache = false;
+        fsmonitor = false;
       };
+
+      color.ui = "auto";
+
+      tag.sort = "version:refname";
 
       pull.rebase = true;
+
       push = {
-        autoSetupRemote = true;
         default = "current";
+        autoSetupRemote = true;
+        useForceIfIncludes = true;
       };
-      fetch.prune = true;
-      merge.ff = "only";
-      rebase.autoStash = true;
+
+      fetch = {
+        prune = true;
+        pruneTags = true;
+        writeCommitGraph = true;
+        all = true;
+      };
+
+      merge = {
+        ff = "only";
+        conflictstyle = "zdiff3";
+      };
+
+      rebase = {
+        autoStash = true;
+        autoSquash = true;
+        updateRefs = true;
+      };
+
+      commit = {
+        verbose = true;
+        gpgSign = false;
+      };
+
+      diff = {
+        algorithm = "histogram";
+        colorMoved = "plain";
+        mnemonicPrefix = true;
+        renames = true;
+      };
+
+      help.autocorrect = 10;
+
+      column.ui = "auto";
+
+      branch.sort = "-committerdate";
+
+      rerere = {
+        enabled = true;
+        autoupdate = true;
+      };
+
+      remote.pushDefault = "origin";
+
+      credential = {
+        "https://github.com".helper = [
+          ""
+          "!gh auth git-credential"
+        ];
+        "https://gist.github.com".helper = [
+          ""
+          "!gh auth git-credential"
+        ];
+      };
+
+      ghq.root = [ "~/ghq" ];
+
+      wt.remover = trash;
+
       # credential helper is platform-specific:
       # macOS uses osxkeychain by default, Linux users should configure separately
-      commit.gpgSign = false;
-
-      alias = {
-        s = "status";
-        b = "branch";
-        c = "commit";
-        d = "diff";
-        l = "log --oneline --graph --decorate";
-        ll = "log --oneline --graph --decorate --all";
-        la = "log --all --graph --decorate --format='%C(auto)%h%C(reset) %C(blue)%an%C(reset) %C(green)%ar%C(reset) %s'";
-        p = "push";
-        pl = "pull";
-        co = "checkout";
-        cb = "checkout -b";
-        a = "add";
-        aa = "add --all";
-        cm = "commit -m";
-        ca = "commit --amend";
-        can = "commit --amend --no-edit";
-        fixup = "!f() { git commit --fixup \"$(git rev-parse --abbrev-ref HEAD)\"; }; f";
-        squash = "!f() { git rebase -i --autosquash \"${"1:-HEAD~5"}\"; }; f";
-        rs = "reset";
-        rh = "reset HEAD~1";
-        rsh = "reset --hard HEAD~1";
-        dc = "diff --cached";
-        df = "diff";
-        cp = "cherry-pick";
-        st = "status -sb";
-        cl = "clone --recursive";
-        recent = "branch --sort=-committerdate --format='%(committerdate:short) %(refname:short) (%(subject))' | head -20";
-        unstage = "restore --staged";
-        undo = "reset HEAD~1 --mixed";
-      };
     };
 
+    includes = [
+      {
+        path = "${aliasesFile}";
+      }
+    ];
+
     ignores = [
-      ".DS_Store"
+      # Environment
+      ".env"
+      ".env.local"
+      ".env.*"
+      ".direnv"
+      ".venv"
+      "venv/"
+      "env/"
+      ".cache"
+      ".nix-defexpr"
+
+      # Editor / IDE
       "*.swp"
       "*.swo"
       "*~"
-      ".direnv"
+      ".vscode/"
+      ".idea/"
+      "*.sublime-project"
+      "*.sublime-workspace"
+
+      # macOS
+      ".DS_Store"
+      ".AppleDouble"
+      ".LSOverride"
+      "Icon"
+      "._*"
+      ".DocumentRevisions-V100"
+      ".fseventsd"
+      ".Spotlight-V100"
+      ".TemporaryItems"
+      ".Trashes"
+      ".VolumeIcon.icns"
+
+      # Linux
+      "*.out"
+      "*.core"
+
+      # Node / JS
+      "node_modules/"
+      ".npm/"
+      ".yarn/"
+      "yarn-error.log"
+      "yarn.lock"
+      "pnpm-lock.yaml"
+      "pnpm-store/"
+
+      # Python
+      "__pycache__/"
+      "*.py[cod]"
+      "*$py.class"
+      "*.so"
+      ".Python"
+      "build/"
+      "develop-eggs/"
+      "dist/"
+      "downloads/"
+      "eggs/"
+      ".eggs/"
+      "lib64/"
+      "parts/"
+      "sdist/"
+      "var/"
+      "wheels/"
+      "*.egg-info/"
+      ".installed.cfg"
+      "*.egg"
+      "*.manifest"
+      "*.spec"
+      "pip-log.txt"
+      "pip-delete-this-directory.txt"
+      "htmlcov/"
+      ".tox/"
+      ".nox/"
+      ".coverage"
+      ".mypy_cache/"
+      ".pytest_cache/"
+      ".ruff_cache/"
+      ".hypothesis/"
+      "*.mo"
+      "*.pot"
+      "*.log"
+      "local_settings.py"
+      "db.sqlite3"
+      ".python-version"
+
+      # Rust
+      "target/"
+      "**/*.rs.bk"
+
+      # Nix
       "result"
       "result-*"
-      ".env"
-      ".env.local"
-      "node_modules"
-      ".venv"
-      "__pycache__"
-      ".cache"
-      ".nix-defexpr"
+
+      # Image / media
+      "*.jpg"
+      "*.jpeg"
+      "*.png"
+      "*.gif"
+      "*.ico"
+      "*.svg"
+      "*.webp"
+      "*.mp4"
+      "*.mp3"
+
+      # Archives
+      "*.zip"
+      "*.tar"
+      "*.tar.gz"
+      "*.tgz"
+      "*.tar.xz"
+      "*.rar"
+      "*.7z"
+
+      # Binaries
+      "*.exe"
+      "*.dll"
+      "*.dylib"
+      "*.app"
+
+      # Claude Code
+      "**/.claude/settings.local.json"
+      "**/.claude/worktrees"
+      "**/CLAUDE.local.md"
     ];
   };
 
@@ -96,6 +251,7 @@ in
       side-by-side = true;
       navigate = true;
       features = "decorations";
+      syntax-theme = "Monokai Extended";
       true-color = "always";
       hyperlinks = true;
       decorations = {

@@ -4,6 +4,6 @@
 {
   imports = [
     ./packages.nix
-    ./programs.nix
+    ./system.nix
   ];
 }
