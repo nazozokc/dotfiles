@@ -1,0 +1,34 @@
+[alias]
+	s = status
+	b = branch
+	c = commit
+	d = diff
+	l = log --oneline --graph --decorate
+	ll = log --oneline --graph --decorate --all
+	la = log --all --graph --decorate --format='%C(auto)%h%C(reset) %C(blue)%an%C(reset) %C(green)%ar%C(reset) %s'
+	p = push
+	pl = pull
+	co = checkout
+	cb = checkout -b
+	a = add
+	aa = add --all
+	cm = commit -m
+	ca = commit --amend
+	can = commit --amend --no-edit
+	rs = reset
+	rh = reset HEAD~1
+	rsh = reset --hard HEAD~1
+	dc = diff --cached
+	df = diff
+	cp = cherry-pick
+	st = status -sb
+	cl = clone --recursive
+	unstage = restore --staged
+	undo = reset HEAD~1 --mixed
+	fixup = "!f() { git commit --fixup \"$(git rev-parse --abbrev-ref HEAD)\"; }; f"
+	squash = "!f() { git rebase -i --autosquash \"${1:-HEAD~5}\"; }; f"
+	recent = "!f() { git branch --sort=-committerdate --format='%(committerdate:short) %(refname:short) (%(subject))' | head -${1:-20}; }; f"
+	whoami = log --format='%an <%ae>' -1
+	contributors = shortlog -sn HEAD
+	root = rev-parse --show-toplevel
+	worktree = "!f() { git worktree add \"$(git rev-parse --show-toplevel)/../$1\" -b \"$1\"; }; f"
