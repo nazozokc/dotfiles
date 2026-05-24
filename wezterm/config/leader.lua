@@ -26,7 +26,7 @@ function M.apply(config)
 	table.insert(config.keys, {
 		key = "w",
 		mods = "LEADER",
-		action = act.ShowLauncherArgs({ flags = "WORKSPACES" }),
+		action = act.ShowLauncherArgs({ flags = "Workspaces" }),
 	})
 
 	-- Quick workspace number keys (1-9)
