@@ -1,5 +1,7 @@
 -- Purpose: visuals only (colors, padding, decorations). Keep it calm and information-dense.
 
+local platform = require("utils.platform")
+
 local M = {}
 
 function M.apply(config)
@@ -24,8 +26,9 @@ function M.apply(config)
 		split = "#2a2a2a",
 	}
 
-	-- No aggressive transparency: readable in all lighting and avoids compositing overhead.
-	config.window_background_opacity = 0.90
+	-- Platform-aware transparency.
+	-- Wayland compositors vary in transparency support; use a slightly less aggressive value there.
+	config.window_background_opacity = platform.default_window_opacity()
 	config.text_background_opacity = 1.0
 
 	-- Minimal chrome: resize handles only.
