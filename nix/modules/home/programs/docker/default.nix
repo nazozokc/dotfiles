@@ -1,24 +1,20 @@
-{ config, lib, ... }:
-let
-  homeDir = config.home.homeDirectory;
-in
+{ ... }:
 {
   # ===== Docker CLI config =====
-  home.file.".docker/config.json" = {
-    text = builtins.toJSON {
-      auths = { };
+  programs.docker-cli = {
+    enable = true;
+    configDir = ".docker";
+    settings = {
       detachKeys = "ctrl-\\,ctrl-\\";
       credsStore = "pass";
       experimental = "enabled";
       features = {
         buildkit = true;
       };
-      plugins = { };
       aliases = {
         "docker:docker-compose" = "compose";
       };
     };
-    force = true;
   };
 
   # ===== Lazydocker config =====
