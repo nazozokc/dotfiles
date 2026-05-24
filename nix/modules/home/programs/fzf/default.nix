@@ -14,9 +14,8 @@
     changeDirWidgetCommand = "fd --type d --hidden --exclude .git";
 
     defaultOptions = [
-      "--height 12"
+      "--height 10"
       "--layout=reverse"
-      "--border rounded"
       "--info=inline-right"
       "--prompt '❯ '"
       "--bind 'ctrl-/:change-preview-window(down|hidden|right:40%)'"

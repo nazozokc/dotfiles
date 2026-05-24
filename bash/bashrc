@@ -144,22 +144,7 @@ alias ns='nix-shell'
 # ==================================
 # fzf
 # ==================================
-export FZF_DEFAULT_OPTS="
---layout=reverse
---info=inline
---height=60%
---border=rounded
---margin=1
---padding=1
---prompt='> '
---pointer='▶'
---marker='✓'
---preview-window=right:60%:wrap
---color=bg+:#181616,bg:#181616,spinner:#8ba4b0,hl:#c4746e
---color=fg:#c5c9c5,header:#625e5a,info:#8ba4b0,pointer:#c4746e
---color=marker:#c4746e,fg+:#c5c9c5,hl+:#c4746e
---color=prompt:#8ba4b0,hl:#c4746e
-"
+# (managed by Nix: nix/modules/home/programs/fzf/default.nix)
 
 # ghq-fzf
 ghq-fzf() {
