@@ -29,8 +29,8 @@ return {
 			},
 
 			bar = {
-				enable = function(buf, win, _)
-					buf = vim.api.nvim_win_get_buf(win)
+				enable = function(_, win)
+					local buf = vim.api.nvim_win_get_buf(win)
 
 					local ft = vim.bo[buf].filetype
 					local bt = vim.bo[buf].buftype
