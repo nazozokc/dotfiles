@@ -56,4 +56,5 @@ with pkgs;
   comma
   aria2
   mise
+  cmake
 ]
