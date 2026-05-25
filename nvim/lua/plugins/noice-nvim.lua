@@ -122,12 +122,12 @@ return {
 
 				-- CursorLine
 				vim.api.nvim_set_hl(0, "CursorLine", {
-					bg = "#222430",
+					bg = "#3b3b50",
 				})
 
 				-- CursorColumn
 				vim.api.nvim_set_hl(0, "CursorColumn", {
-					bg = "#1b1d27",
+					bg = "#303045",
 				})
 			end
 
