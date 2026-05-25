@@ -48,6 +48,32 @@ return {
 		},
 		config = function(_, opts)
 			require("noice").setup(opts)
+
+			-- =================================================
+			-- Transparent popup
+			-- =================================================
+			local function set_highlights()
+				vim.api.nvim_set_hl(0, "NoicePopup", {
+					bg = "NONE",
+				})
+
+				vim.api.nvim_set_hl(0, "NoicePopupBorder", {
+					bg = "NONE",
+				})
+
+				-- CursorLine
+				vim.api.nvim_set_hl(0, "CursorLine", {
+					bg = "#3b3b50",
+				})
+
+				-- CursorColumn
+				vim.api.nvim_set_hl(0, "CursorColumn", {
+					bg = "#303045",
+				})
+			end
+
+			set_highlights()
+
 			vim.api.nvim_create_autocmd("ColorScheme", {
 				callback = function()
 					vim.cmd([[

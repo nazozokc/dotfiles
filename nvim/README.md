@@ -133,6 +133,7 @@ nvim/
 | `<Leader>e`  | Trouble (診断一覧)     |
 | `<Leader>so` | SymbolsOutline         |
 | `<Leader>;`  | Dropbar pick           |
+| `<Leader>T`  | Template 挿入          |
 | `<F2>`       | Twilight               |
 
 ### DAP
@@ -172,13 +173,35 @@ nvim/
 
 ## テンプレート
 
-`template/` ディレクトリに各種テンプレートを配置：
+`template/` ディレクトリに各種テンプレートを配置。`<Leader>T` で呼び出し。
+
+利用可能な変数：
+
+| 変数 | 説明 |
+|------|------|
+| `{{_file_name_}}` | ファイル名（拡張子なし） |
+| `{{_date_}}` | 日付 (YYYY-MM-DD) |
+| `{{_year_}}` | 年 (YYYY) |
+| `{{_author_}}` | 作者名 |
+| `{{_email_}}` | メールアドレス |
+| `{{_cursor_}}` | カーソル位置 |
+| `{{_variable_}}` | カスタム変数（入力を促す） |
+
+テンプレート一覧：
 
 - `js/` - JavaScript
-- `ts/` - TypeScript
-- `lua/` - Lua
+- `ts/` - TypeScript (api, commander, controller, gunshi, service)
+- `lua/` - Lua module
 - `md/` - Markdown
 - `project/` - プロジェクト雛形
+
+使用例：
+
+```
+:Template newfile.ts   → ファイル名で補完、テンプレート選択
+<Leader>T              → プロンプトからテンプレート挿入
+:TemplateProject       → プロジェクト雛形生成
+```
 
 ---
 
