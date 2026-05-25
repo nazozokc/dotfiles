@@ -24,11 +24,11 @@ vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
 vim.api.nvim_set_hl(0, "CursorLine", {
-	bg = "#2a2a37",
+	bg = "#404040",
 })
 
 vim.api.nvim_set_hl(0, "CursorColumn", {
-	bg = "#242433",
+	bg = "#4a4a4a",
 })
 
 -- Insert モード中は relative number を無効化
