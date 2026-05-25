@@ -1,51 +1,110 @@
--- init.lua か plugins/noice.lua に
 return {
 	{
 		"folke/noice.nvim",
+
+		event = "UIEnter",
+
 		dependencies = {
 			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify", -- 通知をいい感じに
+			"rcarriga/nvim-notify",
 		},
-		event = "VeryLazy",
+
 		opts = {
+			-- =====================================================
+			-- Cmdline
+			-- =====================================================
 			cmdline = {
 				enabled = true,
-				view = "cmdline_popup", -- 中央に出るやつ
+				view = "cmdline_popup",
+
 				format = {
-					cmdline = { icon = ">>>", lang = "vim" },
-					search_down = { icon = "🔍⌄", lang = "regex" },
-					search_up = { icon = "🔍⌃", lang = "regex" },
-					lua = { icon = "λ", lang = "lua" },
+					cmdline = {
+						icon = ">>>",
+						lang = "vim",
+					},
+
+					search_down = {
+						icon = "🔍⌄",
+						lang = "regex",
+					},
+
+					search_up = {
+						icon = "🔍⌃",
+						lang = "regex",
+					},
+
+					lua = {
+						icon = "λ",
+						lang = "lua",
+					},
 				},
 			},
+
+			-- =====================================================
+			-- Messages
+			-- =====================================================
 			messages = {
 				enabled = true,
-				view_search = "virtualtext", -- 検索カウントを画面上に
+
+				-- virtualtext は cursorline/cursorcolumn と
+				-- redraw 競合しやすい
+				view_search = false,
 			},
+
+			-- =====================================================
+			-- Popupmenu
+			-- =====================================================
 			popupmenu = {
 				enabled = true,
-				backend = "nui", -- cmp の補完でも動く
+				backend = "nui",
 			},
+
+			-- =====================================================
+			-- Notifications
+			-- =====================================================
 			notify = {
-				enabled = false, -- delegate to snacks.nvim instead
+				enabled = false,
 			},
+
+			-- =====================================================
+			-- LSP
+			-- =====================================================
 			lsp = {
-				progress = { enabled = true, view = "mini" },
-				hover = { enabled = true },
-				signature = { enabled = true },
-				message = { enabled = true },
+				-- progress は redraw 汚しやすい
+				progress = {
+					enabled = false,
+				},
+
+				hover = {
+					enabled = true,
+				},
+
+				-- lspsaga と競合するから切る
+				signature = {
+					enabled = false,
+				},
+
+				message = {
+					enabled = true,
+				},
+
 				override = {
 					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
 					["vim.lsp.util.stylize_markdown"] = true,
 					["cmp.entry.get_documentation"] = true,
 				},
 			},
+
+			-- =====================================================
+			-- Presets
+			-- =====================================================
 			presets = {
-				bottom_search = true, -- /検索は下に表示
-				command_palette = true, -- cmdline と補完をいい感じに
-				long_message_to_split = true, -- 長い出力は split に
+				bottom_search = true,
+				command_palette = true,
+				long_message_to_split = true,
 			},
 		},
+
 		config = function(_, opts)
 			require("noice").setup(opts)
 
@@ -75,13 +134,17 @@ return {
 			set_highlights()
 
 			vim.api.nvim_create_autocmd("ColorScheme", {
-				callback = function()
-					vim.cmd([[
-          highlight NoicePopup guibg=none
-          highlight NoicePopupBorder guibg=none
-        ]])
-				end,
+				callback = set_highlights,
 			})
+
+			-- redraw stabilization
+			vim.schedule(function()
+				vim.cmd("redraw")
+
+				vim.opt.cursorline = true
+				vim.opt.cursorcolumn = true
+				vim.opt.cursorlineopt = "line,number"
+			end)
 		end,
 	},
 }

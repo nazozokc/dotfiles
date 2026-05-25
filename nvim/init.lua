@@ -24,11 +24,11 @@ vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
 vim.api.nvim_set_hl(0, "CursorLine", {
-	bg = "#3b3b50",
+	bg = "#404040",
 })
 
 vim.api.nvim_set_hl(0, "CursorColumn", {
-	bg = "#303045",
+	bg = "#4a4a4a",
 })
 
 -- Insert モード中は relative number を無効化
@@ -49,6 +49,7 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -- =========================================================
 require("vim-options")
 require("lazy").setup("plugins", {
+	lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json",
 	rocks = {
 		enabled = false,
 	},
@@ -100,14 +101,3 @@ end, { desc = "Recent Files" })
 map("n", "<leader>z", function()
 	require("snacks").zen.toggle()
 end, { desc = "Zen Mode" })
-
--- ---------------------------------------------------------
--- Dropbar.nvim
--- ---------------------------------------------------------
-map("n", "<leader>;", function()
-	require("dropbar.api").pick()
-end, { desc = "Dropbar pick symbol" })
-
-map("n", "gp", function()
-	require("dropbar.api").open()
-end, { desc = "Dropbar open" })
