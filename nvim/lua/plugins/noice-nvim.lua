@@ -20,7 +20,7 @@ return {
 			},
 			messages = {
 				enabled = true,
-				view_search = "virtualtext", -- 検索カウントを画面上に
+				view_search = "mini", -- 検索カウントを画面上に
 			},
 			popupmenu = {
 				enabled = true,
@@ -30,7 +30,7 @@ return {
 				enabled = false, -- delegate to snacks.nvim instead
 			},
 			lsp = {
-				progress = { enabled = true, view = "mini" },
+				progress = { enabled = true },
 				hover = { enabled = true },
 				signature = { enabled = true },
 				message = { enabled = true },
