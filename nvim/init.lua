@@ -22,6 +22,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
 
 -- Insert モード中は relative number を無効化
 vim.api.nvim_create_autocmd("InsertEnter", {
