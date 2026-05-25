@@ -41,6 +41,7 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -- =========================================================
 require("vim-options")
 require("lazy").setup("plugins", {
+	lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json",
 	rocks = {
 		enabled = false,
 	},
