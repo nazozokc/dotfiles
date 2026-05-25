@@ -93,14 +93,3 @@ end, { desc = "Recent Files" })
 map("n", "<leader>z", function()
 	require("snacks").zen.toggle()
 end, { desc = "Zen Mode" })
-
--- ---------------------------------------------------------
--- Dropbar.nvim
--- ---------------------------------------------------------
-map("n", "<leader>;", function()
-	require("dropbar.api").pick()
-end, { desc = "Dropbar pick symbol" })
-
-map("n", "gp", function()
-	require("dropbar.api").open()
-end, { desc = "Dropbar open" })
