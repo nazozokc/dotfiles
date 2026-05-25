@@ -1,3 +1,4 @@
+;; lua
 -- {{_file_name_}}.lua
 -- {{_author_}} <{{_email_}}>
 -- created at {{_date_}}
