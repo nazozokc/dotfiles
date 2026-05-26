@@ -195,11 +195,11 @@
     "gh-brag": {
       "flake": false,
       "locked": {
-        "lastModified": 1774880531,
-        "narHash": "sha256-NEjT1s4biqM6u2cqMvW6bNTN5BuZVzOvvK4d2GsEoAc=",
+        "lastModified": 1779762213,
+        "narHash": "sha256-s6+fhuYL8vaSJF77jLy8EOf+QnvRxcr0pBMoYDLgpQw=",
         "owner": "jackchuka",
         "repo": "gh-brag",
-        "rev": "0eed58ba1a5be86751037e6a8b73adbbd97326a4",
+        "rev": "0af92d4910eace5691b3ba1134e270f8b124c8dc",
         "type": "github"
       },
       "original": {
