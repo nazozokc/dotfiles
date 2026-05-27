@@ -34,7 +34,21 @@ function M.apply(config)
 			action = act.CloseCurrentTab({ confirm = true }),
 			description = "Close current tab",
 		},
-		-- PageUp/Down avoids hijacking hjkl, which we keep for pane focus.
+		-- Bracket-based nav: Vim-mnemonic ([ = prev, ] = next).
+		-- Neither Ctrl+Shift+[ nor Ctrl+Shift+] conflicts with nvim.
+		-- Keep PageUp/Down as fallback for non-US layouts where [ ] may be awkward.
+		{
+			key = "[",
+			mods = "CTRL|SHIFT",
+			action = act.ActivateTabRelative(-1),
+			description = "Activate previous tab",
+		},
+		{
+			key = "]",
+			mods = "CTRL|SHIFT",
+			action = act.ActivateTabRelative(1),
+			description = "Activate next tab",
+		},
 		{
 			key = "PageUp",
 			mods = "CTRL|SHIFT",
