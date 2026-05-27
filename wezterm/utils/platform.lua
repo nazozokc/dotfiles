@@ -16,6 +16,12 @@ function M.is_windows()
 	return wezterm.target_triple:find("windows") ~= nil
 end
 
+--- Return the user's home directory, working on both Unix and Windows.
+--- Unix: $HOME, Windows: %USERPROFILE%
+function M.home_dir()
+	return os.getenv("HOME") or os.getenv("USERPROFILE")
+end
+
 function M.is_wayland()
 	-- WezTerm itself doesn't expose the display server directly; environment is the most reliable hint.
 	return (os.getenv("WAYLAND_DISPLAY") ~= nil) or (os.getenv("XDG_SESSION_TYPE") == "wayland")

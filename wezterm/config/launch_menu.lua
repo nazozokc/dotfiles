@@ -11,7 +11,7 @@ function M.apply(config)
 		{ label = "Fish", args = { "fish" } },
 		{ label = "Zsh", args = { "zsh" } },
 		{ label = "Bash", args = { "bash" } },
-		{ label = "Dotfiles", cwd = os.getenv("HOME") .. "/ghq/github.com/nazozokc/dotfiles" },
+		{ label = "Dotfiles", cwd = platform.home_dir() .. "/ghq/github.com/nazozokc/dotfiles" },
 	}
 
 	-- Platform-specific entries
