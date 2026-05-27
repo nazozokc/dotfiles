@@ -18,5 +18,6 @@
     ./programs/ghostty.nix
     ./programs/ollama
     ./programs/docker
+    ./programs/gh-dash
   ];
 }

@@ -45,7 +45,6 @@ with pkgs;
   gitui
   git-secrets
   tig
-  gh-dash
 
   # util
   presenterm
