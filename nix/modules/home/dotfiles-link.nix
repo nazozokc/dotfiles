@@ -9,9 +9,18 @@ in
     # fish_variables の書き込みが失敗する。個別に symlink して fish_variables だけ
     # Nix 管理から外し、fish に自動生成させる。
     ".config/fish/fish_plugins".source = link "${dotfilesDir}/fish/fish_plugins";
-    ".config/fish/conf.d".source = link "${dotfilesDir}/fish/conf.d";
-    ".config/fish/functions".source = link "${dotfilesDir}/fish/functions";
-    ".config/fish/completions".source = link "${dotfilesDir}/fish/completions";
+    ".config/fish/conf.d" = {
+      source = link "${dotfilesDir}/fish/conf.d";
+      force = true;
+    };
+    ".config/fish/functions" = {
+      source = link "${dotfilesDir}/fish/functions";
+      force = true;
+    };
+    ".config/fish/completions" = {
+      source = link "${dotfilesDir}/fish/completions";
+      force = true;
+    };
     ".config/wezterm".source = link "${dotfilesDir}/wezterm";
     ".zshrc".source = link "${dotfilesDir}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDir}/bash/bashrc";
