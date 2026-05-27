@@ -1,5 +1,5 @@
 -- Purpose: Leader key (Ctrl+Shift+Space) and its sub-commands.
--- Includes Quick Select patterns and Workspace schemas.
+-- Includes Quick Select patterns.
 -- These live under Leader to avoid cluttering the main Ctrl+Shift namespace.
 
 local wezterm = require("wezterm")
@@ -37,13 +37,6 @@ function M.apply(config)
 			action = act.SwitchWorkspaceRelative(i - 1),
 		})
 	end
-
-	--------------
-	-- Workspaces
-	--------------
-	config.workspace_schemas = {
-		{ name = "default", label = "Default" },
-	}
 
 	--------------
 	-- Quick Select patterns
