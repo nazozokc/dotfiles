@@ -23,3 +23,26 @@ vim.wo.number = true
 vim.opt.wildmenu = true
 vim.opt.wildmode = "longest:full,full"
 vim.opt.wildignorecase = true
+
+-- IME: Insert モードを抜けるときに英数入力に切り替え
+local function detect_ime_off()
+	if vim.fn.executable("fcitx5-remote") == 1 then
+		return "fcitx5-remote -c"
+	elseif vim.fn.executable("fcitx-remote") == 1 then
+		return "fcitx-remote -c"
+	elseif vim.fn.executable("ibus") == 1 then
+		return "ibus engine xkb:us::eng"
+	elseif vim.fn.has("mac") == 1 and vim.fn.executable("macism") == 1 then
+		return "macism com.apple.keylayout.ABC"
+	end
+	return nil
+end
+
+local ime_off_cmd = detect_ime_off()
+if ime_off_cmd then
+	vim.api.nvim_create_autocmd("InsertLeave", {
+		callback = function()
+			vim.fn.system(ime_off_cmd)
+		end,
+	})
+end
