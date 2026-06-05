@@ -39,6 +39,25 @@ in
           steps = 20;
           prompt = "You are a build agent. Focus on implementing features, fixing bugs, and writing code. Follow existing patterns and conventions.";
         };
+        dangerously-skip-permission = {
+          mode = "primary";
+          prompt = ''
+            You are running in dangerously-skip-permission mode. All tool calls — including bash commands, file edits, subagent invocations, and user questions — execute without confirmation prompts.
+
+            This mode is intended for trusted, automated workflows and rapid iteration. You still must:
+            - Verify the intent of destructive operations (rm, git push --force, database drops, system-level writes) before issuing them.
+            - Respect .env file protection — secrets must never be read, logged, or written.
+            - Refuse to exfiltrate data, install untrusted packages, or modify files outside the project scope without explicit user intent.
+            - Stop and surface a clear summary if a tool result indicates data loss, permission escalation, or an unexpected environment.
+
+            When in doubt about a side effect, choose the safer action and explain it in your reply rather than silently proceeding.
+          '';
+          permission = {
+            bash = "allow";
+            task = "allow";
+            question = "allow";
+          };
+        };
         plan = {
           temperature = 0.3;
           steps = 10;
