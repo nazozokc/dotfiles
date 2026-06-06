@@ -1,5 +1,10 @@
 -- Purpose: custom hyperlink rules for recognizing URLs, file paths, and issue references.
 -- These rules are evaluated when you Ctrl+Shift+click (or use Quick Select) on text.
+--
+-- Note: the `format` field in hyperlink_rules must be a plain string template
+-- (using $0, $1, $2, ...) since WezTerm 2025+.  Lua functions are no longer
+-- accepted.  For editor-aware file:line opening we use a file:// URI with a
+-- line-number fragment and intercept it via the open-uri event below.
 
 local wezterm = require("wezterm")
 
@@ -12,16 +17,27 @@ function M.apply(config)
 	-- A single rule that handles multiple common patterns:
 	--   - File:line:column  (e.g. src/main.rs:42:10)
 	--   - File:line         (e.g. src/main.rs:42)
-	--   - File(line)        (e.g. src/main.rs(42))
-	-- Opens the file in the editor configured in EDITOR/VISUAL (default: cursor at line).
+	-- Generates a file:// URI with the line number as a fragment so the
+	-- open-uri handler below can open it in the user's editor.
 	table.insert(config.hyperlink_rules, {
 		regex = [[\b([\w./\\-]+\.\w+):(\d+)(?::(\d+))?\b]],
-		format = function(uri)
-			local file, line, col = uri:match([[\b([\w./\\-]+\.\w+):(\d+)(?::(\d+))?\b]])
-			local editor = os.getenv("EDITOR") or os.getenv("VISUAL") or "vim"
-			return string.format("%s +%s %s", editor, col and line or line or "1", file)
-		end,
+		format = 'file://$1#$2',
 	})
 end
+
+-- Intercept file:// URIs that carry a line-number fragment and open them
+-- in the editor configured in EDITOR / VISUAL (default: vim).
+wezterm.on('open-uri', function(window, pane, uri)
+	if uri:find('^file:') then
+		local url = wezterm.url.parse(uri)
+		if url and url.file_path and url.fragment then
+			local editor = os.getenv('EDITOR') or os.getenv('VISUAL') or 'vim'
+			pane:send_text(
+				wezterm.shell_join_args({ editor, '+' .. url.fragment, url.file_path }) .. '\r'
+			)
+			return false
+		end
+	end
+end)
 
 return M
