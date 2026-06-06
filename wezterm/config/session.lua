@@ -18,8 +18,8 @@ function M.apply(config)
 	end)
 end
 
--- Register gui-startup ONCE per process (wezterm.once prevents duplicates on config reload).
-wezterm.once("gui-startup", function(cmd)
+-- Subscribe to gui-startup (fires only once per process; safe on config reload).
+wezterm.on("gui-startup", function(cmd)
 	local saved = wezterm.state(STATE_KEY)
 	if saved and saved ~= "" and saved ~= "default" then
 		cmd = cmd or {}
