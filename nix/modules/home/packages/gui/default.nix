@@ -2,7 +2,6 @@
 
 with pkgs;
 [
-  wezterm
   audacity
   vscode
   zed
