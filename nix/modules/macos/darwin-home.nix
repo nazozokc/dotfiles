@@ -17,5 +17,8 @@
   home.packages = with pkgs; [
     # フォント
     fontconfig
+
+    # GPU ラッパーが不要なプラットフォームでは素の wezterm を使う
+    wezterm
   ];
 }

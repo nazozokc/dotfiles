@@ -82,6 +82,12 @@
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # GPU ライブラリラッパー (非 NixOS で Nix GUI アプリを動かす)
+    nixGL = {
+      url = "github:guibou/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ---------------------------------------------------------------------------
@@ -102,6 +108,7 @@
       treefmt-nix,
       agent-skills-nix,
       sops-nix,
+      nixGL,
       ...
     }:
     let
@@ -148,6 +155,7 @@
           extraSpecialArgs = {
             inherit pkgs username;
             dotfilesDir = self.outPath;
+            nixGLPackages = nixGL.packages.${system};
           };
           modules = commonHomeModules ++ [
             ./nix/modules/home
