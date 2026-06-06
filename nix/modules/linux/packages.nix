@@ -37,6 +37,7 @@
 
     # フォント
     fontconfig
+    nerd-fonts.jetbrains-mono
 
     # セキュリティ/認証
     gnupg

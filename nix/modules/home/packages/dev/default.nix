@@ -4,6 +4,7 @@ with pkgs;
 [
   # general
   prettier
+  telescope
 
   # python
   python312
