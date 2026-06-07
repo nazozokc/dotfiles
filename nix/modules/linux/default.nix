@@ -5,6 +5,7 @@
   config,
   pkgs,
   nixGLPackages,
+  dotfilesDir,
   ...
 }:
 
@@ -12,6 +13,7 @@ let
   # Wrapped version of wezterm with nixGL so it can find system GPU libraries
   # (libEGL.so etc.) on non-NixOS Linux (Arch Linux).
   wezterm-wrapped = config.lib.nixGL.wrap pkgs.wezterm;
+  link = config.lib.file.mkOutOfStoreSymlink;
 in
 {
   imports = [
@@ -40,4 +42,8 @@ in
   home.packages = [
     wezterm-wrapped
   ];
+
+  home.file = {
+    ".config/hypr".source = link "${dotfilesDir}/hypr";
+  };
 }
