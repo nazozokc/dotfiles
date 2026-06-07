@@ -21,20 +21,18 @@ function M.apply(config)
 	-- open-uri handler below can open it in the user's editor.
 	table.insert(config.hyperlink_rules, {
 		regex = [[\b([\w./\\-]+\.\w+):(\d+)(?::(\d+))?\b]],
-		format = 'file://$1#$2',
+		format = "file://$1#$2",
 	})
 end
 
 -- Intercept file:// URIs that carry a line-number fragment and open them
 -- in the editor configured in EDITOR / VISUAL (default: vim).
-wezterm.on('open-uri', function(window, pane, uri)
-	if uri:find('^file:') then
+wezterm.on("open-uri", function(window, pane, uri)
+	if uri:find("^file:") then
 		local url = wezterm.url.parse(uri)
 		if url and url.file_path and url.fragment then
-			local editor = os.getenv('EDITOR') or os.getenv('VISUAL') or 'vim'
-			pane:send_text(
-				wezterm.shell_join_args({ editor, '+' .. url.fragment, url.file_path }) .. '\r'
-			)
+			local editor = os.getenv("EDITOR") or os.getenv("VISUAL") or "vim"
+			pane:send_text(wezterm.shell_join_args({ editor, "+" .. url.fragment, url.file_path }) .. "\r")
 			return false
 		end
 	end
