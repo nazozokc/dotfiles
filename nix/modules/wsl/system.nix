@@ -1,7 +1,15 @@
 # nix/modules/wsl/programs.nix
 # WSL 固有のプログラム・セッション設定
-{ pkgs, ... }:
+{
+  config,
+  pkgs,
+  dotfilesDir,
+  ...
+}:
 
+let
+  link = config.lib.file.mkOutOfStoreSymlink;
+in
 {
   ########################################
   # ロケール設定
@@ -80,4 +88,9 @@
     generateResolvConf = true
     networkingMode = mirrored
   '';
+
+  home.file = {
+    ".config/hypr".source = link "${dotfilesDir}/hypr";
+  };
+
 }

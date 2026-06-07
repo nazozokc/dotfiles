@@ -45,5 +45,6 @@ in
 
   home.file = {
     ".config/hypr".source = link "${dotfilesDir}/hypr";
+    ".config/waybar".source = link "${dotfilesDir}/waybar";
   };
 }
