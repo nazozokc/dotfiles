@@ -106,7 +106,7 @@
         ", Print, exec, hyprshot -m region"
 
         # ---- 画面ロック ----
-        "$mod, L, exec, hyprlock"
+        "$mod CTRL, L, exec, hyprlock"
       ];
 
       # リサイズ（ALT 追加で誤操作防止）
