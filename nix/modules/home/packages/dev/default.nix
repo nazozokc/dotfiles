@@ -52,6 +52,9 @@ with pkgs;
   # playwright
   playwright-driver
 
+  # sqlite
+  sqlite
+
   # front end tools (Linux only)
 ]
 ++ lib.optionals stdenv.isLinux [
