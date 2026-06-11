@@ -11,7 +11,7 @@ with pkgs;
   pipx
 
   # js,ts
-  nodejs_24
+  nodejs_22
   typescript-language-server
   typescript-go
   typescript
