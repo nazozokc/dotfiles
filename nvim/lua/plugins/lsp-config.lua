@@ -17,6 +17,7 @@ return {
 				clangd = "clangd",
 				nixd = "nixd",
 				jdtls = "jdtls",
+				sqls = "sqls",
 			}
 
 			local servers_to_enable = {}
@@ -76,6 +77,10 @@ return {
 				capabilities = capabilities,
 				cmd = { "jdtls" },
 				root_dir = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }),
+			})
+
+			vim.lsp.config("sqls", {
+				capabilities = capabilities,
 			})
 
 			-- ===== 有効化 =====
