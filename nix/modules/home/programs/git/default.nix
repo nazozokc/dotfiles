@@ -159,8 +159,6 @@ in
       ".npm/"
       ".yarn/"
       "yarn-error.log"
-      "yarn.lock"
-      "pnpm-lock.yaml"
       "pnpm-store/"
 
       # Python
