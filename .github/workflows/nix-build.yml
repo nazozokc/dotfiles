@@ -32,7 +32,7 @@ jobs:
           - os: macos-latest
             target: darwinConfigurations.nazozokc.system
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: DeterminateSystems/nix-installer-action@v22
       - uses: DeterminateSystems/magic-nix-cache-action@v14
       - name: nix flake check
