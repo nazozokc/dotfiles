@@ -53,6 +53,7 @@ with pkgs;
   # other
   rename
   inetutils
+  lsof
   comma
   aria2
   mise
