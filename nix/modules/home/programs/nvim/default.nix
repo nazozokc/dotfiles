@@ -78,6 +78,9 @@ in
       vscode-langservers-extracted
       vue-language-server
       yaml-language-server
+
+      # Process discovery (opencode.nvim needs lsof)
+      lsof
     ];
   };
 
