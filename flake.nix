@@ -126,6 +126,9 @@
         import nixpkgs {
           localSystem.system = system;
           config.allowUnfree = true;
+          config.permittedInsecurePackages = [
+            "pnpm-11.9.0"
+          ];
           config.problems = {
             handlers.dlinfo.broken = "warn";
           };
@@ -399,6 +402,9 @@
             home-manager.darwinModules.home-manager
             {
               nixpkgs.config.allowUnfree = true;
+              nixpkgs.config.permittedInsecurePackages = [
+                "pnpm-11.9.0"
+              ];
               nixpkgs.config.problems = {
                 handlers.dlinfo.broken = "warn";
               };

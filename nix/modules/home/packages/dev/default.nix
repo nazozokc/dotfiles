@@ -15,7 +15,7 @@ with pkgs;
   typescript-language-server
   typescript-go
   typescript
-  pnpm
+  pnpm_10
   bun
   deno
   yarn
