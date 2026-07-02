@@ -127,7 +127,7 @@
           localSystem.system = system;
           config.allowUnfree = true;
           config.permittedInsecurePackages = [
-            "pnpm-9.15.9"
+            "pnpm"
           ];
           config.problems = {
             handlers.dlinfo.broken = "warn";
@@ -403,7 +403,7 @@
             {
               nixpkgs.config.allowUnfree = true;
               nixpkgs.config.permittedInsecurePackages = [
-                "pnpm-9.15.9"
+                "pnpm"
               ];
               nixpkgs.config.problems = {
                 handlers.dlinfo.broken = "warn";
