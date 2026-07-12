@@ -11,6 +11,51 @@ local function basename(path)
 	return (norm:gsub("/$", ""):match("([^/]+)$")) or norm
 end
 
+--- Look up a Nerd Font icon for the running process in a pane.
+--- Falls back to a terminal icon; detects SSH via pane title.
+local function get_process_icon(process_name, pane_title)
+	local name
+
+	if process_name then
+		name = basename(process_name):lower()
+		name = name:gsub("%.exe$", "") -- Windows .exe suffix
+	end
+
+	-- SSH detection: no process path but title contains user@host
+	if not name and pane_title then
+		if pane_title:find("@") then
+			name = "ssh"
+		end
+	end
+
+	local icon_map = {
+		nvim        = wezterm.nerdfonts.linux_neovim,
+		vim         = wezterm.nerdfonts.dev_vim,
+		ssh         = wezterm.nerdfonts.md_lan,
+		docker      = wezterm.nerdfonts.md_docker,
+		["docker-compose"]  = wezterm.nerdfonts.md_docker,
+		lazygit     = wezterm.nerdfonts.dev_git_branch,
+		git         = wezterm.nerdfonts.dev_git_branch,
+		btop        = wezterm.nerdfonts.md_chart_donut,
+		htop        = wezterm.nerdfonts.md_chart_donut,
+		python      = wezterm.nerdfonts.dev_python,
+		python3     = wezterm.nerdfonts.dev_python,
+		node        = wezterm.nerdfonts.dev_nodejs,
+		npm         = wezterm.nerdfonts.dev_nodejs,
+		yarn        = wezterm.nerdfonts.dev_nodejs,
+		fish        = wezterm.nerdfonts.md_fish,
+		zsh         = wezterm.nerdfonts.md_shell,
+		bash        = wezterm.nerdfonts.md_bash,
+		top         = wezterm.nerdfonts.md_chart_donut,
+		tmux        = wezterm.nerdfonts.md_application,
+	}
+
+	if name and icon_map[name] then
+		return icon_map[name]
+	end
+	return wezterm.nerdfonts.dev_terminal
+end
+
 --- Read Git branch from .git/HEAD in the pane's working directory.
 --- This is faster than spawning `git` and works on all platforms.
 local function get_git_branch(cwd_url)
@@ -54,6 +99,12 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 
 	-- Build title parts
 	local parts = {}
+
+	-- Process icon (cross-platform; nil-safe)
+	local icon = get_process_icon(pane.foreground_process_name, pane.title)
+	parts[#parts + 1] = icon
+	parts[#parts + 1] = " "
+
 	local git_branch = get_git_branch(cwd_url)
 	if git_branch then
 		parts[#parts + 1] = wezterm.nerdfonts.dev_git_branch

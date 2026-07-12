@@ -59,6 +59,21 @@ function M.apply(config)
 	-- Dim inactive panes so your focus stays on the active one.
 	config.inactive_pane_hsb = { saturation = 0.3, brightness = 0.4 }
 
+	-- Window frame colours (RESIZE-only on Linux/Win, full title bar on macOS).
+	-- These make the window border blend with the background scheme.
+	config.window_frame = {
+		active_titlebar_bg = "#181616",
+		inactive_titlebar_bg = "#0D0C0C",
+	}
+
+	-- Tab bar background and tab colours (used even with use_fancy_tab_bar = false).
+	config.colors.tab_bar = {
+		background = "#0D0C0C",
+		active_tab = { bg_color = "#2D4F67", fg_color = "#C8C093" },
+		inactive_tab = { bg_color = "#181616", fg_color = "#c5c9c5" },
+		inactive_tab_hover = { bg_color = "#1e1c1c", fg_color = "#c5c9c5" },
+	}
+
 	-- IME is useful for Japanese input even when most work is in ASCII.
 	config.use_ime = true
 end
