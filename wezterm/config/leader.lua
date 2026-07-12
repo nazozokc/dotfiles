@@ -63,7 +63,9 @@ function M.apply(config)
 	table.insert(config.keys, {
 		key = "p",
 		mods = "LEADER",
-		action = act.MovePaneToNewTab,
+		action = wezterm.action_callback(function(_, pane)
+			pane:move_to_new_tab()
+		end),
 	})
 
 	-- Rename current workspace via prompt
