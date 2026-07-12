@@ -1,5 +1,6 @@
 -- Purpose: keyboard-only window/pane/tab control. No tmux-style prefix, no Ctrl-alone binds.
 -- All keybindings have description for command palette discoverability.
+-- macOS gets SUPERSET bindings (SUPER/Cmd equivalents) so muscle memory isn't broken.
 
 local wezterm = require("wezterm")
 local platform = require("utils.platform")
@@ -7,11 +8,19 @@ local act = wezterm.action
 
 local M = {}
 
--- Calculate a "more transparent" value based on the platform default.
-local function transparent_opacity()
+--- Opacity levels cycled by Ctrl+Shift+F:
+---   1. opaque (1.0)
+---   2. default (platform-aware: 0.95 on Wayland, 0.90 elsewhere)
+---   3. transparent (default - 0.15, floor 0.60)
+local OPACITY_LEVELS
+
+local function init_opacity_levels()
 	local base = platform.default_window_opacity()
-	-- When base is 0.95 → 0.75; when base is 0.90 → 0.75; never go below 0.60.
-	return math.max(base - 0.15, 0.60)
+	OPACITY_LEVELS = {
+		opaque       = 1.0,
+		default      = base,
+		transparent  = math.max(base - 0.15, 0.60),
+	}
 end
 
 function M.apply(config)
@@ -202,30 +211,78 @@ function M.apply(config)
 		},
 
 		-- ========================
-		-- Ctrl + Shift + F : Opacity toggle
+		-- Ctrl + Shift + F : Opacity cycle (opaque → default → transparent → ...)
 		-- ========================
 		{
 			key = "F",
 			mods = "CTRL|SHIFT",
 			action = wezterm.action_callback(function(window, _)
-				local overrides = window:get_config_overrides() or {}
-
-				local base = platform.default_window_opacity()
-				local transparent = transparent_opacity()
-
-				if overrides.window_background_opacity == nil or overrides.window_background_opacity == base then
-					-- Current is default → switch to transparent
-					overrides.window_background_opacity = transparent
-				else
-					-- Current is transparent → restore default
-					overrides.window_background_opacity = base
+				if not OPACITY_LEVELS then
+					init_opacity_levels()
 				end
 
+				local overrides = window:get_config_overrides() or {}
+				local current = overrides.window_background_opacity
+					or platform.default_window_opacity()
+
+				-- Cycle forward through the three levels
+				local next_val
+				if current == OPACITY_LEVELS.opaque then
+					next_val = OPACITY_LEVELS.default
+				elseif current == OPACITY_LEVELS.default then
+					next_val = OPACITY_LEVELS.transparent
+				else
+					next_val = OPACITY_LEVELS.opaque
+				end
+
+				overrides.window_background_opacity = next_val
 				window:set_config_overrides(overrides)
 			end),
-			description = "Toggle window opacity (transparent ↔ default)",
+			description = "Cycle window opacity: opaque → default → transparent",
 		},
 	}
+
+	-- ========================
+	-- macOS SUPER (Cmd) bindings (appended only on macOS)
+	-- ========================
+	-- macOS WM reserves Cmd+W (close window) and Cmd+Q (quit) natively.
+	if platform.is_macos() then
+		local mac_keys = {
+			{
+				key = "t",
+				mods = "SUPER",
+				action = act.SpawnTab("CurrentPaneDomain"),
+				description = "Open new tab",
+			},
+			{
+				key = "c",
+				mods = "SUPER",
+				action = act.CopyTo("Clipboard"),
+				description = "Copy selection to clipboard",
+			},
+			{
+				key = "v",
+				mods = "SUPER",
+				action = act.PasteFrom("Clipboard"),
+				description = "Paste from clipboard",
+			},
+			{
+				key = "n",
+				mods = "SUPER",
+				action = act.SpawnWindow,
+				description = "Open new window",
+			},
+			{
+				key = "Enter",
+				mods = "SUPER|CTRL",
+				action = act.ToggleFullScreen,
+				description = "Toggle fullscreen",
+			},
+		}
+		for _, k in ipairs(mac_keys) do
+			table.insert(config.keys, k)
+		end
+	end
 end
 
 return M

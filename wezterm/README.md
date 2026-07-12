@@ -7,14 +7,14 @@ weztermの設定ファイル
 | ファイル                 | 説明                                                   |
 | ------------------------ | ------------------------------------------------------ |
 | `wezterm.lua`            | エントリーポイント                                     |
-| `config/appearance.lua`  | 外観（カラースキーム、透明度など）                     |
+| `config/appearance.lua`  | 外観（カラースキーム、透明度、inactive_pane_hsb）      |
 | `config/font.lua`        | フォント設定                                           |
 | `config/keys.lua`        | キーバインド + コマンドパレットdescription             |
 | `config/leader.lua`      | Leader key (Ctrl+Shift+Space)、Quick Select、Workspace |
 | `config/launch_menu.lua` | 起動メニュー（コマンドパレットから）                   |
 | `config/hyperlinks.lua`  | ハイパーリンクルール（URL、ファイルパス）              |
 | `config/mouse.lua`       | マウス設定                                             |
-| `config/tab.lua`         | タブ設定                                               |
+| `config/tab.lua`         | タブ設定 + Gitブランチ表示                             |
 | `config/performance.lua` | パフォーマンス設定                                     |
 | `config/session.lua`     | ワークスペースの簡易保存・復元                         |
 | `utils/platform.lua`     | プラットフォーム固有設定                               |
@@ -80,21 +80,34 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 
 ### Leader key（Ctrl+Shift+Space）
 
-| キー           | アクション                         |
-| -------------- | ---------------------------------- |
-| `Leader+Space` | Quick Select（画面内テキスト選択） |
-| `Leader+W`     | ワークスペース切り替え             |
-| `Leader+1..9`  | ワークスペース直接切り替え         |
+| キー            | アクション                                       |
+| --------------- | ------------------------------------------------ |
+| `Leader+Space`  | Quick Select（画面内テキスト選択）               |
+| `Leader+W`      | ワークスペース切り替え                           |
+| `Leader+1..9`   | ワークスペース直接切り替え                       |
+| `Leader+Q`      | PaneSelect（番号表示 → 数字でペイン移動）        |
+| `Leader+R`      | ペインを時計回りに入れ替え                       |
+| `Leader+Shift+R`| ペインを反時計回りに入れ替え                     |
+| `Leader+P`      | 現在のペインを新しいタブに分離                   |
+| `Leader+,`      | 現在のワークスペース名を変更                     |
 
 ### その他
 
-| キー           | アクション                        |
-| -------------- | --------------------------------- |
-| `Ctrl+Shift+R` | 設定リロード                      |
-| `Ctrl+Shift+P` | コマンドパレット                  |
-| `Ctrl+Shift+F` | 透明度トグル（デフォルト ↔ 透過） |
+| キー           | アクション                                        |
+| -------------- | ------------------------------------------------- |
+| `Ctrl+Shift+R` | 設定リロード                                      |
+| `Ctrl+Shift+P` | コマンドパレット                                  |
+| `Ctrl+Shift+F` | 透明度サイクル（opaque → default → transparent）  |
 
 ## 機能詳細
+
+### ペイン
+
+非アクティブペインは彩度・輝度が自動で低下する。アクティブペインだけがはっきり見える。
+
+### タブ
+
+タブタイトルはカレントディレクトリのbasenameを表示。Gitリポジトリ内では ` branch-name  dirname` の形式でブランチ名も表示される。
 
 ### Quick Select
 
@@ -104,15 +117,19 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 - ファイルパス（`file.rs:42` 形式）
 - Git SHA / hex文字列
 - IPv4アドレス
+- CamelCaseシンボル（クラス名、型名など）
+- 数値リテラル（整数・浮動小数点数）
+- アンカーファイル参照（`file#L42`）
 
 ### ワークスペース
 
 `Leader+W` でワークスペース切り替え。`Leader+1..9` で直接切り替えも可能。
+`Leader+,` で現在のワークスペース名をリネーム可能。
 ワークスペースは終了時に保存され、次回起動時に復元される（簡易セッション永続化）。
 
 ### 起動メニュー
 
-`Ctrl+Shift+P` → "Launch" で使用可能。Fish、Zsh、Bash、Dotfilesディレクトリ、Htopなどをクイック起動。
+`Ctrl+Shift+P` → "Launch" で使用可能。Fish、Zsh、Bash、pwsh、Default shell、Dotfilesディレクトリ、Htopなどをクイック起動。
 
 ### ハイパーリンク
 
@@ -120,6 +137,14 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 
 - URL（標準）
 - ファイルパス:行:桁 → `$EDITOR +line file` 形式で開く
+
+### 透明度サイクル
+
+`Ctrl+Shift+F` で3段階の透明度をサイクル切り替え：
+
+- **opaque**: 1.0（完全不透過）
+- **default**: 0.90 / 0.95（プラットフォーム標準、Waylandは軽度透過）
+- **transparent**: default - 0.15（下限0.60）
 
 ### プラットフォーム別透過度
 

@@ -31,8 +31,12 @@ function M.apply(config)
 	config.window_background_opacity = platform.default_window_opacity()
 	config.text_background_opacity = 1.0
 
-	-- Minimal chrome: resize handles only.
-	config.window_decorations = "RESIZE"
+	-- Minimal chrome: resize handles only (keep title bar on macOS for traffic-light buttons).
+	if platform.is_macos() then
+		config.window_decorations = "TITLE|RESIZE"
+	else
+		config.window_decorations = "RESIZE"
+	end
 
 	-- Small padding keeps text off the window edges without wasting screen real estate.
 	config.window_padding = {
@@ -51,6 +55,9 @@ function M.apply(config)
 
 	-- Explicitly set terminfo name; keeps term-dependent behavior predictable.
 	config.term = "wezterm"
+
+	-- Dim inactive panes so your focus stays on the active one.
+	config.inactive_pane_hsb = { saturation = 0.3, brightness = 0.4 }
 
 	-- IME is useful for Japanese input even when most work is in ASCII.
 	config.use_ime = true

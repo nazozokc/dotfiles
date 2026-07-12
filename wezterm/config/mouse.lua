@@ -1,6 +1,9 @@
 -- Purpose: mouse is allowed only for selection and scrolling; no right-click paste, no link opening.
+-- On Linux the selection goes to PrimarySelection (X11 middle-click paste);
+-- on macOS/Windows the same gesture copies straight to Clipboard.
 
 local wezterm = require("wezterm")
+local platform = require("utils.platform")
 local act = wezterm.action
 
 local M = {}
@@ -15,6 +18,10 @@ function M.apply(config)
 
 	-- Hide pointer while typing to reduce visual noise in a keyboard-driven workflow.
 	config.hide_mouse_cursor_when_typing = true
+
+	-- On Linux, use PrimarySelection (X11 middle-click buffer).
+	-- On macOS/Windows, use Clipboard directly since PrimarySelection is not a thing there.
+	local sel_target = platform.is_linux() and "PrimarySelection" or "Clipboard"
 
 	config.mouse_bindings = {
 		-- Single-click: cell selection
@@ -31,7 +38,7 @@ function M.apply(config)
 		{
 			event = { Up = { streak = 1, button = "Left" } },
 			mods = "NONE",
-			action = act.CompleteSelection("PrimarySelection"),
+			action = act.CompleteSelection(sel_target),
 		},
 
 		-- Double-click: word selection
@@ -48,7 +55,7 @@ function M.apply(config)
 		{
 			event = { Up = { streak = 2, button = "Left" } },
 			mods = "NONE",
-			action = act.CompleteSelection("PrimarySelection"),
+			action = act.CompleteSelection(sel_target),
 		},
 
 		-- Triple-click: line selection
@@ -65,7 +72,7 @@ function M.apply(config)
 		{
 			event = { Up = { streak = 3, button = "Left" } },
 			mods = "NONE",
-			action = act.CompleteSelection("PrimarySelection"),
+			action = act.CompleteSelection(sel_target),
 		},
 
 		-- Wheel scroll: keep natural scrolling; WezTerm computes delta per device.

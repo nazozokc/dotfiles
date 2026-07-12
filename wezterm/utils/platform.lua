@@ -16,10 +16,14 @@ function M.is_windows()
 	return wezterm.target_triple:find("windows") ~= nil
 end
 
---- Return the user's home directory, working on both Unix and Windows.
+--- Return the user's home directory, working reliably on all platforms.
 --- Unix: $HOME, Windows: %USERPROFILE%
+--- On Windows, check USERPROFILE first since $HOME may not be set in PowerShell/cmd.
 function M.home_dir()
-	return os.getenv("HOME") or os.getenv("USERPROFILE")
+	if M.is_windows() then
+		return os.getenv("USERPROFILE") or os.getenv("HOME") or ""
+	end
+	return os.getenv("HOME") or os.getenv("USERPROFILE") or ""
 end
 
 function M.is_wayland()
