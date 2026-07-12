@@ -42,7 +42,7 @@ function M.apply(config)
 	table.insert(config.keys, {
 		key = "q",
 		mods = "LEADER",
-		action = act.PaneSelect({ mode = "ActivateByIndex" }),
+		action = act.PaneSelect({ mode = "Activate" }),
 	})
 
 	-- Rotate panes clockwise
