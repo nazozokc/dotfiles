@@ -220,7 +220,8 @@ wezterm.on("update-status", function(window, pane)
 	-- cpu
 	if cpu_cache.value ~= nil then
 		right_items[#right_items + 1] = { Foreground = { Color = "#8A9A7B" } }
-		right_items[#right_items + 1] = { Text = "  " .. wezterm.nerdfonts.md_cpu_64_bit .. " " .. cpu_cache.value .. "%" }
+		right_items[#right_items + 1] =
+			{ Text = "  " .. wezterm.nerdfonts.md_cpu_64_bit .. " " .. cpu_cache.value .. "%" }
 	end
 
 	-- gpu

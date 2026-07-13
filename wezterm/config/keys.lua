@@ -17,9 +17,9 @@ local OPACITY_LEVELS
 local function init_opacity_levels()
 	local base = platform.default_window_opacity()
 	OPACITY_LEVELS = {
-		opaque       = 1.0,
-		default      = base,
-		transparent  = math.max(base - 0.15, 0.60),
+		opaque = 1.0,
+		default = base,
+		transparent = math.max(base - 0.15, 0.60),
 	}
 end
 
@@ -222,8 +222,7 @@ function M.apply(config)
 				end
 
 				local overrides = window:get_config_overrides() or {}
-				local current = overrides.window_background_opacity
-					or platform.default_window_opacity()
+				local current = overrides.window_background_opacity or platform.default_window_opacity()
 
 				-- Cycle forward through the three levels
 				local next_val
