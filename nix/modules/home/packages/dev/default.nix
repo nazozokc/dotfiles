@@ -13,8 +13,6 @@ with pkgs;
   # js,ts
   nodejs_latest
   typescript-language-server
-  typescript-go
-  typescript
   bun
   deno
   yarn
