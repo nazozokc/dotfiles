@@ -23,6 +23,7 @@ with pkgs;
   tldr
   pet
   just
+  dig
 
   # filer
   yazi
