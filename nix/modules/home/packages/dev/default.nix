@@ -52,9 +52,12 @@ with pkgs;
   # sqlite
   sqlite
 
-  # front end tools (Linux only)
+  # test-attacker
+  aircrack-ng
+  crunch
 ]
 ++ lib.optionals stdenv.isLinux [
+  # front end tools (Linux only)
   vite
   chromium
 ]
