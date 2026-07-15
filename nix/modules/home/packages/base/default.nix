@@ -60,4 +60,9 @@ with pkgs;
   aria2
   mise
   cmake
+
+  # mail
+  aerc
+  neomutt
+  himalaya
 ]
