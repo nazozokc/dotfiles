@@ -52,7 +52,7 @@ with pkgs;
   # sqlite
   sqlite
 
-  # test-attacker
+  # penetration-test
   aircrack-ng
   crunch
 ]

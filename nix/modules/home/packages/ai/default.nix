@@ -6,5 +6,4 @@ with pkgs;
   opencode
   claude-monitor
   claude-code
-  codex
 ]
