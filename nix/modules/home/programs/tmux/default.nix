@@ -15,6 +15,11 @@
       tmuxPlugins.resurrect
       tmuxPlugins.continuum
       tmuxPlugins.yank
+      tmuxPlugins.tmux-fzf
+      tmuxPlugins.fuzzback
+      tmuxPlugins.tmux-thumbs
+      tmuxPlugins.tmux-floax
+      tmuxPlugins.ukiyo
     ];
 
     extraConfig = ''
@@ -57,28 +62,25 @@
       set -g monitor-activity on
       set -g visual-activity on
 
-      # ===== Kanagawa Dragon Status Bar =====
-      set -g status-position bottom
-      set -g status-justify left
-      set -g status-style "bg=#1F1F28,fg=#C8C093"
-      set -g status-left-length 40
-      set -g status-right-length 60
+      # ===== Ukiyo theme (Kanagawa Dragon) =====
+      set -g @ukiyo-theme "kanagawa/dragon"
+      set -g @ukiyo-refresh-rate 30
+      set -g @ukiyo-show-git true
+      set -g @ukiyo-show-prefix true
+      set -g @ukiyo-show-cwd true
+      set -g @ukiyo-pane-run-true-colors true
 
-      # Status left: session name
-      set -g status-left "#[fg=#1F1F28,bg=#7e9cd8,bold] #S #[fg=#7e9cd8,bg=#1F1F28,nobold]"
+      # ===== tmux-floax (floating popup) =====
+      set -g @floax-bind Escape
+      set -g @floax-width 80%
+      set -g @floax-height 80%
 
-      # Status right: date/time
-      set -g status-right "#[fg=#1F1F28,bg=#54546D,nobold]#[fg=#C8C093,bg=#54546D] %Y-%m-%d  %H:%M #[fg=#54546D,bg=#1F1F28,nobold]"
+      # ===== tmux-thumbs (hint text selection) =====
+      set -g @thumbs-key "t"
+      set -g @thumbs-alphabet "numeric"
+      set -g @thumbs-unique "on"
 
-      # Window status
-      set -g window-status-format "#[fg=#54546D]#[fg=#C8C093,bg=#54546D] #I:#W #[fg=#54546D]"
-      set -g window-status-current-format "#[fg=#1F1F28,bg=#7e9cd8,nobold]#[fg=#1F1F28,bg=#7e9cd8,bold] #I:#W #[fg=#7e9cd8,bg=#1F1F28,nobold]"
-      set -g window-status-separator ""
-      set -g window-status-bell-style "fg=#E46876,bg=#1F1F28"
-
-      # ===== Colors (Kanagawa Dragon palette) =====
-      set -g status-bg "#1F1F28"
-      set -g status-fg "#C8C093"
+      # ===== Colors (Kanagawa Dragon palette - fallback) =====
       set -g message-style "fg=#1F1F28,bg=#98bb6c"
       set -g pane-border-style "fg=#54546D"
       set -g pane-active-border-style "fg=#7e9cd8"
