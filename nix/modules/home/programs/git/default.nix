@@ -27,6 +27,9 @@ in
 
       init.defaultBranch = "main";
 
+      protocol.version = 2;
+      transfer.fsckObjects = true;
+
       core = {
         editor = "nvim";
         pager = "delta";
@@ -34,11 +37,26 @@ in
         ignorecase = false;
         untrackedCache = false;
         fsmonitor = false;
+        symlinks = true;
       };
 
       color.ui = "auto";
 
       tag.sort = "version:refname";
+
+      log.date = "iso-strict";
+
+      status.short = true;
+      status.submoduleSummary = true;
+      status.aheadBehind = false;
+
+      maintenance.auto = true;
+      maintenance.strategy = "incremental";
+
+      interactive.singleKey = true;
+
+      blame.date = "iso-strict";
+      blame.coloring = "repeatedLines";
 
       pull.rebase = true;
 
@@ -52,6 +70,7 @@ in
         prune = true;
         pruneTags = true;
         writeCommitGraph = true;
+        showForcedUpdates = false;
         all = true;
       };
 
@@ -238,6 +257,12 @@ in
       "**/.claude/settings.local.json"
       "**/.claude/worktrees"
       "**/CLAUDE.local.md"
+
+      # Bun
+      ".bun-cache/"
+
+      # Editor
+      ".cursor/"
     ];
   };
 
@@ -248,6 +273,8 @@ in
       line-numbers = true;
       side-by-side = true;
       navigate = true;
+      diff-so-fancy = true;
+      keep-plus-minus-markers = true;
       features = "decorations";
       syntax-theme = "Monokai Extended";
       true-color = "always";

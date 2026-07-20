@@ -32,3 +32,20 @@
 	contributors = shortlog -sn HEAD
 	root = rev-parse --show-toplevel
 	worktree = "!f() { git worktree add \"$(git rev-parse --show-toplevel)/../$1\" -b \"$1\"; }; f"
+	# Web / browsing
+	browse = !gh repo view --web
+	browse-pr = !gh pr view --web
+	brc = !"echo $(gh repo view --json url --jq .url)/commit/$(git rev-parse HEAD)"
+	# Branch management
+	main = "!f() { local b; b=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); git switch \"${b#origin/}\" 2>/dev/null || git switch main; }; f"
+	dlr = "!sh -c 'git branch -D \"$1\" && git push origin :\"$1\"' -"
+	clean-branches = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -r git branch -d"
+	swf = "!git branch -a | fzf | xargs git switch"
+	# History / log
+	logg = log --graph --abbrev-commit --pretty=format:\"%C(yellow)%h%C(reset) - %C(cyan)%ad%C(reset) %C(green)(%ar)%C(reset)%C(auto)%d%C(reset)%n          %C(white)%s%C(reset)%n\" --date=iso-strict
+	rb = "!git reflog --pretty='%gs' | grep 'checkout:' | awk '{print $NF}' | awk '!seen[$0]++' | head -20"
+	today = "!git log --since=midnight --author=$(git config user.name) --oneline --shortstat"
+	# Interactive staging
+	apf = "!git ls-files -m -o --exclude-standard | fzf -m --print0 --preview 'git diff {} | delta' | xargs -0 -o -t git add -p"
+	# Utility
+	aliases = !git config --get-regexp alias | sed 's/^alias.//' | sort
