@@ -69,6 +69,7 @@
       set -g @ukiyo-show-prefix true
       set -g @ukiyo-show-cwd true
       set -g @ukiyo-pane-run-true-colors true
+      set -g @ukiyo-plugins "cpu-usage ram-usage battery network weather time"
 
       # ===== tmux-floax (floating popup) =====
       set -g @floax-bind Escape
