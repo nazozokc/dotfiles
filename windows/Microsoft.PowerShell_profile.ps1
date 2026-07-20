@@ -36,16 +36,15 @@ Set-PSReadLineOption -Colors @{
 
 # Vi mode indicators
 Set-PSReadLineOption -ViModeIndicator Script
-$script:ViMode = "NORMAL"
 $script:ViModeHandler = {
-    if ($host.UI.RawUI.KeyAvailable) { return }
-    if ($viMode -eq "NORMAL") {
+    param([Microsoft.PowerShell.ViMode]$Mode)
+    if ($Mode -eq [Microsoft.PowerShell.ViMode]::Normal) {
         $host.UI.RawUI.WindowTitle = "NORMAL"
     } else {
         $host.UI.RawUI.WindowTitle = ""
     }
 }
-Set-PSReadLineActionHandler -ViModeChange $script:ViModeHandler
+Set-PSReadLineOption -ViModeChangeHandler $script:ViModeHandler
 
 # Ctrl+r: interactive history search
 Set-PSReadLineKeyHandler -Key Ctrl+r -Function ReverseSearchHistory
