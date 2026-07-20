@@ -1,4 +1,4 @@
 return {
-	"m4xshen/select-undo.nvim",
+	"SunnyTamang/select-undo.nvim",
 	opts = {},
 }
