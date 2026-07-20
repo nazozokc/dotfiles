@@ -1,0 +1,112 @@
+{
+  // Windows Terminal settings
+  // Copy relevant sections into Windows Terminal settings UI or
+  // place at: %LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
+  // (for Store version) or %USERPROFILE%\.config\wt\settings.json (for Dev version)
+
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+
+  "defaultProfile": "{PowerShell7-GUID}",
+
+  "profiles": {
+    "defaults": {
+      "font": {
+        "face": "JetBrainsMono Nerd Font",
+        "size": 11
+      },
+      "colorScheme": "Kanagawa",
+      "opacity": 90,
+      "useAcrylic": true,
+      "cursorShape": "vintage",
+      "cursorHeight": 25,
+      "antialiasingMode": "grayscale",
+      "bellStyle": "none",
+      "closeOnExit": "graceful"
+    },
+    "list": [
+      {
+        "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+        "name": "PowerShell 7",
+        "commandline": "pwsh.exe -nologo",
+        "source": "pwsh",
+        "startingDirectory": "."
+      },
+      {
+        "guid": "{2c4de342-38b7-51cf-b940-2309a097f489}",
+        "name": "Windows PowerShell",
+        "commandline": "powershell.exe -nologo",
+        "source": "Windows.Terminal.WindowsPowerShell",
+        "hidden": true
+      },
+      {
+        "hidden": true,
+        "name": "Command Prompt"
+      }
+    ]
+  },
+
+  "schemes": [
+    {
+      "name": "Kanagawa",
+      "background": "#1F1F28",
+      "foreground": "#DCD7BA",
+      "black": "#090A0E",
+      "blue": "#7FB4CA",
+      "brightBlack": "#727169",
+      "brightBlue": "#7FB4CA",
+      "brightCyan": "#6A9589",
+      "brightGreen": "#98BB6C",
+      "brightPurple": "#957FB8",
+      "brightRed": "#C4746E",
+      "brightWhite": "#C8C09C",
+      "brightYellow": "#C4A000",
+      "cyan": "#6A9589",
+      "green": "#76946A",
+      "purple": "#957FB8",
+      "red": "#E46876",
+      "white": "#C8C094",
+      "yellow": "#DCA561"
+    }
+  ],
+
+  "actions": [
+    { "command": "closePane", "keys": "ctrl+w" },
+    { "command": "splitPane", "keys": "ctrl+shift+\\" },
+    {
+      "command": { "action": "splitPane", "split": "vertical" },
+      "keys": "alt+shift+-"
+    },
+    {
+      "command": { "action": "splitPane", "split": "horizontal" },
+      "keys": "alt+shift+="
+    },
+    { "command": "toggleFullscreen", "keys": "ctrl+shift+f11" },
+    { "command": { "action": "quakeMode" }, "keys": "ctrl+`" },
+    { "command": "openNewTabDropdown", "keys": "ctrl+t" },
+    { "command": "newTab", "keys": "ctrl+shift+t" },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "gs\n"
+      },
+      "keys": "ctrl+shift+g"
+    }
+  ],
+
+  "tabSwitcherMode": "disabled",
+  "confirmCloseAllTabs": false,
+  "alwaysShowTabs": true,
+  "showTabsInTitlebar": true,
+  "showTerminalTitle": false,
+  "initialCols": 120,
+  "initialRows": 36,
+  "launchMode": "default",
+  "copyOnSelect": true,
+  "copyFormatting": "none",
+  "windowingBehavior": "useExisting",
+  "disableAnimations": false,
+  "startOnUserLogin": true,
+  "theme": "dark",
+  "useAcrylicInTabRow": true,
+  "centerOnLaunch": true
+}

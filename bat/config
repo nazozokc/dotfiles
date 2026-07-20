@@ -1,0 +1,5 @@
+# bat configuration - shared across all platforms
+--theme="TwoDark"
+--pager="less -FR"
+--style="numbers,changes,header"
+--tabs="2"

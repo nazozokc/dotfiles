@@ -42,6 +42,21 @@
 
 - git (nix-darwinのenvironment.systemPackagesで管理)
 
+## クロスプラットフォーム設定共有
+
+以下の設定ファイルは Nix（Linux/macOS/WSL）と Windows（PowerShell 7）で同じファイルを共有しています：
+
+| ツール   | 共有ファイル                              | Nixでの管理方法                                 | Windowsでの管理方法   |
+| -------- | ----------------------------------------- | ----------------------------------------------- | --------------------- |
+| git      | `git/config`, `git/aliases`, `git/ignore` | `programs.git.includes` + `home.file`でデプロイ | `link.ps1` で symlink |
+| starship | `starship/starship.toml`                  | `home.file` でデプロイ                          | `link.ps1` で symlink |
+| lazygit  | `lazygit/config.yml`                      | `home.file` でデプロイ                          | `link.ps1` で symlink |
+| bat      | `bat/config`                              | `home.file` でデプロイ                          | `link.ps1` で symlink |
+| nvim     | `nvim/`                                   | `home.file` で symlink                          | `link.ps1` で symlink |
+| wezterm  | `wezterm/`                                | `home.file` で symlink                          | `link.ps1` で symlink |
+
+各 `programs/<name>/default.nix` では `dotfilesDir` を使ってリポジトリルートの共有ファイルを参照しています。
+
 ## モジュール構造
 
 ```

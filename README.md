@@ -4,8 +4,11 @@
 
 # Nazozo Dotfiles
 
-このリポジトリは Linux / macOS 両対応で Nix による dotfiles 管理を行う構成です。  
-macOS では **nix-darwin** を利用し、Home Manager と連携させています。
+このリポジトリは Linux / macOS / Windows (native) の3OS対応で dotfiles 管理を行う構成です。
+
+- **Linux / macOS / WSL**: Nix + Home Manager で管理
+- **Windows (native)**: PowerShell 7 スクリプトで管理
+- **設定ファイルは可能な限り共通化**: `git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/` は全OSで同一ファイルを共有
 
 ---
 
@@ -25,6 +28,7 @@ macOS では **nix-darwin** を利用し、Home Manager と連携させていま
 - Linux: `aarch64-linux` (ARM linux)
 - WSL: `x86_64-linux` (WSL2)
 - macOS: `aarch64-darwin` (Apple Silicon)
+- Windows: native (PowerShell 7 + scoop/winget)
 
 ---
 
@@ -100,6 +104,86 @@ nix run .#update
 - macOS は nix-darwin を通して Home Manager を管理
 - GUIアプリも Nix で管理可能
 - 既存の PATH 環境を壊さず管理できます
+
+---
+
+---
+
+## Windows セットアップ (ネイティブ)
+
+### 前提条件
+
+- Windows 10 22H2+ または Windows 11
+- [PowerShell 7](https://github.com/PowerShell/PowerShell) (`winget install Microsoft.PowerShell`)
+- 管理者権限は不要（scoop はユーザー権限で動作）
+
+### インストール手順
+
+```powershell
+# 1. リポジトリをクローン
+cd ~
+git clone https://github.com/nazozokc/dotfiles.git
+cd dotfiles
+
+# 2. セットアップスクリプトを実行
+pwsh -ExecutionPolicy RemoteSigned -File windows/setup.ps1
+```
+
+スクリプトは以下を自動実行します：
+
+1. **scoop** のインストール（未導入の場合）
+2. **scoop + winget** でパッケージ一括インストール（neovim, git, starship, lazygit, wezterm など）
+3. **設定ファイルの symlink**（`git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/` → Windows の適切なパス）
+4. **PowerShell 7 プロファイル** のインストール
+
+### セットアップ後にやること
+
+```powershell
+# PowerShell 7 を再起動（プロファイルを読み込む）
+# または手動で読み込み
+. $PROFILE
+```
+
+- Windows Terminal の設定は `windows/terminal/settings.json` を参照して手動で適用してください
+- フォントは JetBrainsMono Nerd Font が自動インストールされます
+
+### パッケージ更新
+
+```powershell
+# scoop 全更新
+scoop update && scoop update *
+
+# winget 更新
+winget upgrade --all
+```
+
+### 設定ファイルの構成
+
+```
+dotfiles/
+├── git/                          # Linux/macOS/WSL/Windows で共有
+│   ├── config                    #   メイン設定
+│   └── aliases                   #   Git エイリアス
+├── starship/starship.toml        # 全OS共有
+├── lazygit/config.yml            # 全OS共有
+├── bat/config                    # 全OS共有
+├── nvim/                         # 全OS共有 (既存)
+├── wezterm/                      # 全OS共有 (既存)
+├── windows/                      # Windows 専用
+│   ├── setup.ps1                 #   セットアップエントリポイント
+│   ├── install.ps1               #   パッケージインストール
+│   ├── link.ps1                  #   設定ファイルリンク
+│   ├── Microsoft.PowerShell_profile.ps1  # PowerShell 7 プロファイル
+│   └── terminal/settings.json    #   Windows Terminal 設定（参考）
+├── nix/                          # Linux/macOS/WSL 専用 (Nix)
+└── fish/ / zsh/ / bash/          # Linux/macOS/WSL 専用
+```
+
+### 注意事項
+
+- **fish / zsh / tmux / ghostty / Hyprland** は Windows では動作しないため対象外です
+- **sops-nix** によるシークレット管理は Windows 未対応です
+- Windows Terminal の `settings.json` はマシン固有の GUID が含まれるため、参考値として提供しています
 
 ---
 

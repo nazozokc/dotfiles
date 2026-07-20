@@ -1,0 +1,140 @@
+[user]
+	name = nazozokc
+	email = nazozokc@users.noreply.github.com
+
+[init]
+	defaultBranch = main
+
+[protocol]
+	version = 2
+
+[transfer]
+	fsckObjects = true
+
+[core]
+	editor = nvim
+	pager = delta
+	autocrlf = input
+	ignorecase = false
+	untrackedCache = false
+	fsmonitor = false
+	symlinks = true
+
+[color]
+	ui = auto
+
+[tag]
+	sort = version:refname
+
+[log]
+	date = iso-strict
+
+[status]
+	short = true
+	submoduleSummary = true
+	aheadBehind = false
+
+[maintenance]
+	auto = true
+	strategy = incremental
+
+[interactive]
+	singleKey = true
+
+[blame]
+	date = iso-strict
+	coloring = repeatedLines
+
+[pull]
+	rebase = true
+
+[push]
+	default = current
+	autoSetupRemote = true
+	useForceIfIncludes = true
+
+[fetch]
+	prune = true
+	pruneTags = true
+	writeCommitGraph = true
+	showForcedUpdates = false
+	all = true
+
+[merge]
+	ff = only
+	conflictstyle = zdiff3
+
+[rebase]
+	autoStash = true
+	autoSquash = true
+	updateRefs = true
+
+[commit]
+	verbose = true
+	gpgSign = false
+
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+
+[help]
+	autocorrect = 10
+
+[column]
+	ui = auto
+
+[branch]
+	sort = -committerdate
+
+[rerere]
+	enabled = true
+	autoupdate = true
+
+[remote]
+	pushDefault = origin
+
+# credential helper: uses gh auth
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+[ghq]
+	root = ~/ghq
+
+[wt]
+	remover = trash-cli
+
+# delta pager configuration
+[delta]
+	line-numbers = true
+	side-by-side = true
+	navigate = true
+	diff-so-fancy = true
+	keep-plus-minus-markers = true
+	features = decorations
+	syntax-theme = Monokai Extended
+	true-color = always
+	hyperlinks = true
+
+[delta "decorations"]
+	commit-decoration-style = bold yellow box ul
+	file-decoration-style = none
+	file-style = bold yellow
+	hunk-header-decoration-style = cyan box
+	hunk-header-file-style = yellow
+	hunk-header-line-number-style = cyan
+	hunk-header-style = file line-number syntax
+
+# Git aliases
+[include]
+	path = ~/.config/git/aliases
+
+# core.excludesFile for global gitignore
+[core]
+	excludesFile = ~/.config/git/ignore

@@ -1,13 +1,14 @@
-{ ... }:
+{
+  dotfilesDir,
+  ...
+}:
 {
   programs.bat = {
     enable = true;
 
-    config = {
-      theme = "TwoDark";
-      pager = "less -FR";
-      style = "numbers,changes,header";
-      tabs = "2";
-    };
+    # Configuration is in bat/config (shared across platforms)
+    # config = {};
   };
+
+  home.file.".config/bat/config".source = "${dotfilesDir}/bat/config";
 }
