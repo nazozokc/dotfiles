@@ -24,7 +24,7 @@ in
   home.file."${config.xdg.configHome}/lazygit/config.yml".source =
     "${dotfilesDir}/lazygit/config.yml";
 
-  home.activation.validateLazygitSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.validateLazygitSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     SETTINGS_FILE="${lazygitConfigFile}"
 
     echo "Validating lazygit config.yml..."

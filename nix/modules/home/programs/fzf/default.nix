@@ -10,8 +10,8 @@
     tmux.enableShellIntegration = true;
 
     defaultCommand = "fd --type f --hidden --exclude .git";
-    fileWidgetCommand = "fd --type f --hidden --exclude .git";
-    changeDirWidgetCommand = "fd --type d --hidden --exclude .git";
+    fileWidget.command = "fd --type f --hidden --exclude .git";
+    changeDirWidget.command = "fd --type d --hidden --exclude .git";
 
     defaultOptions = [
       "--height 10"
@@ -21,19 +21,19 @@
       "--bind 'ctrl-/:change-preview-window(down|hidden|right:40%)'"
     ];
 
-    fileWidgetOptions = [
+    fileWidget.options = [
       "--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
       "--preview-window=right:40%,hidden"
       "--bind 'focus:show-preview'"
     ];
 
-    changeDirWidgetOptions = [
+    changeDirWidget.options = [
       "--preview 'eza --tree --color=always {} | head -200'"
       "--preview-window=right:40%,hidden"
       "--bind 'focus:show-preview'"
     ];
 
-    historyWidgetOptions = [
+    historyWidget.options = [
       "--sort"
       "--exact"
     ];
