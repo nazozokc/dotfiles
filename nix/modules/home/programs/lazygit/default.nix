@@ -21,8 +21,15 @@ in
   };
 
   # Deploy shared lazygit config
-  home.file."${config.xdg.configHome}/lazygit/config.yml".source =
-    "${dotfilesDir}/lazygit/config.yml";
+  # NOTE: home-manager's built-in programs.lazygit also declares this same
+  # home.file entry. When settings = {} (empty), it sets enable = false,
+  # which would prevent linkGeneration from creating the file unless we
+  # explicitly re-enable it here.
+  home.file."${config.xdg.configHome}/lazygit/config.yml" = {
+    enable = true;
+    forceParentDirs = true;
+    source = "${dotfilesDir}/lazygit/config.yml";
+  };
 
   home.activation.validateLazygitSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     SETTINGS_FILE="${lazygitConfigFile}"
