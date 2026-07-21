@@ -26,9 +26,8 @@ in
   # which would prevent linkGeneration from creating the file unless we
   # explicitly re-enable it here.
   home.file."${config.xdg.configHome}/lazygit/config.yml" = {
-    enable = true;
-    forceParentDirs = true;
-    source = "${dotfilesDir}/lazygit/config.yml";
+    enable = lib.mkForce true;
+    source = lib.mkForce "${dotfilesDir}/lazygit/config.yml";
   };
 
   home.activation.validateLazygitSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
