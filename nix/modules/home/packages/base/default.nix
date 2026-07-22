@@ -4,6 +4,7 @@ with pkgs;
 [
   # shell
   fish
+  nushellFull
   zsh
 
   # CLI tools
