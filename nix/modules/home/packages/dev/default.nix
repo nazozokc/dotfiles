@@ -8,7 +8,6 @@ with pkgs;
 
   # python
   python312
-  pipx
 
   # js,ts
   nodejs_latest
