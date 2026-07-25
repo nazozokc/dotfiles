@@ -11,7 +11,6 @@ with pkgs;
   # x86_64 only: ARM Linux builds unavailable for these packages
   ghostty
   tor-browser
-  vicinae
 ]
 
 ++ lib.optionals stdenv.isDarwin [

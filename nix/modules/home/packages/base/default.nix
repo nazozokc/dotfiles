@@ -61,6 +61,10 @@ with pkgs;
   aria2
   mise
   cmake
+  bitwarden-cli
+  bitwarden-desktop
+  _1password
+  _1password-cli
 
   # mail
   aerc

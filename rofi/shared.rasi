@@ -1,0 +1,78 @@
+/* Catppuccin Mocha */
+* {
+  bg:       #1e1e2eef;
+  bg-alt:   #313244ef;
+  fg:       #cdd6f4ff;
+  fg-alt:   #a6adc8ff;
+  accent:   #cba6f7ff;
+  urgent:   #f38ba8ff;
+}
+
+* {
+  background-color: transparent;
+  text-color:       @fg;
+  margin:  0;
+  padding: 0;
+  spacing: 0;
+}
+
+window {
+  background-color: @bg;
+  border:       2px;
+  border-color: @accent;
+  border-radius: 12px;
+  padding:      20px;
+  width:        40%;
+}
+
+inputbar {
+  children: [ prompt, entry ];
+}
+
+prompt {
+  background-color: @accent;
+  text-color:       @bg;
+  padding:          8px 12px;
+  border-radius:    6px;
+  margin:           0 8px 0 0;
+}
+
+entry {
+  padding:    8px;
+  placeholder: "Search...";
+  placeholder-color: @fg-alt;
+}
+
+listview {
+  lines:   8;
+  columns: 1;
+  spacing: 4px;
+  padding: 8px 0 0 0;
+}
+
+element {
+  padding:       6px 8px;
+  border-radius: 6px;
+  spacing:       8px;
+}
+
+element selected {
+  background-color: @bg-alt;
+  text-color:       @accent;
+}
+
+element-icon {
+  size: 20px;
+}
+
+element-text {
+  expand:   true;
+}
+
+message {
+  padding: 8px 0 0 0;
+}
+
+textbox {
+  text-color: @fg-alt;
+}

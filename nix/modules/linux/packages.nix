@@ -20,7 +20,6 @@
     zip
 
     # ネットワーク
-    bind.dnsutils
     ethtool
     mtr
     nmap
@@ -38,11 +37,35 @@
     gnupg
     openssh
     pass
+    polkit_gnome
 
     # XDG/デスクトップ統合
     file
     libnotify
     xdg-user-dirs
     xdg-utils
+
+    # スクリーンショット
+    grim
+    slurp
+
+    # バックライト
+    brightnessctl
+
+    # ランチャー
+    rofi
+
+    # 通知
+    dunst
+
+    # ウォールペーパー
+    awww
+
+    # ロック/アイドル
+    hyprlock
+    hypridle
+
+    # ログアウトメニュー
+    wlogout
   ];
 }

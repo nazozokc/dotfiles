@@ -14,11 +14,11 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("fcitx5 -d --replace")
 
 	-- Polkit authentication agent
-	-- hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
+	hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
 
-	-- Network manager applet (if needed)
-	-- hl.exec_cmd("nm-applet --indicator")
+	-- Notification daemon
+	hl.exec_cmd("dunst")
 
-	-- Bluetooth tray (if needed)
-	-- hl.exec_cmd("blueman-applet")
+	-- Idle manager
+	hl.exec_cmd("hypridle")
 end)
