@@ -4,14 +4,12 @@
 hl.config({
 	-- General window management
 	general = {
-		gaps_in = 3,
-		gaps_out = 5,
+		gaps_in = 4,
+		gaps_out = 6,
 		border_size = 2,
 
-		col = {
-			active_border = { colors = { "rgba(cba6f7ee)", "rgba(89b4faee)" }, angle = 45 },
-			inactive_border = "rgba(45475aee)",
-		},
+		["col.active_border"] = { colors = { "rgba(cba6f7ee)", "rgba(89b4faee)" }, angle = 45 },
+		["col.inactive_border"] = "rgba(45475aee)",
 
 		layout = "dwindle",
 
@@ -28,7 +26,7 @@ hl.config({
 
 		shadow = {
 			enabled = true,
-			range = 8,
+			range = 12,
 			render_power = 3,
 			color = 0xee1a1a2e,
 		},
@@ -39,7 +37,8 @@ hl.config({
 			passes = 2,
 			new_optimizations = true,
 			ignore_opacity = true,
-			xray = false,
+			xray = true, -- frosted glass effect on transparent windows
+			vibrancy = 0.2,
 		},
 	},
 
@@ -57,7 +56,18 @@ hl.config({
 	-- Misc
 	misc = {
 		force_default_wallpaper = -1, -- disable the anime wallpaper
-		disable_hyprland_logo = false,
+		disable_hyprland_logo = true,
+
+		-- DPMS: wake on mouse/key
+		mouse_move_enables_dpms = true,
+		key_press_enables_dpms = true,
+
+		-- Smooth window dragging
+		animate_mouse_windowdragging = true,
+
+		-- Terminal swallow: wezterm hides when launching GUI apps
+		enable_swallow = true,
+		swallow_regex = "^(wezterm)$",
 	},
 })
 
@@ -67,14 +77,16 @@ hl.curve("easeInOutCubic", { type = "bezier", points = { { 0.65, 0.05 }, { 0.36,
 hl.curve("linear", { type = "bezier", points = { { 0, 0 }, { 1, 1 } } })
 hl.curve("almostLinear", { type = "bezier", points = { { 0.5, 0.5 }, { 0.75, 1 } } })
 hl.curve("quick", { type = "bezier", points = { { 0.15, 0 }, { 0.1, 1 } } })
+hl.curve("easeOutBack", { type = "bezier", points = { { 0.34, 1.56 }, { 0.64, 1 } } })
+hl.curve("easeOutExpo", { type = "bezier", points = { { 0.19, 1 }, { 0.22, 1 } } })
 
 -- Animation entries
 hl.animation({ leaf = "global", enabled = true, speed = 10, bezier = "default" })
 hl.animation({ leaf = "border", enabled = true, speed = 5.39, bezier = "easeOutQuint" })
 hl.animation({ leaf = "windows", enabled = true, speed = 4.79, spring = "default" })
-hl.animation({ leaf = "windowsIn", enabled = true, speed = 4.1, spring = "default", style = "popin 87%" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 4.1, bezier = "easeOutBack", style = "popin 87%" })
 hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.49, bezier = "linear", style = "popin 87%" })
 hl.animation({ leaf = "fade", enabled = true, speed = 3.03, bezier = "quick" })
-hl.animation({ leaf = "workspaces", enabled = true, speed = 1.94, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 2.5, bezier = "easeOutExpo", style = "slidefade 20%" })
 hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 1.79, bezier = "almostLinear" })
 hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" })

@@ -4,11 +4,6 @@
 
 {
   home.packages = with pkgs; [
-    # 日本語入力
-    fcitx5
-    fcitx5-mozc
-    fcitx5-gtk
-
     # クリップボード
     xclip
     wl-clipboard

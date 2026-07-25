@@ -34,6 +34,18 @@ hl.bind(mainMod .. " + Space", hl.dsp.window.float({ action = "toggle" })) -- to
 hl.bind(mainMod .. " + V", hl.dsp.window.pseudo()) -- toggle pseudo tiling (like nvim :vsp)
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- toggle split direction (dwindle)
 
+-- Move window in direction (like wezterm's move_to_new_tab, but directional)
+hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({ direction = "l" }))
+hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ direction = "d" }))
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ direction = "u" }))
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "r" }))
+
+-- Resize window (wezterm's Ctrl+Shift+Alt+hjkl equivalent)
+hl.bind(mainMod .. " + ALT + H", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + ALT + J", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + ALT + K", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + ALT + L", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
+
 -- ═══════════════════════════════════════════════════════════
 -- WORKSPACES (wezterm tabs)
 -- ═══════════════════════════════════════════════════════════
@@ -44,6 +56,8 @@ for i = 1, 9 do
 	hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = i }))
 	hl.bind(mainMod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
 end
+hl.bind(mainMod .. " + 0", hl.dsp.focus({ workspace = 10 }))
+hl.bind(mainMod .. " + SHIFT + 0", hl.dsp.window.move({ workspace = 10 }))
 
 -- Tab navigation: prev/next workspace
 -- wezterm:  Ctrl+Shift + [ / ] → prev/next tab

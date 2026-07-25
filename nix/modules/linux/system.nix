@@ -1,8 +1,20 @@
-# nix/modules/linux/programs.nix
+# nix/modules/linux/system.nix
 # Linux 固有のプログラム・セッション設定
-{ ... }:
+{ pkgs, ... }:
 
 {
+  ########################################
+  # 日本語入力 (fcitx5 + Mozc)
+  ########################################
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
+
   ########################################
   # ロケール設定
   ########################################
@@ -14,11 +26,6 @@
   home.sessionVariables = {
     LANG = "ja_JP.UTF-8";
     LC_ALL = "ja_JP.UTF-8";
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-    XMODIFIERS = "@im=fcitx";
-    SDL_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "ibus";
   };
 
   ########################################

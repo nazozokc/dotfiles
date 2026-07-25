@@ -40,3 +40,39 @@ for _, class in ipairs(floatClasses) do
 		float = true,
 	})
 end
+
+-- ═══════════════════════════════════════════════════════════
+-- VISUAL EFFECTS
+-- ═══════════════════════════════════════════════════════════
+
+-- Dim background for floating windows (focus assist)
+hl.window_rule({
+	name = "dim-floating",
+	match = { float = true },
+	dim_around = true,
+})
+
+-- Terminal windows: subtle opacity for layered depth
+hl.window_rule({
+	name = "wezterm-opacity",
+	match = { class = "^wezterm$" },
+	opacity = "0.95 override 0.90 override",
+})
+
+hl.window_rule({
+	name = "kitty-opacity",
+	match = { class = "^kitty$" },
+	opacity = "0.95 override 0.90 override",
+})
+
+-- ═══════════════════════════════════════════════════════════
+-- LAYER RULES (bars, launchers, etc.)
+-- ═══════════════════════════════════════════════════════════
+
+-- Blur behind waybar (requires waybar with transparent background)
+hl.layer_rule({ name = "blur-waybar", match = { namespace = "waybar" }, blur = true })
+-- Ignore fully transparent pixels so only content areas get blurred
+hl.layer_rule({ name = "ignorezero-waybar", match = { namespace = "waybar" }, ignore_alpha = 0.5 })
+
+-- Blur behind rofi launcher
+hl.layer_rule({ name = "blur-rofi", match = { namespace = "rofi" }, blur = true, ignore_alpha = 0.5 })
