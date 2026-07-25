@@ -129,6 +129,7 @@
           config.permittedInsecurePackages = [
             "pnpm-9.15.9"
             "pnpm-10.34.0"
+            "electron-39.8.10"
           ];
           config.problems = {
             handlers.dlinfo.broken = "warn";
@@ -406,6 +407,7 @@
               nixpkgs.config.permittedInsecurePackages = [
                 "pnpm-9.15.9"
                 "pnpm-10.34.0"
+                "electron-39.8.10"
               ];
               nixpkgs.config.problems = {
                 handlers.dlinfo.broken = "warn";
