@@ -63,7 +63,6 @@ with pkgs;
   cmake
   bitwarden-cli
   bitwarden-desktop
-  _1password
   _1password-cli
 
   # mail
