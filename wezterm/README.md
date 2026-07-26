@@ -155,5 +155,5 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 
 ### セッション
 
-現在のワークスペースを `wezterm.state` に保存。次回起動時に自動復元。
+現在のワークスペースを JSON ファイル (`~/.config/wezterm/.workspace_state.json`) に保存。次回起動時に自動復元。
 対応範囲はワークスペースのみ（ペインレイアウトの復元は対象外）。
