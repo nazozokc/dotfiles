@@ -9,7 +9,7 @@ with pkgs;
 
 ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
   # x86_64 only: ARM Linux builds unavailable for these packages
-  ghostty
+  # ghostty は linux/default.nix で nixGL ラップしてインストール
   tor-browser
 ]
 

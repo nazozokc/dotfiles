@@ -13,6 +13,8 @@ let
   # Wrapped version of wezterm with nixGL so it can find system GPU libraries
   # (libEGL.so etc.) on non-NixOS Linux (Arch Linux).
   wezterm-wrapped = config.lib.nixGL.wrap pkgs.wezterm;
+  # ghostty also needs nixGL wrapping for same reason
+  ghostty-wrapped = config.lib.nixGL.wrap pkgs.ghostty;
   link = config.lib.file.mkOutOfStoreSymlink;
 in
 {
@@ -34,13 +36,14 @@ in
   };
 
   # ---------------------------------------------------------------------------
-  # wezterm: nixGL-wrapped version
+  # nixGL-wrapped GUI apps
   # ---------------------------------------------------------------------------
-  # On non-NixOS, the Nix-packaged wezterm can't find system libEGL.so because
-  # its RUNPATH only contains Nix store paths. nixGL bridges the gap.
-  # wezterm は gui/default.nix から外し、Linux でのみ wrapped 版を入れる。
+  # On non-NixOS, Nix-packaged GUI apps can't find system GPU libraries
+  # (libEGL.so etc.) because their RUNPATH only contains Nix store paths.
+  # nixGL bridges the gap. Keep these out of packages/gui/default.nix.
   home.packages = [
     wezterm-wrapped
+    ghostty-wrapped
   ];
 
   home.file = {
