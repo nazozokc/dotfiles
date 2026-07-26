@@ -22,6 +22,8 @@ in
       force = true;
     };
     ".config/wezterm".source = link "${dotfilesDir}/wezterm";
+    ".config/efm-langserver".source = link "${dotfilesDir}/efm-langserver";
+    ".config/mise/config.toml".source = link "${dotfilesDir}/mise.toml";
     ".zshrc".source = link "${dotfilesDir}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDir}/bash/bashrc";
     ".scripts".source = link "${dotfilesDir}/my_scripts";

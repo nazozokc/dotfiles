@@ -1,12 +1,13 @@
 {
-  // Windows Terminal settings
-  // Copy relevant sections into Windows Terminal settings UI or
-  // place at: %LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
-  // (for Store version) or %USERPROFILE%\.config\wt\settings.json (for Dev version)
+  // Windows Terminal settings (Dev channel)
+  // Auto-linked to: %USERPROFILE%\.config\wt\settings.json
+  //
+  // Store version: Copy to
+  //   %LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
 
   "$schema": "https://aka.ms/terminal-profiles-schema",
 
-  "defaultProfile": "{PowerShell7-GUID}",
+  "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
 
   "profiles": {
     "defaults": {
@@ -21,15 +22,16 @@
       "cursorHeight": 25,
       "antialiasingMode": "grayscale",
       "bellStyle": "none",
-      "closeOnExit": "graceful"
+      "closeOnExit": "graceful",
+      "scrollbarState": "hidden"
     },
     "list": [
       {
         "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
         "name": "PowerShell 7",
         "commandline": "pwsh.exe -nologo",
-        "source": "pwsh",
-        "startingDirectory": "."
+        "startingDirectory": ".",
+        "icon": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/assets/ps_black_128.svg"
       },
       {
         "guid": "{2c4de342-38b7-51cf-b940-2309a097f489}",
@@ -39,8 +41,10 @@
         "hidden": true
       },
       {
-        "hidden": true,
-        "name": "Command Prompt"
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "name": "Command Prompt",
+        "commandline": "cmd.exe",
+        "hidden": true
       }
     ]
   },
@@ -70,34 +74,48 @@
   ],
 
   "actions": [
+    // -- Tabs --
+    { "command": "newTab", "keys": "ctrl+shift+t" },
+    { "command": { "action": "nextTab" }, "keys": "ctrl+shift+]" },
+    { "command": { "action": "prevTab" }, "keys": "ctrl+shift+[" },
     { "command": "closePane", "keys": "ctrl+w" },
-    { "command": "splitPane", "keys": "ctrl+shift+\\" },
-    {
-      "command": { "action": "splitPane", "split": "vertical" },
-      "keys": "alt+shift+-"
-    },
-    {
-      "command": { "action": "splitPane", "split": "horizontal" },
-      "keys": "alt+shift+="
-    },
+    { "command": "openNewTabDropdown", "keys": "ctrl+t" },
+
+    // -- Panes --
+    { "command": { "action": "splitPane", "split": "vertical" }, "keys": "alt+shift+-" },
+    { "command": { "action": "splitPane", "split": "horizontal" }, "keys": "alt+shift+=" },
+    { "command": { "action": "splitPane", "split": "auto" }, "keys": "ctrl+shift+\\" },
+    { "command": { "action": "moveFocus", "direction": "left" }, "keys": "alt+left" },
+    { "command": { "action": "moveFocus", "direction": "right" }, "keys": "alt+right" },
+    { "command": { "action": "moveFocus", "direction": "up" }, "keys": "alt+up" },
+    { "command": { "action": "moveFocus", "direction": "down" }, "keys": "alt+down" },
+    { "command": { "action": "resizePane", "direction": "left" }, "keys": "ctrl+shift+left" },
+    { "command": { "action": "resizePane", "direction": "right" }, "keys": "ctrl+shift+right" },
+    { "command": { "action": "resizePane", "direction": "up" }, "keys": "ctrl+shift+up" },
+    { "command": { "action": "resizePane", "direction": "down" }, "keys": "ctrl+shift+down" },
+
+    // -- Search / find --
+    { "command": { "action": "find" }, "keys": "ctrl+shift+f" },
+
+    // -- Display --
     { "command": "toggleFullscreen", "keys": "ctrl+shift+f11" },
     { "command": { "action": "quakeMode" }, "keys": "ctrl+`" },
-    { "command": "openNewTabDropdown", "keys": "ctrl+t" },
-    { "command": "newTab", "keys": "ctrl+shift+t" },
-    {
-      "command": {
-        "action": "sendInput",
-        "input": "gs\n"
-      },
-      "keys": "ctrl+shift+g"
-    }
+    { "command": { "action": "togglePaneZoom" }, "keys": "ctrl+shift+space" },
+
+    // -- Send text shortcuts —
+    { "command": { "action": "sendInput", "input": "gs\n" }, "keys": "ctrl+shift+g" },
+
+    // -- Clipboard —
+    { "command": { "action": "copy", "singleLine": false }, "keys": "ctrl+c" },
+    { "command": { "action": "paste" }, "keys": "ctrl+v" }
   ],
 
-  "tabSwitcherMode": "disabled",
-  "confirmCloseAllTabs": false,
+  // -- Global settings —
   "alwaysShowTabs": true,
   "showTabsInTitlebar": true,
   "showTerminalTitle": false,
+  "tabSwitcherMode": "disabled",
+  "confirmCloseAllTabs": false,
   "initialCols": 120,
   "initialRows": 36,
   "launchMode": "default",
@@ -108,5 +126,7 @@
   "startOnUserLogin": true,
   "theme": "dark",
   "useAcrylicInTabRow": true,
-  "centerOnLaunch": true
+  "centerOnLaunch": true,
+  "showExitMessage": false,
+  "firstWindowPreference": "defaultProfile"
 }

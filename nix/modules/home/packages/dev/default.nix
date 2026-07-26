@@ -39,6 +39,7 @@ with pkgs;
 
   # yaml
   yamlfmt
+  efm-langserver
 
   # package tools
   cargo
