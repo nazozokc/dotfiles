@@ -73,6 +73,8 @@
         Winget = @(
             @{ Id = 'Microsoft.WindowsTerminal';     Source = 'winget' }
             @{ Id = 'Microsoft.OpenSSH.Beta';       Source = 'winget' }
+            @{ Id = 'Microsoft.PowerToys';           Source = 'winget' }
+            @{ Id = 'AgileBits.1Password';           Source = 'winget' }
         )
 
         # PowerShell Gallery modules
@@ -107,6 +109,9 @@
         # Windows Terminal Dev channel
         @{ From = 'windows/terminal/settings.json'; To = '%USERPROFILE%\.config\wt\settings.json' }
 
+        # WSL config
+        @{ From = 'windows/.wslconfig';         To = '%USERPROFILE%\.wslconfig' }
+
         # Personal scripts
         @{ From = 'my_scripts';                 To = '%USERPROFILE%\.scripts' }
     )
@@ -127,10 +132,26 @@
             @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState'; Name = 'FullPath'; Value = 1; Type = 'DWord' }
             # Taskbar: align left (0 = left, 1 = center)
             @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; Name = 'TaskbarAl'; Value = 0; Type = 'DWord' }
+            # Taskbar: combine taskbar buttons (0 = always, 1 = when full, 2 = never)
+            @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; Name = 'TaskbarGlomLevel'; Value = 0; Type = 'DWord' }
             # Dark mode: apps
             @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'; Name = 'AppsUseLightTheme'; Value = 0; Type = 'DWord' }
             # Dark mode: system
             @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'; Name = 'SystemUsesLightTheme'; Value = 0; Type = 'DWord' }
+            # Keyboard: keyboard repeat delay (ms, 250 = short)
+            @{ Path = 'HKCU:\Control Panel\Keyboard'; Name = 'KeyboardDelay'; Value = 0; Type = 'DWord' }
+            # Keyboard: keyboard repeat speed (31 = max)
+            @{ Path = 'HKCU:\Control Panel\Keyboard'; Name = 'KeyboardSpeed'; Value = 31; Type = 'DWord' }
+            # Mouse: pointer speed (1-20, default 10)
+            @{ Path = 'HKCU:\Control Panel\Mouse'; Name = 'MouseSensitivity'; Value = 10; Type = 'DWord' }
+            # Mouse: enhance pointer precision
+            @{ Path = 'HKCU:\Control Panel\Mouse'; Name = 'MouseSpeed'; Value = 0; Type = 'DWord' }
+            # Mouse: snap to default button
+            @{ Path = 'HKCU:\Control Panel\Mouse'; Name = 'SnapToDefaultButton'; Value = 0; Type = 'DWord' }
+            # Start menu: show recommended section (0 = hide)
+            @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; Name = 'Start_ShowRecommended'; Value = 0; Type = 'DWord' }
+            # Taskbar: search box style (0 = hidden, 1 = search icon, 2 = search box)
+            @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search'; Name = 'SearchboxTaskbarMode'; Value = 0; Type = 'DWord' }
         )
 
         # Windows Features to enable (requires admin)
@@ -141,11 +162,8 @@
 
         # Power settings (requires admin)
         Power = @{
-            # Sleep timeout in minutes (0 = never)
             SleepTimeout = 30
-            # Display timeout in minutes
             DisplayTimeout = 15
-            # Hibernate timeout in minutes (0 = never)
             HibernateTimeout = 0
         }
     }

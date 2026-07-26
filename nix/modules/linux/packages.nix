@@ -25,9 +25,14 @@
     nmap
 
     # システム監視
+    duf # ディスク使用量 (modern df)
+    hyperfine # ベンチマーク
     iotop
     lm_sensors
+    procs # プロセス表示 (modern ps)
+    sd # テキスト置換 (modern sed)
     sysstat
+    bandwhich # ネットワーク使用量
 
     # フォント
     fontconfig

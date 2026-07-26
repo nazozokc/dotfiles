@@ -1,0 +1,20 @@
+# windows/.wslconfig
+# WSL グローバル設定
+# 自動リンク先: %USERPROFILE%\.wslconfig
+#
+# 反映には WSL の再起動が必要です:
+#   wsl --shutdown
+#   wsl
+
+[wsl2]
+# WSL 2 が使用するメモリ上限
+memory=8GB
+
+# 並列コンパイル用 CPU コア数 (0 = 自動)
+processors=4
+
+# スワップファイルサイズ (0 = スワップ無効)
+swap=2GB
+
+# Docker などとの互換性のため localhost を転送
+localhostForwarding=true

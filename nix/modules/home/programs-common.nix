@@ -19,5 +19,7 @@
     ./programs/ollama
     ./programs/docker
     ./programs/gh-dash
+    ./programs/gtk.nix
+    ./programs/mimeapps.nix
   ];
 }
