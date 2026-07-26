@@ -34,6 +34,7 @@ with pkgs;
   cachix
   niv
   nix-output-monitor
+  nh
 
   # docker
   docker
