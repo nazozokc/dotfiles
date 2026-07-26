@@ -25,6 +25,14 @@
     };
   };
 
+  # Force overwrite existing files managed by home-manager's gtk module
+  xdg.configFile."gtk-3.0/settings.ini".force = true;
+  xdg.configFile."gtk-4.0/settings.ini".force = true;
+  home.file.".gtkrc-2.0" = {
+    force = true;
+    text = "";
+  };
+
   # ===== Qt theme (follow GTK) =====
   qt = {
     enable = true;

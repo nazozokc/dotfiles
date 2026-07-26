@@ -21,7 +21,6 @@ in
   imports = [
     ./packages.nix
     ./system.nix
-    ./kde.nix
     ../home/systemd
   ];
 

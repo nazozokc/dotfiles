@@ -82,17 +82,50 @@
     { "command": "openNewTabDropdown", "keys": "ctrl+t" },
 
     // -- Panes --
-    { "command": { "action": "splitPane", "split": "vertical" }, "keys": "alt+shift+-" },
-    { "command": { "action": "splitPane", "split": "horizontal" }, "keys": "alt+shift+=" },
-    { "command": { "action": "splitPane", "split": "auto" }, "keys": "ctrl+shift+\\" },
-    { "command": { "action": "moveFocus", "direction": "left" }, "keys": "alt+left" },
-    { "command": { "action": "moveFocus", "direction": "right" }, "keys": "alt+right" },
-    { "command": { "action": "moveFocus", "direction": "up" }, "keys": "alt+up" },
-    { "command": { "action": "moveFocus", "direction": "down" }, "keys": "alt+down" },
-    { "command": { "action": "resizePane", "direction": "left" }, "keys": "ctrl+shift+left" },
-    { "command": { "action": "resizePane", "direction": "right" }, "keys": "ctrl+shift+right" },
-    { "command": { "action": "resizePane", "direction": "up" }, "keys": "ctrl+shift+up" },
-    { "command": { "action": "resizePane", "direction": "down" }, "keys": "ctrl+shift+down" },
+    {
+      "command": { "action": "splitPane", "split": "vertical" },
+      "keys": "alt+shift+-"
+    },
+    {
+      "command": { "action": "splitPane", "split": "horizontal" },
+      "keys": "alt+shift+="
+    },
+    {
+      "command": { "action": "splitPane", "split": "auto" },
+      "keys": "ctrl+shift+\\"
+    },
+    {
+      "command": { "action": "moveFocus", "direction": "left" },
+      "keys": "alt+left"
+    },
+    {
+      "command": { "action": "moveFocus", "direction": "right" },
+      "keys": "alt+right"
+    },
+    {
+      "command": { "action": "moveFocus", "direction": "up" },
+      "keys": "alt+up"
+    },
+    {
+      "command": { "action": "moveFocus", "direction": "down" },
+      "keys": "alt+down"
+    },
+    {
+      "command": { "action": "resizePane", "direction": "left" },
+      "keys": "ctrl+shift+left"
+    },
+    {
+      "command": { "action": "resizePane", "direction": "right" },
+      "keys": "ctrl+shift+right"
+    },
+    {
+      "command": { "action": "resizePane", "direction": "up" },
+      "keys": "ctrl+shift+up"
+    },
+    {
+      "command": { "action": "resizePane", "direction": "down" },
+      "keys": "ctrl+shift+down"
+    },
 
     // -- Search / find --
     { "command": { "action": "find" }, "keys": "ctrl+shift+f" },
@@ -103,7 +136,10 @@
     { "command": { "action": "togglePaneZoom" }, "keys": "ctrl+shift+space" },
 
     // -- Send text shortcuts —
-    { "command": { "action": "sendInput", "input": "gs\n" }, "keys": "ctrl+shift+g" },
+    {
+      "command": { "action": "sendInput", "input": "gs\n" },
+      "keys": "ctrl+shift+g"
+    },
 
     // -- Clipboard —
     { "command": { "action": "copy", "singleLine": false }, "keys": "ctrl+c" },
