@@ -1,6 +1,6 @@
 -- Purpose: status bar (workspace, mode, git, hostname, CPU, GPU, time) + cursor color sync.
 -- Cross-platform:
---   - CPU: Linux = /proc/stat (no spawn), macOS = ps, Windows = powershell
+--   - CPU: Linux = /proc/stat (no spawn), others skip (too expensive)
 --   - GPU: nvidia-smi on any platform (gracefully skips if unavailable)
 --   - All other APIs (wezterm.nerdfonts, wezterm.format, OSC 12) are native.
 
@@ -58,7 +58,6 @@ end
 
 -- Linux delta state (persists between calls)
 local cpu_delta = { idle_prev = 0, total_prev = 0, ready = false }
--- Shared cached result for all platforms
 local cpu_cache = { value = nil, time = 0 }
 
 local function fetch_cpu_linux()
@@ -100,35 +99,10 @@ local function fetch_cpu_linux()
 	return math.floor((1 - delta_idle / delta_total) * 100 + 0.5)
 end
 
-local function fetch_cpu_macos()
-	local result = run_cmd({ "bash", "-c", "ps -A -o %cpu | awk '{s+=$1} END {printf \"%d\\n\", int(s)}'" })
-	if result then
-		return tonumber(result)
-	end
-	return nil
-end
-
-local function fetch_cpu_windows()
-	local result = run_cmd({
-		"powershell",
-		"-NoProfile",
-		"-Command",
-		"(Get-Counter '\\Processor(_Total)\\% Processor Time').CounterSamples.CookedValue",
-	})
-	if result then
-		return tonumber(result)
-	end
-	return nil
-end
-
---- Fetch current CPU usage percentage (0-100) or nil.
+--- Fetch current CPU usage (Linux only: free file read; other platforms skip).
 local function fetch_cpu()
 	if platform.is_linux() then
 		return fetch_cpu_linux()
-	elseif platform.is_macos() then
-		return fetch_cpu_macos()
-	elseif platform.is_windows() then
-		return fetch_cpu_windows()
 	end
 	return nil
 end
@@ -137,7 +111,7 @@ end
 -- GPU usage (nvidia-smi, cached, cross-platform)
 -- ──────────────────────────────────────────────
 local gpu_cache = { value = nil, time = 0 }
-local gpu_checked = false -- true once we confirm nvidia-smi is absent
+local gpu_checked = false
 
 local function fetch_gpu()
 	if gpu_checked then
@@ -150,7 +124,7 @@ local function fetch_gpu()
 		return pct and tonumber(pct) or nil
 	end
 
-	gpu_checked = true -- nvidia-smi not available; skip future attempts
+	gpu_checked = true
 	return nil
 end
 
@@ -170,6 +144,8 @@ end
 -- Status bar update
 -- ──────────────────────────────────────────────
 
+local git_cache = { branch = nil, pane_id = nil, time = 0 }
+
 wezterm.on("update-status", function(window, pane)
 	local now = os.time()
 	local mode, mode_color = get_mode(window)
@@ -177,19 +153,27 @@ wezterm.on("update-status", function(window, pane)
 	local hostname = wezterm.hostname()
 	local time_str = os.date("%H:%M")
 
-	-- ── Git branch (check every call; io.open is cheap) ──
-	local cwd_url = pane:get_current_working_dir()
-	local git_branch = get_git_branch(cwd_url)
+	-- ── Git branch (re-check only when pane changes or every 30s) ──
+	local pane_id = pane:pane_id()
+	local git_branch
+	if pane_id ~= git_cache.pane_id or now - git_cache.time >= 30 then
+		local cwd_url = pane:get_current_working_dir()
+		git_branch = get_git_branch(cwd_url)
+		git_cache.branch = git_branch
+		git_cache.pane_id = pane_id
+		git_cache.time = now
+	else
+		git_branch = git_cache.branch
+	end
 
-	-- ── CPU (refresh more often on Linux where it's free) ──
-	local cpu_interval = platform.is_linux() and 1 or 5
-	if now - cpu_cache.time >= cpu_interval then
+	-- ── CPU (Linux: free file read every 2s; other platforms skip) ──
+	if platform.is_linux() and now - cpu_cache.time >= 2 then
 		cpu_cache.value = fetch_cpu()
 		cpu_cache.time = now
 	end
 
-	-- ── GPU (refresh every 5s) ──
-	if now - gpu_cache.time >= 5 then
+	-- ── GPU (refresh every 30s) ──
+	if now - gpu_cache.time >= 30 then
 		gpu_cache.value = fetch_gpu()
 		gpu_cache.time = now
 	end
@@ -241,8 +225,7 @@ wezterm.on("update-status", function(window, pane)
 end)
 
 function M.apply(config)
-	-- How often update-status fires (milliseconds)
-	config.status_update_interval = 1000
+	config.status_update_interval = 2000
 end
 
 return M
