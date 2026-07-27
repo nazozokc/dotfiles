@@ -6,8 +6,9 @@ function M.apply(config)
 	config.max_fps = 60
 	config.animation_fps = 1
 
-	-- OpenGL is more stable/faster on Windows; WebGPU on Linux/macOS.
-	config.front_end = platform.is_windows() and "OpenGL" or "WebGpu"
+	-- WebGPU > OpenGL on Windows; Windows OpenGL drivers are trash.
+	-- Swap to "Software" if your GPU still stutters.
+	config.front_end = "WebGpu"
 
 	config.scrollback_lines = 10000
 	config.scroll_to_bottom_on_input = true
