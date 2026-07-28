@@ -28,7 +28,7 @@ function M.apply(config)
 
 	-- Platform-aware transparency.
 	-- Wayland compositors vary in transparency support; use a slightly less aggressive value there.
-	config.window_background_opacity = platform.default_window_opacity()
+	config.window_background_opacity = 1.0
 	config.text_background_opacity = 1.0
 
 	-- Minimal chrome: resize handles only (keep title bar on macOS for traffic-light buttons).
@@ -75,7 +75,7 @@ function M.apply(config)
 	}
 
 	-- IME is useful for Japanese input even when most work is in ASCII.
-	config.use_ime = true
+	config.use_ime = false
 end
 
 return M

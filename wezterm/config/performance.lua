@@ -3,12 +3,12 @@ local platform = require("utils.platform")
 local M = {}
 
 function M.apply(config)
-	config.max_fps = 60
+	config.max_fps = 120
 	config.animation_fps = 1
 
-	-- OpenGL is more stable than WebGPU on real-world Windows GPU/driver combos.
-	-- Swap to "WebGpu" if you have a newer GPU that handles it well, or "Software" if still stuttering.
-	config.front_end = "OpenGL"
+	-- Software (DirectWrite) has the lowest input latency on Windows.
+	-- "WebGpu" can be faster on a modern discrete GPU but often adds lag on integrated/driver-bound setups.
+	config.front_end = "Software"
 
 	config.scrollback_lines = 10000
 	config.scroll_to_bottom_on_input = true
