@@ -92,7 +92,7 @@ function Ensure-Scoop {
 function Ensure-ScoopBucket {
     param([string]$Bucket)
 
-    $buckets = scoop bucket list 2>$null | ForEach-Object { $_ -replace '\s+.*$', '' }
+    $buckets = scoop bucket list 2>$null | ForEach-Object { ($_ -split '\s+')[0] }
     if ($buckets -notcontains $Bucket) {
         Write-Info "Adding scoop bucket: $Bucket"
         scoop bucket add $Bucket
@@ -107,7 +107,7 @@ function Install-ScoopPackage {
     $installed = scoop list 2>$null | Select-String "^$Name "
     if (-not $installed) {
         Write-Info "Installing $Name..."
-        scoop install $Name
+        scoop install $Name --no-update-scoop
     } else {
         Write-Skip "$Name is already installed."
     }
