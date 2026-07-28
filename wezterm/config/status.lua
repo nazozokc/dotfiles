@@ -172,8 +172,8 @@ wezterm.on("update-status", function(window, pane)
 		cpu_cache.time = now
 	end
 
-	-- ── GPU (refresh every 30s) ──
-	if now - gpu_cache.time >= 30 then
+	-- ── GPU (refresh every 30s, Windows skipped — nvidia-smi spawn is expensive) ──
+	if not platform.is_windows() and now - gpu_cache.time >= 30 then
 		gpu_cache.value = fetch_gpu()
 		gpu_cache.time = now
 	end

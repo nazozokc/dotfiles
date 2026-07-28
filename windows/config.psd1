@@ -73,7 +73,6 @@
         Winget = @(
             @{ Id = 'Microsoft.WindowsTerminal';     Source = 'winget' }
             @{ Id = 'Microsoft.OpenSSH.Beta';       Source = 'winget' }
-            @{ Id = 'Microsoft.PowerToys';           Source = 'winget' }
             @{ Id = 'AgileBits.1Password';           Source = 'winget' }
         )
 
@@ -130,8 +129,8 @@
             @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; Name = 'Hidden'; Value = 1; Type = 'DWord' }
             # Explorer: show path in title bar
             @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState'; Name = 'FullPath'; Value = 1; Type = 'DWord' }
-            # Taskbar: align left (0 = left, 1 = center)
-            @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; Name = 'TaskbarAl'; Value = 0; Type = 'DWord' }
+            # Taskbar: align center (0 = left, 1 = center)
+            @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; Name = 'TaskbarAl'; Value = 1; Type = 'DWord' }
             # Taskbar: combine taskbar buttons (0 = always, 1 = when full, 2 = never)
             @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; Name = 'TaskbarGlomLevel'; Value = 0; Type = 'DWord' }
             # Dark mode: apps

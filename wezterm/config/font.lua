@@ -7,18 +7,20 @@ local M = {}
 
 function M.apply(config)
 	-- Nerd Font is assumed (icons), and JetBrains Mono is readable at small sizes.
-	-- Add a CJK fallback so Japanese text doesn't fall back to proportional fonts.
 	-- Add per-platform system fonts as last-resort fallback.
+	-- CJK on Windows: use a system font that ships with the OS rather than a large external one.
 	local font_family = "JetBrainsMono Nerd Font"
-	local cjk_fallback = { family = "Noto Sans Mono CJK JP", weight = "Regular" }
-
 	local system_fallback
+	local cjk_fallback
 	if platform.is_macos() then
 		system_fallback = { family = "Menlo", weight = "Regular" }
+		cjk_fallback = { family = "Noto Sans Mono CJK JP", weight = "Regular" }
 	elseif platform.is_windows() then
 		system_fallback = { family = "Cascadia Mono", weight = "Regular" }
+		cjk_fallback = { family = "Yu Gothic UI", weight = "Regular" }
 	else
 		system_fallback = { family = "Noto Sans Mono", weight = "Regular" }
+		cjk_fallback = { family = "Noto Sans Mono CJK JP", weight = "Regular" }
 	end
 
 	config.font = wezterm.font_with_fallback({
