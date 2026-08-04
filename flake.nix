@@ -88,6 +88,36 @@
       url = "github:guibou/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # ---------------------------------------------------------------------------
+    # x86_64-darwin (Intel Mac) 専用スタック
+    # nixpkgs 26.11 で x86_64-darwin のサポートが削除されたため、
+    # 最後に対応している nixpkgs 26.05 系を利用する (2026 年末まで保守)
+    # ---------------------------------------------------------------------------
+    nixpkgs-intel = {
+      url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
+    };
+    home-manager-intel = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-intel";
+    };
+    darwin-intel = {
+      # nix-darwin は nixpkgs のリリースと対応するブランチを使う (26.05 系)
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-intel";
+    };
+    llm-agents-intel = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs-intel";
+    };
+    gh-graph-intel = {
+      url = "github:kawarimidoll/gh-graph";
+      inputs.nixpkgs.follows = "nixpkgs-intel";
+    };
+    gh-nippou-intel = {
+      url = "github:ryoppippi/gh-nippou";
+      inputs.nixpkgs.follows = "nixpkgs-intel";
+    };
   };
 
   # ---------------------------------------------------------------------------
@@ -109,6 +139,13 @@
       agent-skills-nix,
       sops-nix,
       nixGL,
+      # x86_64-darwin (Intel Mac) 専用スタック
+      nixpkgs-intel,
+      home-manager-intel,
+      darwin-intel,
+      llm-agents-intel,
+      gh-graph-intel,
+      gh-nippou-intel,
       ...
     }:
     let
@@ -121,11 +158,21 @@
 
       # システム文字列から nixpkgs インスタンスを生成するヘルパー
       # overlay と unfree パッケージを一括で適用する
+      # x86_64-darwin (Intel Mac) は 26.11 でサポートが削除されたため 26.05 系スタックを使う
       pkgsFor =
         system:
-        import nixpkgs {
+        let
+          isIntel = system == "x86_64-darwin";
+          nixpkgs' = if isIntel then nixpkgs-intel else nixpkgs;
+          llmAgents' = if isIntel then llm-agents-intel else llm-agents;
+          ghGraphOverlay = if isIntel then gh-graph-intel.overlays.default else gh-graph.overlays.default;
+          ghNippouOverlay = if isIntel then gh-nippou-intel.overlays.default else gh-nippou.overlays.default;
+        in
+        import nixpkgs' {
           localSystem.system = system;
           config.allowUnfree = true;
+          # 26.05 で x86_64-darwin の非推奨警告を抑止 (26.11 ではキー自体が不要)
+          config.allowDeprecatedx86_64Darwin = isIntel;
           config.permittedInsecurePackages = [
             "pnpm-9.15.9"
             "pnpm-10.34.0"
@@ -135,10 +182,10 @@
             handlers.dlinfo.broken = "warn";
           };
           overlays = [
-            (_: _: { _llm-agents = llm-agents; })
+            (_: _: { _llm-agents = llmAgents'; })
             overlay
-            gh-graph.overlays.default
-            gh-nippou.overlays.default
+            ghGraphOverlay
+            ghNippouOverlay
           ];
         };
 
@@ -194,6 +241,61 @@
           ];
         };
 
+      # macOS (nix-darwin) 向け設定を生成するヘルパー
+      # Apple Silicon (aarch64) は 26.11 系スタック、Intel (x86_64) は 26.05 系スタックを使い分ける
+      mkDarwinConfig =
+        system:
+        let
+          isIntel = system == "x86_64-darwin";
+          darwin' = if isIntel then darwin-intel else darwin;
+          homeManager' = if isIntel then home-manager-intel else home-manager;
+          pkgs = pkgsFor system;
+        in
+        darwin'.lib.darwinSystem {
+          inherit system;
+          specialArgs = {
+            inherit username;
+            dotfilesDir = self.outPath;
+          };
+          modules = [
+            nix-index-database.darwinModules.nix-index
+            ./nix/modules/macos
+            homeManager'.darwinModules.home-manager
+            {
+              nixpkgs.config.allowUnfree = true;
+              # 26.05 で x86_64-darwin の非推奨警告を抑止 (26.11 ではキー自体が不要)
+              nixpkgs.config.allowDeprecatedx86_64Darwin = isIntel;
+              nixpkgs.config.permittedInsecurePackages = [
+                "pnpm-9.15.9"
+                "pnpm-10.34.0"
+                "electron-39.8.10"
+              ];
+              nixpkgs.config.problems = {
+                handlers.dlinfo.broken = "warn";
+              };
+              home-manager.useGlobalPkgs = true;
+              home-manager.extraSpecialArgs = {
+                inherit pkgs username;
+                dotfilesDir = self.outPath;
+              };
+              home-manager.users.${username} = {
+                imports = [
+                  sops-nix.homeManagerModules.sops
+                  ./nix/shared.nix
+                  ./nix/modules/macos/darwin-home.nix
+                  (import ./nix/modules/home/tools-read.nix { inherit pkgs; })
+                  ./nix/modules/home
+                  agent-skills-nix.homeManagerModules.default
+                ]
+                ++ nixpkgs.lib.optionals isIntel [
+                  # home-manager release-26.05 は stateVersion 26.11 を受け付けないため 26.05 に固定
+                  { home.stateVersion = nixpkgs.lib.mkForce "26.05"; }
+                ];
+              };
+            }
+          ];
+        };
+
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
@@ -204,6 +306,7 @@
         "x86_64-linux" # メイン PC (Arch Linux)
         "aarch64-linux" # ARM Linux (VPS など)
         "aarch64-darwin" # macOS (Apple Silicon)
+        "x86_64-darwin" # macOS (Intel Mac)
       ];
 
       # -------------------------------------------------------------------
@@ -217,17 +320,20 @@
           # システム判定
           isDarwin = builtins.match ".*-darwin" system != null;
 
+          # darwin 設定名 (Apple Silicon: 無印 / Intel: -x86_64 サフィックス)
+          darwinConfigName = if system == "x86_64-darwin" then "${username}-x86_64" else username;
+
           # nix run .#build で参照するビルドターゲット
           hmConfig =
             if isDarwin then
-              "darwinConfigurations.${username}.system"
+              "darwinConfigurations.${darwinConfigName}.system"
             else
               "homeConfigurations.${username}.activationPackage";
 
           # nix run .#switch で渡す --flake ターゲット
           flakeTarget =
             if isDarwin then
-              ".#${username}"
+              ".#${darwinConfigName}"
             else
               ".#${username}${if system == "aarch64-linux" then "-aarch64" else ""}";
 
@@ -239,6 +345,8 @@
               "Linux (aarch64)"
             else if system == "aarch64-darwin" then
               "macOS (Apple Silicon)"
+            else if system == "x86_64-darwin" then
+              "macOS (Intel)"
             else
               system;
 
@@ -261,6 +369,10 @@
           '';
         in
         {
+          # perSystem モジュール (treefmt-nix など) が参照する pkgs を
+          # x86_64-darwin では 26.05 系スタックに差し替える
+          _module.args.pkgs = pkgsFor system;
+
           devShells = {
             default = pkgs.mkShell {
               name = "dotfiles-default";
@@ -391,47 +503,10 @@
           "${username}-wsl" = mkWSLHomeConfig "x86_64-linux";
         };
 
-        # macOS 向け nix-darwin 設定
-        darwinConfigurations.${username} = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = {
-            inherit username;
-            dotfilesDir = self.outPath;
-          };
-          modules = [
-            nix-index-database.darwinModules.nix-index
-            ./nix/modules/macos
-            home-manager.darwinModules.home-manager
-            {
-              nixpkgs.config.allowUnfree = true;
-              nixpkgs.config.permittedInsecurePackages = [
-                "pnpm-9.15.9"
-                "pnpm-10.34.0"
-                "electron-39.8.10"
-              ];
-              nixpkgs.config.problems = {
-                handlers.dlinfo.broken = "warn";
-              };
-              home-manager.useGlobalPkgs = true;
-              home-manager.extraSpecialArgs = {
-                pkgs = pkgsFor "aarch64-darwin";
-                inherit username;
-                dotfilesDir = self.outPath;
-              };
-              home-manager.users.${username} = {
-                imports = [
-                  sops-nix.homeManagerModules.sops
-                  ./nix/shared.nix
-                  ./nix/modules/macos/darwin-home.nix
-                  (import ./nix/modules/home/tools-read.nix {
-                    pkgs = pkgsFor "aarch64-darwin";
-                  })
-                  ./nix/modules/home
-                  agent-skills-nix.homeManagerModules.default
-                ];
-              };
-            }
-          ];
+        # macOS 向け nix-darwin 設定 (Apple Silicon / Intel Mac)
+        darwinConfigurations = {
+          ${username} = mkDarwinConfig "aarch64-darwin";
+          "${username}-x86_64" = mkDarwinConfig "x86_64-darwin";
         };
       };
     };

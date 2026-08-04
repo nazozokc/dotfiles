@@ -10,8 +10,10 @@
     tmux.enableShellIntegration = true;
 
     defaultCommand = "fd --type f --hidden --exclude .git";
-    fileWidget.command = "fd --type f --hidden --exclude .git";
-    changeDirWidget.command = "fd --type d --hidden --exclude .git";
+    # 26.11 では fileWidget.command 等への rename alias として扱われるため
+    # home-manager 26.05 / 26.11 の両方で動くフラット形式を使用する
+    fileWidgetCommand = "fd --type f --hidden --exclude .git";
+    changeDirWidgetCommand = "fd --type d --hidden --exclude .git";
 
     defaultOptions = [
       "--height 10"
@@ -21,19 +23,19 @@
       "--bind 'ctrl-/:change-preview-window(down|hidden|right:40%)'"
     ];
 
-    fileWidget.options = [
+    fileWidgetOptions = [
       "--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
       "--preview-window=right:40%,hidden"
       "--bind 'focus:show-preview'"
     ];
 
-    changeDirWidget.options = [
+    changeDirWidgetOptions = [
       "--preview 'eza --tree --color=always {} | head -200'"
       "--preview-window=right:40%,hidden"
       "--bind 'focus:show-preview'"
     ];
 
-    historyWidget.options = [
+    historyWidgetOptions = [
       "--sort"
       "--exact"
     ];

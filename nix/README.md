@@ -6,11 +6,24 @@
 
 ## システム構成
 
-| コンポーネント     | Linux, ARM-linux | macOS                         |
-| ------------------ | ---------------- | ----------------------------- |
-| システム設定       | home-manager     | nix-darwin                    |
-| ユーザーパッケージ | home-manager     | home-manager (nix-darwin統合) |
-| シェル             | fish             | fish                          |
+| コンポーネント     | Linux, ARM-linux | macOS (Apple Silicon)         | macOS (Intel)                 |
+| ------------------ | ---------------- | ----------------------------- | ----------------------------- |
+| nixpkgs            | 26.11            | 26.11                         | 26.05 (`nixpkgs-26.05-darwin`) |
+| システム設定       | home-manager     | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
+| ユーザーパッケージ | home-manager     | home-manager (nix-darwin統合) | home-manager (nix-darwin統合) |
+| シェル             | fish             | fish                          | fish                          |
+
+## Intel Mac (x86_64-darwin) について
+
+nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Intel Mac では最後に対応している **nixpkgs 26.05 系の専用スタック**（`nixpkgs-intel` / `home-manager-intel` / `darwin-intel` など、2026年末まで保守）を使用します。`flake.nix` の `pkgsFor` / `mkDarwinConfig` が system に応じてスタックを切り替えます。
+
+### Intel Mac 固有の制約
+
+- `home.stateVersion` は home-manager 26.05 の制約により `mkForce "26.05"` に固定。
+- 以下のパッケージは nixpkgs 側の非対応により **Intel Mac ではインストールされません**:
+  - `oterm` — fastmcp → duckdb → pyarrow → arrow-cpp（x86_64-darwin で broken）
+  - `aider-chat-full` — grep-ast → tree-sitter-language-pack（x86_64-darwin のバンドルなし）
+- 対象設定: `darwinConfigurations.nazozokc-x86_64`（Apple Silicon は `nazozokc`）
 
 ## パッケージ管理のアーキテクチャ
 
