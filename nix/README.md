@@ -6,12 +6,12 @@
 
 ## システム構成
 
-| コンポーネント     | Linux, ARM-linux | macOS (Apple Silicon)         | macOS (Intel)                 |
-| ------------------ | ---------------- | ----------------------------- | ----------------------------- |
-| nixpkgs            | 26.11            | 26.11                         | 26.05 (`nixpkgs-26.05-darwin`) |
+| コンポーネント     | Linux, ARM-linux | macOS (Apple Silicon)         | macOS (Intel)                   |
+| ------------------ | ---------------- | ----------------------------- | ------------------------------- |
+| nixpkgs            | 26.11            | 26.11                         | 26.05 (`nixpkgs-26.05-darwin`)  |
 | システム設定       | home-manager     | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
-| ユーザーパッケージ | home-manager     | home-manager (nix-darwin統合) | home-manager (nix-darwin統合) |
-| シェル             | fish             | fish                          | fish                          |
+| ユーザーパッケージ | home-manager     | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
+| シェル             | fish             | fish                          | fish                            |
 
 ## Intel Mac (x86_64-darwin) について
 
