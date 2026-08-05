@@ -258,7 +258,10 @@
             dotfilesDir = self.outPath;
           };
           modules = [
-            nix-index-database.darwinModules.nix-index
+            # nix-index-database は上流が x86_64-darwin の DB を提供していないため Intel Mac では無効化
+            {
+              imports = nixpkgs.lib.optionals (!isIntel) [ nix-index-database.darwinModules.nix-index ];
+            }
             ./nix/modules/macos
             homeManager'.darwinModules.home-manager
             {
