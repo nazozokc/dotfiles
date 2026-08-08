@@ -9,6 +9,9 @@
   system.stateVersion = 4;
   system.primaryUser = username;
 
+  # 既存 Nix インストールの nixbld GID に合わせる
+  ids.gids.nixbld = 350;
+
   ########################################
   # Nix 設定の強化
   ########################################
