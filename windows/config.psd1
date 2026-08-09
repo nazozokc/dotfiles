@@ -108,9 +108,6 @@
         # Windows Terminal Dev channel
         @{ From = 'windows/terminal/settings.json'; To = '%USERPROFILE%\.config\wt\settings.json' }
 
-        # WSL config
-        @{ From = 'windows/.wslconfig';         To = '%USERPROFILE%\.wslconfig' }
-
         # Personal scripts
         @{ From = 'my_scripts';                 To = '%USERPROFILE%\.scripts' }
     )
