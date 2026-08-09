@@ -11,6 +11,8 @@
 
   "profiles": {
     "defaults": {
+      // 背景: 純黒 (colorScheme の background を上書き)
+      "background": "#000000",
       "font": {
         "face": "JetBrainsMono Nerd Font",
         "size": 11
