@@ -19,5 +19,10 @@ swap=2GB
 # Docker などとの互換性のため localhost を転送
 localhostForwarding=true
 
+<<<<<<< Updated upstream
 # ミラーネットワークモード (Windows と同じ IP を使用)
 networkingMode=Mirrored
+||||||| Stash base
+=======
+networkingMode=Mirrored
+>>>>>>> Stashed changes
