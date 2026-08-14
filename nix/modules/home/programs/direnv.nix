@@ -37,15 +37,6 @@
           diff <(echo "$old") <(echo "$new") | grep -E '^[<>]' || true
         fi
       }
-
-      # Auto-load nixpkgs if flake.nix exists
-      use_flake() {
-        if [[ -f flake.nix ]]; then
-          use flake
-        elif [[ -f shell.nix ]]; then
-          use nix
-        fi
-      }
     '';
   };
 
