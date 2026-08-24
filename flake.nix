@@ -260,7 +260,13 @@
           modules = [
             # nix-index-database は上流が x86_64-darwin の DB を提供していないため Intel Mac では無効化
             {
-              imports = nixpkgs.lib.optionals (!isIntel) [ nix-index-database.darwinModules.nix-index ];
+              nix.settings = {
+                experimental-features = [
+                  "nix-command"
+                  "flakes"
+                ];
+                build-users-group = "nixbld";
+              };
             }
             ./nix/modules/macos
             homeManager'.darwinModules.home-manager
