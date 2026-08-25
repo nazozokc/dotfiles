@@ -44,6 +44,30 @@
     window-padding-x = 6
     window-padding-y = 4
     window-decoration = true
+    macos-option-as-alt = true
+    window-theme = dark
+    term = xterm-256color
+
+    # ====================
+    # Split Pane (inactive dimming)
+    # ====================
+    unfocused-split-opacity = 0.4
+    unfocused-split-fill = #181616
+    split-divider-color = #2a2a2a
+
+    # ====================
+    # Scrollback
+    # ====================
+    scrollback-limit = 10000
+
+    # ====================
+    # Clipboard
+    # ====================
+    copy-on-select = clipboard
+    clipboard-read = allow
+    clipboard-write = allow
+    clipboard-trim-trailing-spaces = true
+    clipboard-paste-bracketed-safe = true
 
     # ====================
     # Mouse
@@ -54,6 +78,7 @@
     # Tabs
     # ====================
     title = "$PWD"
+    confirm-close-surface = false
 
     # ====================
     # Keybinds
@@ -64,6 +89,8 @@
     keybind = ctrl+shift+e=new_split:right
     keybind = ctrl+shift+d=new_split:down
     keybind = ctrl+shift+z=toggle_split_zoom
+    keybind = ctrl+shift+[=previous_tab
+    keybind = ctrl+shift+]=next_tab
     keybind = ctrl+shift+page_up=previous_tab
     keybind = ctrl+shift+page_down=next_tab
     keybind = ctrl+shift+enter=toggle_fullscreen
