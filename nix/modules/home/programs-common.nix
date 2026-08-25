@@ -5,6 +5,7 @@
     ./programs/gh
     ./programs/git
     ./programs/lazygit
+    ./programs/cmux
     ./programs/starship
     ./programs/direnv.nix
     ./programs/fzf
