@@ -1,14 +1,14 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR FZF_DISABLE_KEYBINDINGS:0
-SETUVAR FZF_LEGACY_KEYBINDINGS:1
+SETUVAR --export FZF_LEGACY_KEYBINDINGS:0
 SETUVAR FZF_PREVIEW_DIR_CMD:ls
 SETUVAR FZF_PREVIEW_FILE_CMD:head\x20\x2dn\x2010
 SETUVAR FZF_TMUX_HEIGHT:40\x25
 SETUVAR ZO_CMD:zo
 SETUVAR Z_CMD:z
-SETUVAR Z_DATA:/home/nazozokc/\x2elocal/share/z/data
-SETUVAR Z_DATA_DIR:/home/nazozokc/\x2elocal/share/z
+SETUVAR Z_DATA:/Users/nazozokc/\x2elocal/share/z/data
+SETUVAR Z_DATA_DIR:/Users/nazozokc/\x2elocal/share/z
 SETUVAR Z_EXCLUDE:\x5e/home/nazozokc\x24
 SETUVAR --export __fish_git_prompt_char_branch:\ue0a0
 SETUVAR --export __fish_git_prompt_color_branch:magenta
@@ -26,8 +26,8 @@ SETUVAR fish_color_option:c0a36e
 SETUVAR fish_color_param:98bb6c
 SETUVAR fish_color_quote:e6c384
 SETUVAR fish_color_redirection:6a9589
-SETUVAR fish_color_search_match:background=363646
+SETUVAR fish_color_search_match:background\x3d363646
 SETUVAR fish_color_user:87a987
 SETUVAR fish_color_valid_path:underline
 SETUVAR fish_greeting:
-SETUVAR fish_user_paths:/home/nazozokc/\x2enix\x2dprofile/bin\x1e/nix/var/nix/profiles/default/bin
+SETUVAR fish_user_paths:/Users/nazozokc/\x2ebun/bin\x1e/home/nazozokc/\x2enix\x2dprofile/bin\x1e/nix/var/nix/profiles/default/bin

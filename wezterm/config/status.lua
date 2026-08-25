@@ -133,7 +133,7 @@ end
 -- ──────────────────────────────────────────────
 
 local function get_mode(window)
-	local key_table = window:get_key_table_name()
+	local key_table = window:active_key_table()
 	if key_table == "copy_mode" then
 		return "COPY", "#ffd700"
 	end
@@ -157,7 +157,7 @@ wezterm.on("update-status", function(window, pane)
 	local pane_id = pane:pane_id()
 	local git_branch
 	if pane_id ~= git_cache.pane_id or now - git_cache.time >= 30 then
-		local cwd_url = pane:get_current_working_dir()
+		local cwd_url = pane.current_working_dir
 		git_branch = get_git_branch(cwd_url)
 		git_cache.branch = git_branch
 		git_cache.pane_id = pane_id

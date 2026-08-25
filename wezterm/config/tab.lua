@@ -80,8 +80,8 @@ local function get_git_branch(cwd_url)
 end
 
 local function pane_cwd_basename(pane)
-	-- pane:get_current_working_dir() returns a URL object or nil
-	local cwd_url = pane:get_current_working_dir()
+	-- current_working_dir is a URL object or nil
+	local cwd_url = pane.current_working_dir
 	if cwd_url and cwd_url.file_path then
 		return basename(cwd_url.file_path), cwd_url
 	end

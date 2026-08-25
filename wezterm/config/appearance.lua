@@ -28,7 +28,7 @@ function M.apply(config)
 
 	-- Platform-aware transparency.
 	-- Wayland compositors vary in transparency support; use a slightly less aggressive value there.
-	config.window_background_opacity = 1.0
+	config.window_background_opacity = platform.default_window_opacity()
 	config.text_background_opacity = 1.0
 
 	-- Minimal chrome: resize handles only (keep title bar on macOS for traffic-light buttons).

@@ -194,6 +194,16 @@ function M.apply(config)
 		},
 
 		-- ========================
+		-- Copy Mode
+		-- ========================
+		{
+			key = "x",
+			mods = "CTRL|SHIFT",
+			action = act.ActivateCopyMode,
+			description = "Activate copy mode",
+		},
+
+		-- ========================
 		-- Config management
 		-- ========================
 		{
@@ -282,6 +292,63 @@ function M.apply(config)
 			table.insert(config.keys, k)
 		end
 	end
+
+	-- ========================
+	-- Copy Mode key tables (vi-like)
+	-- ========================
+	config.key_tables = {
+		copy_mode = {
+			-- Close copy mode
+			{ key = "q", mods = "NONE", action = act.CopyMode("Close") },
+
+			-- Movement (vi-like)
+			{ key = "h", mods = "NONE", action = act.CopyMode("MoveLeft") },
+			{ key = "j", mods = "NONE", action = act.CopyMode("MoveDown") },
+			{ key = "k", mods = "NONE", action = act.CopyMode("MoveUp") },
+			{ key = "l", mods = "NONE", action = act.CopyMode("MoveRight") },
+
+			-- Word movement
+			{ key = "w", mods = "NONE", action = act.CopyMode("MoveForwardWord") },
+			{ key = "b", mods = "NONE", action = act.CopyMode("MoveBackwardWord") },
+			{ key = "e", mods = "NONE", action = act.CopyMode("MoveForwardWordEnd") },
+
+			-- Line movement
+			{ key = "0", mods = "NONE", action = act.CopyMode("MoveToStartOfLine") },
+			{ key = "$", mods = "NONE", action = act.CopyMode("MoveToEndOfLineContent") },
+			{ key = "^", mods = "NONE", action = act.CopyMode("MoveToStartOfLineContent") },
+
+			-- Page movement
+			{ key = "f", mods = "CTRL", action = act.CopyMode("PageDown") },
+			{ key = "b", mods = "CTRL", action = act.CopyMode("PageUp") },
+
+			-- Search
+			{ key = "/", mods = "NONE", action = act.CopyMode("SearchForward") },
+			{ key = "?", mods = "NONE", action = act.CopyMode("SearchBackward") },
+			{ key = "n", mods = "NONE", action = act.CopyMode("NextMatch") },
+			{ key = "N", mods = "NONE", action = act.CopyMode("PriorMatch") },
+
+			-- Selection
+			{ key = "v", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Cell" }) },
+			{ key = "V", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Line" }) },
+			{ key = "Ctrl+v", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Block" }) },
+
+			-- Copy and close
+			{
+				key = "y",
+				mods = "NONE",
+				action = act.Multiple({
+					act.CopyTo("Clipboard"),
+					act.CopyMode("Close"),
+				}),
+			},
+
+			-- Clear selection
+			{ key = "Escape", mods = "NONE", action = act.CopyMode("ClearSelectionMode") },
+
+			-- Start selection
+			{ key = "Space", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Cell" }) },
+		},
+	}
 end
 
 return M
