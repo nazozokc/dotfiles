@@ -15,8 +15,7 @@ with pkgs;
   bun
   deno
   yarn
-  clang
-  clang-tools
+  vite
 
   # rust
   rustc
@@ -36,6 +35,10 @@ with pkgs;
 
   # java
   jdk
+
+  #clang
+  clang
+  clang-tools
 
   # yaml
   yamlfmt
