@@ -10,33 +10,7 @@
     adjust-cell-height = 5%
     adjust-cell-width = 0%
 
-    # ====================
-    # Colors
-    # ====================
-    background-opacity = 0.90
-    foreground = #C5C9C5
-    background = #181616
-    cursor-color = #C5C9C5
-    selection-foreground = #C5C9C5
-    selection-background = #2D4F67
-
-    # ANSI colors
-    palette = 0=#0D0C0C
-    palette = 1=#C4746E
-    palette = 2=#8A9A7B
-    palette = 3=#C4B28A
-    palette = 4=#8BA4B0
-    palette = 5=#A292A3
-    palette = 6=#8EA4A2
-    palette = 7=#C5C9C5
-    palette = 8=#A6A69C
-    palette = 9=#E46876
-    palette = 10=#87A987
-    palette = 11=#E6C384
-    palette = 12=#7FB4CA
-    palette = 13=#938AA9
-    palette = 14=#7AA89F
-    palette = 15=#C5C9C5
+    theme = Kanagawa Dragon
 
     # ====================
     # Window
