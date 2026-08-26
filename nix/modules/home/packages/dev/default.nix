@@ -15,7 +15,6 @@ with pkgs;
   bun
   deno
   yarn
-  vite
 
   # rust
   rustc
