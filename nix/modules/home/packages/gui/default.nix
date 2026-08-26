@@ -14,7 +14,10 @@ with pkgs;
 ]
 
 ++ lib.optionals stdenv.isDarwin [
+  chatgpt
+  obsidian
   raycast
+  vscodium
 ]
 ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux" || stdenv.isDarwin) [
   spotify

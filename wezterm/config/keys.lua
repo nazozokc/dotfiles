@@ -322,8 +322,8 @@ function M.apply(config)
 			{ key = "b", mods = "CTRL", action = act.CopyMode("PageUp") },
 
 			-- Search
-			{ key = "/", mods = "NONE", action = act.CopyMode("SearchForward") },
-			{ key = "?", mods = "NONE", action = act.CopyMode("SearchBackward") },
+			{ key = "/", mods = "NONE", action = act.Search({ CaseSensitiveString = "" }) },
+			{ key = "?", mods = "NONE", action = act.Search({ CaseSensitiveString = "" }) },
 			{ key = "n", mods = "NONE", action = act.CopyMode("NextMatch") },
 			{ key = "N", mods = "NONE", action = act.CopyMode("PriorMatch") },
 
