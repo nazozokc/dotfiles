@@ -1,6 +1,15 @@
 # プロンプト（超シンプル）
 function fish_prompt
-    set p (prompt_pwd)
+    set repo_root (command git rev-parse --show-toplevel 2>/dev/null)
+    if test -n "$repo_root"
+        # リポジトリ内では、ユーザー名を含む絶対パスの代わりに
+        # リポジトリルート名からの相対パスを表示する
+        set repo_name (command basename "$repo_root")
+        set relative_path (string replace -- "$repo_root" '' "$PWD")
+        set p "$repo_name$relative_path"
+    else
+        set p (prompt_pwd)
+    end
 
     # HOME のとき
     if test "$p" = "~"
