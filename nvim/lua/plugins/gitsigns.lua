@@ -21,7 +21,6 @@ return {
 
 			current_line_blame = true,
 			word_diff = false,
-			update_debounce = 100,
 
 			current_line_blame_opts = {
 				delay = 500,
