@@ -330,7 +330,7 @@ function M.apply(config)
 			-- Selection
 			{ key = "v", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Cell" }) },
 			{ key = "V", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Line" }) },
-			{ key = "Ctrl+v", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Block" }) },
+			{ key = "v", mods = "CTRL", action = act.CopyMode({ SetSelectionMode = "Block" }) },
 
 			-- Copy and close
 			{
