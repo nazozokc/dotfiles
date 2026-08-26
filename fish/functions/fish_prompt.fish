@@ -2,11 +2,23 @@
 function fish_prompt
     set repo_root (command git rev-parse --show-toplevel 2>/dev/null)
     if test -n "$repo_root"
-        # リポジトリ内では、ユーザー名を含む絶対パスの代わりに
-        # リポジトリルート名からの相対パスを表示する
+        # リポジトリ名は残し、リポジトリ内の親ディレクトリを短縮表示する
         set repo_name (command basename "$repo_root")
         set relative_path (string replace -- "$repo_root" '' "$PWD")
-        set p "$repo_name$relative_path"
+        set components (string split / -- (string trim --chars=/ (string replace -- "$HOME" '~' "$PWD")))
+        set p $components[1]
+        set last_component $components[-1]
+
+        for component in $components[2..-1]
+            if test -n "$component"
+                if test "$component" = "$repo_name"; or test "$component" = "$last_component"
+                    set display_component $component
+                else
+                    set display_component (string sub --length 1 "$component")
+                end
+                set p "$p/$display_component"
+            end
+        end
     else
         set p (prompt_pwd)
     end
