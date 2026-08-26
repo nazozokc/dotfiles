@@ -64,15 +64,14 @@
       tilesize = 45;
       persistent-apps = [
         "/System/Applications/Launchpad.app"
-        "/Users/nazozokc/.nix-profile/bin/wezterm"
-        "/Users/nazozokc/.nix-profile/bin/obsidian"
+        "${pkgs.wezterm}/Applications/WezTerm.app"
+        "${pkgs.obsidian}/Applications/Obsidian.app"
         "/Applications/cmux.app"
         "/Applications/Arc.app"
         "/Applications/Zen.app"
         "/Applications/Spotify.app"
         "/Applications/ChatGPT.app"
         "/Applications/Ghostty.app"
-        "/Applications/Obsidian.app"
         "/System/Applications/Books.app"
         "/System/Applications/App Store.app"
         "/System/Applications/System Settings.app"
