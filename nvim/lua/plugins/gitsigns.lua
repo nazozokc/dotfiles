@@ -19,7 +19,7 @@ return {
 				follow_files = true,
 			},
 
-			current_line_blame = false, -- ← VSCodeはデフォOFF
+			current_line_blame = true,
 			word_diff = false,
 			update_debounce = 100,
 
