@@ -19,13 +19,22 @@ return {
 			hide_up_to_date = true,
 			hide_unstable_versions = false,
 			package_manager = (function()
-				local root = vim.fn.getcwd()
+				local root = vim.fs.root(0, {
+					"package.json",
+					"pnpm-lock.yaml",
+					"yarn.lock",
+					"bun.lock",
+					"package-lock.json",
+				}) or vim.fn.getcwd()
+
 				if vim.fn.filereadable(root .. "/pnpm-lock.yaml") == 1 then
 					return "pnpm"
 				elseif vim.fn.filereadable(root .. "/yarn.lock") == 1 then
 					return "yarn"
-				elseif vim.fn.filereadable(root .. "/bun.lockb") == 1 then
+				elseif vim.fn.filereadable(root .. "/bun.lock") == 1 then
 					return "bun"
+				elseif vim.fn.filereadable(root .. "/package-lock.json") == 1 then
+					return "npm"
 				else
 					return "npm"
 				end
