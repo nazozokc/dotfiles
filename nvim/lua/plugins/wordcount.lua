@@ -7,7 +7,7 @@ return {
 			debounce_ms = 100,
 			format = "Characters: %d",
 			markdown = {
-				include_frontmatter = true,
+				include_frontmatter = false,
 			},
 		})
 	end,
