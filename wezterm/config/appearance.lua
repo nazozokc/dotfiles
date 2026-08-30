@@ -53,8 +53,10 @@ function M.apply(config)
 	config.check_for_updates = false
 	config.automatically_reload_config = true
 
-	-- Explicitly set terminfo name; keeps term-dependent behavior predictable.
-	config.term = "wezterm"
+	-- Use a terminfo name available on macOS and remote hosts by default.
+	-- The WezTerm-specific entry is not installed everywhere and causes
+	-- `unknown terminal type` in tools such as tmux, tput, and ncurses apps.
+	config.term = "xterm-256color"
 
 	-- Dim inactive panes so your focus stays on the active one.
 	config.inactive_pane_hsb = { saturation = 0.3, brightness = 0.4 }
