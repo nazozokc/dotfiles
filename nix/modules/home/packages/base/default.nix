@@ -36,6 +36,9 @@ with pkgs;
   nix-output-monitor
   nh
 
+  #window manager
+  herdr
+
   # docker
   docker
   lazydocker
