@@ -34,6 +34,9 @@ in
   programs.neovim = {
     enable = true;
 
+    # lazy.nvim is provided by nixpkgs so its version follows flake.lock.
+    plugins = [ pkgs.vimPlugins.lazy-nvim ];
+
     withRuby = true;
     withPython3 = true;
 
