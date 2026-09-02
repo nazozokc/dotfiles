@@ -67,7 +67,6 @@ return {
 				files = {
 					hidden = true,
 					ignored = false,
-					follow = true,
 				},
 
 				grep = {
