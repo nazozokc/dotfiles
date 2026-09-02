@@ -135,6 +135,7 @@
     mas
     switchaudio-osx
     terminal-notifier
+    keycastr
   ];
 
   ########################################

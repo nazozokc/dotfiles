@@ -50,6 +50,9 @@
     xdg-user-dirs
     xdg-utils
 
+    # window manager
+    herdr
+
     # スクリーンショット
     grim
     slurp
