@@ -1,6 +1,6 @@
 # nix/modules/macos/darwin-home.nix
 # macOS 固有の home-manager 設定（ユーザーレベル）
-{ pkgs, ... }:
+{ config, dotfilesDir, pkgs, ... }:
 
 {
   ########################################
@@ -20,5 +20,13 @@
 
     # GPU ラッパーが不要なプラットフォームでは素の wezterm を使う
     wezterm
+
+    # macOS-only tiling window manager
+    aerospace
   ];
+
+  # AeroSpace uses ~/.aerospace.toml as its native configuration path.
+  # Keep it separate from the shared ~/.config/wezterm link.
+  home.file.".aerospace.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/aerospace/aerospace.toml";
 }
