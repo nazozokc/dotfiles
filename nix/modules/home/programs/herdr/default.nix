@@ -17,8 +17,8 @@
     switch_tab = "ctrl+shift+1..9"
 
     # Panes
-    split_vertical = "ctrl+shift+e"
-    split_horizontal = "ctrl+shift+d"
+    split_vertical = "ctrl+shift+f"
+    split_horizontal = "ctrl+shift+g"
     close_pane = "ctrl+shift+q"
     zoom = "ctrl+shift+z"
     focus_pane_left = "ctrl+shift+h"
