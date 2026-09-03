@@ -17,9 +17,6 @@ return {
 				client.server_capabilities.documentFormattingProvider = false
 				client.server_capabilities.documentRangeFormattingProvider = false
 
-				-- semantic tokens 無効（かなり効く）
-				client.server_capabilities.semanticTokensProvider = nil
-
 				local function bufmap(mode, lhs, rhs)
 					vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true })
 				end
