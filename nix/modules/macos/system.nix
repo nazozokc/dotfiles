@@ -1,4 +1,4 @@
-# nix/modules/macos/darwin-system.nix
+# nix/modules/macos/system.nix
 # macOS 固有の nix-darwin 設定（システムレベル）
 { pkgs, username, ... }:
 

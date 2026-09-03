@@ -6,12 +6,12 @@
 
 ## システム構成
 
-| コンポーネント     | Linux / WSL          | macOS (Apple Silicon)         | macOS (Intel)                   |
-| ------------------ | -------------------- | ----------------------------- | ------------------------------- |
-| nixpkgs            | unstable             | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
-| システム設定       | home-manager         | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
-| ユーザーパッケージ | home-manager         | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
-| シェル             | fish                 | fish                          | fish                            |
+| コンポーネント     | Linux / WSL  | macOS (Apple Silicon)         | macOS (Intel)                   |
+| ------------------ | ------------ | ----------------------------- | ------------------------------- |
+| nixpkgs            | unstable     | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
+| システム設定       | home-manager | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
+| ユーザーパッケージ | home-manager | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
+| シェル             | fish         | fish                          | fish                            |
 
 ## Intel Mac (x86_64-darwin) について
 
@@ -32,6 +32,7 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 ### 共通パッケージ (`nix/modules/home/packages/`)
 
 #### base (`base/default.nix`)
+
 基礎 CLI ツール。全環境でインストールされる。
 
 - **シェル**: nushell, zsh
@@ -45,6 +46,7 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 - **メール**: aerc, neomutt, himalaya
 
 #### dev (`dev/default.nix`)
+
 開発言語・ツール。
 
 - **汎用**: prettier, telescope
@@ -64,11 +66,13 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 - **Linux固有**: vite, chromium
 
 #### ai (`ai/default.nix`)
+
 AI / LLM 関連ツール。
 
 - ollama, opencode, codex, claude-monitor, claude-code
 
 #### gui (`gui/default.nix`)
+
 GUI アプリケーション。
 
 - **共通**: audacity, vscode, zed
@@ -77,6 +81,7 @@ GUI アプリケーション。
 - **x86_64-linux + macOS**: spotify, discord, google-chrome
 
 #### experimental (`experimental/default.nix`)
+
 実験的ツール。
 
 - pi-coding-agent, grok-cli, qwen-code
@@ -107,16 +112,16 @@ GUI アプリケーション。
 
 以下の設定ファイルは Nix（Linux/macOS/WSL）と Windows（PowerShell 7）で同じファイルを共有しています：
 
-| ツール       | 共有ファイル                              | Nixでの管理方法                                         | Windowsでの管理方法   |
-| ------------ | ----------------------------------------- | ------------------------------------------------------- | --------------------- |
-| git          | `git/config`, `git/aliases`, `git/ignore` | `programs.git.includes` + `home.file` でデプロイ       | `apply.ps1` で symlink |
-| starship     | `starship/starship.toml`                  | `home.file` でデプロイ                                  | `apply.ps1` で symlink |
-| lazygit      | `lazygit/config.yml`                      | `home.file` でデプロイ                                  | `apply.ps1` で symlink |
-| bat          | `bat/config`                              | `home.file` でデプロイ                                  | `apply.ps1` で symlink |
-| nvim         | `nvim/`                                   | `home.file` で symlink                                  | `apply.ps1` で symlink |
-| wezterm      | `wezterm/`                                | `home.file` で symlink                                  | `apply.ps1` で symlink |
-| opencode     | `opencode/`                               | `xdg.configFile` + `home.file` でデプロイ・リンク      | `apply.ps1` で symlink |
-| efm-langserver | `efm-langserver/`                       | `home.file` でデプロイ                                  | `apply.ps1` で symlink |
+| ツール         | 共有ファイル                              | Nixでの管理方法                                   | Windowsでの管理方法    |
+| -------------- | ----------------------------------------- | ------------------------------------------------- | ---------------------- |
+| git            | `git/config`, `git/aliases`, `git/ignore` | `programs.git.includes` + `home.file` でデプロイ  | `apply.ps1` で symlink |
+| starship       | `starship/starship.toml`                  | `home.file` でデプロイ                            | `apply.ps1` で symlink |
+| lazygit        | `lazygit/config.yml`                      | `home.file` でデプロイ                            | `apply.ps1` で symlink |
+| bat            | `bat/config`                              | `home.file` でデプロイ                            | `apply.ps1` で symlink |
+| nvim           | `nvim/`                                   | `home.file` で symlink                            | `apply.ps1` で symlink |
+| wezterm        | `wezterm/`                                | `home.file` で symlink                            | `apply.ps1` で symlink |
+| opencode       | `opencode/`                               | `xdg.configFile` + `home.file` でデプロイ・リンク | `apply.ps1` で symlink |
+| efm-langserver | `efm-langserver/`                         | `home.file` でデプロイ                            | `apply.ps1` で symlink |
 
 各 `programs/<name>/default.nix` では `dotfilesDir` を使ってリポジトリルートの共有ファイルを参照しています。
 
@@ -125,6 +130,8 @@ GUI アプリケーション。
 ```
 nix/
 ├── shared.nix                         # 共通設定 (username, stateVersion, xdg)
+├── lib/
+│   └── pkgs.nix                       # pkgsFor (nixpkgs インスタンス生成 + Intelスタック切替)
 ├── modules/
 │   ├── home/                          # home-manager 共通モジュール
 │   │   ├── default.nix                # エントリーポイント (Linux/WSL 共通)
@@ -169,19 +176,20 @@ nix/
 │   │       ├── aerospace.nix          # AeroSpace (macOS タイルウィンドウ)
 │   │       └── herdr/                 # Herdr (tmux ライクなプレフィックス)
 │   ├── linux/                         # Linux 固有設定
+│   │   ├── build.nix                  # 設定生成ヘルパー (mkLinuxHomeConfig)
 │   │   ├── default.nix                # エントリーポイント (nixGL, hypr/waybar/rofi/dunst link)
 │   │   ├── packages.nix               # Linux 専用パッケージ
 │   │   └── system.nix                 # ロケール・XDG・セッション変数
 │   ├── macos/                         # macOS 固有設定
+│   │   ├── build.nix                  # 設定生成ヘルパー (mkDarwinConfig)
 │   │   ├── default.nix                # エントリーポイント
-│   │   ├── darwin-system.nix          # nix-darwin システム設定
 │   │   ├── darwin-home.nix            # macOS 固有 home-manager 設定
-│   │   └── system.nix                 # システム設定
+│   │   └── system.nix                 # nix-darwin システム設定
 │   └── wsl/                           # WSL 固有設定
+│       ├── build.nix                  # 設定生成ヘルパー (mkWSLHomeConfig)
 │       ├── default.nix                # エントリーポイント
 │       ├── packages.nix               # WSL 専用パッケージ
-│       ├── programs.nix               # WSL 固有設定 (.wslconfig など)
-│       ├── system.nix                 # システム設定
+│       ├── system.nix                 # WSL 固有設定 (.wslconfig など)
 │       └── tools-read.nix             # WSL 用ツール読み取り
 ├── overlays/                          # カスタムoverlay
 │   ├── default.nix                    # overlay コンポーザ
@@ -232,9 +240,13 @@ nix develop .#editors
 
 ```
 flake.nix
-├── Linux:   mkLinuxHomeConfig  → nix/modules/home/default.nix + nix/modules/linux/
-├── WSL:     mkWSLHomeConfig    → nix/modules/home/wsl.nix     + nix/modules/wsl/
-└── macOS:   mkDarwinConfig     → nix/modules/macos/           + nix/modules/home/ (via nix-darwin)
+├── pkgsFor (nix/lib/pkgs.nix)          → nixpkgs インスタンス生成 (Intelスタック切替)
+├── Linux:   mkLinuxHomeConfig (nix/modules/linux/build.nix)
+│              → nix/modules/home/      + nix/modules/linux/
+├── WSL:     mkWSLHomeConfig (nix/modules/wsl/build.nix)
+│              → nix/modules/home/wsl.nix + nix/modules/wsl/
+└── macOS:   mkDarwinConfig (nix/modules/macos/build.nix)
+               → nix/modules/macos/     + nix/modules/home/ (via nix-darwin)
 ```
 
 - `programs-common.nix` が共通の program モジュールを一括 import する

@@ -1,4 +1,4 @@
-# nix/modules/wsl/programs.nix
+# nix/modules/wsl/system.nix
 # WSL 固有のプログラム・セッション設定
 {
   config,

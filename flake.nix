@@ -156,155 +156,65 @@
       # カスタム overlay (./nix/overlays/default.nix)
       overlay = import ./nix/overlays;
 
-      # システム文字列から nixpkgs インスタンスを生成するヘルパー
-      # overlay と unfree パッケージを一括で適用する
-      # x86_64-darwin (Intel Mac) は 26.11 でサポートが削除されたため 26.05 系スタックを使う
-      pkgsFor =
-        system:
-        let
-          isIntel = system == "x86_64-darwin";
-          nixpkgs' = if isIntel then nixpkgs-intel else nixpkgs;
-          llmAgents' = if isIntel then llm-agents-intel else llm-agents;
-          ghGraphOverlay = if isIntel then gh-graph-intel.overlays.default else gh-graph.overlays.default;
-          ghNippouOverlay = if isIntel then gh-nippou-intel.overlays.default else gh-nippou.overlays.default;
-        in
-        import nixpkgs' {
-          localSystem.system = system;
-          config.allowUnfree = true;
-          # 26.05 で x86_64-darwin の非推奨警告を抑止 (26.11 ではキー自体が不要)
-          config.allowDeprecatedx86_64Darwin = isIntel;
-          config.permittedInsecurePackages = [
-            "pnpm-9.15.9"
-            "pnpm-10.34.0"
-            "electron-39.8.10"
-          ];
-          config.problems = {
-            handlers.dlinfo.broken = "warn";
-          };
-          overlays = [
-            (_: _: { _llm-agents = llmAgents'; })
-            overlay
-            ghGraphOverlay
-            ghNippouOverlay
-          ];
-        };
+      # nixpkgs インスタンス生成ヘルパー (nix/lib/pkgs.nix)
+      # Intel Mac (x86_64-darwin) は 26.05 系スタックを使い分ける
+      pkgsFor = import ./nix/lib/pkgs.nix {
+        inherit
+          nixpkgs
+          nixpkgs-intel
+          llm-agents
+          llm-agents-intel
+          gh-graph
+          gh-graph-intel
+          gh-nippou
+          gh-nippou-intel
+          overlay
+          ;
+      };
 
-      # Linux 向け home-manager 設定を生成するヘルパー
-      # x86_64 / aarch64 で共通のモジュール構成を使い回す
-      mkLinuxHomeConfig =
-        system:
-        let
-          pkgs = pkgsFor system;
-          commonHomeModules = [
-            nix-index-database.homeModules.nix-index
-            sops-nix.homeManagerModules.sops
-            ./nix/shared.nix
-            agent-skills-nix.homeManagerModules.default
-          ];
-        in
-        home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          extraSpecialArgs = {
-            inherit pkgs username;
-            dotfilesDir = self.outPath;
-            nixGLPackages = nixGL.packages.${system};
-          };
-          modules = commonHomeModules ++ [
-            ./nix/modules/home
-            (import ./nix/modules/home/tools-read.nix { inherit pkgs; })
-            ./nix/modules/linux
-          ];
-        };
+      # Linux 向け home-manager 設定生成 (nix/modules/linux/build.nix)
+      mkLinuxHomeConfig = import ./nix/modules/linux/build.nix {
+        inherit
+          self
+          username
+          pkgsFor
+          home-manager
+          nix-index-database
+          sops-nix
+          agent-skills-nix
+          nixGL
+          ;
+      };
 
-      # WSL 向け home-manager 設定を生成するヘルパー
-      mkWSLHomeConfig =
-        system:
-        let
-          pkgs = pkgsFor system;
-          commonHomeModules = [
-            nix-index-database.homeModules.nix-index
-            sops-nix.homeManagerModules.sops
-            ./nix/shared.nix
-            agent-skills-nix.homeManagerModules.default
-          ];
-        in
-        home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          extraSpecialArgs = {
-            inherit pkgs username;
-            dotfilesDir = self.outPath;
-          };
-          modules = commonHomeModules ++ [
-            ./nix/modules/home/wsl.nix
-            (import ./nix/modules/wsl/tools-read.nix { inherit pkgs; })
-            ./nix/modules/wsl
-          ];
-        };
+      # WSL 向け home-manager 設定生成 (nix/modules/wsl/build.nix)
+      mkWSLHomeConfig = import ./nix/modules/wsl/build.nix {
+        inherit
+          self
+          username
+          pkgsFor
+          home-manager
+          nix-index-database
+          sops-nix
+          agent-skills-nix
+          ;
+      };
 
-      # macOS (nix-darwin) 向け設定を生成するヘルパー
-      # Apple Silicon (aarch64) は 26.11 系スタック、Intel (x86_64) は 26.05 系スタックを使い分ける
-      mkDarwinConfig =
-        system:
-        let
-          isIntel = system == "x86_64-darwin";
-          darwin' = if isIntel then darwin-intel else darwin;
-          homeManager' = if isIntel then home-manager-intel else home-manager;
-          pkgs = pkgsFor system;
-        in
-        darwin'.lib.darwinSystem {
-          inherit system;
-          specialArgs = {
-            inherit username;
-            dotfilesDir = self.outPath;
-          };
-          modules = [
-            # nix-index-database は上流が x86_64-darwin の DB を提供していないため Intel Mac では無効化
-            {
-              nix.settings = {
-                experimental-features = [
-                  "nix-command"
-                  "flakes"
-                ];
-                build-users-group = "nixbld";
-              };
-            }
-            ./nix/modules/macos
-            homeManager'.darwinModules.home-manager
-            {
-              nixpkgs.config.allowUnfree = true;
-              # 26.05 で x86_64-darwin の非推奨警告を抑止 (26.11 ではキー自体が不要)
-              nixpkgs.config.allowDeprecatedx86_64Darwin = isIntel;
-              nixpkgs.config.permittedInsecurePackages = [
-                "pnpm-9.15.9"
-                "pnpm-10.34.0"
-                "electron-39.8.10"
-              ];
-              nixpkgs.config.problems = {
-                handlers.dlinfo.broken = "warn";
-              };
-              home-manager.useGlobalPkgs = true;
-              home-manager.extraSpecialArgs = {
-                inherit pkgs username;
-                dotfilesDir = self.outPath;
-              };
-              home-manager.users.${username} = {
-                imports = [
-                  sops-nix.homeManagerModules.sops
-                  ./nix/shared.nix
-                  ./nix/modules/macos/darwin-home.nix
-                  (import ./nix/modules/home/tools-read.nix { inherit pkgs; })
-                  ./nix/modules/home
-                  agent-skills-nix.homeManagerModules.default
-                ]
-                ++ nixpkgs.lib.optionals isIntel [
-                  # home-manager release-26.05 は stateVersion 26.11 を受け付けないため 26.05 に固定
-                  { home.stateVersion = nixpkgs.lib.mkForce "26.05"; }
-                ];
-              };
-            }
-          ];
-        };
-
+      # macOS (nix-darwin) 向け設定生成 (nix/modules/macos/build.nix)
+      # Apple Silicon/Intel で 26.11/26.05 系スタックを使い分ける
+      mkDarwinConfig = import ./nix/modules/macos/build.nix {
+        inherit
+          self
+          username
+          pkgsFor
+          nixpkgs
+          darwin
+          darwin-intel
+          home-manager
+          home-manager-intel
+          sops-nix
+          agent-skills-nix
+          ;
+      };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
