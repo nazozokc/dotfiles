@@ -8,7 +8,7 @@
 
 - **Linux / macOS / WSL**: Nix + Home Manager で管理
 - **Windows (native)**: PowerShell 7 スクリプトで管理
-- **設定ファイルは可能な限り共通化**: `git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/` は全OSで同一ファイルを共有
+- **設定ファイルは可能な限り共通化**: `git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/`, `opencode/`, `efm-langserver/` は全OSで同一ファイルを共有
 
 ---
 
@@ -27,7 +27,7 @@
 - Linux: `x86_64-linux` (Arch Linux など)
 - Linux: `aarch64-linux` (ARM linux)
 - WSL: `x86_64-linux` (WSL2)
-- macOS: `aarch64-darwin` (Apple Silicon)
+- macOS: `aarch64-darwin` (Apple Silicon) / `x86_64-darwin` (Intel Mac)
 - Windows: native (PowerShell 7 + scoop/winget)
 
 ---
@@ -129,12 +129,12 @@ cd dotfiles
 pwsh -ExecutionPolicy RemoteSigned -File windows/setup.ps1
 ```
 
-スクリプトは以下を自動実行します：
+スクリプトは `windows/apply.ps1` を呼び出し、`windows/config.psd1` を読んで収束（Nix の `nix run .#switch` に相当）します：
 
-1. **scoop** のインストール（未導入の場合）
-2. **scoop + winget** でパッケージ一括インストール（neovim, git, starship, lazygit, wezterm など）
-3. **設定ファイルの symlink**（`git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/` → Windows の適切なパス）
-4. **PowerShell 7 プロファイル** のインストール
+1. **パッケージ** のインストール（scoop / winget / PSGallery で neovim, git, starship, lazygit, wezterm など）
+2. **設定ファイルの symlink**（`git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/` など → Windows の適切なパス）
+3. **PowerShell プロファイル** のインストール（PS7 + PS5 両対応）
+4. **システム設定**（レジストリ調整）
 
 ### セットアップ後にやること
 
@@ -150,6 +150,9 @@ pwsh -ExecutionPolicy RemoteSigned -File windows/setup.ps1
 ### パッケージ更新
 
 ```powershell
+# dotfiles の収束を再適用
+pwsh windows/apply.ps1
+
 # scoop 全更新
 scoop update && scoop update *
 
@@ -163,20 +166,26 @@ winget upgrade --all
 dotfiles/
 ├── git/                          # Linux/macOS/WSL/Windows で共有
 │   ├── config                    #   メイン設定
-│   └── aliases                   #   Git エイリアス
+│   ├── aliases                   #   Git エイリアス
+│   └── ignore                    #   グローバル gitignore
 ├── starship/starship.toml        # 全OS共有
 ├── lazygit/config.yml            # 全OS共有
 ├── bat/config                    # 全OS共有
-├── nvim/                         # 全OS共有 (既存)
-├── wezterm/                      # 全OS共有 (既存)
+├── nvim/                         # 全OS共有
+├── wezterm/                      # 全OS共有
+├── opencode/                     # 全OS共有 (エージェント設定)
+├── efm-langserver/config.yaml    # 全OS共有
 ├── windows/                      # Windows 専用
 │   ├── setup.ps1                 #   セットアップエントリポイント
-│   ├── install.ps1               #   パッケージインストール
-│   ├── link.ps1                  #   設定ファイルリンク
+│   ├── apply.ps1                 #   収束メイン (Nix 相当)
+│   ├── config.psd1               #   宣言的所望状態
+│   ├── modules/                  #   PackageManager / SymlinkManager / ProfileManager / SystemManager
 │   ├── Microsoft.PowerShell_profile.ps1  # PowerShell 7 プロファイル
 │   └── terminal/settings.json    #   Windows Terminal 設定（参考）
 ├── nix/                          # Linux/macOS/WSL 専用 (Nix)
-└── fish/ / zsh/ / bash/          # Linux/macOS/WSL 専用
+├── hypr/ waybar/ rofi/ dunst/    # Linux GUI (Hyprland) 専用
+├── fish/ / zsh/ / bash/          # Linux/macOS/WSL 専用
+└── my_scripts/                   # 自作運用スクリプト
 ```
 
 ### 注意事項
@@ -189,11 +198,19 @@ dotfiles/
 
 ## 管理対象一覧
 
-- **シェル**: fish
-- **エディタ**: Neovim, VSCode 設定
-- **CLIツール**: `nix/modules/home-manager/packages/default.nix`
-- **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理 (`checkFilesChanged`, `checkLinkTargets`)
+- **シェル**: fish, zsh, bash
+- **エディタ**: Neovim, VSCode, Zed
+- **プロンプト**: starship
+- **CLIツール**: Nix によるパッケージ管理。`nix/modules/home/packages/` 配下で分類 (`base/`, `dev/`, `ai/`, `gui/`, `experimental/`)
+  - **base**: jq, curl, zoxide, eza, tmux, yazi, gh, ghq, jujutsu, docker, lazydocker, nix-tree, cachix, nh など
+  - **dev**: python312, nodejs, bun, deno, rustc, go, jdk, clang, efm-langserver など
+  - **ai**: ollama, opencode, codex, claude-code
+  - **gui**: wezterm, ghostty, vscode, zed, spotify, discord, google-chrome など
+  - **experimental**: pi-coding-agent, grok-cli, qwen-code
+- **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理
+- **Linux GUI (Hyprland)**: hypr, waybar, rofi, dunst
 - **macOS限定**: nix-darwin によるシステム設定
+- **Windows限定**: PowerShell 7 スクリプト (`windows/`) による収束管理
 
 ---
 
@@ -224,12 +241,13 @@ nix fmt -- --ci
 
 ## home.stateVersion ポリシー
 
-- 現在値は `nix/shared.nix` の `home.stateVersion = "26.05";`。
+- 現在値は `nix/shared.nix` の `home.stateVersion = "26.11";`。
 - 互換性維持のため、**通常運用で上げない**。
 - 上げるのは以下を満たす場合のみ。
   1. Home Manager / nixpkgs 更新で新規 stateVersion が必要。
   2. 変更PRで `nix flake check` と `nix run .#build` を通過。
   3. 既存dotfilesリンク・シェル起動・主要CLI（git, gh, nvim）動作確認を記録。
+- 例外: Intel Mac (`x86_64-darwin`) は home-manager 26.05 系スタックのため `mkForce "26.05"` に固定。
 
 # Activity
 
