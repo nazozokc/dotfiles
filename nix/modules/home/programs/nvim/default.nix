@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  lib,
   dotfilesDir,
   ...
 }:
@@ -39,6 +40,11 @@ in
 
     withRuby = true;
     withPython3 = true;
+
+    # dotfilesリポジトリのinit.luaを読み込む
+    # programs.neovimが生成するinit.luaの末尾に追加されるため、
+    # lazy.nvim等のpluginsは既にruntimepathに含まれた状態で実行される
+    initLua = builtins.readFile "${nvimDotfilesDir}/init.lua";
 
     # Set environment variables only for Neovim session
     extraWrapperArgs = [
@@ -87,6 +93,12 @@ in
     ];
   };
 
-  # dotfilesリポジトリのnvim/を~/.config/nvimにsymlink
-  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink nvimDotfilesDir;
+  # dotfilesリポジトリのnvim/配下を個別にsymlink
+  # ディレクトリ全体をsymlinkするとprograms.neovimが生成するinit.luaと衝突するため
+  xdg.configFile = {
+    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "${nvimDotfilesDir}/lua";
+    "nvim/lazy-lock.json".source =
+      config.lib.file.mkOutOfStoreSymlink "${nvimDotfilesDir}/lazy-lock.json";
+    "nvim/template".source = config.lib.file.mkOutOfStoreSymlink "${nvimDotfilesDir}/template";
+  };
 }
