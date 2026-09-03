@@ -1,6 +1,6 @@
 { pkgs }:
 
-with pkgs:
+with pkgs;
 [
   # shell
   nushell
