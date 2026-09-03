@@ -1,9 +1,8 @@
 { pkgs }:
 
-with pkgs;
+with pkgs:
 [
   # shell
-  fish
   nushell
   zsh
 

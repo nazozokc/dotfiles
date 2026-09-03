@@ -20,5 +20,6 @@
     ./programs/ollama
     ./programs/docker
     ./programs/gh-dash
+    ./programs/fish
   ];
 }
