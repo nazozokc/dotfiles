@@ -20,6 +20,15 @@ return {
 
 		require("luasnip.loaders.from_vscode").lazy_load()
 
+		-- TSX/JSX で javascript / typescript / html のスニペットを再利用
+		-- friendly-snippets は javascriptreact / typescriptreact 用の
+		-- スニペットを持たないため、filetype を拡張して読み込む
+		-- - javascript : React スニペット (rfc, rcc, rfce など)
+		-- - typescript : TS スニペット (interface, type など)
+		-- - html       : JSX タグ向け HTML スニペット (div, a, img など)
+		require("luasnip").filetype_extend("typescriptreact", { "javascript", "typescript", "html" })
+		require("luasnip").filetype_extend("javascriptreact", { "javascript", "html" })
+
 		------------------------------------------------------------------
 		-- ハイライト
 		------------------------------------------------------------------
