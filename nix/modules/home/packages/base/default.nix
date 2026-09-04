@@ -11,6 +11,7 @@ with pkgs;
   curl
   wget
   zoxide
+  fd
   tree
   btop
   fastfetch
