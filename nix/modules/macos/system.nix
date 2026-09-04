@@ -62,20 +62,6 @@
     dock = {
       autohide = true;
       tilesize = 45;
-      persistent-apps = [
-        "/System/Applications/Launchpad.app"
-        "${pkgs.wezterm}/Applications/WezTerm.app"
-        "${pkgs.obsidian}/Applications/Obsidian.app"
-        "/Applications/cmux.app"
-        "/Applications/Arc.app"
-        "/Applications/Zen.app"
-        "/Applications/Spotify.app"
-        "/Applications/ChatGPT.app"
-        "/Applications/Ghostty.app"
-        "/System/Applications/Books.app"
-        "/System/Applications/App Store.app"
-        "/System/Applications/System Settings.app"
-      ];
       show-recents = false;
       mineffect = "genie";
       orientation = "bottom";
