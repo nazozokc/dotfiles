@@ -207,7 +207,7 @@ nix/
 ## コマンド
 
 ```bash
-# 環境切り替え (OS自動検出)
+# 環境切り替え (OS自動検出 + 事前チェック)
 nix run .#switch
 
 # ビルドのみ (切り替えなし)
@@ -216,6 +216,15 @@ nix run .#build
 # flake更新
 nix run .#update
 ```
+
+### 信頼性向上
+
+- `nix run .#switch` は実行前に `nix flake check --no-build` を自動実行し、評価エラーを事前に検出します。
+
+### 信頼性向上
+
+- `nix run .#switch` は実行前に `nix flake check --no-build` を自動実行し、評価エラーを事前に検出します。
+- `home-manager` / `nix-darwin` は nixpkgs の最新版から取得するため、バージョンドリフトが発生する可能性があります。バージョンを固定したい場合は `nix build` + `./result/activate` パターンの利用を検討してください。
 
 ## home-manager の動作
 
@@ -258,12 +267,14 @@ flake.nix
 
 - 定義位置: `nix/shared.nix`
 - 現在値: `26.11`
+- **原則: 一度設定したら絶対に変更しない**
 - 互換性優先のため普段は固定する。
-- 更新時は以下を必須にする。
+- 更新は以下の条件を全て満たした場合のみ許可される:
   1. 変更理由をPR本文に明記
   2. `nix flake check` 通過
   3. `nix run .#build` 通過
   4. dotfilesリンク・主要CLI起動確認結果をPRに記録
+- **注意**: stateVersion の更新はデータの破損や設定の不整合を引き起こす可能性があるため、避けること。
 
 ## 参考リポジトリ
 

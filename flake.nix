@@ -347,6 +347,11 @@
 
                 ${detectHelpers}
 
+                # 事前チェック: flake の評価エラーを検出
+                echo "[pre-flight] nix flake check --no-build ..."
+                nix flake check --no-build
+                echo ""
+
                 if is_wsl; then
                   echo "  system : WSL (x86_64)"
                   echo "  target : .#${username}-wsl"
