@@ -8,7 +8,7 @@
 
     enableBashIntegration = true;
     enableZshIntegration = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
 
     # Configuration is in starship/starship.toml (shared across platforms)
     # The file is deployed below as a symlink
