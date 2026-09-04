@@ -56,7 +56,13 @@ return {
 			enabled = true,
 
 			layout = {
-				preset = "ivy",
+				-- 端末が狭いときにE36(ウィンドウに十分な高さ/幅がない)を避ける
+				preset = function()
+					if vim.o.columns < 120 or vim.o.lines < 30 then
+						return "telescope"
+					end
+					return "ivy"
+				end,
 			},
 
 			win = {
