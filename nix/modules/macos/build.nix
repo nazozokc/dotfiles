@@ -28,14 +28,9 @@ darwin'.lib.darwinSystem {
   };
   modules = [
     # nix-index-database は上流が x86_64-darwin の DB を提供していないため Intel Mac では無効化
+    ../nix-conf.nix
     {
-      nix.settings = {
-        experimental-features = [
-          "nix-command"
-          "flakes"
-        ];
-        build-users-group = "nixbld";
-      };
+      nix.settings.build-users-group = "nixbld";
     }
     ./default.nix
     homeManager'.darwinModules.home-manager

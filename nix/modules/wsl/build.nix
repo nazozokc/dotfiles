@@ -26,6 +26,7 @@ home-manager.lib.homeManagerConfiguration {
     dotfilesDir = self.outPath;
   };
   modules = commonHomeModules ++ [
+    ../nix-conf.nix
     ../home/wsl.nix
     (import ./tools-read.nix { inherit pkgs; })
     ./default.nix

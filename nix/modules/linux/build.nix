@@ -29,6 +29,7 @@ home-manager.lib.homeManagerConfiguration {
     nixGLPackages = nixGL.packages.${system};
   };
   modules = commonHomeModules ++ [
+    ../nix-conf.nix
     ../home
     (import ../home/tools-read.nix { inherit pkgs; })
     ./default.nix

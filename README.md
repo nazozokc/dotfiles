@@ -80,6 +80,17 @@ cd ~
 git clone https://github.com/nazozokc/dotfiles.git
 cd dotfiles
 
+# nix.conf が存在しない or experimental-features が未設定の場合のセットアップ
+sudo mkdir -p /etc/nix
+sudo tee /etc/nix/nix.conf > /dev/null << 'EOF'
+experimental-features = nix-command flakes
+build-users-group = nixbld
+trusted-users = root nazozokc
+EOF
+
+# nix.conf 書き込み後はシェルを再起動するか、以下で即座に反映可能
+exec $SHELL
+
 # Home Manager + pkgs の初回セットアップ
 nix run .#switch
 ```

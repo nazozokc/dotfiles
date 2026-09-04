@@ -13,24 +13,12 @@
   ids.gids.nixbld = 350;
 
   ########################################
-  # Nix 設定の強化
+  # Nix GC
   ########################################
-  nix = {
-    gc = {
-      automatic = true;
-      interval.Day = 1;
-      options = "--delete-older-than 30d";
-    };
-    settings = {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      auto-optimise-store = true;
-      always-allow-substitutes = true;
-      max-jobs = "auto";
-      trusted-users = [ username ];
-    };
+  nix.gc = {
+    automatic = true;
+    interval.Day = 1;
+    options = "--delete-older-than 30d";
   };
 
   ########################################
