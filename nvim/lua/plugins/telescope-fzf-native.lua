@@ -1,7 +1,7 @@
 return {
 	"nvim-telescope/telescope-fzf-native.nvim",
 	event = "VeryLazy",
-	build = "make",
+	build = "mkdir -p build && cc -O3 -Wall -fpic -std=gnu99 -shared src/fzf.c -o build/libfzf.so",
 	config = function()
 		require("telescope").setup({
 			extensions = {
