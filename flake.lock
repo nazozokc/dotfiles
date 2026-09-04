@@ -299,6 +299,7 @@
         ]
       },
       "locked": {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "lastModified": 1788450739,
         "narHash": "sha256-glZLQlzIn1fXH6PazR2iUmTo7kzzyYSshrWhLS9TqCU=",
@@ -309,8 +310,16 @@
         "lastModified": 1788306937,
         "narHash": "sha256-lbrI1UYVpFgKSsyrU9oeF7FHfnu8nLD9ja0ou9f2rxk=",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "lastModified": 1788306937,
+        "narHash": "sha256-lbrI1UYVpFgKSsyrU9oeF7FHfnu8nLD9ja0ou9f2rxk=",
+=======
+        "lastModified": 1788450739,
+        "narHash": "sha256-glZLQlzIn1fXH6PazR2iUmTo7kzzyYSshrWhLS9TqCU=",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "owner": "hercules-ci",
         "repo": "flake-parts",
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "rev": "31729ca8cbdb4fa927b34e5f4353e6a83f39e993",
 ||||||| Stash base
@@ -318,6 +327,11 @@
 =======
         "rev": "f16b25b8c3d2809b87925d0b76652d7821a75c68",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "rev": "f16b25b8c3d2809b87925d0b76652d7821a75c68",
+=======
+        "rev": "31729ca8cbdb4fa927b34e5f4353e6a83f39e993",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "type": "github"
       },
       "original": {
@@ -334,6 +348,7 @@
         ]
       },
       "locked": {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "lastModified": 1788450739,
         "narHash": "sha256-glZLQlzIn1fXH6PazR2iUmTo7kzzyYSshrWhLS9TqCU=",
@@ -344,8 +359,16 @@
         "lastModified": 1788306937,
         "narHash": "sha256-lbrI1UYVpFgKSsyrU9oeF7FHfnu8nLD9ja0ou9f2rxk=",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "lastModified": 1788306937,
+        "narHash": "sha256-lbrI1UYVpFgKSsyrU9oeF7FHfnu8nLD9ja0ou9f2rxk=",
+=======
+        "lastModified": 1788450739,
+        "narHash": "sha256-glZLQlzIn1fXH6PazR2iUmTo7kzzyYSshrWhLS9TqCU=",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "owner": "hercules-ci",
         "repo": "flake-parts",
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "rev": "31729ca8cbdb4fa927b34e5f4353e6a83f39e993",
 ||||||| Stash base
@@ -353,6 +376,11 @@
 =======
         "rev": "f16b25b8c3d2809b87925d0b76652d7821a75c68",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "rev": "f16b25b8c3d2809b87925d0b76652d7821a75c68",
+=======
+        "rev": "31729ca8cbdb4fa927b34e5f4353e6a83f39e993",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "type": "github"
       },
       "original": {
@@ -637,6 +665,7 @@
         "treefmt-nix": "treefmt-nix_3"
       },
       "locked": {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "lastModified": 1788475560,
         "narHash": "sha256-7+MVhbIlAyxCMh+jU7MsmGfu8tA3TnwknSlMHwbqo2M=",
@@ -647,8 +676,16 @@
         "lastModified": 1788320444,
         "narHash": "sha256-t16G5E/dXM2vHehL0hxiUI+/Sg2l9dOBY948AK8bXOk=",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "lastModified": 1788437273,
+        "narHash": "sha256-dn+N26nSI4WqryWWBUfClz6qSpFHGNGJmc9M46usr70=",
+=======
+        "lastModified": 1788475560,
+        "narHash": "sha256-7+MVhbIlAyxCMh+jU7MsmGfu8tA3TnwknSlMHwbqo2M=",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "owner": "numtide",
         "repo": "llm-agents.nix",
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "rev": "e337a6f5a5ef2da654a801abc045806a211be16a",
 ||||||| Stash base
@@ -656,6 +693,11 @@
 =======
         "rev": "b096325ad8cc471f5b34321c01a5cb98457c7782",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "rev": "c48d91c89868c53dd0b51bf840977cc83f2544fb",
+=======
+        "rev": "e337a6f5a5ef2da654a801abc045806a211be16a",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "type": "github"
       },
       "original": {
@@ -675,6 +717,7 @@
         "treefmt-nix": "treefmt-nix_4"
       },
       "locked": {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "lastModified": 1788475560,
         "narHash": "sha256-7+MVhbIlAyxCMh+jU7MsmGfu8tA3TnwknSlMHwbqo2M=",
@@ -685,8 +728,16 @@
         "lastModified": 1788320444,
         "narHash": "sha256-t16G5E/dXM2vHehL0hxiUI+/Sg2l9dOBY948AK8bXOk=",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "lastModified": 1788437273,
+        "narHash": "sha256-dn+N26nSI4WqryWWBUfClz6qSpFHGNGJmc9M46usr70=",
+=======
+        "lastModified": 1788475560,
+        "narHash": "sha256-7+MVhbIlAyxCMh+jU7MsmGfu8tA3TnwknSlMHwbqo2M=",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "owner": "numtide",
         "repo": "llm-agents.nix",
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         "rev": "e337a6f5a5ef2da654a801abc045806a211be16a",
 ||||||| Stash base
@@ -694,6 +745,11 @@
 =======
         "rev": "b096325ad8cc471f5b34321c01a5cb98457c7782",
 >>>>>>> Stashed changes
+||||||| parent of e8b915e (chore(nix): update flake.lock (#802))
+        "rev": "c48d91c89868c53dd0b51bf840977cc83f2544fb",
+=======
+        "rev": "e337a6f5a5ef2da654a801abc045806a211be16a",
+>>>>>>> e8b915e (chore(nix): update flake.lock (#802))
         "type": "github"
       },
       "original": {
