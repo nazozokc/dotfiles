@@ -10,16 +10,56 @@
     terminal = "tmux-256color";
     historyLimit = 100000;
 
+    # NOTE: プラグイン依存の @ オプションは各プラグインの extraConfig に置く。
+    # home-manager は plugins を extraConfig より先に出力するため、
+    # 起動時にオプションを読むプラグインが初回ロードでデフォルト設定になるのを防ぐ。
     plugins = with pkgs; [
       tmuxPlugins.sensible
-      tmuxPlugins.resurrect
-      tmuxPlugins.continuum
+      {
+        plugin = tmuxPlugins.resurrect;
+        extraConfig = ''
+          set -g @resurrect-capture-pane-contents 'on'
+        '';
+      }
+      {
+        plugin = tmuxPlugins.continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '15'
+          set -g @continuum-boot 'on'
+        '';
+      }
       tmuxPlugins.yank
       tmuxPlugins.tmux-fzf
       tmuxPlugins.fuzzback
-      tmuxPlugins.tmux-thumbs
-      tmuxPlugins.tmux-floax
-      tmuxPlugins.ukiyo
+      {
+        plugin = tmuxPlugins.tmux-thumbs;
+        extraConfig = ''
+          set -g @thumbs-key "t"
+          set -g @thumbs-alphabet "numeric"
+          set -g @thumbs-unique "on"
+        '';
+      }
+      {
+        plugin = tmuxPlugins.tmux-floax;
+        extraConfig = ''
+          set -g @floax-bind Escape
+          set -g @floax-width 80%
+          set -g @floax-height 80%
+        '';
+      }
+      {
+        plugin = tmuxPlugins.ukiyo;
+        extraConfig = ''
+          set -g @ukiyo-theme "kanagawa/dragon"
+          set -g @ukiyo-refresh-rate 30
+          set -g @ukiyo-show-git true
+          set -g @ukiyo-show-prefix true
+          set -g @ukiyo-show-cwd true
+          set -g @ukiyo-pane-run-true-colors true
+          set -g @ukiyo-plugins "cpu-usage ram-usage battery network weather time"
+        '';
+      }
     ];
 
     extraConfig = ''
@@ -62,25 +102,6 @@
       set -g monitor-activity on
       set -g visual-activity on
 
-      # ===== Ukiyo theme (Kanagawa Dragon) =====
-      set -g @ukiyo-theme "kanagawa/dragon"
-      set -g @ukiyo-refresh-rate 30
-      set -g @ukiyo-show-git true
-      set -g @ukiyo-show-prefix true
-      set -g @ukiyo-show-cwd true
-      set -g @ukiyo-pane-run-true-colors true
-      set -g @ukiyo-plugins "cpu-usage ram-usage battery network weather time"
-
-      # ===== tmux-floax (floating popup) =====
-      set -g @floax-bind Escape
-      set -g @floax-width 80%
-      set -g @floax-height 80%
-
-      # ===== tmux-thumbs (hint text selection) =====
-      set -g @thumbs-key "t"
-      set -g @thumbs-alphabet "numeric"
-      set -g @thumbs-unique "on"
-
       # ===== Colors (Kanagawa Dragon palette - fallback) =====
       set -g message-style "fg=#1F1F28,bg=#98bb6c"
       set -g pane-border-style "fg=#54546D"
@@ -98,12 +119,6 @@
       # ===== Terminal overrides =====
       set -g default-terminal "tmux-256color"
       set -ga terminal-overrides ",xterm-256color:Tc"
-
-      # ===== Resurrect + Continuum (auto-save every 15min) =====
-      set -g @continuum-restore 'on'
-      set -g @continuum-save-interval '15'
-      set -g @continuum-boot 'on'
-      set -g @resurrect-capture-pane-contents 'on'
     '';
   };
 }
