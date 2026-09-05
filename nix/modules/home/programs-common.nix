@@ -3,6 +3,7 @@
 {
   imports = [
     ./programs/gh
+    ./programs/pnpm
     ./programs/git
     ./programs/lazygit
     ./programs/cmux

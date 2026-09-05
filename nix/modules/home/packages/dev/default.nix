@@ -15,6 +15,7 @@ with pkgs;
   bun
   deno
   yarn
+  pnpm
 
   # rust
   rustc
