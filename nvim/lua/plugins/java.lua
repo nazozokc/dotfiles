@@ -9,7 +9,7 @@ return {
 		ft = { "java" },
 		config = function()
 			require("java").setup({
-				jdtls = { version = "latest" }, -- jdtls のバージョン
+				jdtls = { version = "1.54.0" }, -- jdtls のバージョン (version-map に存在する実バージョンで固定)
 				lombok = { enable = true }, -- Lombok 対応
 				java_test = { enable = true }, -- テスト
 				java_debug_adapter = { enable = true }, -- デバッグ
