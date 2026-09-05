@@ -80,6 +80,18 @@
       bind C-o rotate-window
       bind Space next-layout
 
+      # ===== Pane resize =====
+      # prefix + H/J/K/L でペインサイズ変更
+      bind H resize-pane -L 5
+      bind J resize-pane -D 5
+      bind K resize-pane -U 5
+      bind L resize-pane -R 5
+      # prefix + C-h/C-j/C-k/C-l で細かく調整
+      bind C-h resize-pane -L 1
+      bind C-j resize-pane -D 1
+      bind C-k resize-pane -U 1
+      bind C-l resize-pane -R 1
+
       # ===== Open new window with current pane's cwd =====
       bind c new-window -c "#{pane_current_path}"
 
