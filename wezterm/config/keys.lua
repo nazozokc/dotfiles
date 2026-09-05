@@ -100,35 +100,8 @@ function M.apply(config)
 		},
 
 		-- ========================
-		-- Panes: focus (Vim-like mnemonics)
-		-- ========================
-		{
-			key = "h",
-			mods = "CTRL|SHIFT",
-			action = act.ActivatePaneDirection("Left"),
-			description = "Focus pane to the left",
-		},
-		{
-			key = "j",
-			mods = "CTRL|SHIFT",
-			action = act.ActivatePaneDirection("Down"),
-			description = "Focus pane below",
-		},
-		{
-			key = "k",
-			mods = "CTRL|SHIFT",
-			action = act.ActivatePaneDirection("Up"),
-			description = "Focus pane above",
-		},
-		{
-			key = "l",
-			mods = "CTRL|SHIFT",
-			action = act.ActivatePaneDirection("Right"),
-			description = "Focus pane to the right",
-		},
-
-		-- ========================
-		-- Panes: resize (extra Alt to avoid accidental resizing)
+		-- Panes: resize (native, tmux 外で使用) — Ctrl+Shift+Alt+HJKL
+		-- Ctrl+Shift+HJKL は tmux に透過 (tmux のペインリサイズで使用)
 		-- ========================
 		{
 			key = "h",
