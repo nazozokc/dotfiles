@@ -29,11 +29,11 @@
       unbind '"'
       unbind %
 
-      # ===== Smart pane switching =====
-      bind -n M-Left select-pane -L
-      bind -n M-Right select-pane -R
-      bind -n M-Up select-pane -U
-      bind -n M-Down select-pane -D
+      # ===== Smart pane switching (vim style) =====
+      bind -n M-h select-pane -L
+      bind -n M-l select-pane -R
+      bind -n M-k select-pane -U
+      bind -n M-j select-pane -D
 
       # ===== Pane management =====
       bind Tab select-pane -t :.+
