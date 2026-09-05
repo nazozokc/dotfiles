@@ -193,6 +193,9 @@ dotfiles/
 │   ├── modules/                  #   PackageManager / SymlinkManager / ProfileManager / SystemManager
 │   ├── Microsoft.PowerShell_profile.ps1  # PowerShell 7 プロファイル
 │   └── terminal/settings.json    #   Windows Terminal 設定（参考）
+├── wsl/                          # WSL 専用
+│   ├── .wslconfig                #   全ディストロ共通 (Windows側 %USERPROFILE%\.wslconfig へ symlink)
+│   └── wsl.conf                  #   ディストロ別 (/etc/wsl.conf へ wsl-setup.sh で配置)
 ├── nix/                          # Linux/macOS/WSL 専用 (Nix)
 ├── hypr/ waybar/ rofi/ dunst/    # Linux GUI (Hyprland) 専用
 ├── fish/ / zsh/ / bash/          # Linux/macOS/WSL 専用
@@ -204,6 +207,60 @@ dotfiles/
 - **fish / zsh / tmux / ghostty / Hyprland** は Windows では動作しないため対象外です
 - **sops-nix** によるシークレット管理は Windows 未対応です
 - Windows Terminal の `settings.json` はマシン固有の GUID が含まれるため、参考値として提供しています
+
+---
+
+## WSL セットアップ
+
+WSL の設定は次の 2 ファイルで管理します。配置先が異なるため注意してください。
+
+| ファイル         | 配置先                               | スコープ                    | 管理方法                         |
+| ---------------- | ------------------------------------ | --------------------------- | -------------------------------- |
+| `wsl/.wslconfig` | Windows側 `%USERPROFILE%\.wslconfig` | **全ディストロ共通** (WSL2) | `windows/apply.ps1` が symlink   |
+| `wsl/wsl.conf`   | ディストロ内 `/etc/wsl.conf`         | ディストロ別                | `my_scripts/wsl-setup.sh` (root) |
+
+### `.wslconfig` — 全ディストロ共通 (Windows側)
+
+`wsl/.wslconfig` が `%USERPROFILE%\.wslconfig` への symlink として管理されます。
+`.wslconfig` は WSL の **Linux 側 `~/.wslconfig` では読まれない**ため、必ず Windows 側に配置してください。
+
+```powershell
+# Windows 側でリポジトリの apply.ps1 を実行 (symlink 作成・更新)
+pwsh windows/apply.ps1
+```
+
+主な設定:
+
+- `memory=8GB` / `processors=8` / `swap=4GB` — vmmem がホスト RAM を食い尽くすのを防止
+- `networkingMode=mirrored` — localhost 共有 / IPv6 / ホスト IP 到達性
+- `dnsTunneling=true` — VPN・社内 NW で `resolv.conf` が壊れる問題を防止
+- `autoMemoryReclaim=gradual` + `sparseVhd=true` — メモリ・VHD の無制限膨張を防止
+- `defaultVhdSize=256GB` — ディスク上限 (既存 VHD に効かせるには `wsl --manage <distro> --set-sparse true`)
+
+### `/etc/wsl.conf` — ディストロ別 (root 必要)
+
+```bash
+# リポジトリの wsl/wsl.conf を /etc/wsl.conf に反映 + ja_JP.UTF-8 ロケール生成
+sudo ~/.scripts/wsl-setup.sh
+```
+
+主な設定:
+
+- `[boot] systemd=true` — home-manager の systemd タイマー (nix-store GC 等) に必須
+- `[automount] options="metadata,umask=22,fmask=11"` — /mnt/c の権限メタデータ保持
+- `[network] generateResolvConf=true` — DNS 自動生成 (VPN で壊れる場合は `false` にして手動管理)
+- `[user] default=nazozokc` / `[time] useWindowsTimezone=true`
+
+### 設定変更後の反映
+
+```powershell
+# Windows 側で実行: 全 WSL を停止して 8 秒待ってから再起動
+wsl --shutdown
+```
+
+- 設定は WSL インスタンス完全停止後に読み込まれます (8秒ルール)
+- 複数ディストロがある場合、`/etc/wsl.conf` は各ディストロで `wsl-setup.sh` を実行してください (`.wslconfig` は全ディストロに自動適用されます)
+- `nix run .#switch` (WSL) は実行前に `.wslconfig` の symlink 状態を事前チェックします
 
 ---
 

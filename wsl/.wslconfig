@@ -1,0 +1,34 @@
+# wsl/.wslconfig
+# WSL 全ディストロ共通のグローバル設定 (Windows 側 %USERPROFILE%\.wslconfig)
+# 適用には `wsl --shutdown` 後に WSL を再起動する必要がある (8秒ルール)
+#
+# 公式ドキュメント: https://learn.microsoft.com/en-us/windows/wsl/wsl-config
+# 注意: .wslconfig で有効なセクションは [wsl2] と [experimental] のみ
+#       [automount] / [network] / [interop] / [user] は wsl.conf 側に書くこと
+
+[wsl2]
+# メモリ上限 (ホスト16GBの50%) — vmmem がホストRAMを食い尽くすのを防止
+memory=8GB
+# CPU 割当て (ホスト12コア中8コア)
+processors=8
+# スワップ容量
+swap=4GB
+# Mirrored ネットワークモード: localhost 共有 / IPv6 / ホストIP到達性
+# 注意: networkingMode=mirrored 時は localhostForwarding は無視される
+networkingMode=mirrored
+# DNS トンネリング — VPN・社内NWで resolv.conf が破壊される問題を防止
+dnsTunneling=true
+# Windows の HTTP プロキシ情報を自動適用
+autoProxy=true
+# VHD の最大サイズ上限 — ディスク無制限膨張を防止 (既存VHDには効かない)
+defaultVhdSize=256GB
+
+[experimental]
+# アイドル時にキャッシュメモリを自動回収 (gradual: ゆっくり回収)
+autoMemoryReclaim=gradual
+# 新規作成 VHD を sparse 化 — ディスク使用量の自動圧縮
+sparseVhd=true
+# DNS トンネリング時に不明レコードを無視して解決を試みる
+bestEffortDnsParsing=true
+# Mirrored モードでホストの追加 IP アドレスへのループバック接続を許可
+hostAddressLoopback=true
