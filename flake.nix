@@ -285,6 +285,44 @@
             is_darwin() {
               [ "$(uname)" = "Darwin" ]
             }
+
+            # Windows ユーザープロファイルの .wslconfig パスを検出
+            # (USERPROFILE env が無い場合は /mnt/c/Users/ から実ユーザーをスキャン)
+            find_wslconfig() {
+              local profile
+              profile="''${USERPROFILE%/}"
+              if [[ -z "$profile" ]]; then
+                for d in /mnt/c/Users/*/; do
+                  case "$(basename "$d")" in
+                    "All Users"|"Default"|"Default User"|"Public") continue ;;
+                  esac
+                  if [[ -e "$d/.wslconfig" || -d "$d/AppData" ]]; then
+                    profile="''${d%/}"
+                    break
+                  fi
+                done
+              fi
+              [[ -n "$profile" ]] && echo "$profile/.wslconfig"
+            }
+
+            # .wslconfig が apply.ps1 管理の symlink か事前チェック
+            # (Windows側 %USERPROFILE%\.wslconfig を参照するため)
+            check_wslconfig() {
+              local wslconfig target
+              wslconfig="$(find_wslconfig)"
+              if [[ -z "$wslconfig" || ! -e "$wslconfig" ]]; then
+                echo "[!] .wslconfig が見つかりません (''${wslconfig:-/mnt/c/Users/*/})"
+                echo "    Windows 側で 'pwsh windows/apply.ps1' を実行して .wslconfig を symlink してください"
+              elif [[ -L "$wslconfig" ]]; then
+                target="$(readlink "$wslconfig")"
+                case "$target" in
+                  *"/wsl/.wslconfig"|*"\\wsl\\.wslconfig") echo "[ok] .wslconfig -> $target" ;;
+                  *) echo "[!] .wslconfig のリンク先が dotfiles の wsl/.wslconfig ではありません: $target" ;;
+                esac
+              else
+                echo "[!] $wslconfig は symlink ではありません (apply.ps1 で管理されるべき)"
+              fi
+            }
           '';
         in
         {
@@ -357,6 +395,7 @@
                   echo "  target : .#${username}-wsl"
                   echo "  cmd    : switch"
                   echo ""
+                  check_wslconfig
                   nix run nixpkgs#home-manager -- switch --flake .#${username}-wsl |& ${pkgs.nix-output-monitor}/bin/nom
                 elif is_darwin; then
                   echo "  system : ${sysLabel}"

@@ -31,18 +31,12 @@ in
     # Windows連携
     WSLENV = "HOME/p:USERPROFILE/p";
 
-    # Windowsの.exe実行を許可
-    WSLEXECPATH = "1";
-
     # ブラウザ
     BROWSER = "xdg-open";
 
     # エディタ
     EDITOR = "nvim";
     VISUAL = "nvim";
-
-    # パフォーマンス最適化
-    WSL_INTEROP = "/run/WSL";
   };
 
   ########################################
@@ -78,16 +72,10 @@ in
   ########################################
   # WSL メタデータ設定
   ########################################
-  home.file.".wslconfig".text = ''
-    [automount]
-    enabled = true
-    options = "metadata,umask=22,fmask=11"
-    mountFsTab = false
-
-    [network]
-    generateResolvConf = true
-    networkingMode = mirrored
-  '';
+  # NOTE: .wslconfig は Windows 側 (%USERPROFILE%\.wslconfig) のファイルであり、
+  #       WSL の Linux 側 ~/.wslconfig は読まれない。
+  #       windows/apply.ps1 経由で wsl/.wslconfig を symlink するためここでは管理しない。
+  #       /etc/wsl.conf は root 権限が必要なため my_scripts/wsl-setup.sh で管理する。
 
   home.file = {
     ".config/hypr".source = link "${dotfilesDir}/hypr";
