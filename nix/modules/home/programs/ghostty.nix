@@ -72,12 +72,8 @@
     keybind = ctrl+shift+c=copy_to_clipboard
     keybind = ctrl+shift+v=paste_from_clipboard
     keybind = ctrl+shift+r=reload_config
-    # Pane navigation (vim-style)
-    keybind = ctrl+shift+h=goto_split:left
-    keybind = ctrl+shift+j=goto_split:bottom
-    keybind = ctrl+shift+k=goto_split:top
-    keybind = ctrl+shift+l=goto_split:right
-    # Pane resize (vim-style)
+    # Ctrl+Shift+HJKL は tmux に透過 (tmux のペインリサイズで使用)
+    # Pane resize (native, tmux 外で使用) — Ctrl+Shift+Alt+HJKL
     keybind = ctrl+shift+alt+h=resize_split:left,20
     keybind = ctrl+shift+alt+j=resize_split:down,20
     keybind = ctrl+shift+alt+k=resize_split:up,20

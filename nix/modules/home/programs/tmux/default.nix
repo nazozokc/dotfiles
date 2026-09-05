@@ -91,6 +91,13 @@
       bind C-j resize-pane -D 1
       bind C-k resize-pane -U 1
       bind C-l resize-pane -R 1
+      # Ctrl+Shift+H/J/K/L でペインサイズ変更 (prefix 不要)
+      # CSI u (extended-keys) をサポートするターミナルが送出する拡張キーで受信する
+      set -s extended-keys on
+      bind -T root C-S-h resize-pane -L 5
+      bind -T root C-S-j resize-pane -D 5
+      bind -T root C-S-k resize-pane -U 5
+      bind -T root C-S-l resize-pane -R 5
 
       # ===== Open new window with current pane's cwd =====
       bind c new-window -c "#{pane_current_path}"
