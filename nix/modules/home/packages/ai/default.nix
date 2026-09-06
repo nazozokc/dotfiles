@@ -7,4 +7,5 @@ with pkgs;
   codex
   claude-monitor
   claude-code
+  codexbar
 ]
