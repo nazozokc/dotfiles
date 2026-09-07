@@ -1,4 +1,4 @@
-# 全ファイル検索して移動（カレントディレクトリ配下のファイルを再帰検索）
+# / から全ファイル検索して移動
 function cdfg
     # プレビューコマンドを選択
     if command -q bat
@@ -8,8 +8,7 @@ function cdfg
     end
 
     set file (
-        find . -type f 2>/dev/null \
-        | sed 's|^\./||' \
+        find / -type f 2>/dev/null \
         | fzf \
             --prompt="cdfg> " \
             --preview $preview_cmd \
