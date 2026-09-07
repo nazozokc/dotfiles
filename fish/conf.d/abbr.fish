@@ -94,5 +94,6 @@ abbr --add ns nix-shell
 # orbase
 abbr --add ota orbase\ task\ add
 abbr --add ote orbase\ task\ edit
+abbr --add otl orbase\ task\ list
 abbr --add ona orbase\ note\ add
 abbr --add one orbase\ note\ edit
