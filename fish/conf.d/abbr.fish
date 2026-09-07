@@ -92,7 +92,7 @@ abbr --add op 'ollama pull'
 abbr --add ns nix-shell
 
 # orbase
-abbr --add orta 'orbase task add'
-abbr --add orte 'orbase task edit'
-abbr --add orna 'orbase note add'
-abbr --add orne 'orbase note edit'
+abbr --add ota orbase\ task\ add
+abbr --add ote orbase\ task\ edit
+abbr --add ona orbase\ note\ add
+abbr --add one orbase\ note\ edit
