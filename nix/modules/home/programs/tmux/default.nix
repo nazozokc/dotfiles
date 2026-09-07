@@ -58,6 +58,7 @@
           set -g @ukiyo-show-cwd true
           set -g @ukiyo-pane-run-true-colors true
           set -g @ukiyo-plugins "cpu-usage ram-usage battery network weather time"
+          set -g @ukiyo-fixed-location "Hakodate, Hokkaido, Japan"
         '';
       }
     ];
