@@ -70,4 +70,7 @@ with pkgs;
   aerc
   neomutt
   himalaya
+
+  # spotify
+  spotifycli
 ]
