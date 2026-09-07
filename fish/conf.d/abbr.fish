@@ -90,3 +90,9 @@ abbr --add op 'ollama pull'
 
 # nix
 abbr --add ns nix-shell
+
+# orbase
+abbr --add orta 'orbase task add'
+abbr --add orte 'orbase task edit'
+abbr --add orna 'orbase note add'
+abbr --add orne 'orbase note edit'
