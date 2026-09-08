@@ -25,18 +25,18 @@
 ; Layer 1: F13
 #HotIf GetKeyState("F13", "P") && !GetKeyState("F14", "P")
 
-u::SendText "{"
-i::SendText '"'
-o::SendText "``"
-p::SendText "}"
+u::Send "{Backspace}"
+i::SendText "{"
+o::SendText "}"
+p::SendText ","
 
-h::SendText "["
+h::Send "{Enter}"
 j::SendText "("
 k::SendText ")"
-l::SendText "]"
+l::SendText "."
 
-n::SendText ","
-m::SendText "."
+n::Send "{Space}"
+m::SendText "/"
 
 #HotIf
 
@@ -44,12 +44,18 @@ m::SendText "."
 ; Layer 2: F14
 #HotIf GetKeyState("F14", "P") && !GetKeyState("F13", "P")
 
-u::Send "{Backspace}"
-i::SendText ""
-o::SendText ""
-p::SendText ")"
+u::SendText "["
+i::SendText "]"
+o::SendText "``"
+p::SendText '"'
 
-h::Send "{Enter}"
+h::SendText "\"
+j::SendText "-"
+k::SendText "+"
+l::SendText "*"
+
+n::SendText "|"
+m::SendText "?"
 
 #HotIf
 
