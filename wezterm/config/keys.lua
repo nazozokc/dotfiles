@@ -222,6 +222,10 @@ function M.apply(config)
 			end),
 			description = "Cycle window opacity: opaque → default → transparent",
 		},
+
+		-- Suppress F13/F14 raw escape sequences reaching nvim
+		{ key = "F13", mods = "NONE", action = act.SendString("") },
+		{ key = "F14", mods = "NONE", action = act.SendString("") },
 	}
 
 	-- ========================

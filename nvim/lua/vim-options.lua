@@ -38,11 +38,15 @@ local function detect_ime_off()
 	return nil
 end
 
-local ime_off_cmd = detect_ime_off()
-if ime_off_cmd then
-	vim.api.nvim_create_autocmd("InsertLeave", {
-		callback = function()
-			vim.fn.system(ime_off_cmd)
-		end,
-	})
-end
+	local ime_off_cmd = detect_ime_off()
+	if ime_off_cmd then
+		vim.api.nvim_create_autocmd("InsertLeave", {
+			callback = function()
+				vim.fn.system(ime_off_cmd)
+			end,
+		})
+	end
+
+	-- Suppress F13/F14 escape sequences
+	vim.keymap.set("", "<F13>", "<Nop>", { noremap = true, silent = true })
+	vim.keymap.set("", "<F14>", "<Nop>", { noremap = true, silent = true })
