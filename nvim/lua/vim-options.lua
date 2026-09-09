@@ -47,5 +47,5 @@ if ime_off_cmd then
 	})
 end
 
-vim.keymap.set("", "<80>F5", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set("", "<80>F6", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("", "<F15>", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("", "<F16>", "<Nop>", { noremap = true, silent = true })
