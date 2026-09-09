@@ -26,17 +26,17 @@
 #HotIf GetKeyState("F13", "P") && !GetKeyState("F14", "P")
 
 u::Send "{Backspace}"
-i::SendText "{"
-o::SendText "}"
+i::SendText ";"
+o::SendText ":"
 p::SendText ","
 
 h::Send "{Enter}"
-j::SendText "("
-k::SendText ")"
+j::SendText "``"
+k::SendText '"'
 l::SendText "."
 
 n::Send "{Space}"
-m::SendText "/"
+m::SendText "'"
 
 #HotIf
 
@@ -46,13 +46,13 @@ m::SendText "/"
 
 u::SendText "["
 i::SendText "]"
-o::SendText "``"
-p::SendText '"'
+o::SendText "{"
+p::SendText "}"
 
-h::SendText "\"
-j::SendText "-"
-k::SendText "+"
-l::SendText "*"
+h::SendText "("
+j::SendText ")"
+k::SendText "-"
+l::SendText "+"
 
 n::SendText "|"
 m::SendText "?"
@@ -65,7 +65,12 @@ m::SendText "?"
 
 u::SendText "<"
 i::SendText ">"
-o::SendText "="
-p::SendText "!"
+o::SendText "/"
+p::SendText "\"
+
+h::SendText "="
+j::SendText "*"
+k::SendText "!"
+l::SendText "~"
 
 #HotIf
