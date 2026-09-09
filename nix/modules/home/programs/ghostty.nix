@@ -72,6 +72,9 @@
     keybind = ctrl+shift+c=copy_to_clipboard
     keybind = ctrl+shift+v=paste_from_clipboard
     keybind = ctrl+shift+r=reload_config
+    # Suppress F13/F14 raw escape sequences reaching nvim
+    keybind = F13=noop
+    keybind = F14=noop
     # Ctrl+Shift+HJKL は tmux に透過 (tmux のペインリサイズで使用)
     # Pane resize (native, tmux 外で使用) — Ctrl+Shift+Alt+HJKL
     keybind = ctrl+shift+alt+h=resize_split:left,20
