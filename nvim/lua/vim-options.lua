@@ -47,6 +47,5 @@ if ime_off_cmd then
 	})
 end
 
--- Suppress F13/F14 escape sequences
-vim.keymap.set("", "<F15>", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set("", "<F16>", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("", "<F5>", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("", "<F6>", "<Nop>", { noremap = true, silent = true })
