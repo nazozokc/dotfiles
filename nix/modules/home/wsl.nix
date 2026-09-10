@@ -4,6 +4,7 @@
 {
   imports = [
     ./dotfiles-link.nix
+    ./programs/herdr
     ./programs/nvim/default.nix
     ./agent-skills.nix
     ./programs-common.nix
