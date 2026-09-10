@@ -1,4 +1,10 @@
 function __z -d "Jump to a recent directory."
+    # 遅延補完初期化（初回呼び出し時のみ）
+    if not set -q __z_completions_initialized
+        set -g __z_completions_initialized 1
+        __z_complete
+    end
+
     function __print_help -d "Print z help."
         printf "Usage: $Z_CMD  [-celrth] string1 string2...\n\n"
         printf "         -c --clean    Removes directories that no longer exist from $Z_DATA\n"
