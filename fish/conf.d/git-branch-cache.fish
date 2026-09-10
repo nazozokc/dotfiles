@@ -19,9 +19,10 @@ function __update_git_branch_on_pwd --on-variable PWD
 end
 
 # 全コマンド実行後（git checkout / switch 等のキャッチのため）
-function __update_git_branch_on_postexec --event fish_postexec
+function __update_git_branch_on_postexec
     __update_git_branch
 end
+event fish_postexec __update_git_branch_on_postexec
 
 # 起動時の初期化
 __update_git_branch
