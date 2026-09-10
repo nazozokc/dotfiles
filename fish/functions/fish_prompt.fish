@@ -44,13 +44,12 @@ function fish_prompt
         echo -n $base
     end
 
-    # Git ブランチ
-    set branch (git_branch)
-    if test -n "$branch"
+    # Git ブランチ（キャッシュ変数を直接参照、サブプロセスなし）
+    if test -n "$__git_branch_cache"
         set_color normal
         echo -n ' '
         set_color magenta
-        echo -n $branch
+        echo -n $__git_branch_cache
     end
 
     # プロンプト記号
