@@ -53,7 +53,6 @@ with pkgs;
   # util
   presenterm
   trash-cli
-  herdr
 
   # other
   rename
