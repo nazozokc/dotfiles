@@ -19,6 +19,6 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v23
       - name: actionlint
         run: nix shell nixpkgs#actionlint --command actionlint
