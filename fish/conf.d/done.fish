@@ -204,14 +204,15 @@ if test -z "$SSH_CLIENT" # not over ssh
         or test "$TERM_PROGRAM" = ghostty
         or test "$TERM_PROGRAM" = WezTerm
         or test "$TERM_PROGRAM" = iTerm.app
-        or type -q terminal-notifier 2>/dev/null
-        or type -q osascript 2>/dev/null
         or type -q notify-send 2>/dev/null
+        or type -q notify-desktop 2>/dev/null
         or set -q HYPRLAND_INSTANCE_SIGNATURE
         or set -q SWAYSOCK
         or set -q NIRI_SOCKET
         or set -q XDG_SESSION_DESKTOP
         or set -q DISPLAY
+        or type -q terminal-notifier 2>/dev/null
+        or type -q osascript 2>/dev/null
     end
     set __done_enabled
 end
