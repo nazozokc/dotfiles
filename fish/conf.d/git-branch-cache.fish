@@ -5,7 +5,14 @@
 set -g __git_branch_cache ""
 
 function __update_git_branch --on-variable PWD
-    set -g __git_branch_cache (command git symbolic-ref --short HEAD 2>/dev/null)
+    # gitリポジトリのルートを取得してからブランチを取得
+    set -l root (command git rev-parse --show-toplevel 2>/dev/null)
+    if test -n "$root"
+        # gitリポジトリ内でgitコマンドを実行
+        set -g __git_branch_cache (command git -C "$root" symbolic-ref --short HEAD 2>/dev/null)
+    else
+        set -g __git_branch_cache ""
+    end
 end
 
 # 起動時の初期化
