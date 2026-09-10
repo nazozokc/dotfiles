@@ -197,8 +197,22 @@ function __done_humanize_duration -a milliseconds
 end
 
 # verify that the system has graphical capabilities before initializing
+# NOTE: 起動時の外部プロセス呼び出しを避けるため、環境変数チェックのみで判定
 if test -z "$SSH_CLIENT" # not over ssh
-    and count (__done_get_focused_window_id) >/dev/null # is able to get window id
+    and begin
+        set -q KITTY_WINDOW_ID
+        or test "$TERM_PROGRAM" = ghostty
+        or test "$TERM_PROGRAM" = WezTerm
+        or test "$TERM_PROGRAM" = iTerm.app
+        or type -q terminal-notifier 2>/dev/null
+        or type -q osascript 2>/dev/null
+        or type -q notify-send 2>/dev/null
+        or set -q HYPRLAND_INSTANCE_SIGNATURE
+        or set -q SWAYSOCK
+        or set -q NIRI_SOCKET
+        or set -q XDG_SESSION_DESKTOP
+        or set -q DISPLAY
+    end
     set __done_enabled
 end
 

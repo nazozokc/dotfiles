@@ -39,8 +39,8 @@ else if contains $HOME $Z_EXCLUDE
     set Z_EXCLUDE (string replace -r -- "^$HOME\$" '^'$HOME'$$' $Z_EXCLUDE)
 end
 
-# Setup completions once first
-__z_complete
+# Setup completions lazily on first z call (起動時の負荷軽減)
+# __z_complete は __z 内で初回呼び出し時にのみ実行される
 
 function __z_on_variable_pwd --on-variable PWD
     __z_add
