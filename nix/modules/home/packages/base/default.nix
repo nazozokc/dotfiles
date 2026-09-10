@@ -47,7 +47,6 @@ with pkgs;
   jujutsu
   gitui
   git-secrets
-  tig
   ghgrab
 
   # util
@@ -57,20 +56,9 @@ with pkgs;
   # other
   rename
   inetutils
-  lsof
   comma
   aria2
   mise
   cmake
-  bitwarden-cli
-  bitwarden-desktop
-  _1password-cli
-
-  # mail
-  aerc
-  neomutt
-  himalaya
-
-  # spotify
-  spotifycli
+  tokei
 ]
