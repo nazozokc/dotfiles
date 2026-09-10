@@ -2,7 +2,6 @@
 # WSL 固有のプログラム・セッション設定
 {
   config,
-  pkgs,
   dotfilesDir,
   ...
 }:
@@ -14,15 +13,6 @@ in
   ########################################
   # ロケール設定
   ########################################
-  i18n.inputMethod = {
-    enable = true;
-    type = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      fcitx5-mozc
-      fcitx5-gtk
-    ];
-  };
-
   home.sessionVariables = {
     # ロケール
     LANG = "ja_JP.UTF-8";
