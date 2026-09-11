@@ -61,6 +61,14 @@ Always refer to this skill when writing fish shell scripts, functions, abbreviat
 
 Always refer to this skill when creating Node.js/TypeScript CLI tools.
 
+## ./skills/nix-flake-make/SKILL.md
+
+Always refer to this skill when creating flake.nix for project-level development environments or shared devShells.
+
+## ./skills/agent-memory/SKILL.md
+
+Always refer to this skill when saving reusable patterns, user preferences, lessons learned, or memorable knowledge to the agent-memory repository.
+
 ## ./agents/skills/merge-main/SKILL.md
 
 Always refer to this skill when merging main branch into current branch.
