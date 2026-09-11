@@ -1,6 +1,6 @@
 ---
 name: agent-memory
-description: When saving reusable patterns, user preferences, lessons learned, or memorable knowledge to the agent-memory repository during or after conversations
+description: Always refer to this skill at the START of every conversation to retrieve relevant memories. Also refer when saving reusable patterns, user preferences, lessons learned, or memorable knowledge to the agent-memory repository during or after conversations.
 ---
 
 # Agent Memory
