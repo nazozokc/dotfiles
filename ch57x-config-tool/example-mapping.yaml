@@ -27,39 +27,38 @@ knobs: 2
 # and displayed with LEDs on top (only for the moment of changing).
 # All keyboards I saw had three layers, but I suppose other variants exist.
 layers:
+  - buttons:
+      - ["y", "u", "i", "o"]
+      - ["h", "j", "k", "l"]
+      - ["n", "m", "space", "enter"]
+    knobs:
+      - ccw: "wheelup"
+        press: "click"
+        cw: "wheeldown"
+      - ccw: "shift-wheelup"
+        press: "shift-click"
+        cw: "shift-wheeldown"
 
-- buttons:
-  - ["y", "u", "i", "o"]
-  - ["h", "j", "k", "l"]
-  - ["n", "m", "space", "enter"]
-  knobs:
-  - ccw: "wheelup"
-    press: "click"
-    cw: "wheeldown"
-  - ccw: "shift-wheelup"
-    press: "shift-click"
-    cw: "shift-wheeldown"
+  - buttons:
+      - ["click", "click(middle)", "click+rclick", "ctrl-mclick"]
+      - ["move(0,10)", "alt-drag(right,10,0)", "ctrl-move(5,5)", "ctrl-wheelup"]
+      - ["alt-wheel(1)", "ctrl-click", "wheelup", "wheeldown"]
+    knobs:
+      - ccw: "left"
+        press: "enter"
+        cw: "right"
+      - ccw: "ctrl-left"
+        press: "ctrl-enter"
+        cw: "ctrl-right"
 
-- buttons:
-  - ["click", "click(middle)", "click+rclick", "ctrl-mclick"]
-  - ["move(0,10)", "alt-drag(right,10,0)", "ctrl-move(5,5)", "ctrl-wheelup"]
-  - ["alt-wheel(1)", "ctrl-click", "wheelup", "wheeldown"]
-  knobs:
-  - ccw: "left"
-    press: "enter"
-    cw: "right"
-  - ccw: "ctrl-left"
-    press: "ctrl-enter"
-    cw: "ctrl-right"
-
-- buttons:
-  - ["play", "prev", "next", "mute"]
-  - ["2", "3", "4", "5"]
-  - ["6", "7", "8", "9"]
-  knobs:
-  - ccw: "volumedown"
-    press: "mute"
-    cw: "volumeup"
-  - ccw: "d"
-    press: "e"
-    cw: "f"
+  - buttons:
+      - ["play", "prev", "next", "mute"]
+      - ["2", "3", "4", "5"]
+      - ["6", "7", "8", "9"]
+    knobs:
+      - ccw: "volumedown"
+        press: "mute"
+        cw: "volumeup"
+      - ccw: "d"
+        press: "e"
+        cw: "f"
