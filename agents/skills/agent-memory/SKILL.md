@@ -16,6 +16,17 @@ description: MANDATORY — Load this skill FIRST at the START of every conversat
 
 Not loading this skill at conversation start is forbidden. This rule applies to every conversation without exception.
 
+## ⚠️ Mandatory Saving Checkpoints
+
+Saving must happen **proactively** — never wait for the user to ask. Evaluate memory candidates at these mandatory points:
+
+1. **After each completed task**: Ask "Did this task produce reusable knowledge?" and save immediately if yes.
+2. **Before the final response**: Before ending a session, run the evaluation once more. If any candidate exists, write the file FIRST, then respond.
+
+When in doubt about whether something is worth saving, **SAVE it**. The cost of an unnecessary file is low (grep filters retrieval); the cost of missing knowledge is a lost lesson.
+
+This is reinforced by the injected rule `opencode/rules/memory-save.md`.
+
 ## Purpose
 
 This skill enables the agent to persist important knowledge across sessions by saving structured memory files to `~/ghq/github.com/nazozokc/agent-memory/`.
@@ -109,7 +120,7 @@ When deciding to save a memory:
 
 A piece of knowledge is worth saving if:
 
-- It will likely be reused in 3+ future sessions
+- It will likely be useful again in a future session
 - The user expressed a strong preference or made a deliberate choice
 - A non-obvious solution was found after significant debugging
 - A pattern emerged from repeated similar tasks
