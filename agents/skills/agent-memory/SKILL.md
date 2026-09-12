@@ -1,9 +1,20 @@
 ---
 name: agent-memory
-description: Always refer to this skill at the START of every conversation to retrieve relevant memories. Also refer when saving reusable patterns, user preferences, lessons learned, or memorable knowledge to the agent-memory repository during or after conversations.
+description: MANDATORY — Load this skill FIRST at the START of every conversation, before any other task, to retrieve relevant memories. Load it regardless of the task topic. Also load when saving reusable patterns, user preferences, lessons learned, or memorable knowledge to the agent-memory repository.
 ---
 
 # Agent Memory
+
+## ⚠️ Mandatory Loading Rule
+
+**This skill MUST be loaded at the START of every conversation — before any other task.**
+
+1. At the start of a conversation, immediately call `skill(name: "agent-memory")`, regardless of the task topic.
+2. After loading, run the Retrieval Protocol below to search and read relevant memories.
+3. Only then proceed with the user's task.
+4. If no memory file matches, proceed without memory context.
+
+Not loading this skill at conversation start is forbidden. This rule applies to every conversation without exception.
 
 ## Purpose
 
