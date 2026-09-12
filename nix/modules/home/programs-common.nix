@@ -17,6 +17,7 @@
     ./programs/sops
     ./programs/opencode
     ./programs/claude-code
+    ./programs/codex
     ./programs/ghostty.nix
     ./programs/ollama
     ./programs/docker

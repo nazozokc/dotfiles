@@ -56,7 +56,8 @@ in
     chmod 644 "${claudeConfigDir}/settings.json"
   '';
 
-  xdg.configFile = {
-    "claude/skills".source = link "${dotfilesDir}/claude/skills";
+  # グローバル指示: agent-memoryの保存ルールを毎セッション読み込ませる
+  home.file.".claude/CLAUDE.md" = {
+    source = link "${dotfilesDir}/claude/CLAUDE.md";
   };
 }
