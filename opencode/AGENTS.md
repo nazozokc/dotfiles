@@ -28,11 +28,8 @@
 - 物事にはっきり言う
 - **ついでに**はしない
 
-## 参考レポジトリ
-
-- **一番参照** <https://github.com/ryoppippi/dotfiles>
-- **まあまあ参照** <https://github.com/mozumasu/dotfiles>
-- **構成検討に参考** <https://github.com/ntsk/dotfiles>
+# 会話開始にやること
+会話開始時にskillsの`agent-memory`を必ず読み込むこと
 
 ## 親AGENTS.md
 
