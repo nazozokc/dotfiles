@@ -1,27 +1,24 @@
 return {
-	"nvimdev/template.nvim",
-	cmd = { "Template", "TemplateProject" },
+	"mattn/vim-sonictemplate",
+	cmd = { "Template" },
+	dependencies = { "nvim-lua/plenary.nvim" },
 	keys = {
-		{ "<Leader>T", desc = "Template: insert template" },
+		{ "tmp", "Template", mode = "ca" },
 	},
-	config = function()
-		require("template").setup({
-			temp_dir = vim.fn.stdpath("config") .. "/template",
-			author = "nazozokc",
-			email = "nazozokc@gmail.com",
-
-			variables = {
-				["_year_"] = function()
-					return os.date("%Y")
-				end,
-				["_date_"] = function()
-					return os.date("%Y-%m-%d")
-				end,
+	init = function()
+		vim.g.sonictemplate_key = 0
+		vim.g.sonictemplate_intelligent_key = 0
+		vim.g.sonictemplate_postfix_key = 0
+		vim.g.sonictemplate_vim_vars = {
+			_ = {
+				author = "nazozokc",
 			},
-		})
-
-		vim.keymap.set("n", "<Leader>T", function()
-			vim.fn.feedkeys(":Template ")
-		end, { desc = "Template: insert template" })
+		}
+	end,
+	config = function()
+		local Path = require("plenary.path")
+		vim.g.sonictemplate_vim_template_dir = {
+			Path:new(vim.fn.stdpath("config"), "template"):absolute(),
+		}
 	end,
 }
