@@ -64,7 +64,7 @@ in
   ########################################
   # NOTE: .wslconfig は Windows 側 (%USERPROFILE%\.wslconfig) のファイルであり、
   #       WSL の Linux 側 ~/.wslconfig は読まれない。
-  #       windows/apply.ps1 経由で wsl/.wslconfig を symlink するためここでは管理しない。
+  #       wsl/.wslconfig を手動で Windows 側にコピーして管理する。
   #       /etc/wsl.conf は root 権限が必要なため my_scripts/wsl-setup.sh で管理する。
 
   home.file = {

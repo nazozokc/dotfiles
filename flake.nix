@@ -305,14 +305,14 @@
               [[ -n "$profile" ]] && echo "$profile/.wslconfig"
             }
 
-            # .wslconfig が apply.ps1 管理の symlink か事前チェック
+            # .wslconfig が dotfiles の wsl/.wslconfig と一致するか事前チェック
             # (Windows側 %USERPROFILE%\.wslconfig を参照するため)
             check_wslconfig() {
               local wslconfig target
               wslconfig="$(find_wslconfig)"
               if [[ -z "$wslconfig" || ! -e "$wslconfig" ]]; then
                 echo "[!] .wslconfig が見つかりません (''${wslconfig:-/mnt/c/Users/*/})"
-                echo "    Windows 側で 'pwsh windows/apply.ps1' を実行して .wslconfig を symlink してください"
+                echo "    Windows 側で手動コピー: cp wsl/.wslconfig \$env:USERPROFILE\\.wslconfig"
               elif [[ -L "$wslconfig" ]]; then
                 target="$(readlink "$wslconfig")"
                 case "$target" in
@@ -320,7 +320,7 @@
                   *) echo "[!] .wslconfig のリンク先が dotfiles の wsl/.wslconfig ではありません: $target" ;;
                 esac
               else
-                echo "[!] $wslconfig は symlink ではありません (apply.ps1 で管理されるべき)"
+                echo "[!] $wslconfig は symlink ではありません (手動で管理してください)"
               fi
             }
           '';

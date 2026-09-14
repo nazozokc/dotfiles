@@ -4,10 +4,9 @@
 
 # Nazozo Dotfiles
 
-このリポジトリは Linux / macOS / Windows (native) の3OS対応で dotfiles 管理を行う構成です。
+このリポジトリは Linux / macOS / WSL の dotfiles 管理を行う構成です。
 
 - **Linux / macOS / WSL**: Nix + Home Manager で管理
-- **Windows (native)**: PowerShell 7 スクリプトで管理
 - **設定ファイルは可能な限り共通化**: `git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/`, `opencode/`, `efm-langserver/` は全OSで同一ファイルを共有
 
 ---
@@ -18,7 +17,6 @@
 - Linux: `aarch64-linux` (ARM linux)
 - WSL: `x86_64-linux` (WSL2)
 - macOS: `aarch64-darwin` (Apple Silicon) / `x86_64-darwin` (Intel Mac)
-- Windows: native (PowerShell 7 + scoop/winget)
 
 ---
 
@@ -108,115 +106,22 @@ nix run .#update
 
 ---
 
----
-
-## Windows セットアップ (ネイティブ)
-
-### 前提条件
-
-- Windows 10 22H2+ または Windows 11
-- [PowerShell 7](https://github.com/PowerShell/PowerShell) (`winget install Microsoft.PowerShell`)
-- 管理者権限は不要（scoop はユーザー権限で動作）
-
-### インストール手順
-
-```powershell
-# 1. リポジトリをクローン
-cd ~
-git clone https://github.com/nazozokc/dotfiles.git
-cd dotfiles
-
-# 2. セットアップスクリプトを実行
-pwsh -ExecutionPolicy RemoteSigned -File windows/setup.ps1
-```
-
-スクリプトは `windows/apply.ps1` を呼び出し、`windows/config.psd1` を読んで収束（Nix の `nix run .#switch` に相当）します：
-
-1. **パッケージ** のインストール（scoop / winget / PSGallery で neovim, git, starship, lazygit, wezterm など）
-2. **設定ファイルの symlink**（`git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/` など → Windows の適切なパス）
-3. **PowerShell プロファイル** のインストール（PS7 + PS5 両対応）
-4. **システム設定**（レジストリ調整）
-
-### セットアップ後にやること
-
-```powershell
-# PowerShell 7 を再起動（プロファイルを読み込む）
-# または手動で読み込み
-. $PROFILE
-```
-
-- Windows Terminal の設定は `windows/terminal/settings.json` を参照して手動で適用してください
-- フォントは JetBrainsMono Nerd Font が自動インストールされます
-
-### パッケージ更新
-
-```powershell
-# dotfiles の収束を再適用
-pwsh windows/apply.ps1
-
-# scoop 全更新
-scoop update && scoop update *
-
-# winget 更新
-winget upgrade --all
-```
-
-### 設定ファイルの構成
-
-```
-dotfiles/
-├── git/                          # Linux/macOS/WSL/Windows で共有
-│   ├── config                    #   メイン設定
-│   ├── aliases                   #   Git エイリアス
-│   └── ignore                    #   グローバル gitignore
-├── starship/starship.toml        # 全OS共有
-├── lazygit/config.yml            # 全OS共有
-├── bat/config                    # 全OS共有
-├── nvim/                         # 全OS共有
-├── wezterm/                      # 全OS共有
-├── opencode/                     # 全OS共有 (エージェント設定)
-├── efm-langserver/config.yaml    # 全OS共有
-├── windows/                      # Windows 専用
-│   ├── setup.ps1                 #   セットアップエントリポイント
-│   ├── apply.ps1                 #   収束メイン (Nix 相当)
-│   ├── config.psd1               #   宣言的所望状態
-│   ├── modules/                  #   PackageManager / SymlinkManager / ProfileManager / SystemManager
-│   ├── Microsoft.PowerShell_profile.ps1  # PowerShell 7 プロファイル
-│   └── terminal/settings.json    #   Windows Terminal 設定（参考）
-├── wsl/                          # WSL 専用
-│   ├── .wslconfig                #   全ディストロ共通 (Windows側 %USERPROFILE%\.wslconfig へ symlink)
-│   └── wsl.conf                  #   ディストロ別 (/etc/wsl.conf へ wsl-setup.sh で配置)
-├── nix/                          # Linux/macOS/WSL 専用 (Nix)
-├── hypr/ waybar/ rofi/ dunst/    # Linux GUI (Hyprland) 専用
-├── fish/ / zsh/ / bash/          # Linux/macOS/WSL 専用
-└── my_scripts/                   # 自作運用スクリプト
-```
-
-### 注意事項
-
-- **fish / zsh / tmux / ghostty / Hyprland** は Windows では動作しないため対象外です
-- **sops-nix** によるシークレット管理は Windows 未対応です
-- Windows Terminal の `settings.json` はマシン固有の GUID が含まれるため、参考値として提供しています
-
----
-
 ## WSL セットアップ
 
 WSL の設定は次の 2 ファイルで管理します。配置先が異なるため注意してください。
 
 | ファイル         | 配置先                               | スコープ                    | 管理方法                         |
 | ---------------- | ------------------------------------ | --------------------------- | -------------------------------- |
-| `wsl/.wslconfig` | Windows側 `%USERPROFILE%\.wslconfig` | **全ディストロ共通** (WSL2) | `windows/apply.ps1` が symlink   |
+| `wsl/.wslconfig` | Windows側 `%USERPROFILE%\.wslconfig` | **全ディストロ共通** (WSL2) | 手動コピー                       |
 | `wsl/wsl.conf`   | ディストロ内 `/etc/wsl.conf`         | ディストロ別                | `my_scripts/wsl-setup.sh` (root) |
 
 ### `.wslconfig` — 全ディストロ共通 (Windows側)
 
-`wsl/.wslconfig` が `%USERPROFILE%\.wslconfig` への symlink として管理されます。
 `.wslconfig` は WSL の **Linux 側 `~/.wslconfig` では読まれない**ため、必ず Windows 側に配置してください。
 
 ```powershell
-# Windows 側でリポジトリの apply.ps1 を実行 (symlink 作成・更新)
-pwsh windows/apply.ps1
+# Windows 側で手動コピー
+cp wsl/.wslconfig $env:USERPROFILE\.wslconfig
 ```
 
 主な設定:
@@ -268,7 +173,7 @@ wsl --shutdown
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理
 - **Linux GUI (Hyprland)**: hypr, waybar, rofi, dunst
 - **macOS限定**: nix-darwin によるシステム設定
-- **Windows限定**: PowerShell 7 スクリプト (`windows/`) による収束管理
+
 
 ---
 
