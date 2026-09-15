@@ -3,7 +3,7 @@
 ## 基本方針
 
 - セッションで得た再利用可能な知識は、agent-memoryレポジトリに自主的に保存する。ユーザーの明示指示を待たない
-- 保存手順は `skills/agent-memory/SKILL.md` に従う（カテゴリ選定・ファイル名・frontmatter）
+- 保存手順は `skills/agent-memory/SKILL.md` に従う（カテゴリ選定・id生成・JSONLスキーマ）
 
 ## セッション開始時
 
