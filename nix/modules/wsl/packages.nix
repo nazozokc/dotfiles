@@ -18,6 +18,9 @@
     # フォント
     fontconfig
 
+    # window manager
+    herdr
+
     # セキュリティ/認証
     gnupg
     openssh

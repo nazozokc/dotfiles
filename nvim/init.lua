@@ -30,6 +30,23 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -- Load configs
 -- =========================================================
 require("vim-options")
+
+-- lazy.nvim bootstrap
+-- Nixで管理するとdoc/tagsが読み取り専用(nix store)になり、
+-- helptags生成でE152になるため、lazy.nvim自体は自身で管理する
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
+
 require("lazy").setup("plugins", {
 	lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json",
 	rocks = {

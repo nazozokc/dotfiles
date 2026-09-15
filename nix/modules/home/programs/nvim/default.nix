@@ -35,8 +35,9 @@ in
   programs.neovim = {
     enable = true;
 
-    # lazy.nvim is provided by nixpkgs so its version follows flake.lock.
-    plugins = [ pkgs.vimPlugins.lazy-nvim ];
+    # lazy.nvim is managed by itself via bootstrap in init.lua.
+    # Nixで提供するとdoc/tagsが読み取り専用(nix store)になり、
+    # helptags生成でE152が発生するため。
 
     withRuby = true;
     withPython3 = true;
