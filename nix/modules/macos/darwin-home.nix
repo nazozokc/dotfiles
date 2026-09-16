@@ -25,6 +25,9 @@
     # フォント
     fontconfig
 
+    #window manager
+    omniwm
+
     # GPU ラッパーが不要なプラットフォームでは素の wezterm を使う
     wezterm
   ];
