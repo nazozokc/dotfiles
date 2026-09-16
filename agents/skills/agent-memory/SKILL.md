@@ -29,7 +29,7 @@ This is reinforced by the injected rule `opencode/rules/memory-save.md`.
 
 ## Purpose
 
-This skill enables the agent to persist important knowledge across sessions by appending structured JSON lines to `~/ghq/github.com/nazozokc/agent-memory/*.jsonl`.
+This skill enables the agent to persist important knowledge across sessions by writing one JSON object per file to `~/ghq/github.com/nazozokc/agent-memory/<category>/<date>-<summary>-<agent>.jsonl`.
 
 ## When to Use
 
@@ -48,23 +48,36 @@ This skill enables the agent to persist important knowledge across sessions by a
 
 ## Directory Structure
 
-Memories are stored as **JSON Lines** (`.jsonl`) — one file per category, one JSON object per line.
+Memories are stored as **JSON** (`.jsonl` extension) — one directory per category, one file per memory. Each file holds a single JSON object.
 
 ```
 ~/ghq/github.com/nazozokc/agent-memory/
-├── patterns.jsonl       # Reusable code/design patterns
-├── preferences.jsonl    # User preferences, coding conventions
-├── lessons.jsonl        # Lessons from errors, anti-patterns
-├── commands.jsonl       # Useful CLI commands, shortcuts
-├── context.jsonl        # Project structure, environment knowledge
-└── <category>.jsonl     # Agent creates new categories as needed
+├── patterns/                   # Reusable code/design patterns
+│   └── 2026-09-15-日付セル状態判定-core-opencode.jsonl
+├── preferences/                # User preferences, coding conventions
+├── lessons/                    # Lessons from errors, anti-patterns
+├── commands/                   # Useful CLI commands, shortcuts
+├── context/                    # Project structure, environment knowledge
+└── <category>/                 # Agent creates new categories as needed
+    └── <YYYY-MM-DD>-<要約20文字以内>-<agent>.jsonl
 ```
 
-If no existing category fits, the agent must create a new `.jsonl` file with a descriptive name.
+If no existing category fits, the agent must create a new directory with a descriptive name.
 
-## Line Schema
+## File Naming
 
-Every line is a single-line JSON object. **No embedded raw newlines** — escape them as `\n`.
+Each memory file is named `YYYY-MM-DD-<summary>-<agent>.jsonl`:
+
+- `<YYYY-MM-DD>` — `created` field (e.g., `2026-09-15`)
+- `<summary>` — title trimmed to **20 characters or fewer** at a natural boundary (spaces, dashes). Lowercase-friendly, no awkward characters (backticks, quotes, `+`, etc.)
+- `<agent>` — agent instance that created the memory (e.g., `opencode`, `codex`, `claude`)
+- If a filename would collide, append a numeric suffix (`-2`, `-3`, ...)
+
+Example: `2026-09-15-日付セル状態判定-core-集約-opencode.jsonl`
+
+## File Schema
+
+Each file contains a single-line JSON object. **No embedded raw newlines** — escape them as `\n`.
 
 ```json
 {"id": "2026-09-15-calendar-cell-state-core-codex", "category": "patterns", "tags": ["typescript-calendar-lib", "refactor", "core"], "created": "2026-09-15", "agent": "codex", "title": "日付セル状態判定の core 集約", "summary": "React/Svelte の日付セル状態判定を core へ集約するパターン", "content": "- core は boolean のみ返す\n- CSS クラス名は各 UI 層に残す"}
@@ -73,7 +86,7 @@ Every line is a single-line JSON object. **No embedded raw newlines** — escape
 ### Fields
 
 - `id` (string): Unique identifier `YYYY-MM-DD-<session>-<agent>` (e.g., `2026-09-15-calendar-cell-state-core-codex`). `<session>` derives from the task topic, `<agent>` is the agent instance (e.g., `opencode`, `codex`, `claude`).
-- `category` (string): File name without `.jsonl` (e.g., `patterns`).
+- `category` (string): Directory name (e.g., `patterns`).
 - `tags` (array of strings): Keywords for retrieval. Use lowercase, kebab-case. Include both broad and specific terms.
 - `created` (string): ISO 8601 date (`YYYY-MM-DD`).
 - `agent` (string): Agent instance that created the memory.
@@ -87,14 +100,15 @@ At the START of every conversation:
 
 1. Determine the current task topic
 2. Extract relevant keywords from the task
-3. Grep for keywords across all `.jsonl` files (each line is self-contained, so the match line IS the memory):
+3. Grep for keywords across all memory files (each file is one self-contained JSON object, so the match line IS the memory):
    ```bash
-   grep -h "keyword" ~/ghq/github.com/nazozokc/agent-memory/*.jsonl
+   grep -rh "keyword" ~/ghq/github.com/nazozokc/agent-memory/*/*.jsonl
    ```
    For structured filtering (e.g., tag match or category scoping), use `jq`:
    ```bash
-   jq -r 'select(.tags[] | contains("keyword")) | "## " + .title + "\n" + .content' ~/ghq/github.com/nazozokc/agent-memory/*.jsonl
+   jq -r 'select(.tags[] | contains("keyword")) | "## " + .title + "\n" + .content' ~/ghq/github.com/nazozokc/agent-memory/*/*.jsonl
    ```
+   For file listing by named summary, use `ls`/glob against the filename itself.
 4. Read matching lines to inform the current session
 5. If no matches, proceed without memory context
 
@@ -102,16 +116,17 @@ At the START of every conversation:
 
 When deciding to save a memory:
 
-1. **Determine category**: Choose an existing `.jsonl` file or create a new one
-2. **Generate id**: `YYYY-MM-DD-<session>-<agent>` (see Line Schema)
-3. **Append one JSON line** to the category file (never rewrite the whole file):
+1. **Determine category**: Choose an existing directory or create a new one
+2. **Generate id**: `YYYY-MM-DD-<session>-<agent>` (see File Schema)
+3. **Write one JSON object** to a new file (never modify or delete existing files):
    ```bash
-   cat >> ~/ghq/github.com/nazozokc/agent-memory/patterns.jsonl <<'EOF'
+   cat > ~/ghq/github.com/nazozokc/agent-memory/patterns/2026-09-15-日付セル状態判定-core-opencode.jsonl <<'EOF'
    {"id": "2026-09-15-...", "category": "patterns", "tags": [...], "created": "2026-09-15", "agent": "...", "title": "...", "summary": "...", "content": "..."}
    EOF
    ```
-   - The line MUST be valid single-line JSON: escape `"` as `\"` and newlines as `\n`
-   - Validate after writing when in doubt: `jq empty ~/ghq/github.com/nazozokc/agent-memory/<category>.jsonl`
+   - Filename: `<created>-<title 20文字以内>-<agent>.jsonl` (see File Naming)
+   - The object MUST be valid single-line JSON: escape `"` as `\"` and newlines as `\n`
+   - Validate after writing when in doubt: `jq empty ~/ghq/github.com/nazozokc/agent-memory/<category>/<filename>.jsonl`
 4. **Do NOT git commit/push**: This skill is write-only. The user manages the repo separately.
 
 ## Decision Criteria: What to Save
@@ -134,7 +149,7 @@ A piece of knowledge is NOT worth saving if:
 ## Notes
 
 - Tags should be specific enough to filter but broad enough to catch related queries
-- Keep each line focused on a single topic
-- Content should be self-contained — another agent reading only this line should understand it
-- When in doubt about category, use `context.jsonl` as the default
-- JSONL is append-only: never modify or delete existing lines
+- Keep each file focused on a single topic
+- Content should be self-contained — another agent reading only this file should understand it
+- When in doubt about category, use `context/` as the default
+- Memory files are immutable: never modify or delete existing files
