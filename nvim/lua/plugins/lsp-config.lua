@@ -18,6 +18,7 @@ return {
 				nixd = "nixd",
 				jdtls = "jdtls",
 				sqls = "sqls",
+				tailwindcss = "tailwindcss-language-server",
 			}
 
 			local servers_to_enable = {}
@@ -38,9 +39,19 @@ return {
 				end,
 			})
 
-			-- ===== HTML =====
+			-- ===== HTML (JSX/TSX にもアタッチ) =====
 			vim.lsp.config("html", {
 				capabilities = capabilities,
+				filetypes = { "html", "javascriptreact", "typescriptreact" },
+				handlers = {
+					["textDocument/publishDiagnostics"] = function(err, result, ctx)
+						-- JSX/TSX の診断は tsserver が担当するため、
+						-- html LSP の診断は html ファイルのみ通す（重複防止）
+						if vim.bo[ctx.bufnr].filetype == "html" then
+							vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx)
+						end
+					end,
+				},
 			})
 
 			-- ===== Lua =====
@@ -68,8 +79,18 @@ return {
 				capabilities = capabilities,
 			})
 
+			-- ===== C / C++ =====
 			vim.lsp.config("clangd", {
 				capabilities = capabilities,
+				settings = {
+					clangd = {
+						-- compile_commands.json が無い環境でも診断が動くようにする
+						fallbackFlags = { "-std=c++20" },
+					},
+				},
+				init_options = {
+					usePlaceholders = true,
+				},
 			})
 
 			-- ===== Java =====
@@ -79,8 +100,50 @@ return {
 				root_dir = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }),
 			})
 
+			-- ===== SQL =====
+			-- 接続設定はプロジェクトルートの .sqls/config.yml で行う
 			vim.lsp.config("sqls", {
 				capabilities = capabilities,
+				settings = {
+					sqls = {
+						completion = {
+							enabled = true,
+						},
+						diagnostics = {
+							enable = true,
+						},
+					},
+				},
+			})
+
+			-- ===== Tailwind CSS (tailwind.config 検出時のみ起動) =====
+			vim.lsp.config("tailwindcss", {
+				capabilities = capabilities,
+				filetypes = {
+					"typescript",
+					"typescriptreact",
+					"javascript",
+					"javascriptreact",
+					"css",
+					"scss",
+					"html",
+				},
+				root_dir = function(fname)
+					return vim.fs.root(fname, {
+						"tailwind.config.js",
+						"tailwind.config.ts",
+						"tailwind.config.cjs",
+						"tailwind.config.mjs",
+					})
+				end,
+				settings = {
+					tailwindCSS = {
+						includeLanguages = {
+							typescriptreact = "html",
+							javascriptreact = "html",
+						},
+					},
+				},
 			})
 
 			-- ===== 有効化 =====
