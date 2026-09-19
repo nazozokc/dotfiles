@@ -29,6 +29,9 @@ let
     plugins.gitignore
     plugins.regex
     plugins.diff
+    plugins.c
+    plugins.cpp
+    plugins.sql
   ]);
 in
 {
@@ -67,6 +70,8 @@ in
       pyright
       typos-lsp
       typescript-language-server
+      sqls
+      clang-tools
 
       # Python tools
       ruff

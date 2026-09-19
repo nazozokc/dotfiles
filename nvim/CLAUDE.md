@@ -160,13 +160,28 @@ nvim/
 
 以下の言語サーバーを設定済み：
 
+- **typescript-tools** - TypeScript / JavaScript / JSX / TSX（tsserver）
+- **clangd** - C / C++（`fallbackFlags: -std=c++20` で compile_commands.json 無しでも動作）
+- **sqls** - SQL
+- **tailwindcss** - Tailwind CSS（`tailwind.config.*` 検出時のみ起動）
+- **html** - HTML / JSX / TSX（JSX/TSX では tsserver と診断が重複しないよう html 限定）
 - **lua_ls** - Lua
-- **ts_ls** - TypeScript / JavaScript
-- **html** - HTML
 - **solargraph** - Ruby
-- **nixd・nil** - Nix
+- **nixd** - Nix
 - **efm** - 汎用フォーマッター
-- **nixfmt** - nixフォーマッター
+
+### SQL の接続設定（.sqls/config.yml）
+
+sqls の DB 接続はプロジェクトルートの `.sqls/config.yml` で行う：
+
+```yaml
+connections:
+  - alias: local
+    driver: sqlite3
+    dataSourceName: ./db.sqlite3
+```
+
+プロジェクトごとに配置すれば、sqls 起動時に自動で読み込まれる。
 
 ---
 
