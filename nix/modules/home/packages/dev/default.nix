@@ -1,6 +1,9 @@
 { pkgs }:
 
 with pkgs;
+let
+  typescript_5 = typescript_5_9;
+in
 [
   # general
   prettier
