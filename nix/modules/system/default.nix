@@ -6,6 +6,10 @@
 #   - systemd システムユニット・タイマー
 #   - システムパッケージ
 #
+# モジュール構成は systemd ベースの全 Linux ディストロで共通。
+# プラットフォーム (x86_64 / aarch64) の違いは nix/modules/system/build.nix が
+# nixpkgs.hostPlatform としてのみ差分化する。
+#
 # macOS 側は nix-darwin が同じ役割を持つ。
 # 参考: https://system-manager.net/main/
 #
@@ -24,16 +28,13 @@
     ./input-method.nix
   ];
 
-  # 対象プラットフォーム。
-  # ここで固定することで:
-  #   - systemConfigs の derivation が実行マシンに依存しない
-  #     (macOS CI 上の `nix flake check` でも同じ設定が評価される)
-  #   - 各 submodule で nixpkgs.hostPlatform を書かずに済む
-  # system-manager 側の nixpkgs.hostPlatform は mkDefault なので_declared_ 側が優先される
-  nixpkgs.hostPlatform = "x86_64-linux";
+  # 対象プラットフォーム (nixpkgs.hostPlatform) は
+  # nix/modules/system/build.nix が system 引数から注入する。
+  # ここにハードコードしないことで x86_64 / aarch64 の両方で同じモジュール構成を使える。
 
-  # system-manager のサポート対象は nixos / ubuntu / debian のみ。
-  # Arch は未対応ディストリのため、preActivationAssertion の osVersion 検査を skip する。
-  # なお Arch は systemd ベースなので前提条件は満たす (README 上 untested)。
+  # system-manager のサポート対象は nixos / ubuntu / debian のみ
+  # (fedora / arch は community 扱い。README 上 untested)。
+  # Arch を含む未対応ディストロで動かすため、preActivationAssertion の
+  # osVersion 検査を skip する。前提条件 (systemd ベース) は満たす。
   system-manager.allowAnyDistro = true;
 }
