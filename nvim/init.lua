@@ -47,8 +47,21 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- lockfile は home-manager 経由だと Nix store (read-only) を指すため、
+-- lazy.nvim が install/update 時に書き込めない (E5113: Permission denied)。
+-- 書き込み可能な state 配下を lockfile とし、初回起動時に Nix 管理の
+-- lockfile をコピーしてピン留めを引き継ぐ。
+-- ピン留めを更新したら state's lockfile をリポジトリへ戻す:
+--   cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
+local uv = vim.uv or vim.loop
+local lockfile = vim.fn.stdpath("state") .. "/lazy/lazy-lock.json"
+if not uv.fs_stat(lockfile) then
+	vim.fn.mkdir(vim.fn.fnamemodify(lockfile, ":h"), "p")
+	uv.fs_copyfile(vim.fn.stdpath("config") .. "/lazy-lock.json", lockfile)
+end
+
 require("lazy").setup("plugins", {
-	lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json",
+	lockfile = lockfile,
 	rocks = {
 		enabled = false,
 	},
