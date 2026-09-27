@@ -175,7 +175,13 @@ nix/
 │   │       ├── vscode/                # VSCode 設定
 │   │       ├── yazi/                  # yazi (ファイラー)
 │   │       ├── aerospace.nix          # AeroSpace (macOS タイルウィンドウ)
-│   │       └── herdr/                 # Herdr (tmux ライクなプレフィックス)
+│   │       └── herdr.nix             # Herdr (tmux ライクなプレフィックス)
+│   ├── system/                        # OS 層設定 (system-manager, Arch Linux のみ)
+│   │   ├── default.nix                # エントリーポイント (hostPlatform / allowAnyDistro)
+│   │   ├── input-method.nix           # fcitx5 グローバル設定と環境変数
+│   │   ├── locale.nix                 # ja_JP.UTF-8 / en_US.UTF-8 の生成と LANG
+│   │   ├── power.nix                  # power-profiles-daemon
+│   │   └── sysctl.nix                 # sysctl.d drop-in と tcp_bbr modprobe
 │   ├── linux/                         # Linux 固有設定
 │   │   ├── build.nix                  # 設定生成ヘルパー (mkLinuxHomeConfig)
 │   │   ├── default.nix                # エントリーポイント (nixGL, hypr/waybar/rofi/dunst link)
@@ -218,6 +224,39 @@ nix run .#build
 nix run .#update
 ```
 
+### OS 層設定 (system-manager)
+
+Arch Linux デスクトップの OS 層（`/etc`・systemd システムユニット）は
+[numtide/system-manager](https://system-manager.net/main/) で管理する。
+macOS 側の nix-darwin に相当する役割。
+
+```bash
+# OS 層設定的评价確認
+nix run .#system-check
+
+# OS 層設定のビルドのみ
+nix run .#system-build
+
+# OS 層設定の適用 (sudo 必要 / WSL では実行不可)
+nix run .#system-switch
+```
+
+- 対象は **ネイティブ Arch Linux** のみ。WSL では `system-switch` が実行を拒否する。
+- 出力は `systemConfigs.nazozokc`（`nix/modules/system/` を modules に渡す）。
+- `nixpkgs.hostPlatform = "x86_64-linux"` を `system/default.nix` で固定しているため、
+  `nix flake check` は macOS 上でも同じ設定を評価できる。
+- `/etc/nix/nix.conf` は扱わない。`nix/modules/nix-conf.nix` (home-manager) が
+  全OSで `~/.config/nix/nix.conf` を生成し、Nix はユーザー設定をシステム設定より
+  優先するため、OS 層で上書きする必要がない。
+- `system-switch` は属性を flake URI で渡す (`--flake '.#nazozokc'`)。
+  `--attr` フラグは存在せず、素の `--flake .` では hostname → `default` の順に
+  探索されて `systemConfigs.nazozokc` に到達しない。
+- system-manager が import する NixOS モジュールには `boot` / `config/sysctl.nix` /
+  `i18n.defaultLocale` / `services.networking.udev.nix` が含まれない。
+  `boot.kernel.sysctl` は silent no-op、`i18n.defaultLocale` も使えないため、
+  sysctl と locale は `environment.etc` と自作 systemd oneshot で実装する。
+- Arch は未対応ディストリのため `system-manager.allowAnyDistro = true` が必要。
+
 ### 信頼性向上
 
 - `nix run .#switch` は実行前に `nix flake check --no-build` を自動実行し、評価エラーを事前に検出します。
@@ -253,6 +292,8 @@ flake.nix
 ├── pkgsFor (nix/lib/pkgs.nix)          → nixpkgs インスタンス生成 (Intelスタック切替)
 ├── Linux:   mkLinuxHomeConfig (nix/modules/linux/build.nix)
 │              → nix/modules/home/      + nix/modules/linux/
+│           systemConfigs.nazozokc (system-manager)
+│              → nix/modules/system/    (OS 層: /etc・systemd システムユニット)
 ├── WSL:     mkWSLHomeConfig (nix/modules/wsl/build.nix)
 │              → nix/modules/home/wsl.nix + nix/modules/wsl/
 └── macOS:   mkDarwinConfig (nix/modules/macos/build.nix)

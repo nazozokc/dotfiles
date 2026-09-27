@@ -63,29 +63,27 @@ nix-env --version
 
 ## 初回導入 (nix run を使用)
 
+`/etc/nix/nix.conf` を手書きする必要はありません。
+`nix.conf` は `switch` 実行時に home-manager が `~/.config/nix/nix.conf` として生成します。
+Nix はユーザー設定をシステム設定より優先するため、初期状態で機能します。
+
 ```bash
 cd ~
 git clone https://github.com/nazozokc/dotfiles.git
 cd dotfiles
 
-# nix.conf が存在しない or experimental-features が未設定の場合のセットアップ
-sudo mkdir -p /etc/nix
-sudo tee /etc/nix/nix.conf > /dev/null << 'EOF'
-experimental-features = nix-command flakes
-build-users-group = nixbld
-trusted-users = root nazozokc
-EOF
-
-# nix.conf 書き込み後はシェルを再起動するか、以下で即座に反映可能
-exec $SHELL
-
 # Home Manager + pkgs の初回セットアップ
-nix run .#switch
+# 初回のみ --extra-experimental-features が必要 (switch 後は不要)
+nix --extra-experimental-features "nix-command flakes" run .#switch
 ```
 
-- Linux / macOS 両方で `nix run .#switch` だけで初回セットアップ可能
+- 初回は `nix.conf` が未生成なので `nix-command` をコマンドラインで明示する
+- `switch` が完了すると `~/.config/nix/nix.conf` が生成され、
+  以降は `nix run .#switch` だけで適用できる
+- Linux / macOS 両方で同じコマンドで初回セットアップ可能
 - Home Manager による dotfiles のリンクとパッケージインストールが行われます
 - macOS では nix-darwin を通して Home Manager 設定も有効化されます
+- Arch Linux デスクトップの OS 層は別途 `nix run .#system-switch` で適用する
 
 ---
 
@@ -173,7 +171,6 @@ wsl --shutdown
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理
 - **Linux GUI (Hyprland)**: hypr, waybar, rofi, dunst
 - **macOS限定**: nix-darwin によるシステム設定
-
 
 ---
 

@@ -23,9 +23,11 @@
   ########################################
   fonts.fontconfig.enable = true;
 
+  # OS 側のロケール生成は nix/modules/system/locale.nix (system-manager) が担当する。
+  # ここでは LANG のみ設定する。LC_ALL は全カテゴリを固定して
+  # LC_TIME / LC_MESSAGES などの個別設定を壊すため設定しない
   home.sessionVariables = {
     LANG = "ja_JP.UTF-8";
-    LC_ALL = "ja_JP.UTF-8";
   };
 
   ########################################

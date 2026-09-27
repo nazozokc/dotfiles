@@ -89,6 +89,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Linux OS 設定管理 (非 NixOS ディストリで NixOS モジュールを扱えるようにする)
+    # macOS 側の nix-darwin に相当する役割
+    system-manager = {
+      url = "github:numtide/system-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # ---------------------------------------------------------------------------
     # x86_64-darwin (Intel Mac) 専用スタック
     # nixpkgs 26.11 で x86_64-darwin のサポートが削除されたため、
@@ -139,6 +146,7 @@
       agent-skills-nix,
       sops-nix,
       nixGL,
+      system-manager,
       # x86_64-darwin (Intel Mac) 専用スタック
       nixpkgs-intel,
       home-manager-intel,
@@ -452,6 +460,94 @@
                 nix flake update |& ${pkgs.nix-output-monitor}/bin/nom
               ''}/bin/update";
             };
+
+            # nix run .#system-build
+            # system-manager の toplevel (linkFarm) をビルドする。評価のみ・副作用なし
+            system-build = {
+              type = "app";
+              program = "${pkgs.writeShellScriptBin "system-build" ''
+                set -eo pipefail
+                ${detectHelpers}
+
+                if is_darwin; then
+                  echo "[!] system-manager は Linux 専用です"
+                  exit 1
+                fi
+
+                if is_wsl; then
+                  echo "[!] WSL は対象外です"
+                  echo "    WSL の OS 設定は wsl/.wslconfig (Windows 側) を参照"
+                  exit 1
+                fi
+
+                echo "  system : ${sysLabel}"
+                echo "  target : .#systemConfigs.${username}"
+                echo "  cmd    : system-build"
+                echo ""
+                ${pkgs.nix-output-monitor}/bin/nom build .#systemConfigs.${username}
+              ''}/bin/system-build";
+            };
+
+            # nix run .#system-check
+            # switch 前の dry-run 相当。sudo 不要。評価エラーと生成物の差分を確認する
+            system-check = {
+              type = "app";
+              program = "${pkgs.writeShellScriptBin "system-check" ''
+                set -eo pipefail
+                ${detectHelpers}
+
+                if is_darwin; then
+                  echo "[!] system-manager は Linux 専用です"
+                  exit 1
+                fi
+
+                if is_wsl; then
+                  echo "[!] WSL は対象外です"
+                  exit 1
+                fi
+
+                echo "  system : ${sysLabel}"
+                echo "  target : .#systemConfigs.${username}"
+                echo "  cmd    : system-check"
+                echo ""
+                # 属性は flake URI の '#' 以降で渡す (--attr フラグは無い)。
+                # 素の '.#' では hostname → default の順で解決され、
+                # systemConfigs.${username} に到達しない
+                nix run ${system-manager} -- build --flake '.#${username}'
+              ''}/bin/system-check";
+            };
+
+            # nix run .#system-switch
+            # 実際の適用。/etc と systemd システムユニットを書き換えるため sudo が要る
+            system-switch = {
+              type = "app";
+              program = "${pkgs.writeShellScriptBin "system-switch" ''
+                set -eo pipefail
+                ${detectHelpers}
+
+                if is_darwin; then
+                  echo "[!] system-manager は Linux 専用です"
+                  exit 1
+                fi
+
+                if is_wsl; then
+                  echo "[!] WSL は対象外です"
+                  exit 1
+                fi
+
+                echo "  system : ${sysLabel}"
+                echo "  target : .#systemConfigs.${username}"
+                echo "  cmd    : system-switch"
+                echo ""
+                echo "[!] /etc と systemd システムユニットを書き換えます"
+                echo "    既存ファイルは .system-manager-backup として退避されます"
+                echo ""
+                # 属性は flake URI の '#' 以降で渡す (--attr フラグは無い)。
+                # 素の '.#' では hostname → default の順で解決され、
+                # systemConfigs.${username} に到達しない
+                nix run ${system-manager} -- switch --flake '.#${username}' --sudo
+              ''}/bin/system-switch";
+            };
           };
         };
 
@@ -470,6 +566,25 @@
         darwinConfigurations = {
           ${username} = mkDarwinConfig "aarch64-darwin";
           "${username}-x86_64" = mkDarwinConfig "x86_64-darwin";
+        };
+
+        # -------------------------------------------------------------------
+        # Linux 向け OS 層設定 (system-manager)
+        # -------------------------------------------------------------------
+        # home-manager が扱えない /etc・systemd システムユニット等を宣言的に管理する。
+        # macOS 側の nix-darwin に相当する役割。
+        #
+        # プラットフォームを固定する理由:
+        #   nix/modules/system/default.nix で nixpkgs.hostPlatform = "x86_64-linux" を
+        #   宣言しているため、この derivation の評価は実行マシンに依存しない。
+        #   → `nix flake check` を macOS CI で走らせても Linux 向け設定の
+        #     評価結果が壊れない
+        systemConfigs = {
+          ${username} = system-manager.lib.makeSystemConfig {
+            modules = [
+              ./nix/modules/system
+            ];
+          };
         };
       };
     };
