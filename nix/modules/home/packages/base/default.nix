@@ -46,7 +46,6 @@ with pkgs;
   git-wt
   jujutsu
   gitui
-  ghui
   git-secrets
   ghgrab
 
