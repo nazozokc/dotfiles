@@ -1,9 +1,6 @@
 { pkgs }:
 
 with pkgs;
-let
-  typescript_5 = typescript_5_9;
-in
 [
   # general
   prettier
@@ -14,14 +11,6 @@ in
 
   # js,ts
   nodejs_latest
-  # tsserver のみを PATH に出す。
-  # nvim の typescript-tools.nvim は PATH 上の tsserver から Nix store の
-  # tsserver.js を解決する。pkgs.typescript は TS7 で tsserver を持たないため
-  # TS5 を使う。tsc は shadow したく無いので bin/tsserver だけをリンクする。
-  (runCommand "tsserver" { } ''
-    mkdir -p "$out/bin"
-    ln -s ${typescript_5}/bin/tsserver "$out/bin/tsserver"
-  '')
   typescript-language-server
   bun
   deno
