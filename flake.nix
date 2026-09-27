@@ -223,6 +223,13 @@
           agent-skills-nix
           ;
       };
+
+      # Linux 向け OS 層設定生成 (nix/modules/system/build.nix)
+      # systemd ベースの全 Linux ディストロが同じモジュール構成を使う。
+      # プラットフォーム差分は nixpkgs.hostPlatform のみ。
+      mkSystemConfig = import ./nix/modules/system/build.nix {
+        inherit system-manager;
+      };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
@@ -263,6 +270,10 @@
               ".#${darwinConfigName}"
             else
               ".#${username}${if system == "aarch64-linux" then "-aarch64" else ""}";
+
+          # OS 層設定 (system-manager) の設定名。
+          # homeConfigurations と同じ命名規則に揃える
+          systemConfigName = "${username}${if system == "aarch64-linux" then "-aarch64" else ""}";
 
           # app 実行時に表示する人間向けのシステム名
           sysLabel =
@@ -386,6 +397,10 @@
 
           apps = {
             # nix run .#switch
+            # OS 自動検出でユーザー層と OS 層の両方を適用する
+            #   WSL   … home-manager のみ (OS 層は Windows 側 .wslconfig の管轄)
+            #   macOS … nix-darwin (nix-darwin が OS 層まで持つ)
+            #   Linux … home-manager → system-manager (OS 層・sudo 必要)
             switch = {
               type = "app";
               program = "${pkgs.writeShellScriptBin "switch" ''
@@ -417,6 +432,21 @@
                   echo "  cmd    : switch"
                   echo ""
                   nix run nixpkgs#home-manager -- switch --flake ${flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+
+                  # ネイティブ Linux は OS 層 (system-manager) も適用する。
+                  # WSL は .wslconfig (Windows 側) の管轄なので対象外。
+                  # macOS は nix-darwin が OS 層まで持つため対象外。
+                  #
+                  # 順序: home-manager (ユーザー層) → system-manager (OS 層)。
+                  # sudo 認証が失敗してもユーザー層は適用済みになる。
+                  echo ""
+                  echo "  system : ${sysLabel}"
+                  echo "  target : .#systemConfigs.${systemConfigName}"
+                  echo "  cmd    : system-switch"
+                  echo ""
+                  echo "[!] OS 層を適用します (/etc と systemd システムユニット・sudo 必要)"
+                  echo ""
+                  nix run ${system-manager}#default -- switch --flake '.#${systemConfigName}' --sudo
                 fi
               ''}/bin/switch";
             };
@@ -481,10 +511,10 @@
                 fi
 
                 echo "  system : ${sysLabel}"
-                echo "  target : .#systemConfigs.${username}"
+                echo "  target : .#systemConfigs.${systemConfigName}"
                 echo "  cmd    : system-build"
                 echo ""
-                ${pkgs.nix-output-monitor}/bin/nom build .#systemConfigs.${username}
+                ${pkgs.nix-output-monitor}/bin/nom build .#systemConfigs.${systemConfigName}
               ''}/bin/system-build";
             };
 
@@ -507,13 +537,17 @@
                 fi
 
                 echo "  system : ${sysLabel}"
-                echo "  target : .#systemConfigs.${username}"
+                echo "  target : .#systemConfigs.${systemConfigName}"
                 echo "  cmd    : system-check"
                 echo ""
                 # 属性は flake URI の '#' 以降で渡す (--attr フラグは無い)。
                 # 素の '.#' では hostname → default の順で解決され、
-                # systemConfigs.${username} に到達しない
-                nix run ${system-manager} -- build --flake '.#${username}'
+                # systemConfigs.${systemConfigName} に到達しない
+                #
+                # system-manager の input は store path に展開されるため、
+                # 属性なしの installable は Nix 式として解釈されて失敗する。
+                # '#default' を付けて flake として解決させる
+                nix run ${system-manager}#default -- build --flake '.#${systemConfigName}'
               ''}/bin/system-check";
             };
 
@@ -536,7 +570,7 @@
                 fi
 
                 echo "  system : ${sysLabel}"
-                echo "  target : .#systemConfigs.${username}"
+                echo "  target : .#systemConfigs.${systemConfigName}"
                 echo "  cmd    : system-switch"
                 echo ""
                 echo "[!] /etc と systemd システムユニットを書き換えます"
@@ -544,8 +578,12 @@
                 echo ""
                 # 属性は flake URI の '#' 以降で渡す (--attr フラグは無い)。
                 # 素の '.#' では hostname → default の順で解決され、
-                # systemConfigs.${username} に到達しない
-                nix run ${system-manager} -- switch --flake '.#${username}' --sudo
+                # systemConfigs.${systemConfigName} に到達しない
+                #
+                # system-manager の input は store path に展開されるため、
+                # 属性なしの installable は Nix 式として解釈されて失敗する。
+                # '#default' を付けて flake として解決させる
+                nix run ${system-manager}#default -- switch --flake '.#${systemConfigName}' --sudo
               ''}/bin/system-switch";
             };
           };
@@ -574,17 +612,18 @@
         # home-manager が扱えない /etc・systemd システムユニット等を宣言的に管理する。
         # macOS 側の nix-darwin に相当する役割。
         #
+        # 命名は homeConfigurations に揃える:
+        #   nazozokc         → x86_64-linux (デスクトップ / VPS などのネイティブ)
+        #   nazozokc-aarch64 → aarch64-linux (ARM Linux)
+        #
         # プラットフォームを固定する理由:
-        #   nix/modules/system/default.nix で nixpkgs.hostPlatform = "x86_64-linux" を
-        #   宣言しているため、この derivation の評価は実行マシンに依存しない。
+        #   nix/modules/system/build.nix が nixpkgs.hostPlatform を設定するため、
+        #   この derivation の評価は実行マシンに依存しない。
         #   → `nix flake check` を macOS CI で走らせても Linux 向け設定の
         #     評価結果が壊れない
         systemConfigs = {
-          ${username} = system-manager.lib.makeSystemConfig {
-            modules = [
-              ./nix/modules/system
-            ];
-          };
+          ${username} = mkSystemConfig "x86_64-linux";
+          "${username}-aarch64" = mkSystemConfig "aarch64-linux";
         };
       };
     };

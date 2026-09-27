@@ -49,11 +49,11 @@ in
   };
 
   # nixpkgs の glibc.locale-gen は Nix store 宛に書き込むため使えない。
-  # ホスト側 glibc (= Arch のパッケージ) の locale-gen を呼んで
+  # ホスト側 glibc (= ディストロの glibc パッケージ) の locale-gen を呼んで
   # /usr/lib/locale/locale-archive を更新させる必要がある。
   #
   # systemd-localed も locale.gen の mtime を見て再生成するが、activation は
-  # sysinit-reactivation.target のみを觸発するため、明示的な oneshot を用意して 확실성을上げる。
+  # sysinit-reactivation.target のみを觸発するため、明示的な oneshot を用意して確実性を上げる。
   systemd.services.nix-locale-gen = {
     description = "Generate locales declared in /etc/locale.gen (managed by Nix)";
     wantedBy = [ "multi-user.target" ];
@@ -66,13 +66,25 @@ in
       pkgs.coreutils
     ];
     script = ''
-      if [ ! -x /usr/bin/locale-gen ]; then
-        echo "warning: /usr/bin/locale-gen not found, skipping locale generation" >&2
+      # locale-gen の場所はディストロで異なる:
+      #   Arch / Fedora   … /usr/bin/locale-gen
+      #   Debian / Ubuntu … /usr/sbin/locale-gen
+      # sbin は PATH 解決に載らないため、絶対パスを順番に探す
+      locale_gen=""
+      for candidate in /usr/bin/locale-gen /usr/sbin/locale-gen; do
+        if [ -x "$candidate" ]; then
+          locale_gen="$candidate"
+          break
+        fi
+      done
+
+      if [ -z "$locale_gen" ]; then
+        echo "warning: locale-gen not found in /usr/{s,}bin, skipping locale generation" >&2
         exit 0
       fi
 
       # --keep-existing: ホスト側で個別に追加されたロケールを消さない
-      /usr/bin/locale-gen --keep-existing
+      "$locale_gen" --keep-existing
     '';
   };
 }

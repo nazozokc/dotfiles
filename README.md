@@ -83,7 +83,7 @@ nix --extra-experimental-features "nix-command flakes" run .#switch
 - Linux / macOS 両方で同じコマンドで初回セットアップ可能
 - Home Manager による dotfiles のリンクとパッケージインストールが行われます
 - macOS では nix-darwin を通して Home Manager 設定も有効化されます
-- Arch Linux デスクトップの OS 層は別途 `nix run .#system-switch` で適用する
+- Linux の OS 層 (`/etc`・systemd システムユニット) は `nix run .#switch` でも適用される (sudo 必要 / WSL は対象外)。OS 層だけ適用する場合は `nix run .#system-switch`
 
 ---
 

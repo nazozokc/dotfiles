@@ -6,12 +6,13 @@
 
 ## システム構成
 
-| コンポーネント     | Linux / WSL  | macOS (Apple Silicon)         | macOS (Intel)                   |
-| ------------------ | ------------ | ----------------------------- | ------------------------------- |
-| nixpkgs            | unstable     | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
-| システム設定       | home-manager | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
-| ユーザーパッケージ | home-manager | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
-| シェル             | fish         | fish                          | fish                            |
+| コンポーネント     | Linux / WSL                            | macOS (Apple Silicon)         | macOS (Intel)                   |
+| ------------------ | -------------------------------------- | ----------------------------- | ------------------------------- |
+| nixpkgs            | unstable                               | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
+| OS 層設定          | system-manager (ネイティブ Linux のみ) | —                             | —                               |
+| システム設定       | home-manager                           | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
+| ユーザーパッケージ | home-manager                           | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
+| シェル             | fish                                   | fish                          | fish                            |
 
 ## Intel Mac (x86_64-darwin) について
 
@@ -176,8 +177,9 @@ nix/
 │   │       ├── yazi/                  # yazi (ファイラー)
 │   │       ├── aerospace.nix          # AeroSpace (macOS タイルウィンドウ)
 │   │       └── herdr.nix             # Herdr (tmux ライクなプレフィックス)
-│   ├── system/                        # OS 層設定 (system-manager, Arch Linux のみ)
-│   │   ├── default.nix                # エントリーポイント (hostPlatform / allowAnyDistro)
+│   ├── system/                        # OS 層設定 (system-manager, ネイティブ Linux 全ディストロ)
+│   │   ├── build.nix                  # 設定生成ヘルパー (mkSystemConfig / hostPlatform 注入)
+│   │   ├── default.nix                # エントリーポイント (allowAnyDistro)
 │   │   ├── input-method.nix           # fcitx5 グローバル設定と環境変数
 │   │   ├── locale.nix                 # ja_JP.UTF-8 / en_US.UTF-8 の生成と LANG
 │   │   ├── power.nix                  # power-profiles-daemon
@@ -224,11 +226,24 @@ nix run .#build
 nix run .#update
 ```
 
+`nix run .#switch` は OS 検出で適用範囲を決める。
+
+| 環境             | ユーザー層                | OS 層                            |
+| ---------------- | ------------------------- | -------------------------------- |
+| ネイティブ Linux | home-manager              | system-manager (sudo 必要)       |
+| WSL              | home-manager              | 対象外 (Windows 側 `.wslconfig`) |
+| macOS            | home-manager (nix-darwin) | nix-darwin                       |
+
+- 順序は ユーザー層 → OS 層。`sudo` 認証に失敗してもユーザー層は適用済みになる
+- WSL は `system-*` の各 app が実行を拒否する（`.wslconfig` の管轄）
+- OS 層だけを適用したい場合は `nix run .#system-switch`
+
 ### OS 層設定 (system-manager)
 
-Arch Linux デスクトップの OS 層（`/etc`・systemd システムユニット）は
+ネイティブ Linux の OS 層（`/etc`・systemd システムユニット）は
 [numtide/system-manager](https://system-manager.net/main/) で管理する。
 macOS 側の nix-darwin に相当する役割。
+`nix run .#switch` でも適用されるが、単独で実行するコマンド如下。
 
 ```bash
 # OS 層設定的评价確認
@@ -241,21 +256,31 @@ nix run .#system-build
 nix run .#system-switch
 ```
 
-- 対象は **ネイティブ Arch Linux** のみ。WSL では `system-switch` が実行を拒否する。
-- 出力は `systemConfigs.nazozokc`（`nix/modules/system/` を modules に渡す）。
-- `nixpkgs.hostPlatform = "x86_64-linux"` を `system/default.nix` で固定しているため、
-  `nix flake check` は macOS 上でも同じ設定を評価できる。
+- 対象は **systemd ベースのネイティブ Linux**（Arch / Ubuntu / Debian / Fedora の
+  x86_64・aarch64）。WSL では `system-switch` が実行を拒否する。macOS は nix-darwin。
+- モジュール構成は全ディストロ共通。プラットフォーム差は `nixpkgs.hostPlatform` のみ。
+- 出力は `homeConfigurations` と同じ命名規則:
+  - `systemConfigs.nazozokc` → x86_64-linux
+  - `systemConfigs.nazozokc-aarch64` → aarch64-linux
+- `nix/modules/system/build.nix` が `nixpkgs.hostPlatform` を `system` 引数から注入する。
+  `nix flake check` は macOS 上でも両方の設定を評価できる。
 - `/etc/nix/nix.conf` は扱わない。`nix/modules/nix-conf.nix` (home-manager) が
   全OSで `~/.config/nix/nix.conf` を生成し、Nix はユーザー設定をシステム設定より
   優先するため、OS 層で上書きする必要がない。
 - `system-switch` は属性を flake URI で渡す (`--flake '.#nazozokc'`)。
   `--attr` フラグは存在せず、素の `--flake .` では hostname → `default` の順に
   探索されて `systemConfigs.nazozokc` に到達しない。
+- `system-check` / `system-switch` は `nix run <system-manager input>` を使う。
+  input は store path に展開されるため、属性なしの installable は Nix 式として
+  解釈されて失敗する。`${system-manager}#default` のように属性を付けること。
 - system-manager が import する NixOS モジュールには `boot` / `config/sysctl.nix` /
   `i18n.defaultLocale` / `services.networking.udev.nix` が含まれない。
   `boot.kernel.sysctl` は silent no-op、`i18n.defaultLocale` も使えないため、
   sysctl と locale は `environment.etc` と自作 systemd oneshot で実装する。
-- Arch は未対応ディストリのため `system-manager.allowAnyDistro = true` が必要。
+- `locale.nix` は `locale-gen` の絶対パスを順に探す (`/usr/bin` → `/usr/sbin`)。
+  Arch は前者、Debian / Ubuntu は後者に置くため。
+- ディストリ判定は `system-manager.allowAnyDistro = true` で無効化している
+  (既定の許可リストは nixos / ubuntu / debian のみ)。
 
 ### 信頼性向上
 
@@ -292,8 +317,9 @@ flake.nix
 ├── pkgsFor (nix/lib/pkgs.nix)          → nixpkgs インスタンス生成 (Intelスタック切替)
 ├── Linux:   mkLinuxHomeConfig (nix/modules/linux/build.nix)
 │              → nix/modules/home/      + nix/modules/linux/
-│           systemConfigs.nazozokc (system-manager)
-│              → nix/modules/system/    (OS 層: /etc・systemd システムユニット)
+│           systemConfigs.{nazozokc,nazozokc-aarch64} (system-manager)
+│              → mkSystemConfig (nix/modules/system/build.nix)
+│                 → nix/modules/system/  (OS 層: /etc・systemd システムユニット)
 ├── WSL:     mkWSLHomeConfig (nix/modules/wsl/build.nix)
 │              → nix/modules/home/wsl.nix + nix/modules/wsl/
 └── macOS:   mkDarwinConfig (nix/modules/macos/build.nix)
