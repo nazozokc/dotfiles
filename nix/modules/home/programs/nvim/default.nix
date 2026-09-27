@@ -99,6 +99,10 @@ in
     ];
   };
 
+  # NOTE: lazy-lock.json も Nix store (read-only) になるため、そのままでは
+  # lazy.nvim が install/update 時に lockfile を書き込めない (E5113)。
+  # init.lua 側で state's lockfile にコピーして運用する。
+
   # dotfilesリポジトリのnvim/配下を個別にsymlink
   # ディレクトリ全体をsymlinkするとprograms.neovimが生成するinit.luaと衝突するため
   xdg.configFile = {

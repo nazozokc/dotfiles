@@ -72,6 +72,10 @@
     # ウォールペーパー
     awww
 
+    #vicinae
+    vicinae
+    jq
+
     # ロック/アイドル
     hyprlock
     hypridle
