@@ -3,9 +3,13 @@
 # x86_64 / aarch64 で共通のモジュール構成を使い回す
 {
   system-manager,
+  username,
 }:
 system:
 system-manager.lib.makeSystemConfig {
+  # username をモジュールへ渡す (nix/modules/system/ 側からの参照用)
+  specialArgs = { inherit username; };
+
   modules = [
     ./default.nix
 

@@ -17,6 +17,7 @@
 # 全OSで ~/.config/nix/nix.conf を生成し、Nix はユーザー設定をシステム設定より
 # 優先するため、OS 層で /etc/nix/nix.conf を上書きする必要はない。
 {
+  username,
   ...
 }:
 
@@ -37,4 +38,14 @@
   # Arch を含む未対応ディストロで動かすため、preActivationAssertion の
   # osVersion 検査を skip する。前提条件 (systemd ベース) は満たす。
   system-manager.allowAnyDistro = true;
+
+  # Nix は single-user モード (nix-daemon 無し) で運用する。
+  # installer が作る /nix/store は root:nixbld 1775 なので、
+  # store へ書き込むには実行用户在 nixbld グループに居る必要がある。
+  #
+  # userborn は宣言どおりの /etc/group を書き戻すため、
+  # installer が追加した所属を消してしまう。
+  # ここで宣言して所属を維持する (users.users を宣言すると userborn に
+  # ユーザー管理を丸投げするため、グループの members だけ指定する)。
+  users.groups.nixbld.members = [ username ];
 }

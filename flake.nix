@@ -235,7 +235,10 @@
       # systemd ベースの全 Linux ディストロが同じモジュール構成を使う。
       # プラットフォーム差分は nixpkgs.hostPlatform のみ。
       mkSystemConfig = import ./nix/modules/system/build.nix {
-        inherit system-manager;
+        inherit
+          system-manager
+          username
+          ;
       };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
