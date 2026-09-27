@@ -4,7 +4,6 @@ with pkgs;
 [
   audacity
   vscode
-  zed
 ]
 
 ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
