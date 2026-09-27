@@ -8,6 +8,16 @@
 #
 # Nix はユーザー設定 (NIX_USER_CONF_FILES) でシステム設定 (/etc/nix/nix.conf) を
 # 上書きするため、両方を書くのは正しい構成。
+#
+# ただし auto-optimise-store / always-allow-substitutes は Nix の restricted setting。
+# multi-user インストール (/etc/nix/nix.conf に trusted-users が無い環境) では
+# クライアントが trusted user で無いため、nix コマンドごとに
+#   warning: ignoring the client-specified setting 'auto-optimise-store', ...
+# を出して設定が捨てられる。Store の自動最適化も働かない。
+#
+# 単一ユーザーインストール (macOS の --no-daemon など) では効くため設定は残す。
+# multi-user で効かせたい場合は /etc/nix/nix.conf の trusted-users に
+# username を追加する必要がある (OS 層の管轄)。
 {
   pkgs,
   username,

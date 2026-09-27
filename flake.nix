@@ -2,19 +2,19 @@
   description = "nazozo dotfiles (multi-system, apps + nom)";
 
   # ---------------------------------------------------------------------------
-  # Binary cache の設定
-  # nixConfig はリテラルセットである必要があるためここに直接書く
+  # Binary cache: この flake では設定しない (cache.nixos.org のみ)
+  #
+  # Nix 2.35 では nixConfig は client-specified 設定として扱われ、
+  # restricted setting (substituters / trusted-public-keys) は
+  # Trusted User でないクライアントから渡せない。
+  #   → extra-substituters / extra-trusted-public-keys は無視される
+  #   → `ignoring untrusted substituter` 警告が出るだけで効かない
+  #
+  # cache.nixos.org は Nix が信頼済みとしてハードコードしているため
+  # 追加の substituters 設定は不要。
+  # サードパーティ cache を使いたい場合は
+  # /etc/nix/nix.conf (OS 層 = system-manager) 側で設定する。
   # ---------------------------------------------------------------------------
-  nixConfig = {
-    extra-substituters = [
-      "https://cache.nixos.org/"
-      "https://cache.numtide.com" # ← これ
-    ];
-    extra-trusted-public-keys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "cache.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" # ← これ
-    ];
-  };
 
   # ---------------------------------------------------------------------------
   # Flake inputs
@@ -69,7 +69,6 @@
     agent-skills-nix = {
       url = "github:Kyure-A/agent-skills-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
 
     treefmt-nix = {
@@ -374,7 +373,7 @@
             nix = pkgs.mkShell {
               name = "dotfiles-nix";
               packages = with pkgs; [
-                nixfmt-rfc-style
+                nixfmt
                 statix
                 deadnix
                 nil
@@ -413,6 +412,7 @@
             # (ローカルが分岐していると bootstrap 全体が失敗する)
             default = {
               type = "app";
+              meta.description = "bootstrap: リポジトリを用意して switch へ委譲する";
               program = "${pkgs.writeShellScriptBin "dotfiles" ''
                 set -eo pipefail
 
@@ -491,6 +491,7 @@
             #   Linux … home-manager → system-manager (OS 層・sudo 必要)
             switch = {
               type = "app";
+              meta.description = "OS 自動判定でユーザー層と OS 層を適用する";
               program = "${pkgs.writeShellScriptBin "switch" ''
                 set -eo pipefail
 
@@ -542,6 +543,7 @@
             # nix run .#build
             build = {
               type = "app";
+              meta.description = "switch 対象のビルドのみ行う（適用はしない）";
               program = "${pkgs.writeShellScriptBin "build" ''
                 set -eo pipefail
 
@@ -572,6 +574,7 @@
             # nix run .#update
             update = {
               type = "app";
+              meta.description = "flake.lock を更新する";
               program = "${pkgs.writeShellScriptBin "update" ''
                 set -eo pipefail
                 ${printInfo "update"}
@@ -583,6 +586,7 @@
             # system-manager の toplevel (linkFarm) をビルドする。評価のみ・副作用なし
             system-build = {
               type = "app";
+              meta.description = "OS 層 (system-manager) の toplevel をビルドする (副作用なし)";
               program = "${pkgs.writeShellScriptBin "system-build" ''
                 set -eo pipefail
                 ${detectHelpers}
@@ -610,6 +614,7 @@
             # switch 前の dry-run 相当。sudo 不要。評価エラーと生成物の差分を確認する
             system-check = {
               type = "app";
+              meta.description = "OS 層の dry-run。評価と生成物差分を確認する (sudo 不要)";
               program = "${pkgs.writeShellScriptBin "system-check" ''
                 set -eo pipefail
                 ${detectHelpers}
@@ -643,6 +648,7 @@
             # 実際の適用。/etc と systemd システムユニットを書き換えるため sudo が要る
             system-switch = {
               type = "app";
+              meta.description = "OS 層 (/etc・systemd) を適用する (sudo 必要)";
               program = "${pkgs.writeShellScriptBin "system-switch" ''
                 set -eo pipefail
                 ${detectHelpers}

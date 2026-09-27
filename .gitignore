@@ -37,3 +37,7 @@ node_modules/
 
 .omc/
 .aider*
+
+# fish が自動生成するユーザー固有の状態ファイル
+# (fish_user_paths に $HOME 依存の PATH が混入する)
+fish/fish_variables

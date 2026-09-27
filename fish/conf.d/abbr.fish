@@ -25,7 +25,7 @@ function opencodeclear
 end
 
 function parllamaclear
-    rm -rf /home/nazozokc/.local/share/parllama/chats
+    rm -rf ~/.local/share/parllama/chats
 end
 
 function claude-ollama
