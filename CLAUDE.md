@@ -10,6 +10,10 @@
 - `README.md`
   を参照してください。
 
+- Arch Linux デスクトップの OS 層 (`/etc`・systemd システムユニット) は
+  `numtide/system-manager` で管理しています。操作は `nix run .#system-check` /
+  `.#system-build` / `.#system-switch` (WSL では switch 不可)。
+
 # 何を管理しているか
 
 - neovim

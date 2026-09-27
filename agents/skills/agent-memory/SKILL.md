@@ -80,7 +80,16 @@ Example: `2026-09-15-日付セル状態判定-core-集約-opencode.jsonl`
 Each file contains a single-line JSON object. **No embedded raw newlines** — escape them as `\n`.
 
 ```json
-{"id": "2026-09-15-calendar-cell-state-core-codex", "category": "patterns", "tags": ["typescript-calendar-lib", "refactor", "core"], "created": "2026-09-15", "agent": "codex", "title": "日付セル状態判定の core 集約", "summary": "React/Svelte の日付セル状態判定を core へ集約するパターン", "content": "- core は boolean のみ返す\n- CSS クラス名は各 UI 層に残す"}
+{
+  "id": "2026-09-15-calendar-cell-state-core-codex",
+  "category": "patterns",
+  "tags": ["typescript-calendar-lib", "refactor", "core"],
+  "created": "2026-09-15",
+  "agent": "codex",
+  "title": "日付セル状態判定の core 集約",
+  "summary": "React/Svelte の日付セル状態判定を core へ集約するパターン",
+  "content": "- core は boolean のみ返す\n- CSS クラス名は各 UI 層に残す"
+}
 ```
 
 ### Fields
