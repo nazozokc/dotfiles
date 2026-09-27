@@ -61,20 +61,42 @@ nix-env --version
 
 ---
 
-## 初回導入 (nix run を使用)
+## 初回導入 (bootstrap)
 
 `/etc/nix/nix.conf` を手書きする必要はありません。
 `nix.conf` は `switch` 実行時に home-manager が `~/.config/nix/nix.conf` として生成します。
 Nix はユーザー設定をシステム設定より優先するため、初期状態で機能します。
 
 ```bash
-cd ~
-git clone https://github.com/nazozokc/dotfiles.git
-cd dotfiles
+# ghq へ clone して、そのまま自動で switch まで行う
+nix run github:nazozokc/dotfiles
+```
 
-# Home Manager + pkgs の初回セットアップ
-# 初回のみ --extra-experimental-features が必要 (switch 後は不要)
-nix --extra-experimental-features "nix-command flakes" run .#switch
+- リポジトリは `~/ghq/github.com/nazozokc/dotfiles` に配置され、続けて自動で `switch` されます
+  - clone 先はリポジトリ所有者で決まるので、ローカルユーザー名が変わっても配置先は同じです
+- ユーザー名は bootstrap が `id -un` から取得し、`nix/username.nix` に自動設定します
+  （値が同じなら変更しません / 設定を変えた場合は `commit` してください）
+- 既にクローン済みなら `git remote update`（fetch のみ）となり、ローカルの HEAD がそのまま適用されます
+  - HEAD・ブランチは一切変更しません
+- クローン先は環境変数 `GHQ_ROOT` で変更できます（既定 `~/ghq`）
+- ghq / git がまだ無い環境では git にフォールバックするため、Nix だけで bootstrap できます
+- Linux の OS 層（`/etc`・systemd システムユニット）も `switch` が適用します（sudo 必要 / WSL は対象外）。
+  OS 層だけを適用する場合は `nix run github:nazozokc/dotfiles#system-switch`
+
+初回のみ `nix.conf` が未生成なので、`nix-command` をコマンドラインで明示することが必要な場合があります。
+
+```bash
+nix --extra-experimental-features "nix-command flakes" run github:nazozokc/dotfiles
+```
+
+### 手動でリポジトリを管理する場合
+
+bootstrap を経由せず自分で管理したい場合はこちらでも導入できます。
+
+```bash
+git clone https://github.com/nazozokc/dotfiles.git ~/ghq/github.com/nazozokc/dotfiles
+cd ~/ghq/github.com/nazozokc/dotfiles
+nix run .#switch
 ```
 
 - 初回は `nix.conf` が未生成なので `nix-command` をコマンドラインで明示する
@@ -83,13 +105,15 @@ nix --extra-experimental-features "nix-command flakes" run .#switch
 - Linux / macOS 両方で同じコマンドで初回セットアップ可能
 - Home Manager による dotfiles のリンクとパッケージインストールが行われます
 - macOS では nix-darwin を通して Home Manager 設定も有効化されます
-- Linux の OS 層 (`/etc`・systemd システムユニット) は `nix run .#switch` でも適用される (sudo 必要 / WSL は対象外)。OS 層だけ適用する場合は `nix run .#system-switch`
 
 ---
 
 ## 通常の更新・再適用
 
 ```bash
+# 手元のリポジトリを fetch してから切り替える
+nix run github:nazozokc/dotfiles
+
 # dotfilesやパッケージ更新
 nix run .#switch
 
@@ -188,6 +212,18 @@ wsl --shutdown
 nix flake check
 nix fmt -- --ci
 ```
+
+## ユーザー名
+
+- ユーザー名の単一ソースは **`nix/username.nix`** です（`flake.nix` が import します）。
+- 値は bootstrap（`nix run github:nazozokc/dotfiles`）が `id -un` から自動設定します。
+  値が違う場合だけファイルを書き換え、無い場合は新規生成します。
+- bootstrap を使わない運用なら `nix/username.nix` を手で編集してください。
+- clone 先の `~/ghq/github.com/nazozokc/dotfiles` は `flake.nix` の `repoOwner` で決まるので、
+  上のユーザー名とは独立しています。
+- flake の `outputs` 内では環境変数を参照しません。pure 評価なので
+  `builtins.getEnv` は空文字を返すだけで、`builtins.currentUser` は Nix 2.35 に存在しません。
+  詳細は [`nix/README.md`](./nix/README.md) の「username の決定」を参照。
 
 ## シークレット管理（sops-nix）
 

@@ -131,6 +131,7 @@ GUI アプリケーション。
 
 ```
 nix/
+├── username.nix                       # ユーザー名の単一ソース (flake.nix が import)
 ├── shared.nix                         # 共通設定 (username, stateVersion, xdg)
 ├── lib/
 │   └── pkgs.nix                       # pkgsFor (nixpkgs インスタンス生成 + Intelスタック切替)
@@ -216,6 +217,9 @@ nix/
 ## コマンド
 
 ```bash
+# bootstrap (ghq へ clone/fetch してから自動で switch)
+nix run github:nazozokc/dotfiles
+
 # 環境切り替え (OS自動検出 + 事前チェック)
 nix run .#switch
 
@@ -225,6 +229,31 @@ nix run .#build
 # flake更新
 nix run .#update
 ```
+
+### bootstrap (`apps.default`)
+
+`nix run github:nazozokc/dotfiles` は `apps.<system>.default` に解決される。
+
+1. `GHQ_ROOT`（既定 `~/ghq`）配下 `github.com/<repoOwner>/dotfiles` を用意する
+   - 未クローン: `ghq get`（無ければ `git clone`）
+   - クローン済み: `git remote update`（fetch のみ）
+   - git も無い: `nix shell nixpkgs#git -c git` で一時的に git を用意
+   - clone 先は `flake.nix` の `repoOwner` で決める。ローカルユーザー名
+     （`nix/username.nix`）とは別物なので、別ユーザーで運用しても clone 先は変わらない
+2. クローン先のリポジトリで `nix/username.nix` を `id -un` へ合わせる
+   - 値が同じなら触らない / ファイルが無ければ新規生成する
+   - 書き換えた場合は `commit` して残す
+3. そのディレクトリから `nix run .#switch` に委譲する
+   - ユーザー層・OS 層の適用・OS 自動判定・事前チェック・`.wslconfig` チェックは全て `switch` が持つ
+
+- 手元のリポジトリが正なので、既存 clone の **HEAD・ブランチは変更しない**
+  （`nix/username.nix` の自動同期のみ作業ツリーが変わる）
+- `ghq get -u` は内部で `git pull --ff-only` を実行するため使わない
+  （ローカルが origin と分岐していると bootstrap 全体が失敗する）
+- ghq root は git config の `[ghq] root` を参照しない
+  （その config は dotfiles 適用後にしか生成されないため）
+
+### 適用範囲
 
 `nix run .#switch` は OS 検出で適用範囲を決める。
 
@@ -330,6 +359,31 @@ flake.nix
 - `dotfiles-link.nix` が共有ファイルの symlink を一括管理する
 - `packages/default.nix` がカテゴリ別パッケージを flatten して `home.packages` に渡す
 - Linux は `nixGL` で wezterm/ghostty をラップして非 NixOS 環境の GPU ライブラリに対応
+
+## username の決定
+
+- 単一ソース: `nix/username.nix`（`flake.nix` が `import ./nix/username.nix` する）
+- ローカルユーザー名として使う。clone 先の ghq パスは `flake.nix` の
+  `repoOwner` を使うので、別のユーザーで運用しても clone 先は変わらない
+- 影響範囲:
+  - `homeConfigurations.<username>` / `darwinConfigurations.<username>` / `systemConfigs.<username>` の attr 名
+  - `nix/shared.nix` 経由で `home.username` / `home.homeDirectory` / `DOTFILES_USERNAME`
+  - `switch` app が WSL 向けに渡す `.#<username>-wsl`
+- **値のソースは bootstrap の `id -un`。** `apps.default` が実行時に
+  `nix/username.nix` を実行環境のユーザー名へ書き換える（値が同じなら触らない）
+  - 書き換え後は pure 評価でも同値が見えるため、`switch` / home-manager の
+    再評価・attr 名の解決がすべて一致する
+  - ファイルが無いクローン（fork 元に未 push の場合）はその場で新規生成する
+- **flake の `outputs` 内では環境変数・`whoami` を使わない。** pure 評価なので
+  実行環境に依存する手段が使えない（Nix 2.35 で実測）:
+  - `builtins.getEnv "USER"` はエラーにならず `""` を返すだけ
+  - `builtins.currentUser` は builtins に存在しない
+  - impure 評価を採ると `nix flake check` / `nix run .#switch` / home-manager 起動の
+    全部に `--impure` を伝播させる必要があり、CI 品質ゲートが壊れる
+- bootstrap を経由しない運用なら `nix/username.nix` を手で編集する
+- 自動生成された値は **commit して残す**（次回以降の bootstrap が書き換えずに済む）
+- 新規ファイルなので **git に追跡させるまで nix から見えない**
+  （`git add -N nix/username.nix` を忘れると `Path ... is not tracked by Git` で失敗する）
 
 ## home.stateVersion ポリシー
 
