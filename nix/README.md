@@ -53,7 +53,7 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 - **汎用**: prettier, telescope
 - **Python**: python312
 - **JavaScript/TypeScript**: nodejs_latest, typescript-language-server, bun, deno, yarn
-  - `tsserver` のみ（`typescript_5` の `bin/tsserver` だけを PATH に出す）— nvim の typescript-tools.nvim 用。`pkgs.typescript` は現在 TS7 で tsserver を持たないため TS5 を使う。`tsc` は shadow しない
+  - `tsserver` は home.packages には入れない。nvim の `TSSERVER_PATH` として `typescript_5` の `lib/node_modules/typescript/lib/tsserver.js` を渡す（`programs/neovim/default.nix` の `extraWrapperArgs`）。`pkgs.typescript` は現在 TS7 で `tsserver` を持たないため TS5 を使う。PATH に出さないので `tsc` は shadow しない
 - **Rust**: rustc, rust-analyzer
 - **Nix**: nil, nixd, nixfmt
 - **Go**: go, go-tools
