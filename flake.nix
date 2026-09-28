@@ -160,7 +160,7 @@
       # (flake の pure 評価では環境変数・whoami を参照できないため)
       # nix/shared.nix はこの値を受け取る側
       # bootstrap が id -un へ自動設定する (ローカルユーザー名)
-      username = import ./nix/username.nix;
+      username = "nazozokc";
 
       # この dotfiles リポジトリの GitHub 所有者。
       # clone 先の ghq レイアウト (github.com/<owner>/dotfiles) に使う。
