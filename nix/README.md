@@ -253,6 +253,41 @@ nix run .#update
 - ghq root は git config の `[ghq] root` を参照しない
   （その config は dotfiles 適用後にしか生成されないため）
 
+### experimental-features の担保
+
+全 app は起動直後に `require_nix_features`（`flake.nix` の `nixFeatureGuard`）を実行する。
+
+- `nix-command` / `flakes` が既に有効な環境では何もしない
+- 無効なら **実効値**（`nix config show`）に不足分を加えたものを `NIX_CONFIG` へ
+  書き込む。`NIX_CONFIG` はプロセス環境なので子・孫プロセス（app 内の `nix`、
+  home-manager / nix-darwin が内部で起動する `nix`）まで継承される
+- `experimental-features` は list 型設定で、`NIX_CONFIG` の指定は設定ファイルの値を
+  **置き換える**。そのため実効値をそのまま読み戻して不足分だけ足す
+  （他の experimental feature を落とさない）
+- `nix config show` 自体が `nix-command` を要求するため、無効な環境では
+  `--extra-experimental-features` を一時的に与えて実効値を読む
+- macOS の `sudo nix run nix-darwin --` は `env_reset` で `NIX_CONFIG` を失うため
+  `sudo_nix` ヘルパ（`sudo env "NIX_CONFIG=..."`）経由にする
+
+なぜ必要か: `--extra-experimental-features` は起動した nix プロセスにしか効かず、
+子プロセスへ伝播しない（Nix 2.35 / x86_64-linux で実測）。伝播させないと
+bootstrap は `nix run .#switch` の時点で
+
+```
+error: experimental Nix feature 'nix-command' is disabled
+```
+
+で必ず失敗する。回避できないのは **最も外側の 1 コマンドだけ**
+（`nix run` 自体が experimental feature を要求するため）。
+
+```bash
+# 初回のみ。2 回目以降は ~/.config/nix/nix.conf が生成されるので普通に実行できる
+nix --extra-experimental-features "nix-command flakes" run github:nazozokc/dotfiles
+```
+
+`system-manager` は内部の `nix` 呼び出しに自分で
+`--extra-experimental-features "nix-command flakes"` を付けるため影響を受けない。
+
 ### 適用範囲
 
 `nix run .#switch` は OS 検出で適用範囲を決める。
