@@ -305,6 +305,80 @@
             echo ""
           '';
 
+          # nix-command / flakes を確実に有効にする共通シェルヘルパ
+          #
+          # なぜ必要か:
+          #   `--extra-experimental-features` は起動した nix プロセスにのみ効く設定で、
+          #   子プロセス (app 内の nix、home-manager が内部で起動する nix) へは
+          #   伝播しない。実測 (Nix 2.35):
+          #     NIX_CONFIG="experimental-features =" \
+          #       nix run --extra-experimental-features "nix-command flakes" .#app
+          #     → app 内の nix には experimental-features が無く
+          #       `nix flake check` が
+          #       "experimental Nix feature 'nix-command' is disabled" で失敗する
+          #   つまり初回 bootstrap は 2 段目 (nix run .#switch) で必ず落ちる。
+          #
+          # 対処:
+          #   NIX_CONFIG はプロセス環境なので子・孫プロセスまで継承される。
+          #   ただし list 型設定 (experimental-features) は NIX_CONFIG の指定で
+          #   設定ファイルの値を置き換えてしまうため、
+          #   実効値 (nix config show) に不足分を加えたものを書き戻す。
+          #   既に有効な環境では何もしない (NIX_CONFIG を汚さない)。
+          nixFeatureGuard = ''
+            # 実効値の experimental-features に $2 が含まれるか
+            nix_has_feature() {
+              case " $1 " in
+                *" $2 "*) return 0 ;;
+                *) return 1 ;;
+              esac
+            }
+
+            # 不足している experimental feature を NIX_CONFIG へ足す
+            require_nix_features() {
+              local features forced nl
+
+              # `nix config show` 自体が nix-command を要求する。
+              # 素で通るならその出力が実効値 (システム → ユーザー設定の順で解決済み)。
+              features="$(nix config show 2>/dev/null | sed -n 's/^experimental-features[[:space:]]*=[[:space:]]*//p' || true)"
+
+              if [ -z "$features" ]; then
+                # 無効な環境。フラグを一時的に与えて実効値を読む。
+                # (この出力には環境設定側の feature も混ざっている)
+                features="$(nix --extra-experimental-features "nix-command flakes" config show 2>/dev/null \
+                  | sed -n 's/^experimental-features[[:space:]]*=[[:space:]]*//p' || true)"
+                forced=1
+              else
+                forced=0
+              fi
+
+              # 環境側で有効なら何もしない
+              if [ "$forced" = 0 ] && nix_has_feature "$features" flakes; then
+                return 0
+              fi
+
+              nix_has_feature "$features" nix-command || features="$features nix-command"
+              nix_has_feature "$features" flakes || features="$features flakes"
+
+              nl=$'\n'
+              export NIX_CONFIG="''${NIX_CONFIG:+$NIX_CONFIG$nl}experimental-features = $features"
+
+              echo "[!] nix-command / flakes が未有効だったため、この実行だけ NIX_CONFIG で有効化します"
+              echo "    (--extra-experimental-features は子プロセスへ伝播しないため)"
+              echo ""
+            }
+
+            # sudo は既定 (env_reset) で環境変数を捨てるため NIX_CONFIG を引き継ぐ
+            sudo_nix() {
+              if [ -n "''${NIX_CONFIG-}" ]; then
+                sudo env "NIX_CONFIG=$NIX_CONFIG" "$@"
+              else
+                sudo "$@"
+              fi
+            }
+
+            require_nix_features
+          '';
+
           # Shared shell helpers for runtime environment detection
           detectHelpers = ''
             is_wsl() {
@@ -496,6 +570,8 @@
               program = "${pkgs.writeShellScriptBin "dotfiles" ''
                 set -eo pipefail
 
+                ${nixFeatureGuard}
+
                 # ghq root の解決順は 環境変数 → $HOME/ghq
                 # ([ghq] root の git config は dotfiles 未適用時には存在しないため参照しない)
                 root="''${GHQ_ROOT:-$HOME/ghq}"
@@ -575,6 +651,8 @@
               program = "${pkgs.writeShellScriptBin "switch" ''
                 set -eo pipefail
 
+                ${nixFeatureGuard}
+
                 ${detectHelpers}
 
                 require_nixbld
@@ -597,7 +675,8 @@
                   echo "  target : ${flakeTarget}"
                   echo "  cmd    : switch"
                   echo ""
-                  sudo nix run nix-darwin -- switch --flake ${flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+                  # sudo は既定で環境変数を捨てるため、NIX_CONFIG を引き継ぐ
+                  sudo_nix nix run nix-darwin -- switch --flake ${flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
                 else
                   echo "  system : ${sysLabel}"
                   echo "  target : ${flakeTarget}"
@@ -634,6 +713,8 @@
               program = "${pkgs.writeShellScriptBin "build" ''
                 set -eo pipefail
 
+                ${nixFeatureGuard}
+
                 ${detectHelpers}
 
                 require_nixbld
@@ -666,6 +747,9 @@
               meta.description = "flake.lock を更新する";
               program = "${pkgs.writeShellScriptBin "update" ''
                 set -eo pipefail
+
+                ${nixFeatureGuard}
+
                 ${printInfo "update"}
                 nix flake update |& ${pkgs.nix-output-monitor}/bin/nom
               ''}/bin/update";
@@ -678,6 +762,9 @@
               meta.description = "OS 層 (system-manager) の toplevel をビルドする (副作用なし)";
               program = "${pkgs.writeShellScriptBin "system-build" ''
                 set -eo pipefail
+
+                ${nixFeatureGuard}
+
                 ${detectHelpers}
 
                 require_nixbld
@@ -708,6 +795,9 @@
               meta.description = "OS 層の dry-run。評価と生成物差分を確認する (sudo 不要)";
               program = "${pkgs.writeShellScriptBin "system-check" ''
                 set -eo pipefail
+
+                ${nixFeatureGuard}
+
                 ${detectHelpers}
 
                 require_nixbld
@@ -744,6 +834,9 @@
               meta.description = "OS 層 (/etc・systemd) を適用する (sudo 必要)";
               program = "${pkgs.writeShellScriptBin "system-switch" ''
                 set -eo pipefail
+
+                ${nixFeatureGuard}
+
                 ${detectHelpers}
 
                 require_nixbld

@@ -83,11 +83,25 @@ nix run github:nazozokc/dotfiles
 - Linux の OS 層（`/etc`・systemd システムユニット）も `switch` が適用します（sudo 必要 / WSL は対象外）。
   OS 層だけを適用する場合は `nix run github:nazozokc/dotfiles#system-switch`
 
-初回のみ `nix.conf` が未生成なので、`nix-command` をコマンドラインで明示することが必要な場合があります。
+初回のみ `nix.conf` が未生成なので、**一番外側のコマンドだけ** `nix-command` を
+コマンドラインで明示する必要があります（`nix run` 自体が experimental feature を
+要求するため、ここだけは回避できません）。
 
 ```bash
 nix --extra-experimental-features "nix-command flakes" run github:nazozokc/dotfiles
 ```
+
+- このフラグは**その 1 プロセスにしか効きません**。`--extra-experimental-features` は
+  子プロセス（app 内の `nix flake check` / `nix run .#switch` / home-manager が
+  内部で起動する `nix`）へ伝播せず、そのままでは bootstrap が 2 段目で
+  `error: experimental Nix feature 'nix-command' is disabled` で止まります
+- そのため全 app は起動時に `NIX_CONFIG`（プロセス環境なので子・孫へ継承される）
+  で不足している feature を補うので、**フラグは最も外側のコマンドだけで十分**です
+- 既に `nix-command` / `flakes` が有効な環境では `NIX_CONFIG` を一切変更しません。
+  他の experimental feature を含む値もそのまま引き継ぎます
+- この flake は `nixConfig` を定義していないので `--accept-flake-config` は不要です
+- `switch` が完了すると `~/.config/nix/nix.conf` が生成され、以降は
+  `nix run .#switch` だけで適用できます
 
 ### 手動でリポジトリを管理する場合
 
@@ -100,6 +114,7 @@ nix run .#switch
 ```
 
 - 初回は `nix.conf` が未生成なので `nix-command` をコマンドラインで明示する
+  （上のように最も外側のコマンドだけ）
 - `switch` が完了すると `~/.config/nix/nix.conf` が生成され、
   以降は `nix run .#switch` だけで適用できる
 - Linux / macOS 両方で同じコマンドで初回セットアップ可能
