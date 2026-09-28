@@ -91,6 +91,9 @@ abbr --add op 'ollama pull'
 # nix
 abbr --add ns nix-shell
 
+# opencode
+abbr --add opmini opencode\ --mini
+
 # orbase
 abbr --add ota orbase\ task\ add
 abbr --add ote orbase\ task\ edit
