@@ -315,6 +315,31 @@
               [ "$(uname)" = "Darwin" ]
             }
 
+            # single-user Nix (daemon 無し) では /nix/store (root:nixbld 1775) への
+            # 書き込みに nixbld グループ所属が必須。
+            # system-manager の userborn が /etc/group を宣言どおり書き戻すため、
+            # installer が追加した所属が一度消えると nix アプリがすべて
+            # "Permission denied" (=「実行権限がなくなる」ように見える) で死ぬ。
+            # 再発を防げない段階でも、原因を即座に特定できるように先に検出する。
+            require_nixbld() {
+              # macOS は nix-daemon が store を管理するので対象外
+              is_darwin && return 0
+
+              # daemon 運用 (multi-user) なら store 管理は daemon 任せ
+              if [[ -S /nix/var/nix/daemon-socket || -e /run/nix-daemon.socket ]]; then
+                return 0
+              fi
+
+              if ! id -nG | grep -qw nixbld; then
+                echo "[ERROR] nixbld グループに所属していません" >&2
+                echo "        single-user Nix の /nix/store への書き込みに nixbld 所属が必要です" >&2
+                echo "" >&2
+                echo "        対処: sudo usermod -aG nixbld \"$USER\"" >&2
+                echo "        (既存シェルには反映されません: newgrp nixbld または再ログイン)" >&2
+                exit 1
+              fi
+            }
+
             # Windows ユーザープロファイルの .wslconfig パスを検出
             # (USERPROFILE env が無い場合は /mnt/c/Users/ から実ユーザーをスキャン)
             find_wslconfig() {
@@ -500,6 +525,8 @@
 
                 ${detectHelpers}
 
+                require_nixbld
+
                 # 事前チェック: flake の評価エラーを検出
                 echo "[pre-flight] nix flake check --no-build ..."
                 nix flake check --no-build
@@ -552,6 +579,8 @@
 
                 ${detectHelpers}
 
+                require_nixbld
+
                 if is_wsl; then
                   echo "  system : WSL (x86_64)"
                   echo "  target : .#${username}-wsl"
@@ -594,6 +623,8 @@
                 set -eo pipefail
                 ${detectHelpers}
 
+                require_nixbld
+
                 if is_darwin; then
                   echo "[!] system-manager は Linux 専用です"
                   exit 1
@@ -621,6 +652,8 @@
               program = "${pkgs.writeShellScriptBin "system-check" ''
                 set -eo pipefail
                 ${detectHelpers}
+
+                require_nixbld
 
                 if is_darwin; then
                   echo "[!] system-manager は Linux 専用です"
@@ -655,6 +688,8 @@
               program = "${pkgs.writeShellScriptBin "system-switch" ''
                 set -eo pipefail
                 ${detectHelpers}
+
+                require_nixbld
 
                 if is_darwin; then
                   echo "[!] system-manager は Linux 専用です"
