@@ -34,15 +34,6 @@ let
     # 現状: 60
     "vm.swappiness" = 10;
 
-    # ---- ネットワーク性能 (BBR) -------------------------------------
-    # BBR は tcp_bbr モジュールのロードが必須 (下の nix-bbr-module が担当)
-    # 現状: cubic
-    "net.ipv4.tcp_congestion_control" = "bbr";
-
-    # BBR が前提とする queue discipline
-    # 現状: fq_codel
-    "net.core.default_qdisc" = "fq_codel";
-
     # ---- セキュリティ強化 -------------------------------------------
     # dmesg を root 以外から読めないようにする
     # 現状: 0
