@@ -55,17 +55,6 @@ in
       "--set"
       "TREESITTER_GRAMMARS"
       "${treesitterGrammars}"
-
-      # typescript-tools.nvim は tsserver の実体パス (tsserver.js) を要求する。
-      # 探索順は プロジェクト内 node_modules → npm root -g → PATH 上の tsserver。
-      # nix 環境では:
-      #   - プロジェクトの typescript が TS7 なら lib/tsserver.js が存在しない
-      #   - `npm root -g` が実在しない store path を返す
-      #   - WSL では PATH 末尾の Windows 側 npm shim が exepath("tsserver") を掴む
-      # ため全て失敗する。TS5 (tsserver を持つ) のパスを直接渡す。
-      "--set"
-      "TSSERVER_PATH"
-      "${pkgs.typescript_5}/lib/node_modules/typescript/lib/tsserver.js"
     ];
 
     # These packages are only available when NeoVim is running
@@ -80,7 +69,9 @@ in
       efm-langserver
       pyright
       typos-lsp
-      typescript-language-server
+      # TypeScript / JavaScript: TS7 (Go ネイティブ実装) 内蔵の LSP。
+      # nvim-lspconfig の tsgo 設定が PATH 上の `tsgo` を探す。
+      tsgo
       sqls
       clang-tools
 

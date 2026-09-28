@@ -92,8 +92,11 @@ in
           extensions = [ "lua" ];
         };
         typescript = {
+          # TypeScript 7 (Go ネイティブ実装) 内蔵の LSP。
+          # tsserver を廃した typescript-language-server に代わる。
           command = [
-            "${pkgs.typescript-language-server}/bin/typescript-language-server"
+            "${pkgs.tsgo}/bin/tsgo"
+            "--lsp"
             "--stdio"
           ];
           extensions = [
