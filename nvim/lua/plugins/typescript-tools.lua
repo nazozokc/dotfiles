@@ -29,6 +29,10 @@ return {
 
 			settings = {
 				-- ===== 超重要 =====
+				-- tsserver.js の実体パス。nix モジュールが TSSERVER_PATH で渡す
+				-- (pkgs.typescript は TS7 で tsserver を持たないため TS5)。
+				-- 未設定の環境では nil のままプラグインの自動探索に任せる
+				tsserver_path = vim.env.TSSERVER_PATH,
 				separate_diagnostic_server = false,
 				publish_diagnostic_on = "save", -- insert_leave より軽い
 
