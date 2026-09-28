@@ -146,6 +146,11 @@ end
 
 local git_cache = { branch = nil, pane_id = nil, time = 0 }
 
+--- Last cursor colour sent per pane (OSC 12).
+--- Keyed by pane id so a newly opened pane still receives the colour,
+--- while an unchanged mode does not re-inject bytes into the pty.
+local cursor_color_cache = {}
+
 wezterm.on("update-status", function(window, pane)
 	local now = os.time()
 	local mode, mode_color = get_mode(window)
@@ -221,7 +226,12 @@ wezterm.on("update-status", function(window, pane)
 	window:set_right_status(wezterm.format(right_items))
 
 	-- ── Cursor colour follows mode (OSC 12) ──
-	pane:inject_output("\x1b]12;" .. mode_color .. "\x1b\\")
+	-- Only inject when the colour actually changed: writing to the pty forces the
+	-- child application to redraw, so an unconditional inject every tick is waste.
+	if cursor_color_cache[pane_id] ~= mode_color then
+		pane:inject_output("\x1b]12;" .. mode_color .. "\x1b\\")
+		cursor_color_cache[pane_id] = mode_color
+	end
 end)
 
 function M.apply(config)
