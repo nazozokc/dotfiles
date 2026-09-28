@@ -19,6 +19,7 @@ return {
 				jdtls = "jdtls",
 				sqls = "sqls",
 				tailwindcss = "tailwindcss-language-server",
+				tsgo = "tsgo",
 			}
 
 			local servers_to_enable = {}
@@ -114,6 +115,53 @@ return {
 						},
 					},
 				},
+			})
+
+			-- ===== TypeScript / JavaScript =====
+			-- TS7 (Go ネイティブ実装) 内蔵の LSP (`tsc --lsp --stdio`) を nvim-lspconfig の
+			-- `tsgo` 設定で起動する。tsserver を廃した typescript-language-server /
+			-- typescript-tools.nvim は tsserver.js (TS5) に依存するため使っていない。
+			--
+			-- 診断は pull diagnostics (textDocument/diagnostic)。Neovim 0.11+ は
+			-- クライアントが対応していれば自動で pull を使う。
+			vim.lsp.config("tsgo", {
+				capabilities = capabilities,
+				settings = {
+					-- 設定は js/ts / typescript / javascript / editor セクションの
+					-- うち js/ts が最優先。inlay hint と code lens は全部オフ。
+					["js/ts"] = {
+						inlayHints = {
+							parameterNames = { enabled = "none" },
+							parameterTypes = { enabled = false },
+							variableTypes = { enabled = false },
+							propertyDeclarationTypes = { enabled = false },
+							functionLikeReturnTypes = { enabled = false },
+							enumMemberValues = { enabled = false },
+						},
+						referencesCodeLens = { enabled = false },
+						implementationsCodeLens = { enabled = false },
+					},
+				},
+				on_attach = function(client, bufnr)
+					-- 整形は conform (prettier) に任せる。capabilities 側で
+					-- `textDocument.formatting = false` を送ると TS7 の LSP が
+					-- object 前提で parse に失敗して initialize が失敗するので、
+					-- server_capabilities 側で落とす
+					client.server_capabilities.documentFormattingProvider = false
+					client.server_capabilities.documentRangeFormattingProvider = false
+
+					-- typescript-tools.nvim が提供していたコマンドを
+					-- code action (source.*) に置き換える。
+					-- apply = true で選択枠無し・diff 表示なしで即適用する
+					local function bufmap(lhs, kind)
+						vim.keymap.set("n", lhs, function()
+							vim.lsp.buf.code_action({ context = { only = { kind } }, apply = true })
+						end, { buffer = bufnr, silent = true })
+					end
+
+					bufmap("<leader>oi", "source.organizeImports")
+					bufmap("<leader>ru", "source.removeUnusedImports")
+				end,
 			})
 
 			-- ===== Tailwind CSS (tailwind.config 検出時のみ起動) =====

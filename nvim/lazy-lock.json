@@ -122,7 +122,6 @@
   "translate.nvim": { "branch": "main", "commit": "1a841e56407ba02e919ed9af573dbe531404aebb" },
   "trouble.nvim": { "branch": "main", "commit": "bd67efe408d4816e25e8491cc5ad4088e708a69a" },
   "ts-error-translator.nvim": { "branch": "main", "commit": "558abff11b9e8f4cefc0de09df780c56841c7a4b" },
-  "typescript-tools.nvim": { "branch": "master", "commit": "c2f5910074103705661e9651aa841e0d7eea9932" },
   "utf8.nvim": { "branch": "main", "commit": "954cbbadabe5cd19f202e918fec191d64eea7766" },
   "vim-bad-apple": { "branch": "main", "commit": "a44cce011d5e732d01cebfeeee5dc87ecdda9b20" },
   "vim-fugitive": { "branch": "master", "commit": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0" },

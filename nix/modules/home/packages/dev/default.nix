@@ -11,7 +11,6 @@ with pkgs;
 
   # js,ts
   nodejs_latest
-  typescript-language-server
   bun
   deno
   yarn

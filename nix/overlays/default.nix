@@ -7,4 +7,5 @@ prev.lib.composeManyExtensions [
   (import ./node-packages.nix)
   (import ./pipx.nix)
   (import ./fish-plugins.nix)
+  (import ./typescript.nix)
 ] final prev
