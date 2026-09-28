@@ -138,6 +138,22 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 - URL（標準）
 - ファイルパス:行:桁 → `$EDITOR +line file` 形式で開く
 
+### パフォーマンス
+
+`front_end` はプラットフォームごとに固定する。
+
+| プラットフォーム | front_end  | 理由                                                |
+| ---------------- | ---------- | --------------------------------------------------- |
+| Linux / Windows  | `OpenGL`   | GPU アクセラレーションを使う。Software は CPU 描画で重い |
+| macOS            | `Software` | GPU ドライバーの揺らぎを避ける                        |
+
+Linux は nixGL でラップしてシステムの GPU ライブラリ（libEGL 等）を解決している。
+
+- `animation_fps = 30` / `max_fps = 120`
+- `scrollback_lines = 10000`
+- ステータスバーのカーソル色（OSC 12）は、色の変化があったペインにだけ送る。
+  変化無く pty へ書き込むと子アプリ側の再描画が毎回起きるため
+
 ### 透明度サイクル
 
 `Ctrl+Shift+F` で3段階の透明度をサイクル切り替え：
@@ -148,7 +164,7 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 
 ### プラットフォーム別透過度
 
-- Linux/Wayland: 0.95（軽度透過）
+- Linux/Wayland: 0.98（軽度透過）
 - Linux/X11: 0.90
 - macOS: 0.90
 - Windows: 0.90

@@ -35,7 +35,7 @@ end
 --- Wayland often has issues with transparent windows; on X11/Linux and other OSes it works fine.
 function M.default_window_opacity()
 	if M.is_linux() and M.is_wayland() then
-		return 0.95
+		return 0.98
 	end
 	return 0.90
 end
