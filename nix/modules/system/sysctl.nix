@@ -7,7 +7,6 @@
 #       そのため environment.etc で sysctl.d の drop-in を直接置く。
 {
   lib,
-  pkgs,
   ...
 }:
 
@@ -48,8 +47,6 @@ let
     # 現状: 1
     "kernel.yama.ptrace_scope" = 3;
   };
-
-  bbrEnabled = settings."net.ipv4.tcp_congestion_control" == "bbr";
 in
 {
   # 60- 接頭辞でディストリ側 (/usr/lib/sysctl.d/50-default.conf) より後に読ませ、
@@ -58,29 +55,5 @@ in
     text =
       lib.concatStringsSep "\n" (lib.mapAttrsToList (k: v: "${k} = ${toString v}") settings) + "\n";
     mode = "0644";
-  };
-
-  # tcp_bbr はカーネルモジュールなので sysctl だけでは反映されない。
-  # system-manager には modules-load 相当のオプションが無いため oneshot で modprobe する。
-  #
-  # systemd-sysctl.service より *先に* 走らせるのが重要:
-  # モジュールが未ロードだと systemd-sysctl が bbr の代入に失敗するため。
-  systemd.services.nix-bbr-module = lib.mkIf bbrEnabled {
-    description = "Load tcp_bbr kernel module for BBR congestion control";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "systemd-sysctl.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    path = [ pkgs.kmod ];
-    script = ''
-      if ! modprobe tcp_bbr; then
-        # Arch の標準カーネルには必ず含まれるが、検証のフェイルセーフ。
-        # fatal にしない。以降の sysctl.d 適用は systemd-sysctl に任せる
-        # (個別キー失敗は warning のみで致命的ではない)
-        echo "warning: failed to load tcp_bbr kernel module" >&2
-      fi
-    '';
   };
 }
