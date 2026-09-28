@@ -80,6 +80,9 @@
     hyprlock
     hypridle
 
+    # microsoft
+    teams-for-linux
+
     # ログアウトメニュー
     wlogout
   ];
