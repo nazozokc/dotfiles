@@ -377,6 +377,58 @@
                 echo "[!] $wslconfig は symlink ではありません (手動で管理してください)"
               fi
             }
+
+            # KDE の KService キャッシュ (ksycoca) は XDG_DATA_DIRS 配下の
+            # .desktop を「ディレクトリ mtime」で比較して更新要否を判定する。
+            # nix store は再現性のため mtime が epoch (=1) に固定されているので、
+            # home-manager の世代が切り替わっても ~/.nix-profile/share の
+            # mtime は変わらず、ksycoca は「変化なし」と判断して旧 store パスを
+            # 保持し続ける。結果として GUI 起動が
+            # "You are not authorized to execute this file." で全滅する。
+            # (ファイルのパーミッションは正常。壊れているのはキャッシュだけ)
+            #
+            # kbuildsycoca6 は mtime に関係なく全件読み直すので、世代切替後に
+            # 明示実行すれば symlink の解決結果へ必ず追従する。
+            # ツールが無い環境 (KDE 未導入) では何もしない。
+            rebuild_ksycoca() {
+              is_darwin && return 0
+
+              local builder=""
+              for c in kbuildsycoca6 kbuildsycoca5; do
+                if command -v "$c" >/dev/null 2>&1; then
+                  builder="$c"
+                  break
+                fi
+              done
+
+              if [[ -z "$builder" ]]; then
+                return 0
+              fi
+
+              # ksycoca を参照しているプロセスが居なければ何もしない (WSL 等の軽量環境)
+              if ! pgrep -x plasmashell >/dev/null 2>&1 \
+                && ! pgrep -x kded6 >/dev/null 2>&1; then
+                return 0
+              fi
+
+              echo "[ksycoca] KService キャッシュを再構築 ..."
+              if ! "$builder" --noincremental; then
+                local backup
+                backup="$HOME/.cache/ksycoca-stale-$(date +%Y%m%d-%H%M%S)"
+                echo "[ksycoca] 再構築に失敗しました (旧キャッシュを $backup へ退避します)" >&2
+                mkdir -p "$backup"
+                mv -f "$HOME"/.cache/ksycoca6_* "$backup"/ 2>/dev/null || true
+                return 0
+              fi
+
+              # KSharedDataCache は mmap で読むので、既存プロセスは再構築前の
+              # inode を掴んだままになる。ファイルは新くなっているが、
+              # 実行中のセッション (アプリメニュー等) は旧パスを参照し続ける。
+              # 破壊的な plasmashell 再起動は自動では行わない。
+              echo "         実行中のセッションは再構築前の inode を保持しています"
+              echo "         アプリメニューから起動しない場合は:"
+              echo "           systemctl --user restart plasma-plasmashell.service"
+            }
           '';
         in
         {
@@ -539,6 +591,7 @@
                   echo ""
                   check_wslconfig
                   nix run nixpkgs#home-manager -- switch --flake .#${username}-wsl |& ${pkgs.nix-output-monitor}/bin/nom
+                  rebuild_ksycoca
                 elif is_darwin; then
                   echo "  system : ${sysLabel}"
                   echo "  target : ${flakeTarget}"
@@ -551,6 +604,10 @@
                   echo "  cmd    : switch"
                   echo ""
                   nix run nixpkgs#home-manager -- switch --flake ${flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+
+                  # 世代切替で nix store のパスが変わる。ksycoca は mtime が
+                  # epoch 固定の store を変更検知できないため、明示再構築する。
+                  rebuild_ksycoca
 
                   # ネイティブ Linux は OS 層 (system-manager) も適用する。
                   # WSL は .wslconfig (Windows 側) の管轄なので対象外。
