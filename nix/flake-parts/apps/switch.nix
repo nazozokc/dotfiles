@@ -25,7 +25,11 @@ in
 
           ${c.shell.detectHelpers}
 
-          require_nixbld
+          # nixbld 所属は「必須」にしない。single-user Nix でも
+          # 所属が無ければ後段のビルドが失敗するだけなので、
+          # 止めずに原因を警告するだけにする
+          # (停止するのは build / system-* 側。nixbld_membership_ok を参照)
+          warn_nixbld
 
           # 事前チェック: flake の評価エラーを検出
           echo "[pre-flight] nix flake check --no-build ..."
