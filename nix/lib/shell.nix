@@ -94,23 +94,48 @@
     # installer が追加した所属が一度消えると nix アプリがすべて
     # "Permission denied" (=「実行権限がなくなる」ように見える) で死ぬ。
     # 再発を防げない段階でも、原因を即座に特定できるように先に検出する。
-    require_nixbld() {
+    #
+    # 判定のみ。0 = 問題なし / 1 = 不足
+    nixbld_membership_ok() {
       # macOS は nix-daemon が store を管理するので対象外
-      is_darwin && return 0
+      if is_darwin; then
+        return 0
+      fi
 
       # daemon 運用 (multi-user) なら store 管理は daemon 任せ
       if [[ -S /nix/var/nix/daemon-socket || -e /run/nix-daemon.socket ]]; then
         return 0
       fi
 
-      if ! id -nG | grep -qw nixbld; then
-        echo "[ERROR] nixbld グループに所属していません" >&2
-        echo "        single-user Nix の /nix/store への書き込みに nixbld 所属が必要です" >&2
-        echo "" >&2
-        echo "        対処: sudo usermod -aG nixbld \"$USER\"" >&2
-        echo "        (既存シェルには反映されません: newgrp nixbld または再ログイン)" >&2
-        exit 1
+      if id -nG | grep -qw nixbld; then
+        return 0
       fi
+
+      return 1
+    }
+
+    # 不足していても止めない版 (switch)。理由は後段のビルドで出るが、
+    # あのエラー (Permission denied) だけでは原因が特定できないため、
+    # 先に原因を明示だけしておく。
+    warn_nixbld() {
+      if nixbld_membership_ok; then
+        return 0
+      fi
+
+      echo "[!] nixbld グループに所属していません" >&2
+      echo "    single-user Nix では /nix/store への書き込みに nixbld 所属が必要です" >&2
+      echo "    対処: sudo usermod -aG nixbld \"$USER\"" >&2
+      echo "    (既存シェルには反映されません: newgrp nixbld または再ログイン)" >&2
+    }
+
+    # 不足していれば停止させる版 (build / system-*)
+    require_nixbld() {
+      if nixbld_membership_ok; then
+        return 0
+      fi
+
+      warn_nixbld
+      exit 1
     }
 
     # Windows ユーザープロファイルの .wslconfig パスを検出

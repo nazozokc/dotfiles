@@ -11,7 +11,8 @@ in
   inherit identity;
 
   # nix/lib/shell.nix: require_nix_features / sudo_nix / is_wsl / is_darwin /
-  # require_nixbld / find_wslconfig / check_wslconfig / rebuild_ksycoca
+  # nixbld_membership_ok / warn_nixbld / require_nixbld /
+  # find_wslconfig / check_wslconfig / rebuild_ksycoca
   shell = import ../../lib/shell.nix;
 
   # nix/lib/targets.nix: システムごとの attr 名・表示 (username だけ注入して使う)
