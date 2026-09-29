@@ -7,7 +7,6 @@ gui:
   showBottomLine: true
   nerdFontsVersion: "3"
   skipRewordInEditorWarning: true
-  disableStartupPopups: true
   theme:
     activeBorderColor:
       - "#7FB4CA"
@@ -73,8 +72,7 @@ git:
   truncateCopiedCommitHashesTo: 12
 
 os:
-  editCommand: nvim
-  editCommandTemplate: "{{editor}} +{{line}} {{filename}}"
+  editPreset: nvim
 
 customCommands:
   - key: "C"
