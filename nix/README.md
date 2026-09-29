@@ -410,7 +410,13 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
 - `programs-common.nix` が共通の program モジュールを一括 import する
 - `dotfiles-link.nix` が共有ファイルの symlink を一括管理する
 - `packages/default.nix` がカテゴリ別パッケージを flatten して `home.packages` に渡す
-- Linux は `nixGL` で wezterm/ghostty をラップして非 NixOS 環境の GPU ライブラリに対応
+- Linux は `nixGL` で wezterm/ghostty/zen-browser をラップして非 NixOS 環境の GPU
+  ライブラリに対応
+- Zen Browser は nixpkgs に無いため `github:youwen5/zen-browser-flake` の input を使う。
+  この flake は x86_64-linux / aarch64-linux のみ提供するので、
+  パッケージの解決は `nix/modules/linux/build.nix` に置いた `zenBrowser`
+  （= `zen-browser.packages.${system}.zen-browser`）経由で `extraSpecialArgs` に渡す。
+  WSL / macOS は input を受け取らない
 - `nix/lib/targets.nix` が attr 名の付け方を持つ。`homeConfigurations.<username>` /
   `darwinConfigurations.<username-x86_64>` / `systemConfigs.<username>` や
   `nix build .#...` の対象はすべてここを通る

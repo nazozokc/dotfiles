@@ -82,6 +82,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Zen Browser (nixpkgs には無いので upstream バイナリを wrap した flake を使う)
+    # x86_64-linux / aarch64-linux のみ提供
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # GPU ライブラリラッパー (非 NixOS で Nix GUI アプリを動かす)
     nixGL = {
       url = "github:guibou/nixGL";
@@ -148,6 +155,7 @@
       agent-skills-nix,
       sops-nix,
       nixGL,
+      zen-browser,
       system-manager,
       # x86_64-darwin (Intel Mac) 専用スタック
       nixpkgs-intel,
@@ -196,6 +204,7 @@
           sops-nix
           agent-skills-nix
           nixGL
+          zen-browser
           ;
       };
 

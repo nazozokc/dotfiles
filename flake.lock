@@ -866,7 +866,8 @@
         "nixpkgs-intel": "nixpkgs-intel",
         "sops-nix": "sops-nix",
         "system-manager": "system-manager",
-        "treefmt-nix": "treefmt-nix_5"
+        "treefmt-nix": "treefmt-nix_5",
+        "zen-browser": "zen-browser"
       }
     },
     "sops-nix": {
@@ -1101,6 +1102,26 @@
         "owner": "jfroche",
         "ref": "system-manager",
         "repo": "userborn",
+        "type": "github"
+      }
+    },
+    "zen-browser": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790240349,
+        "narHash": "sha256-uMC3vdi/AdbRLsKCJle4VAIV9e3HEJhe4CZzvA0FXNw=",
+        "owner": "youwen5",
+        "repo": "zen-browser-flake",
+        "rev": "6979f283e596eead5459a6f181dbb735a10c8588",
+        "type": "github"
+      },
+      "original": {
+        "owner": "youwen5",
+        "repo": "zen-browser-flake",
         "type": "github"
       }
     }
