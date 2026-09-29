@@ -26,12 +26,12 @@ nvim/
 │   ├── plugins.lua       # プラグイン定義（空）
 │   ├── vim-options.lua   # 基本設定
 │   └── plugins/          # プラグイン設定（各ファイル）
-└── template/             # ファイルテンプレート
-    ├── js/
+└── template/             # sonictemplate のテンプレート
+    ├── gitignore/
+    ├── javascript/
     ├── lua/
-    ├── md/
-    ├── project/
-    └── ts/
+    ├── markdown/
+    └── typescript/
 ```
 
 ---
@@ -187,13 +187,42 @@ connections:
 
 ## テンプレート
 
-`template/` ディレクトリに各種テンプレートを配置：
+[mattn/vim-sonictemplate](https://github.com/mattn/vim-sonictemplate) を使う。
+設定は `lua/plugins/template.lua`、実体は `template/` に置く。
 
-- `js/` - JavaScript
-- `ts/` - TypeScript
-- `lua/` - Lua
-- `md/` - Markdown
-- `project/` - プロジェクト雛形
+### 使い方
+
+空バッファ（新規ファイル）を開いてコマンドラインで `tmp` → `:Template`。
+候補が補完されるので、名前を選ぶか直接入力する。
+
+```vim
+:Template basic     " template/javascript/base-basic.js を適用
+:Template           " 候補を補完で表示
+```
+
+### ファイル命名規則
+
+`template/< Vim の filetype >/<kind>-<name>.<ext>` の3要素构成。
+ディレクトリ名は拡張子ではなく **filetype**（`javascript` / `typescript` / `markdown`）。
+
+| kind   | 用途                       |
+| ------ | -------------------------- |
+| `base` | バッファが空のときに使う   |
+| `snip` | バッファに文字があるとき    |
+| `file` | バッファ名から絞り込む      |
+
+### 使えるキーワード
+
+| キーワード                      | 展開結果                       |
+| ------------------------------- | ------------------------------ |
+| `{{_name_}}`                    | ファイル名（識別子に適した形）  |
+| `{{_expr_:expand('%:t:r')}}`    | ファイル名（拡張子なし・原形） |
+| `{{_input_:author}}`            | `git config user.name`  fallback `nazozokc` |
+| `{{_expr_:strftime('%Y-%m-%d')}}` | 展開日                     |
+| `{{_cursor_}}`                  | カーソル位置                   |
+
+> `{{_name_}}` は `-` や `.` を `_` に置換する。コメントヘッダや
+> CLI 名など「表示用」には `{{_expr_:expand('%:t:r')}}` を使う。
 
 ---
 
