@@ -19,14 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-<<<<<<< HEAD
-
-||||||| parent of e1e00d9 (edit)
-
-orbase task list
-
-=======
->>>>>>> e1e00d9 (edit)
 if not status is-interactive
     exit
 end
