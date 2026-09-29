@@ -19,6 +19,7 @@
 	untrackedCache = false
 	fsmonitor = false
 	symlinks = true
+	excludesFile = ~/.config/git/ignore
 
 [color]
 	ui = auto
@@ -107,9 +108,6 @@
 [ghq]
 	root = ~/ghq
 
-[wt]
-	remover = trash-cli
-
 # delta pager configuration
 [delta]
 	line-numbers = true
@@ -132,9 +130,7 @@
 	hunk-header-style = file line-number syntax
 
 # Git aliases
+# Windows shares this file on its own, so the [include] lives here rather than
+# in programs.git.includes. Listing it in both duplicated every alias.
 [include]
 	path = ~/.config/git/aliases
-
-# core.excludesFile for global gitignore
-[core]
-	excludesFile = ~/.config/git/ignore
