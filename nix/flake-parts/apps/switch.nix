@@ -38,7 +38,7 @@ in
             echo "  cmd    : switch"
             echo ""
             check_wslconfig
-            nix run nixpkgs#home-manager -- switch --flake .#${t.wslConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            nix run github:nix-community/home-manager -- switch --flake .#${t.wslConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
             rebuild_ksycoca
           elif is_darwin; then
             echo "  system : ${t.sysLabel}"
@@ -52,7 +52,7 @@ in
             echo "  target : ${t.flakeTarget}"
             echo "  cmd    : switch"
             echo ""
-            nix run nixpkgs#home-manager -- switch --flake ${t.flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+            nix run github:nix-community/home-manager -- switch --flake ${t.flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
 
             # 世代切替で nix store のパスが変わる。ksycoca は mtime が
             # epoch 固定の store を変更検知できないため、明示再構築する。
@@ -71,7 +71,7 @@ in
             echo ""
             echo "[!] OS 層を適用します (/etc と systemd システムユニット・sudo 必要)"
             echo ""
-            nix run ${c.systemManager}#default -- switch --flake '.#${t.systemConfigName}' --sudo
+            nix run ${c.systemManagerRef}#default -- switch --flake '.#${t.systemConfigName}' --sudo
           fi
         ''}/bin/switch";
       };
