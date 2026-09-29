@@ -16,7 +16,7 @@
 
 ## Intel Mac (x86_64-darwin) について
 
-nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Intel Mac では最後に対応している **nixpkgs 26.05 系の専用スタック**（`nixpkgs-intel` / `home-manager-intel` / `darwin-intel` など、2026年末まで保守）を使用します。`flake.nix` の `pkgsFor` / `mkDarwinConfig` が system に応じてスタックを切り替えます。
+nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Intel Mac では最後に対応している **nixpkgs 26.05 系の専用スタック**（`nixpkgs-intel` / `home-manager-intel` / `darwin-intel` など、2026年末まで保守）を使用します。`nix/lib/pkgs.nix` の `pkgsFor` / `nix/modules/macos/build.nix` が system に応じてスタックを切り替えます。
 
 ### Intel Mac 固有の制約
 
@@ -131,11 +131,22 @@ GUI アプリケーション。
 
 ```
 nix/
-├── username.nix                       # ユーザー名の単一ソース (flake.nix が import)
 ├── shared.nix                         # 共通設定 (username, stateVersion, xdg)
-├── lib/
-│   └── pkgs.nix                       # pkgsFor (nixpkgs インスタンス生成 + Intelスタック切替)
-├── modules/
+├── lib/                               # flake が使う「値」と「小物」
+│   ├── identity.nix                   # username / repoOwner (誰の dotfiles か)
+│   ├── pkgs.nix                       # pkgsFor (nixpkgs インスタンス生成 + Intelスタック切替)
+│   ├── shell.nix                      # app 共通シェルヘルパ (require_nix_features / is_wsl ...)
+│   └── targets.nix                    # システム別 attr 名・表示 (flakeTarget / hmConfig / sysLabel)
+├── flake-parts/                       # flake-parts の import 先 (outputs の実体)
+│   ├── dev-shells.nix                 # devShells (default / nix / editors)
+│   └── apps/                          # `nix run .#*` の定義
+│       ├── common.nix                 # apps 共有のコンテキスト (identity / shell / targets / system-manager)
+│       ├── bootstrap.nix              # apps.default = `nix run github:nazozokc/dotfiles`
+│       ├── switch.nix                 # apps.switch
+│       ├── build.nix                  # apps.build
+│       ├── update.nix                 # apps.update
+│       └── system.nix                 # apps.system-build / system-check / system-switch
+├── modules/                           # home-manager / system-manager のモジュール
 │   ├── home/                          # home-manager 共通モジュール
 │   │   ├── default.nix                # エントリーポイント (Linux/WSL 共通)
 │   │   ├── wsl.nix                    # WSL エントリーポイント (packages なし)
@@ -210,8 +221,7 @@ nix/
 │   ├── node-packages.nix              # Node.js パッケージ
 │   └── pipx.nix                       # pipx
 ├── README.md                          # このファイル
-├── AGENTS.md                          # AI エージェント用メモリ
-└── shared.nix                         # 共通設定
+└── AGENTS.md                          # AI エージェント用メモリ
 ```
 
 ## コマンド
@@ -238,11 +248,13 @@ nix run .#update
    - 未クローン: `ghq get`（無ければ `git clone`）
    - クローン済み: `git remote update`（fetch のみ）
    - git も無い: `nix shell nixpkgs#git -c git` で一時的に git を用意
-   - clone 先は `flake.nix` の `repoOwner` で決める。ローカルユーザー名
-     （`nix/username.nix`）とは別物なので、別ユーザーで運用しても clone 先は変わらない
+   - clone 先は `nix/lib/identity.nix` の `repoOwner` で決める。ローカルユーザー名
+     （同ファイルの `username`）とは別物なので、別ユーザーで運用しても clone 先は変わらない
 2. クローン先のリポジトリで `nix/username.nix` を `id -un` へ合わせる
    - 値が同じなら触らない / ファイルが無ければ新規生成する
    - 書き換えた場合は `commit` して残す
+   - **このファイルの値は flake が読まない。** 実行時のユーザー名は
+     `nix/lib/identity.nix` の `username` が正
 3. そのディレクトリから `nix run .#switch` に委譲する
    - ユーザー層・OS 層の適用・OS 自動判定・事前チェック・`.wslconfig` チェックは全て `switch` が持つ
 
@@ -255,7 +267,7 @@ nix run .#update
 
 ### experimental-features の担保
 
-全 app は起動直後に `require_nix_features`（`flake.nix` の `nixFeatureGuard`）を実行する。
+全 app は起動直後に `require_nix_features`（`nix/lib/shell.nix` の `nixFeatureGuard`）を実行する。
 
 - `nix-command` / `flakes` が既に有効な環境では何もしない
 - 無効なら **実効値**（`nix config show`）に不足分を加えたものを `NIX_CONFIG` へ
@@ -377,8 +389,11 @@ nix develop .#editors
 ## モジュール間の依存関係
 
 ```
-flake.nix
-├── pkgsFor (nix/lib/pkgs.nix)          → nixpkgs インスタンス生成 (Intelスタック切替)
+flake.nix                                 # 配線のみ (inputs / imports / 設定の属性)
+├── nix/lib/identity.nix                  # username・repoOwner
+├── pkgsFor (nix/lib/pkgs.nix)            → nixpkgs インスタンス生成 (Intelスタック切替)
+├── imports → nix/flake-parts/            # devShells と apps (nix run .#*)
+│   └── apps/common.nix                   # identity / shell.nix / targets.nix / system-manager input
 ├── Linux:   mkLinuxHomeConfig (nix/modules/linux/build.nix)
 │              → nix/modules/home/      + nix/modules/linux/
 │           systemConfigs.{nazozokc,nazozokc-aarch64} (system-manager)
@@ -390,35 +405,36 @@ flake.nix
                → nix/modules/macos/     + nix/modules/home/ (via nix-darwin)
 ```
 
+- `flake.nix` は「どのファイルを import するか」だけを持つ。app のスクリプトや
+  シェルヘルパは `flake.nix` に書かない
 - `programs-common.nix` が共通の program モジュールを一括 import する
 - `dotfiles-link.nix` が共有ファイルの symlink を一括管理する
 - `packages/default.nix` がカテゴリ別パッケージを flatten して `home.packages` に渡す
 - Linux は `nixGL` で wezterm/ghostty をラップして非 NixOS 環境の GPU ライブラリに対応
+- `nix/lib/targets.nix` が attr 名の付け方を持つ。`homeConfigurations.<username>` /
+  `darwinConfigurations.<username-x86_64>` / `systemConfigs.<username>` や
+  `nix build .#...` の対象はすべてここを通る
 
 ## username の決定
 
-- 単一ソース: `nix/username.nix`（`flake.nix` が `import ./nix/username.nix` する）
-- ローカルユーザー名として使う。clone 先の ghq パスは `flake.nix` の
+- 単一ソース: `nix/lib/identity.nix` の `username`（`flake.nix` が import して
+  `nix/lib/targets.nix` 経由で attr 名と `nix/shared.nix` に渡す）
+- ローカルユーザー名として使う。clone 先の ghq パスは同じファイルの
   `repoOwner` を使うので、別のユーザーで運用しても clone 先は変わらない
 - 影響範囲:
   - `homeConfigurations.<username>` / `darwinConfigurations.<username>` / `systemConfigs.<username>` の attr 名
   - `nix/shared.nix` 経由で `home.username` / `home.homeDirectory` / `DOTFILES_USERNAME`
   - `switch` app が WSL 向けに渡す `.#<username>-wsl`
-- **値のソースは bootstrap の `id -un`。** `apps.default` が実行時に
-  `nix/username.nix` を実行環境のユーザー名へ書き換える（値が同じなら触らない）
-  - 書き換え後は pure 評価でも同値が見えるため、`switch` / home-manager の
-    再評価・attr 名の解決がすべて一致する
-  - ファイルが無いクローン（fork 元に未 push の場合）はその場で新規生成する
 - **flake の `outputs` 内では環境変数・`whoami` を使わない。** pure 評価なので
   実行環境に依存する手段が使えない（Nix 2.35 で実測）:
   - `builtins.getEnv "USER"` はエラーにならず `""` を返すだけ
   - `builtins.currentUser` は builtins に存在しない
   - impure 評価を採ると `nix flake check` / `nix run .#switch` / home-manager 起動の
     全部に `--impure` を伝播させる必要があり、CI 品質ゲートが壊れる
-- bootstrap を経由しない運用なら `nix/username.nix` を手で編集する
-- 自動生成された値は **commit して残す**（次回以降の bootstrap が書き換えずに済む）
-- 新規ファイルなので **git に追跡させるまで nix から見えない**
-  （`git add -N nix/username.nix` を忘れると `Path ... is not tracked by Git` で失敗する）
+  - 代替として `apps.default`（bootstrap）が実行時に `id -un` を取得し、
+    clone 先リポジトリの `nix/username.nix` を書き換える（値が同じなら触らない）。
+    **現状 flake はこのファイルを import していない**ので、
+    ユーザー名を変えるときは `nix/lib/identity.nix` を編集する
 
 ## home.stateVersion ポリシー
 

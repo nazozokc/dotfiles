@@ -230,12 +230,13 @@ nix fmt -- --ci
 
 ## ユーザー名
 
-- ユーザー名の単一ソースは **`nix/username.nix`** です（`flake.nix` が import します）。
-- 値は bootstrap（`nix run github:nazozokc/dotfiles`）が `id -un` から自動設定します。
-  値が違う場合だけファイルを書き換え、無い場合は新規生成します。
-- bootstrap を使わない運用なら `nix/username.nix` を手で編集してください。
-- clone 先の `~/ghq/github.com/nazozokc/dotfiles` は `flake.nix` の `repoOwner` で決まるので、
-  上のユーザー名とは独立しています。
+- ユーザー名の単一ソースは **`nix/lib/identity.nix`** の `username` です。
+- 同じファイルの `repoOwner` が clone 先（`~/ghq/github.com/<repoOwner>/dotfiles`）を
+  決めるので、ユーザー名を変えても clone 先は独立しています。
+- bootstrap（`nix run github:nazozokc/dotfiles`）は `id -un` から
+  clone 先リポジトリの `nix/username.nix` を書き換えます。**そのファイルは
+  flake から import されていない**ので、flake 側のユーザー名を変えるときは
+  `nix/lib/identity.nix` を編集してください。
 - flake の `outputs` 内では環境変数を参照しません。pure 評価なので
   `builtins.getEnv` は空文字を返すだけで、`builtins.currentUser` は Nix 2.35 に存在しません。
   詳細は [`nix/README.md`](./nix/README.md) の「username の決定」を参照。
