@@ -10,10 +10,15 @@
   sops-nix,
   agent-skills-nix,
   nixGL,
+  zen-browser,
 }:
 system:
 let
   pkgs = pkgsFor system;
+  # Zen Browser は nixpkgs に無いので外部 flake から取る。
+  # zen-browser-flake は x86_64-linux / aarch64-linux のみ提供するため、
+  # mkLinuxHomeConfig が受け取るのはこの 2 システムに限られる。
+  zenBrowser = zen-browser.packages.${system}.zen-browser;
   commonHomeModules = [
     nix-index-database.homeModules.nix-index
     sops-nix.homeManagerModules.sops
@@ -24,7 +29,7 @@ in
 home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
   extraSpecialArgs = {
-    inherit pkgs username;
+    inherit pkgs username zenBrowser;
     dotfilesDir = self.outPath;
     nixGLPackages = nixGL.packages.${system};
   };

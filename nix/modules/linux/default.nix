@@ -5,6 +5,7 @@
   config,
   pkgs,
   nixGLPackages,
+  zenBrowser,
   dotfilesDir,
   ...
 }:
@@ -15,6 +16,8 @@ let
   wezterm-wrapped = config.lib.nixGL.wrap pkgs.wezterm;
   # ghostty also needs nixGL wrapping for same reason
   ghostty-wrapped = config.lib.nixGL.wrap pkgs.ghostty;
+  # Zen Browser (Firefox ベース) も GPU アクセラレーションに nixGL が必要
+  zen-browser-wrapped = config.lib.nixGL.wrap zenBrowser;
   link = config.lib.file.mkOutOfStoreSymlink;
 in
 {
@@ -45,6 +48,7 @@ in
   home.packages = [
     wezterm-wrapped
     ghostty-wrapped
+    zen-browser-wrapped
   ];
 
   home.file = {
