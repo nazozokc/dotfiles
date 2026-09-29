@@ -20,7 +20,12 @@
           };
 
           # Lua (Neovim設定)
-          stylua.enable = true;
+          # nvim/template 配下は sonictemplate のテンプレートで、
+          # {{_expr_:expand('%:t:r')}} 等のプレースホルダを含むため整形できない。
+          stylua = {
+            enable = true;
+            excludes = [ "nvim/template/*" ];
+          };
 
           # Shell
           shfmt = {

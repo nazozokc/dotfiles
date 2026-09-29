@@ -1,7 +1,7 @@
 /**
- * {{_file_name_}}
- * {{_author_}} <{{_email_}}>
- * created: {{_date_}}
+ * {{_expr_:expand('%:t:r')}}
+ * {{_input_:author}}
+ * created: {{_expr_:strftime('%Y-%m-%d')}}
  */
 
 import { Router, Request, Response } from "express";
