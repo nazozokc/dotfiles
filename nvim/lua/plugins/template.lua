@@ -18,7 +18,7 @@ return {
 	config = function()
 		local Path = require("plenary.path")
 		vim.g.sonictemplate_vim_template_dir = {
-			Path:new(vim.fn.stdpath("config"), "template"):absolute(),
+			Path:new(vim.fn.stdpath("/home/nazozokc/ghq/github.com/nazozokc/dotfiles/nvim/"), "template"):absolute(),
 		}
 	end,
 }
