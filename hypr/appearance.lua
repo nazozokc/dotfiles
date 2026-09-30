@@ -31,10 +31,11 @@ hl.config({
 		rounding_power = 2,
 	},
 
-	-- Animation globals (Ambxst が触らないキーのみ)
-	animations = {
-		first_launch_animation = true,
-	},
+	-- animations セクションはここでは書かない。
+	-- v0.50 までは animations:first_launch_animation があったが v0.51 で削除され、
+	-- 現在 (0.56) の残りは animations:enabled / workspace_wraparound のみ。
+	-- enabled は「Ambxst が触らないキー」に該当しないので書かない。
+	-- このキーを残すと unknown config key "animations.first_launch_animation" になる。
 
 	-- Dwindle layout
 	dwindle = {
