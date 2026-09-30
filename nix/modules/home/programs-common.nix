@@ -4,6 +4,7 @@
   imports = [
     ./programs/gh
     ./programs/pnpm
+    ./programs/bun
     ./programs/git
     ./programs/lazygit
     ./programs/cmux
