@@ -95,6 +95,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Ambxst (Quickshell 製デスクトップシェル)
+    # 独自 nixosModules は upower / power-profiles-daemon / NetworkManager を
+    # mkDefault true で強制するため採用しない (nix/modules/system/power.nix と
+    # 二重定義になる)。使うのは packages.<system>.default のみ。
+    ambxst = {
+      url = "github:Axenide/Ambxst";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Linux OS 設定管理 (非 NixOS ディストリで NixOS モジュールを扱えるようにする)
     # macOS 側の nix-darwin に相当する役割
     system-manager = {
@@ -157,6 +166,7 @@
       nixGL,
       zen-browser,
       system-manager,
+      ambxst,
       # x86_64-darwin (Intel Mac) 専用スタック
       nixpkgs-intel,
       home-manager-intel,
@@ -205,6 +215,7 @@
           agent-skills-nix
           nixGL
           zen-browser
+          ambxst
           ;
       };
 

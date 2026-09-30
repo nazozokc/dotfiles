@@ -69,10 +69,7 @@ hl.window_rule({
 -- LAYER RULES (bars, launchers, etc.)
 -- ═══════════════════════════════════════════════════════════
 
--- Blur behind waybar (requires waybar with transparent background)
-hl.layer_rule({ name = "blur-waybar", match = { namespace = "waybar" }, blur = true })
--- Ignore fully transparent pixels so only content areas get blurred
-hl.layer_rule({ name = "ignorezero-waybar", match = { namespace = "waybar" }, ignore_alpha = 0.5 })
-
--- Blur behind rofi launcher
-hl.layer_rule({ name = "blur-rofi", match = { namespace = "rofi" }, blur = true, ignore_alpha = 0.5 })
+-- 旧: blur-waybar / ignorezero-waybar / blur-rofi
+-- Ambxst は bar・launcher・notification・wallpaper を自分の layer surface
+-- (namespace `quickshell` / `ambxst*`) として持ち、layer rule も
+-- 生成された hyprland.lua に書く。そのためこの rule は不要。
