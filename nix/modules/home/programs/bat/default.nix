@@ -1,14 +1,17 @@
 {
-  dotfilesDir,
   ...
 }:
 {
   programs.bat = {
     enable = true;
 
-    # Configuration is in bat/config (shared across platforms)
-    # config = {};
+    # Rendered to ~/.config/bat/config by home-manager, one `--flag=value`
+    # pair per option. Values must be strings: `tabs` has to be "2", not 2.
+    config = {
+      theme = "TwoDark";
+      pager = "less -FR";
+      style = "numbers,changes,header";
+      tabs = "2";
+    };
   };
-
-  home.file.".config/bat/config".source = "${dotfilesDir}/bat/config";
 }
