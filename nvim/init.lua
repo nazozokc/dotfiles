@@ -47,17 +47,32 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- lockfile は home-manager 経由だと Nix store (read-only) を指すため、
--- lazy.nvim が install/update 時に書き込めない (E5113: Permission denied)。
--- 書き込み可能な state 配下を lockfile とし、初回起動時に Nix 管理の
--- lockfile をコピーしてピン留めを引き継ぐ。
--- ピン留めを更新したら state's lockfile をリポジトリへ戻す:
---   cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
+-- lockfile は Nix (home-manager) 管理。out-of-store symlink により
+-- ~/.config/nvim/lazy-lock.json はリポジトリの nvim/lazy-lock.json を指す。
+-- lazy.nvim が直接書き込むので、install/update で得たピン留めは
+-- リポジトリ側にそのまま残る（state へ複写して手動 cp で戻す運用は不要）。
+--
+-- ただし symlink 未適用（nix run .#switch 前）や Nix store 直参照だと
+-- read-only になり E5113 (Permission denied) で落ちるので、その場合だけ
+-- state 配下へ退避して起動できるようにしておく。
 local uv = vim.uv or vim.loop
-local lockfile = vim.fn.stdpath("state") .. "/lazy/lazy-lock.json"
-if not uv.fs_stat(lockfile) then
-	vim.fn.mkdir(vim.fn.fnamemodify(lockfile, ":h"), "p")
-	uv.fs_copyfile(vim.fn.stdpath("config") .. "/lazy-lock.json", lockfile)
+local lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
+if vim.fn.filewritable(lockfile) == 0 then
+	vim.notify(
+		"lazy-lock.json が read-only です。`nix run .#switch` で Nix 管理の symlink を適用してください\n"
+			.. "  暫定的に state 配下の lockfile を使います（ピン留めはリポジトリに反映されません）\n"
+			.. "  "
+			.. lockfile,
+		vim.log.levels.WARN
+	)
+	local fallback = vim.fn.stdpath("state") .. "/lazy/lazy-lock.json"
+	vim.fn.mkdir(vim.fn.fnamemodify(fallback, ":h"), "p")
+	if vim.fn.filewritable(fallback) ~= 2 then
+		-- 既存の 444 などは除去して作り直す。writefile なので 644 で作成される。
+		uv.fs_unlink(fallback)
+		vim.fn.writefile(vim.fn.readfile(vim.fn.stdpath("config") .. "/lazy-lock.json"), fallback)
+	end
+	lockfile = fallback
 end
 
 require("lazy").setup("plugins", {
