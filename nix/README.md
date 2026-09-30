@@ -218,6 +218,7 @@ nix/
 │   │   │   └── wsl.nix               # WSL 向けパッケージ (category ラッパー)
 │   │   └── programs/                  # プログラム設定 (programs-common.nix 経由)
 │   │       ├── bat/                   # bat (CLI ファイルビューア)
+│   │       ├── bun/                   # bun (BUN_INSTALL 系を XDG 準拠に固定)
 │   │       ├── claude-code/           # Claude Code
 │   │       ├── cmux/                  # cmux (tmux ラッパー)
 │   │       ├── direnv.nix             # direnv
