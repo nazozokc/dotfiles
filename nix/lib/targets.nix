@@ -9,7 +9,7 @@ let
   isAarch64Linux = system == "aarch64-linux";
 in
 rec {
-  inherit isDarwin;
+  inherit isDarwin isIntelMac;
 
   # nix-darwin の設定名 (Apple Silicon: 無印 / Intel Mac: -x86_64 サフィックス)
   darwinConfigName = if isIntelMac then "${username}-x86_64" else username;

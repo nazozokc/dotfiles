@@ -1,13 +1,15 @@
 # Neovim Configuration
 
 このディレクトリは [nazozokc/dotfiles](https://github.com/nazozokc/dotfiles) の Neovim 設定です。  
-lazy.nvim をプラグインマネージャーとして使用しています。
+プラグインの宣言は Lua で、**実体とバージョンは Nix が管理**しています。  
+lazy.nvim は plugin manager としてのみ使い、install 先を nix store へ差し替えます。
 
 ---
 
 ## 特徴
 
 - **軽量・高速・充実**: lazy.nvim による遅延読み込み
+- **再現性**: プラグイン実体・バージョンが nix store に固定される
 - **LSP 完備**: TypeScript, Lua, Ruby, Nix, HTML など標準サポート
 - **モダンUI**: カスタムダッシュボード、ステータスライン、ファジーファインダー
 - **Treesitter**: シンタックスハイライト・インデント
@@ -21,7 +23,7 @@ lazy.nvim をプラグインマネージャーとして使用しています。
 ```
 nvim/
 ├── init.lua              # エントリーポイント・キーマップ
-├── lazy-lock.json        # プラグインバージョンロック
+├── lazy-lock.json        # Nix 管理外のプラグインのみ (現状 swagger-preview.nvim 1件)
 ├── lua/
 │   ├── plugins.lua       # プラグイン定義（空）
 │   ├── vim-options.lua   # 基本設定
@@ -33,6 +35,48 @@ nvim/
     ├── markdown/
     └── typescript/
 ```
+
+---
+
+## プラグインの仕組み
+
+```
+nvim/lua/plugins/*.lua             宣言 (lazy-loading / dependencies / opts)
+nix/plugins/nixpkgs-plugins.nix   プラグイン名 -> pkgs.vimPlugins.<attr>
+nix/plugins/pinned-plugins.json   nixpkgs に無いものの url / branch / rev / hash
+nix/plugins/default.nix           両系統を farm (symlink 一覧) にまとめる
+```
+
+- `LAZY_NIX_PLUGINS` が farm の path。`nix run .#switch` で Neovim が使う
+  wrapper に `export` される (`nix/modules/home/programs/nvim/default.nix` の
+  `extraWrapperArgs` の `--set`)。
+- `init.lua` は `os.getenv("LAZY_NIX_PLUGINS")` を見て `lazy.setup` の
+  `dev.path` / `dev.fallback` を組み立てる。
+  - 設定あり → プラグインは全部 farm から解決 (`_.is_local`)
+  - 未設定 → 従来の git clone bootstrap にフォールバック
+- プラグインを追加する手順は `nix/AGENTS.md` の「Neovim プラグイン管理」を参照。
+
+### 更新
+
+```bash
+# Nix 管理分の更新 (rev / hash を nix/plugins/pinned-plugins.json に書く)
+nix run .#nvim-plugin-update
+
+# 反映
+nix run .#switch
+```
+
+nixpkgs 由来のプラグインは attr 名が固定されているので `nix flake update` 経由でしか更新されない。
+Nix 管理外のプラグイン (現状 `swagger-preview.nvim`) は lazy.nvim 側
+(`:Lazy update swagger-preview.nvim`) で更新する。
+
+### 注意事項
+
+- `lazy-lock.json` には触らない。Nix 管理外のプラグインの記録用になる。
+- `build = "..."` ステップは原則不要。`:TSUpdate` のように外部 fetch を
+  行うステップは Nix (read-only store) では機能しない。
+- `nix/plugins/pinned-plugins.json` の `rev` は commit、`hash` は `fetchgit` 用の
+  SRI ハッシュ。両者を一致させていないと `hash mismatch` でビルドが失敗する。
 
 ---
 
