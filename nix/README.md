@@ -390,6 +390,17 @@ nix/plugins/default.nix     両系統を 1 つの farm (symlink 一覧) にま�
   `dev.path` / `dev.fallback` を組み立てる。未設定なら従来の git clone にフォールバックする。
 - よって `nvim/lazy-lock.json` に並ぶのは Nix 管理外のプラグインだけ
   (現状は `swagger-preview.nvim` 1件)。`lazy-lock.json` には触らない。
+- lazy.nvim が書き込む lockfile の実体は **state 配下**
+  (`~/.local/state/nvim/lazy/lazy-lock.json`)。`~/.config/nvim/lazy-lock.json` は
+  `dotfilesDir = self.outPath` 経由の nix store への symlink なので read-only。
+  `mkOutOfStoreSymlink` は「activation package に複製しない」だけで store を
+  離れるわけではないため、`nix run .#switch` を再実行しても書き可能にはならない。
+  `init.lua` が起動時にリポジトリの `nvim/lazy-lock.json` を種としてコピーし、
+  既に書き可能な state's 側があればそちらを引き継ぐ。
+  `:Lazy update` 後のピンをリポジトリへ戻す:
+  ```bash
+  cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
+  ```
 - プラグインを追加する手順:
   1. `nvim/lua/plugins/*.lua` に宣言を書く
   2. nixpkgs にあれば `nix/plugins/nixpkgs-plugins.nix` に attr を足す
