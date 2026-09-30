@@ -6,6 +6,7 @@
   pkgs,
   nixGLPackages,
   zenBrowser,
+  ambxstPackages,
   dotfilesDir,
   ...
 }:
@@ -40,21 +41,25 @@ in
   };
 
   # ---------------------------------------------------------------------------
-  # nixGL-wrapped GUI apps
+  # nixGL-wrapped GUI apps + Ambxst
   # ---------------------------------------------------------------------------
   # On non-NixOS, Nix-packaged GUI apps can't find system GPU libraries
   # (libEGL.so etc.) because their RUNPATH only contains Nix store paths.
   # nixGL bridges the gap. Keep these out of packages/gui/default.nix.
+  #
+  # Ambxst は nixGL wrap 不要: launcher が buildEnv 経由で mesa / libglvnd /
+  # egl-wayland を同梱し、PATH 経由で参照する設計のため。
   home.packages = [
     wezterm-wrapped
     ghostty-wrapped
     zen-browser-wrapped
+    ambxstPackages.default
   ];
 
+  # Ambxst が bar / launcher / notifications / 壁紙の layer surface を
+  # 自前で持つため、waybar / rofi / dunst の設定リンクは不要。
+  # Ambxst 自身の layer rule は生成された hyprland.lua 経由で入る。
   home.file = {
     ".config/hypr".source = link "${dotfilesDir}/hypr";
-    ".config/waybar".source = link "${dotfilesDir}/waybar";
-    ".config/rofi".source = link "${dotfilesDir}/rofi";
-    ".config/dunst".source = link "${dotfilesDir}/dunst";
   };
 }

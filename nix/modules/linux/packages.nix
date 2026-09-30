@@ -5,14 +5,15 @@
 {
   home.packages = with pkgs; [
     # クリップボード
+    # wl-clipboard は Ambxst 同梱の wl-clip-persist と併用する。
+    # Ambxst は履歴を SQLite で管理するため、wl-copy / wl-paste 自体は
+    # nvim などの他ツール用に残す。
     xclip
     wl-clipboard
 
     # 音・動画
     alsa-utils
-    playerctl
     pulseaudio
-    pavucontrol
     sox
 
     # アーカイブ
@@ -42,6 +43,7 @@
     gnupg
     openssh
     pass
+    # Ambxst は polkit agent を同梱しないので polkit_gnome は残す
     polkit_gnome
 
     # XDG/デスクトップ統合
@@ -53,37 +55,26 @@
     # window manager
     herdr
 
-    # スクリーンショット
-    grim
-    slurp
-
-    # バックライト
-    brightnessctl
-
-    # ランチャー
-    rofi
-
-    # ステータスバー
-    waybar
-
-    # 通知
-    dunst
-
-    # ウォールペーパー
-    awww
-
-    #vicinae
-    vicinae
-    jq
-
-    # ロック/アイドル
-    hyprlock
-    hypridle
-
     # microsoft
     teams-for-linux
 
-    # ログアウトメニュー
-    wlogout
+    jq
+
+    # -----------------------------------------------------------------------
+    # Ambxst へ一本化したため削除したもの
+    #
+    #   waybar          → Ambxst bar
+    #   dunst           → Ambxst notifications
+    #   rofi            → Ambxst launcher (fuzzel 同梱)
+    #   vicinae         → Ambxst launcher
+    #   hyprlock        → Ambxst lockscreen (PAM)
+    #   hypridle        → Ambxst idle / auto-lock
+    #   wlogout         → Ambxst powermenu
+    #   awww            → Ambxst wallpaper manager
+    #   grim / slurp    → Ambxst screenshot
+    #   pavucontrol     → Ambxst 同梱 (apps.nix)
+    #   playerctl       → Ambxst 同梱 (media.nix) + media key OSD
+    #   brightnessctl   → Ambxst 同梱 (tools.nix) + brightness OSD
+    # -----------------------------------------------------------------------
   ];
 }

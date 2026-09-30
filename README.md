@@ -208,7 +208,7 @@ wsl --shutdown
   - **gui**: wezterm, ghostty, vscode, zed, spotify, discord, google-chrome など
   - **experimental**: pi-coding-agent, grok-cli, qwen-code
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理
-- **Linux GUI (Hyprland)**: hypr, waybar, rofi, dunst
+- **Linux GUI (Hyprland)**: hypr + Ambxst (Quickshell 製シェル。bar / launcher / 通知 / ロック / 壁紙 / スクリーンショット / メディア / OSD を統合）
 - **macOS限定**: nix-darwin によるシステム設定
 
 ---

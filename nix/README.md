@@ -91,7 +91,7 @@ GUI アプリケーション。
 ### Linux固有パッケージ (`nix/modules/linux/packages.nix`)
 
 - クリップボード: xclip, wl-clipboard
-- 音声: alsa-utils, playerctl, pulseaudio, pavucontrol, sox
+- 音声: alsa-utils, pulseaudio, sox
 - アーカイブ: unzip, zip
 - ネットワーク: ethtool, mtr, nmap
 - システム監視: duf, hyperfine, iotop, lm_sensors, procs, sd, sysstat, bandwhich
@@ -99,7 +99,31 @@ GUI アプリケーション。
 - セキュリティ: gnupg, openssh, pass, polkit_gnome
 - XDG: file, libnotify, xdg-user-dirs, xdg-utils
 - ウィンドウマネージャ: herdr
-- Wayland: grim, slurp, brightnessctl, rofi, waybar, dunst, awww, hyprlock, hypridle, wlogout
+
+#### Ambxst へ一本化したパッケージ
+
+`ambxst` (Quickshell 製デスクトップシェル) の導入で以下を削除した。
+Ambxst が同一機能を自前で持つため。
+
+| 削除パッケージ | Ambxst 側の担当        |
+| -------------- | ---------------------- |
+| waybar         | bar                    |
+| dunst          | notifications          |
+| rofi / vicinae | launcher (fuzzel 同梱) |
+| hyprlock       | lockscreen (PAM)       |
+| hypridle       | idle / auto-lock       |
+| wlogout        | powermenu              |
+| awww           | wallpaper manager      |
+| grim / slurp   | screenshot             |
+| pavucontrol    | 同梱 (apps.nix)        |
+| playerctl      | 同梱 (media.nix) + OSD |
+| brightnessctl  | 同梱 (tools.nix) + OSD |
+
+残したもの:
+
+- `polkit_gnome` — Ambxst は polkit agent を同梱しない
+- `wl-clipboard` — Ambxst は `wl-clip-persist` で履歴を管理するため、
+  `wl-copy` / `wl-paste` 自体は nvim など他ツール用に必要
 
 ### WSL固有パッケージ (`nix/modules/wsl/packages.nix`)
 
@@ -220,7 +244,7 @@ nix/
 │   │   └── sysctl.nix                 # sysctl.d drop-in と tcp_bbr modprobe
 │   ├── linux/                         # Linux 固有設定
 │   │   ├── build.nix                  # 設定生成ヘルパー (mkLinuxHomeConfig)
-│   │   ├── default.nix                # エントリーポイント (nixGL, hypr/waybar/rofi/dunst link)
+│   │   ├── default.nix                # エントリーポイント (nixGL, zen-browser, ambxst, hypr link)
 │   │   ├── packages.nix               # Linux 専用パッケージ
 │   │   └── system.nix                 # ロケール・XDG・セッション変数
 │   ├── macos/                         # macOS 固有設定

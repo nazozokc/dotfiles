@@ -11,6 +11,7 @@
   agent-skills-nix,
   nixGL,
   zen-browser,
+  ambxst,
 }:
 system:
 let
@@ -32,6 +33,8 @@ home-manager.lib.homeManagerConfiguration {
     inherit pkgs username zenBrowser;
     dotfilesDir = self.outPath;
     nixGLPackages = nixGL.packages.${system};
+    # Ambxst のビルド済みパッケージ (nixosModules は使わない / 理由は flake.nix 参照)
+    ambxstPackages = ambxst.packages.${system};
   };
   modules = commonHomeModules ++ [
     ../nix-conf.nix

@@ -8,6 +8,23 @@
 --   • Workspaces map to tabs (wezterm: Ctrl+Shift+[number/[/]]).
 --   • $mainMod + q to close = wezterm's Ctrl+Shift+q.
 --
+-- Ambxst との役割分担:
+--   Ambxst は既定で 20 個のキーを割り当てる。ここに同じキーを書いても
+--   hyprland.lua 末尾で読み込む Ambxst 側が後勝ちして上書きするため無効。
+--   そのため Ambxst のキーはここでは一切定義しない。
+--
+--     launcher   SUPER+Super_L      dashboard  SUPER+D
+--     assistant  SUPER+A            clipboard  SUPER+V
+--     emoji      SUPER+PERIOD       notes      SUPER+N
+--     tmux       SUPER+T            wallpapers SUPER+COMMA
+--     config     SUPER+SHIFT+C      lockscreen SUPER+L
+--     overview   SUPER+TAB          powermenu  SUPER+ESCAPE
+--     tools      SUPER+S            screenshot SUPER+SHIFT+S
+--     screenrec  SUPER+SHIFT+R      lens       SUPER+SHIFT+A
+--     bar        SUPER+SHIFT+B      reload     SUPER+ALT+B
+--     quit       SUPER+CTRL+ALT+B   close win  SUPER+C
+--
+--   自分の体系 (hjkl / workspace / resize) は Ambxst と一切重複しない。
 
 local mainMod = "SUPER"
 
@@ -31,7 +48,10 @@ hl.bind(mainMod .. " + l", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close()) -- close window
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen()) -- toggle fullscreen
 hl.bind(mainMod .. " + Space", hl.dsp.window.float({ action = "toggle" })) -- toggle float
-hl.bind(mainMod .. " + V", hl.dsp.window.pseudo()) -- toggle pseudo tiling (like nvim :vsp)
+-- pseudo tiling (like nvim :vsp)
+-- 旧キーは SUPER+V だったが Ambxst の clipboard が割り当てているため
+-- 未使用の SUPER+P に移設した。
+hl.bind(mainMod .. " + P", hl.dsp.window.pseudo()) -- toggle pseudo tiling
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- toggle split direction (dwindle)
 
 -- Move window in direction (like wezterm's move_to_new_tab, but directional)
@@ -68,29 +88,21 @@ hl.bind(mainMod .. " + bracketright", hl.dsp.focus({ workspace = "m+1" }))
 -- LAUNCH
 -- ═══════════════════════════════════════════════════════════
 -- $mainMod + Return  → terminal (wezterm: Ctrl+Shift+t = new tab, analog)
--- $mainMod + d       → app launcher (rofi drun)
--- $mainMod + Shift+d → command runner (rofi run)
+-- ランチャー (旧 SUPER+D / SUPER+SHIFT+D の rofi) は Ambxst が担当
 
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("wezterm"))
-hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("rofi -show drun"))
-hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("rofi -show run"))
-
--- ═══════════════════════════════════════════════════════════
--- SCREENSHOT (grim + slurp + wl-clipboard)
--- ═══════════════════════════════════════════════════════════
--- Print           → region select → clipboard
--- Shift + Print   → full screen   → clipboard
-
-hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grim - | wl-copy"))
 
 -- ═══════════════════════════════════════════════════════════
 -- SYSTEM
 -- ═══════════════════════════════════════════════════════════
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock")) -- lock
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd("systemctl suspend")) -- sleep
+-- lock (旧 SUPER+L) / logout menu (旧 SUPER+SHIFT+Escape) は
+-- Ambxst の lockscreen / powermenu が担当
+-- sleep は Ambxst に bind が無いので残す。
+-- 旧キーは SUPER+SHIFT+L だったが、上の "move right" と重複していて
+-- 後勝ちのこちらが (move を) 殺していたため SUPER+ALT+ESCAPE へ変更。
+-- ESCAPE 系でまとめると Ambxst の powermenu (SUPER+ESCAPE) と紛らわしくない。
+hl.bind(mainMod .. " + ALT + ESCAPE", hl.dsp.exec_cmd("systemctl suspend")) -- sleep
 hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("hyprctl dispatch exit")) -- quit (nvim :q!)
-hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.exec_cmd("wlogout")) -- logout menu
 
 -- ═══════════════════════════════════════════════════════════
 -- MOUSE
@@ -103,23 +115,7 @@ hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
 -- ═══════════════════════════════════════════════════════════
--- MEDIA KEYS
+-- MEDIA / BRIGHTNESS KEYS
 -- ═══════════════════════════════════════════════════════════
-hl.bind(
-	"XF86AudioRaiseVolume",
-	hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
-	{ locked = true, repeating = true }
-)
-hl.bind(
-	"XF86AudioLowerVolume",
-	hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
-	{ locked = true, repeating = true }
-)
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
-hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 5%+"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"), { locked = true, repeating = true })
+-- 旧: XF86Audio* → playerctl / wpctl, XF86MonBrightness* → brightnessctl
+-- Ambxst が media control と OSD (音量・輝度) を持つため削除。
