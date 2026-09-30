@@ -114,18 +114,40 @@ GUI アプリケーション。
 
 以下の設定ファイルは Nix（Linux/macOS/WSL）と Windows（PowerShell 7）で同じファイルを共有しています：
 
-| ツール         | 共有ファイル                              | Nixでの管理方法                                   | Windowsでの管理方法    |
-| -------------- | ----------------------------------------- | ------------------------------------------------- | ---------------------- |
-| git            | `git/config`, `git/aliases`, `git/ignore` | `programs.git.includes` + `home.file` でデプロイ  | `apply.ps1` で symlink |
-| starship       | `starship/starship.toml`                  | `home.file` でデプロイ                            | `apply.ps1` で symlink |
-| lazygit        | `lazygit/config.yml`                      | `home.file` でデプロイ                            | `apply.ps1` で symlink |
-| bat            | `bat/config`                              | `home.file` でデプロイ                            | `apply.ps1` で symlink |
-| nvim           | `nvim/`                                   | `home.file` で symlink                            | `apply.ps1` で symlink |
-| wezterm        | `wezterm/`                                | `home.file` で symlink                            | `apply.ps1` で symlink |
-| opencode       | `opencode/`                               | `xdg.configFile` + `home.file` でデプロイ・リンク | `apply.ps1` で symlink |
-| efm-langserver | `efm-langserver/`                         | `home.file` でデプロイ                            | `apply.ps1` で symlink |
+| ツール         | 共有ファイル      | Nixでの管理方法                                   | Windowsでの管理方法    |
+| -------------- | ----------------- | ------------------------------------------------- | ---------------------- |
+| nvim           | `nvim/`           | `home.file` で symlink                            | `apply.ps1` で symlink |
+| wezterm        | `wezterm/`        | `home.file` で symlink                            | `apply.ps1` で symlink |
+| opencode       | `opencode/`       | `xdg.configFile` + `home.file` でデプロイ・リンク | `apply.ps1` で symlink |
+| efm-langserver | `efm-langserver/` | `home.file` でデプロイ                            | `apply.ps1` で symlink |
 
-各 `programs/<name>/default.nix` では `dotfilesDir` を使ってリポジトリルートの共有ファイルを参照しています。
+`nvim/` `wezterm/` `opencode/` `efm-langserver/` は `dotfilesDir` でリポジトリルートの
+ファイルを参照し、`home.file` で symlink する（上記4つ）。
+
+## Nix が生成する設定
+
+git / starship / lazygit / bat は共有ファイルを持たない。設定は
+`nix/modules/home/programs/<name>/default.nix` に書き、home-manager のジェネレータが
+store へ書き出してから symlink する。
+
+| ツール   | 生成元                              | 生成先                         |
+| -------- | ----------------------------------- | ------------------------------ |
+| git      | `programs.git.settings` (INI)       | `~/.config/git/config`         |
+| git      | `programs.git.ignores` (ignore)     | `~/.config/git/ignore`         |
+| starship | `programs.starship.settings` (TOML) | `~/.config/starship.toml`      |
+| lazygit  | `programs.lazygit.settings` (YAML)  | `~/.config/lazygit/config.yml` |
+| bat      | `programs.bat.config`               | `~/.config/bat/config`         |
+
+- 別ファイルへ逃がしていた `git/aliases` `git/config` `git/ignore` と
+  `programs.git.includes` は廃止。alias は `settings.alias` に統合した
+- 同じキーを2回書く必要がある箇所（`credential.<url>.helper`）はリスト値にする。
+  `toGitINI` が同じキーを2行に展開するので git の
+  「空でクリア → 次の値をセット」の指定順が保たれる
+- `programs.git.settings` は1つの attrset のままにする。home-manager の gh モジュールも
+  同じオプションに attrset を書くため、型 `either gitIniType (listOf gitIniType)` は
+  全て同じ形の定義でしか merge できない
+- lazygit は `home.activation.validateLazygitSettings` が
+  インストール済みバージョンの schema で検証する。設定のミスは switch 時に落ちる
 
 ## モジュール構造
 
