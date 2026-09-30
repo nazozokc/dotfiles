@@ -1,5 +1,5 @@
-# nix/flake-parts/apps/nvim-plugin-update.nix
-# apps.nvim-plugin-update — Neovim プラグインの更新
+# nix/flake-parts/apps/lazy2nix.nix
+# apps.lazy2nix — Neovim プラグインの更新
 #
 # 更新の主語は 2 つある:
 #
@@ -31,15 +31,15 @@ in
       isIntelMacShell = if t.isIntelMac then "true" else "false";
     in
     {
-      apps.nvim-plugin-update = {
+      apps.lazy2nix = {
         type = "app";
         meta.description = "Neovim プラグイン (nixpkgs 由来 + pin 済み) を更新する";
-        program = "${pkgs.writeShellScriptBin "nvim-plugin-update" ''
+        program = "${pkgs.writeShellScriptBin "lazy2nix" ''
                     set -eo pipefail
 
                     ${c.shell.nixFeatureGuard}
 
-                    ${t.printInfo "nvim-plugin-update"}
+                    ${t.printInfo "lazy2nix"}
 
                     # -------------------------------------------------------------------
                     # オプション
@@ -55,7 +55,7 @@ in
                         --no-pinned) run_pinned=0 ;;
                         -h|--help)
                           cat <<'USAGE'
-          nix run .#nvim-plugin-update [--no-check] [--no-nixpkgs] [--no-pinned]
+          nix run .#lazy2nix [--no-check] [--no-nixpkgs] [--no-pinned]
 
             --no-check     最後に `nix flake check --no-build` を走らせない
             --no-nixpkgs   nixpkgs input を更新しない
@@ -191,7 +191,7 @@ in
 
                     echo ""
                     echo "  反映するには: nix run .#switch"
-        ''}/bin/nvim-plugin-update";
+        ''}/bin/lazy2nix";
       };
     };
 }
