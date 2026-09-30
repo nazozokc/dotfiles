@@ -8,6 +8,10 @@
 let
   nvimDotfilesDir = "${dotfilesDir}/nvim";
 
+  # lazy.nvim が使う install 先 (実体とバージョンを持つ)
+  # nix/plugins/default.nix 参照。farm には全プラグインが並んでいる。
+  nvimPlugins = import ../../../../plugins { inherit pkgs; };
+
   treesitterGrammars = pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: [
     plugins.nix
     plugins.lua
@@ -38,9 +42,11 @@ in
   programs.neovim = {
     enable = true;
 
-    # lazy.nvim is managed by itself via bootstrap in init.lua.
-    # Nixで提供するとdoc/tagsが読み取り専用(nix store)になり、
-    # helptags生成でE152が発生するため。
+    # プラグインの「実体」は nix/plugins/ が持つ。
+    # lazy.nvim は plugin manager としてだけ使い、install 先を
+    # LAZY_NIX_PLUGINS (nix store) へ差し替える (init.lua の dev.path)。
+    # lazy.nvim 自身も pkgs.vimPlugins.lazy-nvim を使うため、
+    # bootstrap の git clone は init.lua で Nix 経路なら行わない。
 
     withRuby = true;
     withPython3 = true;
@@ -51,7 +57,16 @@ in
     initLua = builtins.readFile "${nvimDotfilesDir}/init.lua";
 
     # Set environment variables only for Neovim session
+    #
+    # `--set NAME VALUE` は nixpkgs の wrapNeovim が `export NAME='VALUE'`
+    # に翻訳する。wrapper に入るので、どのシェル / デスクトップアプリから
+    # 起動しても同じ値になる (home.sessionVariables だとログインシェルで
+    # 開いた terminal だけ wouldn't get it)。
     extraWrapperArgs = [
+      # lazy.nvim の install 先 (nix store の farm)
+      "--set"
+      "LAZY_NIX_PLUGINS"
+      "${nvimPlugins.path}"
       "--set"
       "TREESITTER_GRAMMARS"
       "${treesitterGrammars}"
@@ -100,6 +115,16 @@ in
       lsof
     ];
   };
+
+  # lazy.nvim の install 先を nix store へ差し替えるための env 変数は
+  # programs.neovim.extraWrapperArgs の `--set LAZY_NIX_PLUGINS` で渡す
+  # (nix store の farm = nix/plugins/default.nix)。
+  #
+  # nvim/lua/plugins/*.lua はそのまま使う (プラグインの宣言は Lua に残す)。
+  # init.lua が os.getenv("LAZY_NIX_PLUGINS") を見て lazy.setup の
+  # dev.path / dev.fallback を組み立てる。未設定の環境 (Windows 側の
+  # apply.ps1 や素の Neovim) では init.lua が従来の clone bootstrap に
+  # フォールバックする。
 
   # lazy-lock.json は lockfile なので lazy.nvim が install/update 時に書き込む。
   # Nix store (read-only) を直接指すと E5113 (Permission denied) で落ちるので

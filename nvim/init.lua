@@ -32,18 +32,33 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 require("vim-options")
 
 -- lazy.nvim bootstrap
--- Nixで管理するとdoc/tagsが読み取り専用(nix store)になり、
--- helptags生成でE152になるため、lazy.nvim自体は自身で管理する
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
-		lazypath,
-	})
+--
+-- Nix 管理環境 (nix run .#switch 済み) では LAZY_NIX_PLUGINS が
+-- nix store の farm を指す。lazy.nvim 自身も pkgs.vimPlugins.lazy-nvim として
+-- farm に入るので、git clone はしない。
+--
+-- LAZY_NIX_PLUGINS が無い環境 (Windows 側の apply.ps1 / 素の Neovim) では
+-- 従来どおり自分で clone する。
+local nixPlugins = os.getenv("LAZY_NIX_PLUGINS")
+if nixPlugins == "" then
+	nixPlugins = nil
+end
+
+local lazypath
+if nixPlugins then
+	lazypath = nixPlugins .. "/lazy.nvim"
+else
+	lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+	if not (vim.uv or vim.loop).fs_stat(lazypath) then
+		vim.fn.system({
+			"git",
+			"clone",
+			"--filter=blob:none",
+			"https://github.com/folke/lazy.nvim.git",
+			"--branch=stable", -- latest stable release
+			lazypath,
+		})
+	end
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -75,7 +90,7 @@ if vim.fn.filewritable(lockfile) == 0 then
 	lockfile = fallback
 end
 
-require("lazy").setup("plugins", {
+local lazyOpts = {
 	lockfile = lockfile,
 	rocks = {
 		enabled = false,
@@ -83,7 +98,29 @@ require("lazy").setup("plugins", {
 	git = {
 		timeout = 600,
 	},
-})
+}
+
+if nixPlugins then
+	-- プラグインの宣言は nvim/lua/plugins/*.lua に残したまま、
+	-- 実体 (install 先) だけを nix store の farm へ差し替える。
+	-- lazy.nvim は `dev` プラグインを local 扱いするため
+	-- install/update/sync の対象外になる = バージョンは Nix だけが決める。
+	--
+	-- farm に無いプラグインは fallback で通常の root
+	-- (stdpath("data")/lazy) へ落ちる。
+	-- 現在は Nix 管理外の swagger-preview.nvim だけが这条路を使う。
+	lazyOpts.dev = {
+		-- 全プラグインを対象にする
+		patterns = { "." },
+		path = function(plugin)
+			return nixPlugins .. "/" .. plugin.name
+		end,
+		-- farm に無いものは root へ落とす
+		fallback = true,
+	}
+end
+
+require("lazy").setup("plugins", lazyOpts)
 
 -- =========================================================
 -- Keymaps

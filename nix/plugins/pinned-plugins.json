@@ -1,0 +1,158 @@
+{
+  "cpicker.nvim": {
+    "url": "https://github.com/wsdjeg/cpicker.nvim.git",
+    "rev": "e5e312e37f88e619f6977807a503c4c907ad039e",
+    "branch": "master",
+    "hash": "sha256-pBF49R5WH1K1yRUGwecDCz5xvffK66YIVPmXkEfOXd8="
+  },
+  "denops-signature_help": {
+    "url": "https://github.com/matsui54/denops-signature_help.git",
+    "rev": "f56884f3eed5af6c13cc414a092ce05ca9ad2612",
+    "branch": "main",
+    "hash": "sha256-5V4Joj0mTUEFVz/c2y9cMHA7DKJEZuL1OeGlyf04xhI="
+  },
+  "eslint.nvim": {
+    "url": "https://github.com/MunifTanjim/eslint.nvim.git",
+    "rev": "05d7e86ea01dc03e6fcc7d5b39530d34ebdef477",
+    "branch": "main",
+    "hash": "sha256-uF9KaeaNq6q4CxV07EkO2nfS/Nqjzca1J5g6xlRCcU0="
+  },
+  "jumpcursor.vim": {
+    "url": "https://github.com/skanehira/jumpcursor.vim.git",
+    "rev": "29669e27c0cbe65da8497c91585504bef846e255",
+    "branch": "main",
+    "hash": "sha256-WlH6VJiBy0rvFMvLjXA5pDjV6Rzv3luY1ueUrmGBwak="
+  },
+  "kensaku-search.vim": {
+    "url": "https://github.com/lambdalisue/kensaku-search.vim.git",
+    "rev": "9568c2b174a9cf31bd9922c0a991117f4dd4f0c3",
+    "branch": "main",
+    "hash": "sha256-6NrR52kdCPisg+oZO5fpXCsl/NJGChFQGXrEZCg4wh0="
+  },
+  "logger.nvim": {
+    "url": "https://github.com/wsdjeg/logger.nvim.git",
+    "rev": "fa6158e8140537b76d494402095ae34a8ece3a20",
+    "branch": "master",
+    "hash": "sha256-ZFVM6zo0DZdRVoraSE0vtYfU+5mmjaX5QVgznVjdHT0="
+  },
+  "lsp_lines.nvim": {
+    "url": "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    "rev": "a92c755f182b89ea91bd8a6a2227208026f27b4d",
+    "branch": "main",
+    "hash": "sha256-jHiIZemneQACTDYZXBJqX2/PRTBoxq403ILvt1Ej1ZM="
+  },
+  "md-outline.nvim": {
+    "url": "https://github.com/tttol/md-outline.nvim.git",
+    "rev": "8b577fc2be13ca916307c0dfbf9fa4db60108552",
+    "branch": "main",
+    "hash": "sha256-aGc71OLfncPIH+PKCt/+eexUgBB7JhWA4bBP9hZGm1I="
+  },
+  "modes.nvim": {
+    "url": "https://github.com/mvllow/modes.nvim.git",
+    "rev": "2badf8771dbb2d1e1066fd6a5dddaad2fc836e72",
+    "branch": "main",
+    "hash": "sha256-Oj6l0lJegIe3rhM4Y7co3JAzQCRC1ryOruhDR1k3giY="
+  },
+  "notify.nvim": {
+    "url": "https://github.com/wsdjeg/notify.nvim.git",
+    "rev": "356a53a66b044395557b16d19ffc722bd0debe8f",
+    "branch": "master",
+    "hash": "sha256-hSF0CLtQvWmlpL7pHBYYUT6zjF7vFBUi9FdQWiJROyo="
+  },
+  "nvim-pnpm-catalog-lens": {
+    "url": "https://github.com/ryoppippi/nvim-pnpm-catalog-lens",
+    "rev": "190073d6bd3ef6c5bf61681a244cdb4d0443d72a",
+    "branch": "main",
+    "hash": "sha256-Uwe3+M0fnqJsKQvt9ujwMX+XKYzjvz8qbSO1M92Rx10="
+  },
+  "nvim-tmux-navigation": {
+    "url": "https://github.com/alexghergh/nvim-tmux-navigation.git",
+    "rev": "4898c98702954439233fdaf764c39636681e2861",
+    "branch": "main",
+    "hash": "sha256-CxAgQSbOrg/SsQXupwCv8cyZXIB7tkWO+Y6FDtoR8xk="
+  },
+  "rust-tools.nvim": {
+    "url": "https://github.com/simrat39/rust-tools.nvim.git",
+    "rev": "676187908a1ce35ffcd727c654ed68d851299d3e",
+    "branch": "master",
+    "hash": "sha256-kFane5ze7VDiOzF7jdmXkr50XQsNvdb+a9HQtybEVE0="
+  },
+  "select-undo.nvim": {
+    "url": "https://github.com/SunnyTamang/select-undo.nvim.git",
+    "rev": "d3e9658f8dbcbf67267f5d07505917543beac376",
+    "branch": "main",
+    "hash": "sha256-mzSEyYEg4UQ8UCW4dAGooSlB9sSKS9PLu4gGJQZPV5E="
+  },
+  "tailwindcss-colorizer-cmp.nvim": {
+    "url": "https://github.com/roobert/tailwindcss-colorizer-cmp.nvim.git",
+    "rev": "3d3cd95e4a4135c250faf83dd5ed61b8e5502b86",
+    "branch": "main",
+    "hash": "sha256-PIkfJzLt001TojAnE/rdRhgVEwSvCvUJm/vNPLSWjpY="
+  },
+  "translate.nvim": {
+    "url": "https://github.com/uga-rosa/translate.nvim.git",
+    "rev": "1a841e56407ba02e919ed9af573dbe531404aebb",
+    "branch": "main",
+    "hash": "sha256-gFpiI6FBXIicEG5IIcBLi6N0TpReJrKz5dr663AV+L4="
+  },
+  "ts-error-translator.nvim": {
+    "url": "https://github.com/dmmulroy/ts-error-translator.nvim.git",
+    "rev": "558abff11b9e8f4cefc0de09df780c56841c7a4b",
+    "branch": "main",
+    "hash": "sha256-kjZwfvb0B7GC4dBBSdgC/zRmCUCfCm4H5J+8SFzANJ4="
+  },
+  "ts-expand-hover.nvim": {
+    "url": "https://github.com/nemanjamalesija/ts-expand-hover.nvim.git",
+    "rev": "51eca63f076cb5413f0df9ed03ad735d9d320869",
+    "branch": "main",
+    "hash": "sha256-2xA4M/RK6K1UkPnk8Dn1gCXNsBXwRNK6MOQfjzz87/M="
+  },
+  "utf8.nvim": {
+    "url": "https://github.com/uga-rosa/utf8.nvim.git",
+    "rev": "954cbbadabe5cd19f202e918fec191d64eea7766",
+    "branch": "main",
+    "hash": "sha256-pIQ3od4xb8Zn4aPtQPaYoVyb4pZ8S+6rEkGGv+kmdZM="
+  },
+  "vim-bad-apple": {
+    "url": "https://github.com/ryoppippi/vim-bad-apple.git",
+    "rev": "a44cce011d5e732d01cebfeeee5dc87ecdda9b20",
+    "branch": "main",
+    "hash": "sha256-I7GvVuF6egNpwukqXhMrBY+CFpXKbtVEkeIHqAroOjw="
+  },
+  "vim-kensaku": {
+    "url": "https://github.com/lambdalisue/vim-kensaku.git",
+    "rev": "67727c8cc81f45b3c3abc600ecfef6fba620eb88",
+    "branch": "main",
+    "hash": "sha256-Oaw66UJDwu8wu7QDlN6UaVh4ll7PcGngxWq3tugBrJo="
+  },
+  "vim-sonictemplate": {
+    "url": "https://github.com/mattn/vim-sonictemplate.git",
+    "rev": "050450414ca69885df7c26936821d74678ff4904",
+    "branch": "master",
+    "hash": "sha256-QhKWAyCFp1XWn8/kMPPjHahPeL7bkgsI5l3XofhKhCg="
+  },
+  "vim-svelte-inspector": {
+    "url": "https://github.com/ryoppippi/vim-svelte-inspector.git",
+    "rev": "1bd5604855934973c5ec4d50ec738f9c9da31f96",
+    "branch": "main",
+    "hash": "sha256-Pau1jVVvXExsHubIUv5Fgbo1CFf68mGjVAf4IGu1Mpk="
+  },
+  "vscode-js-debug": {
+    "url": "https://github.com/microsoft/vscode-js-debug.git",
+    "rev": "aeb21f002b47b4a1884a4da0c2b6810dc055ef24",
+    "branch": "main",
+    "hash": "sha256-p9f8BpYUpZU6kJgHw4JV/9t6NDS+TOyKOIZT869ecrQ="
+  },
+  "wordcount.nvim": {
+    "url": "https://github.com/nazozokc/wordcount.nvim.git",
+    "rev": "240663f322e8fd7fe3dc158c653dd4d5b9755204",
+    "branch": "main",
+    "hash": "sha256-fSRfdlCPM0bMm2vI7QiOR+qmQ7W0qfLp3CSA7+1wrpA="
+  },
+  "zls": {
+    "url": "https://github.com/zigtools/zls.git",
+    "rev": "b9eb9c415da0cb204746543271e6a1f93f79242e",
+    "branch": "master",
+    "hash": "sha256-948afWopbJkeg4v8aLzXwvBWm7em/IckJfE153/6m+k="
+  }
+}

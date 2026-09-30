@@ -6,11 +6,8 @@ return {
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 
-		-- fuzzy find support
-		{
-			"nvim-telescope/telescope-fzf-native.nvim",
-			build = "make",
-		},
+		-- fuzzy find support (実体とビルドは Nix 管理)
+		"nvim-telescope/telescope-fzf-native.nvim",
 	},
 
 	config = function()

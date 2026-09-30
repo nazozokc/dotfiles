@@ -61,7 +61,6 @@ return {
 	{
 		"microsoft/vscode-js-debug",
 		lazy = true,
-		build = "echo 'skip build'", -- ← これがないと地獄
 	},
 
 	-- JS / TS 用 DAP
