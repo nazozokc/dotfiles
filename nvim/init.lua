@@ -62,32 +62,30 @@ else
 end
 vim.opt.rtp:prepend(lazypath)
 
--- lockfile は Nix (home-manager) 管理。out-of-store symlink により
--- ~/.config/nvim/lazy-lock.json はリポジトリの nvim/lazy-lock.json を指す。
--- lazy.nvim が直接書き込むので、install/update で得たピン留めは
--- リポジトリ側にそのまま残る（state へ複写して手動 cp で戻す運用は不要）。
+-- lazy.nvim は install/update の最後に必ず lockfile を書き込むので、
+-- 書き込み可能なパスしか渡せない。Nix 管理の symlink
+-- (~/.config/nvim/lazy-lock.json) の終点は nix store 上の read-only な
+-- スナップショット (dotfilesDir = self.outPath) なので、そこへは渡せない。
+-- `nix run .#switch` を再実行しても解決しない (nix/README.md 参照)。
 --
--- ただし symlink 未適用（nix run .#switch 前）や Nix store 直参照だと
--- read-only になり E5113 (Permission denied) で落ちるので、その場合だけ
--- state 配下へ退避して起動できるようにしておく。
+-- よって lockfile の実体は state 配下に置き、リポジトリの lazy-lock.json は
+-- 「種 (seed)」として state 側が無いときだけコピーする。
+-- :Lazy update で得たピンをリポジトリへ戻すときは:
+--   cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
 local uv = vim.uv or vim.loop
-local lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
-if vim.fn.filewritable(lockfile) == 0 then
-	vim.notify(
-		"lazy-lock.json が read-only です。`nix run .#switch` で Nix 管理の symlink を適用してください\n"
-			.. "  暫定的に state 配下の lockfile を使います（ピン留めはリポジトリに反映されません）\n"
-			.. "  "
-			.. lockfile,
-		vim.log.levels.WARN
-	)
-	local fallback = vim.fn.stdpath("state") .. "/lazy/lazy-lock.json"
-	vim.fn.mkdir(vim.fn.fnamemodify(fallback, ":h"), "p")
-	if vim.fn.filewritable(fallback) ~= 2 then
-		-- 既存の 444 などは除去して作り直す。writefile なので 644 で作成される。
-		uv.fs_unlink(fallback)
-		vim.fn.writefile(vim.fn.readfile(vim.fn.stdpath("config") .. "/lazy-lock.json"), fallback)
-	end
-	lockfile = fallback
+local lockfile = vim.fn.stdpath("state") .. "/lazy/lazy-lock.json"
+local seedfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
+
+vim.fn.mkdir(vim.fn.fnamemodify(lockfile, ":h"), "p")
+
+-- 既に書込可能なら state のピンを引き継ぐ。無い / read-only のときだけ
+-- 種から作り直す。writefile なので 644 になる。
+--
+-- 注意: Neovim の filewritable() は Vim の 0/1/2 仕様と違う。
+-- 「書込可能なら 1、それ以外 (無い / read-only) は 0」。
+if vim.fn.filewritable(lockfile) == 0 and vim.fn.filereadable(seedfile) == 1 then
+	uv.fs_unlink(lockfile)
+	vim.fn.writefile(vim.fn.readfile(seedfile), lockfile)
 end
 
 local lazyOpts = {

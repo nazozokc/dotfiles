@@ -126,10 +126,15 @@ in
   # apply.ps1 や素の Neovim) では init.lua が従来の clone bootstrap に
   # フォールバックする。
 
-  # lazy-lock.json は lockfile なので lazy.nvim が install/update 時に書き込む。
-  # Nix store (read-only) を直接指すと E5113 (Permission denied) で落ちるので
-  # out-of-store symlink でリポジトリのファイルを指す。書き込みはそのまま
-  # リポジトリへ落ちるため、init.lua 側で state へ複写する運用は不要。
+  # lazy-lock.json は「種 (seed)」として Nix 管理の symlink で配置する。
+  # lazy.nvim は install/update の最後に必ず lockfile を書き込むが、
+  # mkOutOfStoreSymlink は「activation package に複製しない」だけで、
+  # 渡したパスが nix store 内 (dotfilesDir = self.outPath) なら終端も
+  # read-only のまま = E5113 (Permission denied) で落ちる。
+  # `nix run .#switch` を再実行しても symlink は変わらない。
+  # よって lockfile の実体は init.lua が stdpath("state") 配下へ作る。
+  # ピンをリポジトリへ戻すのは
+  #   cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
   # dotfilesリポジトリのnvim/配下を個別にsymlink
   # ディレクトリ全体をsymlinkするとprograms.neovimが生成するinit.luaと衝突するため
   xdg.configFile = {

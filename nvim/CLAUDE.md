@@ -23,7 +23,7 @@ lazy.nvim は plugin manager としてのみ使い、install 先を nix store �
 ```
 nvim/
 ├── init.lua              # エントリーポイント・キーマップ
-├── lazy-lock.json        # Nix 管理外のプラグインのみ (現状 swagger-preview.nvim 1件)
+├── lazy-lock.json        # 種 (seed)。Nix 管理外のみ (現状 swagger-preview.nvim 1件)
 ├── lua/
 │   ├── plugins.lua       # プラグイン定義（空）
 │   ├── vim-options.lua   # 基本設定
@@ -73,6 +73,14 @@ Nix 管理外のプラグイン (現状 `swagger-preview.nvim`) は lazy.nvim �
 ### 注意事項
 
 - `lazy-lock.json` には触らない。Nix 管理外のプラグインの記録用になる。
+- ただし lazy.nvim が書き込む実体は **state 配下**
+  (`~/.local/state/nvim/lazy/lazy-lock.json`) にある。`~/.config/nvim/lazy-lock.json`
+  は nix store への symlink (read-only) なので直接書き込めない。
+  `:Lazy update` で得たピンは state に残るので、リポジトリへ戻すときは
+  ```bash
+  cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
+  ```
+  state の lockfile は「書込可能なら残す」ので、再起動で消えない。
 - `build = "..."` ステップは原則不要。`:TSUpdate` のように外部 fetch を
   行うステップは Nix (read-only store) では機能しない。
 - `nix/plugins/pinned-plugins.json` の `rev` は commit、`hash` は `fetchgit` 用の

@@ -1,9 +1,9 @@
 {
   "cpicker.nvim": {
     "url": "https://github.com/wsdjeg/cpicker.nvim.git",
-    "rev": "e5e312e37f88e619f6977807a503c4c907ad039e",
+    "rev": "72beaa7801da482986aa85a54999b0619a847034",
     "branch": "master",
-    "hash": "sha256-pBF49R5WH1K1yRUGwecDCz5xvffK66YIVPmXkEfOXd8="
+    "hash": "sha256-cQFiUdc5zeQW+KwSt7Nc1LHO4Irmds8MiqUI21cDzU8="
   },
   "denops-signature_help": {
     "url": "https://github.com/matsui54/denops-signature_help.git",
@@ -13,9 +13,9 @@
   },
   "eslint.nvim": {
     "url": "https://github.com/MunifTanjim/eslint.nvim.git",
-    "rev": "05d7e86ea01dc03e6fcc7d5b39530d34ebdef477",
+    "rev": "d9c93df90fa218d41120456fa312ecee71963c7e",
     "branch": "main",
-    "hash": "sha256-uF9KaeaNq6q4CxV07EkO2nfS/Nqjzca1J5g6xlRCcU0="
+    "hash": "sha256-GcHv1QoTbnK6RCIHMh0lfmNIeQtvFB4Sh15fYrXM6Eo="
   },
   "jumpcursor.vim": {
     "url": "https://github.com/skanehira/jumpcursor.vim.git",
@@ -31,9 +31,9 @@
   },
   "logger.nvim": {
     "url": "https://github.com/wsdjeg/logger.nvim.git",
-    "rev": "fa6158e8140537b76d494402095ae34a8ece3a20",
+    "rev": "072ce10eb886186ab66dd8c180344d40c1f59403",
     "branch": "master",
-    "hash": "sha256-ZFVM6zo0DZdRVoraSE0vtYfU+5mmjaX5QVgznVjdHT0="
+    "hash": "sha256-a8rhNugnKSokdukxnegtAuOjfdjdHQhCIj4+MNfwVhY="
   },
   "lsp_lines.nvim": {
     "url": "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
@@ -49,15 +49,15 @@
   },
   "modes.nvim": {
     "url": "https://github.com/mvllow/modes.nvim.git",
-    "rev": "2badf8771dbb2d1e1066fd6a5dddaad2fc836e72",
+    "rev": "8022c7345e51423b4cc6333971f3cbfb7e6035bc",
     "branch": "main",
-    "hash": "sha256-Oj6l0lJegIe3rhM4Y7co3JAzQCRC1ryOruhDR1k3giY="
+    "hash": "sha256-17Rwm2QYMAgeavYFUTVy2gbCv3mgD89FKMKndqCbb3A="
   },
   "notify.nvim": {
     "url": "https://github.com/wsdjeg/notify.nvim.git",
-    "rev": "356a53a66b044395557b16d19ffc722bd0debe8f",
+    "rev": "33be3b1be70c8b81b901c9748ba8c2cc88b2d5c1",
     "branch": "master",
-    "hash": "sha256-hSF0CLtQvWmlpL7pHBYYUT6zjF7vFBUi9FdQWiJROyo="
+    "hash": "sha256-PC0MRZKg1tWgYyEA7ij8r05MWAOPcwMYu8zhJ8IXmoo="
   },
   "nvim-pnpm-catalog-lens": {
     "url": "https://github.com/ryoppippi/nvim-pnpm-catalog-lens",
@@ -115,9 +115,9 @@
   },
   "vim-bad-apple": {
     "url": "https://github.com/ryoppippi/vim-bad-apple.git",
-    "rev": "a44cce011d5e732d01cebfeeee5dc87ecdda9b20",
+    "rev": "b0609070dd48cf4d9b228ef2c2e10869ae8a8fa1",
     "branch": "main",
-    "hash": "sha256-I7GvVuF6egNpwukqXhMrBY+CFpXKbtVEkeIHqAroOjw="
+    "hash": "sha256-pntl38OTIqMDHcsPW2B4nQ33xv5EhED2HWsIh9W0gsg="
   },
   "vim-kensaku": {
     "url": "https://github.com/lambdalisue/vim-kensaku.git",
@@ -139,9 +139,9 @@
   },
   "vscode-js-debug": {
     "url": "https://github.com/microsoft/vscode-js-debug.git",
-    "rev": "aeb21f002b47b4a1884a4da0c2b6810dc055ef24",
+    "rev": "bccbbafdcb6bb96ab0706f411a1e66681d5bc4de",
     "branch": "main",
-    "hash": "sha256-p9f8BpYUpZU6kJgHw4JV/9t6NDS+TOyKOIZT869ecrQ="
+    "hash": "sha256-4bYss4fWLGrOsmfKYbaF9zSGl45jmUH73GCuba2IFw0="
   },
   "wordcount.nvim": {
     "url": "https://github.com/nazozokc/wordcount.nvim.git",
@@ -151,8 +151,8 @@
   },
   "zls": {
     "url": "https://github.com/zigtools/zls.git",
-    "rev": "b9eb9c415da0cb204746543271e6a1f93f79242e",
+    "rev": "0ea69abdd8f50d81989c00b6a3b9cf8ced7f9522",
     "branch": "master",
-    "hash": "sha256-948afWopbJkeg4v8aLzXwvBWm7em/IckJfE153/6m+k="
+    "hash": "sha256-LICZ2CtiKuLP0UOc1dCE6qPLReIInmsiWNpH2kTd2Io="
   }
 }
