@@ -1,4 +1,4 @@
-# nix/plugins/default.nix
+# nix/modules/home/programs/nvim/plugins/default.nix
 # Neovim プラグインの「実体」と「バージョン」を Nix で持つ。
 #
 # 考え方
@@ -6,9 +6,9 @@
 # lazy.nvim は plugin manager として残す。ただし install 先の directory は
 # Nix store にする。実体は 2 系統:
 #
-#   1. nixpkgs 由来 (nix/plugins/nixpkgs-plugins.nix)
+#   1. nixpkgs 由来 (./nixpkgs-plugins.nix)
 #      → pkgs.vimPlugins.<attr> をそのまま使う。バージョンは nixpkgs に追従する。
-#   2. pin 済み (nix/plugins/pinned-plugins.json)
+#   2. pin 済み (./pinned-plugins.json)
 #      → fetchgit で rev 固定。nixpkgs に無い / 追従させたくないもの。
 #
 # 2 つを `share/nvim/lazy/<プラグイン名>` という 1 つの farm にまとめる。

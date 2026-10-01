@@ -183,10 +183,6 @@ nix/
 │   ├── pkgs.nix                       # pkgsFor (nixpkgs インスタンス生成 + Intelスタック切替)
 │   ├── shell.nix                      # app 共通シェルヘルパ (require_nix_features / is_wsl ...)
 │   └── targets.nix                    # システム別 attr 名・表示 (flakeTarget / hmConfig / sysLabel)
-├── plugins/                           # Neovim プラグインの実体 (nix store)
-│   ├── default.nix                    # farm 生成 (nixpkgs 由来 + pin 済みの統合)
-│   ├── nixpkgs-plugins.nix            # プラグイン名 -> nixpkgs.vimPlugins の attr
-│   └── pinned-plugins.json            # nixpkgs に無いプラグイン (url / branch / rev / hash)
 ├── flake-parts/                       # flake-parts の import 先 (outputs の実体)
 │   ├── dev-shells.nix                 # devShells (default / nix / editors)
 │   └── apps/                          # `nix run .#*` の定義
@@ -232,6 +228,11 @@ nix/
 │   │       ├── jujutsu/               # jujutsu (VCS)
 │   │       ├── lazygit/               # lazygit (TUI git)
 │   │       ├── nvim/                  # Neovim (直接 import, Farm 生成)
+│   │       │   ├── default.nix         # programs.neovim 設定 (init.lua / extraWrapperArgs / extraPackages)
+│   │       │   └── plugins/           # プラグインの実体とバージョン (nix store)
+│   │       │       ├── default.nix     # farm 生成 (nixpkgs 由来 + pin 済みの統合)
+│   │       │       ├── nixpkgs-plugins.nix  # プラグイン名 -> nixpkgs.vimPlugins の attr
+│   │       │       └── pinned-plugins.json  # nixpkgs に無いプラグイン (url / branch / rev / hash)
 │   │       ├── ollama/                # Ollama (ローカル LLM)
 │   │       ├── opencode/              # OpenCode (AI エージェント)
 │   │       ├── sops/                  # sops-nix (シークレット管理)
@@ -308,8 +309,8 @@ nix run .#nvim-plugin-update -- --no-nixpkgs   # pin 済みだけ
 nix run .#nvim-plugin-update -- --no-check     # flake check をskip
 ```
 
-- `nixpkgs` 由来は `nix flake update` 経由でのみ更新される (attr 名は `nix/plugins/nixpkgs-plugins.nix` に固定)。
-- pin 済みは `nix/plugins/pinned-plugins.json` の `rev` と `hash` を書き換える。
+- `nixpkgs` 由来は `nix flake update` 経由でのみ更新される (attr 名は `nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix` に固定)。
+- pin 済みは `nix/modules/home/programs/nvim/plugins/pinned-plugins.json` の `rev` と `hash` を書き換える。
 - GitHub 以外のホスト (例: SourceHut の `lsp_lines.nvim`) は `[skip]` になる。
 - 反映には `nix run .#switch`。
 
@@ -379,9 +380,9 @@ nix --extra-experimental-features "nix-command flakes" run github:nazozokc/dotfi
 
 ```
 nvim/lua/plugins/*.lua      宣言 (lazy-loading / dependencies / opts)
-nix/plugins/nixpkgs-plugins.nix   プラグイン名 -> pkgs.vimPlugins.<attr>
-nix/plugins/pinned-plugins.json   nixpkgs に無いものの url / branch / rev / hash
-nix/plugins/default.nix     両系統を 1 つの farm (symlink 一覧) にまとめる
+nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix  プラグイン名 -> pkgs.vimPlugins.<attr>
+nix/modules/home/programs/nvim/plugins/pinned-plugins.json  nixpkgs に無いものの url / branch / rev / hash
+nix/modules/home/programs/nvim/plugins/default.nix           両系統を 1 つの farm (symlink 一覧) にまとめる
 ```
 
 - farm は `home.sessionVariables` ではなく `programs.neovim.extraWrapperArgs` の
@@ -404,8 +405,8 @@ nix/plugins/default.nix     両系統を 1 つの farm (symlink 一覧) にま�
   ```
 - プラグインを追加する手順:
   1. `nvim/lua/plugins/*.lua` に宣言を書く
-  2. nixpkgs にあれば `nix/plugins/nixpkgs-plugins.nix` に attr を足す
-  3. 無ければ `nix/plugins/pinned-plugins.json` に url / branch / rev / hash を足す
+  2. nixpkgs にあれば `nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix` に attr を足す
+  3. 無ければ `nix/modules/home/programs/nvim/plugins/pinned-plugins.json` に url / branch / rev / hash を足す
   4. `nix flake check --no-build` で評価確認 → `nix run .#switch`
 - 通常の lazy プラグイン用 `build = "..."` ステップは原則不要。
   `:TSUpdate` のような外部 fetch を行うステップは Nix では機能しないため削除する。

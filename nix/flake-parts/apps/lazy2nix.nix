@@ -3,11 +3,11 @@
 #
 # 更新の主語は 2 つある:
 #
-#   1. nixpkgs 由来 (nix/plugins/nixpkgs-plugins.nix)
+#   1. nixpkgs 由来 (nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix)
 #      バージョンは nixpkgs が決まるので、nixpkgs input を上げるだけ。
 #      Intel Mac は nixpkgs-intel を使うのでそちらも対象。
 #
-#   2. pin 済み (nix/plugins/pinned-plugins.json)
+#   2. pin 済み (nix/modules/home/programs/nvim/plugins/pinned-plugins.json)
 #      branch の最新 commit を gh api で取り、nix-prefetch-git で hash を
 #      計算して JSON を書き換える。
 #
@@ -59,9 +59,10 @@ in
 
             --no-check     最後に `nix flake check --no-build` を走らせない
             --no-nixpkgs   nixpkgs input を更新しない
-            --no-pinned    nix/plugins/pinned-plugins.json を更新しない
+            --no-pinned    nvim/plugins/pinned-plugins.json を更新しない
 
-          対象ファイルを相対パスで解決するため、この flake のディレクトリ内で実行すること。
+          対象ファイルは nix/modules/home/programs/nvim/plugins/ に置いてある。
+          相対パスで解決するため、この flake のディレクトリ内で実行すること。
           USAGE
                           exit 0
                           ;;
@@ -75,8 +76,8 @@ in
                     # -------------------------------------------------------------------
                     # 対象ファイルの所在確認
                     # -------------------------------------------------------------------
-                    lock="nix/plugins/pinned-plugins.json"
-                    map="nix/plugins/nixpkgs-plugins.nix"
+                    lock="nix/modules/home/programs/nvim/plugins/pinned-plugins.json"
+                    map="nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix"
 
                     if [ ! -f "$lock" ] || [ ! -f "$map" ]; then
                       echo "[!] $lock / $map が見つかりません" >&2
@@ -179,7 +180,7 @@ in
                     # -------------------------------------------------------------------
                     # 3. 検証
                     # -------------------------------------------------------------------
-                    # nix/plugins/nixpkgs-plugins.nix の attr が消えていたら
+                    # nvim/plugins/nixpkgs-plugins.nix の attr が消えていたら
                     # ここで「どのプラグインの attr が無い」かが評価エラーとして出る。
                     if [ "$run_check" = 1 ]; then
                       echo "[3/3] nix flake check --no-build で設定の整合を検証"
