@@ -42,9 +42,9 @@ nvim/
 
 ```
 nvim/lua/plugins/*.lua             宣言 (lazy-loading / dependencies / opts)
-nix/plugins/nixpkgs-plugins.nix   プラグイン名 -> pkgs.vimPlugins.<attr>
-nix/plugins/pinned-plugins.json   nixpkgs に無いものの url / branch / rev / hash
-nix/plugins/default.nix           両系統を farm (symlink 一覧) にまとめる
+nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix  プラグイン名 -> pkgs.vimPlugins.<attr>
+nix/modules/home/programs/nvim/plugins/pinned-plugins.json  nixpkgs に無いものの url / branch / rev / hash
+nix/modules/home/programs/nvim/plugins/default.nix           両系統を farm (symlink 一覧) にまとめる
 ```
 
 - `LAZY_NIX_PLUGINS` が farm の path。`nix run .#switch` で Neovim が使う
@@ -59,7 +59,7 @@ nix/plugins/default.nix           両系統を farm (symlink 一覧) にまと�
 ### 更新
 
 ```bash
-# Nix 管理分の更新 (rev / hash を nix/plugins/pinned-plugins.json に書く)
+# Nix 管理分の更新 (rev / hash を nix/modules/home/programs/nvim/plugins/pinned-plugins.json に書く)
 nix run .#nvim-plugin-update
 
 # 反映
@@ -83,7 +83,7 @@ Nix 管理外のプラグイン (現状 `swagger-preview.nvim`) は lazy.nvim �
   state の lockfile は「書込可能なら残す」ので、再起動で消えない。
 - `build = "..."` ステップは原則不要。`:TSUpdate` のように外部 fetch を
   行うステップは Nix (read-only store) では機能しない。
-- `nix/plugins/pinned-plugins.json` の `rev` は commit、`hash` は `fetchgit` 用の
+- `nix/modules/home/programs/nvim/plugins/pinned-plugins.json` の `rev` は commit、`hash` は `fetchgit` 用の
   SRI ハッシュ。両者を一致させていないと `hash mismatch` でビルドが失敗する。
 
 ---

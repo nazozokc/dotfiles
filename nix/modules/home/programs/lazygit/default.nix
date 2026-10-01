@@ -15,6 +15,11 @@ let
   lazygitConfigFile = "${config.xdg.configHome}/lazygit/config.yml";
 in
 {
+  dotfiles.programs.lazygit = {
+    icon = "🐢";
+    note = "delta 差分 + switch 時 schema 検証";
+  };
+
   programs.lazygit = {
     enable = true;
 

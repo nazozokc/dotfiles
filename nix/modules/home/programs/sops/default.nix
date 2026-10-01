@@ -11,6 +11,11 @@ let
   hasSecretsFile = builtins.pathExists secretsFile;
 in
 {
+  dotfiles.programs.sops = {
+    icon = "🔐";
+    note = "age 鍵 + ~/.config/secrets 展開";
+  };
+
   home.file.".config/secrets/.keep".text = "";
 
   home.sessionVariables = {

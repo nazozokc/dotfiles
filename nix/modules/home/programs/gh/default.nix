@@ -3,6 +3,11 @@
   ...
 }:
 {
+  dotfiles.programs.gh = {
+    icon = "🐙";
+    note = "markdown / poi / notify / do";
+  };
+
   programs.gh = {
     enable = true;
 

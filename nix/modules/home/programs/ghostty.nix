@@ -1,6 +1,11 @@
 { ... }:
 
 {
+  dotfiles.programs.ghostty = {
+    icon = "👻";
+    note = "Kanagawa Dragon + キーバインド";
+  };
+
   xdg.configFile."ghostty/config".text = ''
     # ====================
     # Font

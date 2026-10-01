@@ -5,6 +5,11 @@
   ...
 }:
 {
+  dotfiles.programs.fish = {
+    icon = "🐟";
+    note = "fisher プラグイン";
+  };
+
   programs.fish = {
     enable = true;
 

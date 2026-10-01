@@ -15,6 +15,11 @@
 }:
 
 {
+  dotfiles.programs.bun = {
+    icon = "🥟";
+    note = "BUN_INSTALL を XDG 準拠へ";
+  };
+
   # BUN_INSTALL_GLOBAL_DIR : `bun add -g` がパッケージを落とす先
   # BUN_INSTALL_BIN        : グローバル包の bin のリンク先 (PATH へ追加する)
   # BUN_INSTALL_CACHE_DIR  : グローバルモジュールキャッシュ

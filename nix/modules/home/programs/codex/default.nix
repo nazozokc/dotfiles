@@ -6,6 +6,11 @@
   ...
 }:
 {
+  dotfiles.programs.codex = {
+    icon = "🧩";
+    note = "グローバル AGENTS.md";
+  };
+
   # グローバル指示: agent-memoryの保存ルールを毎セッション読み込ませる
   home.file.".codex/AGENTS.md" = {
     source = config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/codex/AGENTS.md";

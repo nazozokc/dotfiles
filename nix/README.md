@@ -173,6 +173,49 @@ store へ書き出してから symlink する。
 - lazygit は `home.activation.validateLazygitSettings` が
   インストール済みバージョンの schema で検証する。設定のミスは switch 時に落ちる
 
+## 適用済み config のメッセージ
+
+`nix run .#switch` の最後 (`linkGeneration` の後) に、
+`nix/modules/home/programs/` 配下で有効になっている config の一覧が
+アイコン付きで出る。
+
+```
+▌ applied program configs (24)
+  🦇 bat          TwoDark / less pager
+  🥟 bun          BUN_INSTALL を XDG 準拠へ
+  🤖 claude-code  settings.json + CLAUDE.md
+  ...
+```
+
+どの config がその構成で入ってるかを switch 時に把握するため。
+
+### 書き方
+
+`programs/<name>/default.nix` に1エントリ足すだけ:
+
+```nix
+dotfiles.programs.bat = {
+  icon = "🦇";
+  note = "TwoDark / less pager";
+};
+```
+
+- `icon` — 1絵文字 (2桁幅) を推奨。名前列の桁揃えが崩れるので
+  ZWJ シーケンスや複数絵文字は使わない
+- `note` — 補足。空なら名前だけ表示する
+- attr 名がそのまま一覧の名前になる
+
+### 実装
+
+- 定義は `nix/modules/home/programs/applied.nix`
+  (`options.dotfiles.programs` を宣言し `home.activation.appliedPrograms` を組む)
+- `programs-common.nix` が先頭で import する。
+  `nvim` / `herdr` / `aerospace` は共通 import の外から読み込まれるが
+  オプションは同一 namespace なので同じ書き方でよい
+- 並びは名前昇順で固定。attrset の列挙順は安定しないため
+- 色付きは `noteColor` / `normalColor`。home-manager _activation が
+  定義済みで、`NO_COLOR` と非 tty の判定も既存メッセージと同じ
+
 ## モジュール構造
 
 ```
@@ -241,6 +284,7 @@ nix/
 │   │       ├── vscode/                # VSCode 設定
 │   │       ├── yazi/                  # yazi (ファイラー)
 │   │       ├── aerospace.nix          # AeroSpace (macOS タイルウィンドウ)
+│   │       ├── applied.nix            # 適用メッセージの集約 + 一覧表示
 │   │       └── herdr.nix             # Herdr (tmux ライクなプレフィックス)
 │   ├── system/                        # OS 層設定 (system-manager, ネイティブ Linux 全ディストロ)
 │   │   ├── build.nix                  # 設定生成ヘルパー (mkSystemConfig / hostPlatform 注入)

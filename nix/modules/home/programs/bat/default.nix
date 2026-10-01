@@ -2,6 +2,11 @@
   ...
 }:
 {
+  dotfiles.programs.bat = {
+    icon = "🦇";
+    note = "TwoDark / less pager";
+  };
+
   programs.bat = {
     enable = true;
 

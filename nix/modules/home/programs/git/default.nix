@@ -7,6 +7,11 @@ let
   trash = lib.getExe pkgs.trash-cli;
 in
 {
+  dotfiles.programs.git = {
+    icon = "🌿";
+    note = "alias 一覧 + LFS / delta";
+  };
+
   programs.git = {
     enable = true;
 

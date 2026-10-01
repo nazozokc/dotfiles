@@ -8,6 +8,11 @@ let
 in
 
 {
+  dotfiles.programs.aerospace = {
+    icon = "🛫";
+    note = "alt-HJKL タイル操作";
+  };
+
   home.packages = with pkgs; [
     aerospace
   ];
