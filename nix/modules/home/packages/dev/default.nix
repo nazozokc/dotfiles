@@ -6,9 +6,6 @@ with pkgs;
   prettier
   telescope
 
-  # python
-  python312
-
   # js,ts
   nodejs_latest
   bun
