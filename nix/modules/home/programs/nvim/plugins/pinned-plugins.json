@@ -103,9 +103,9 @@
   },
   "ts-expand-hover.nvim": {
     "url": "https://github.com/nemanjamalesija/ts-expand-hover.nvim.git",
-    "rev": "51eca63f076cb5413f0df9ed03ad735d9d320869",
+    "rev": "629277cc4b9f9179b3b4439d8a7b820c843a4ee7",
     "branch": "main",
-    "hash": "sha256-2xA4M/RK6K1UkPnk8Dn1gCXNsBXwRNK6MOQfjzz87/M="
+    "hash": "sha256-pXX24MG2wMRCl68aGuiL/Urcb1jKP2hHzwAzDccJKWE="
   },
   "utf8.nvim": {
     "url": "https://github.com/uga-rosa/utf8.nvim.git",

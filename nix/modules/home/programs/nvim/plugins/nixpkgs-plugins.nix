@@ -1,12 +1,12 @@
-# nix/plugins/nixpkgs-plugins.nix
+# nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix
 # Neovim プラグイン名 -> nixpkgs.vimPlugins の属性名。
 #
 # プラグイン単体の実体もバージョンも nixpkgs 側に委ねる。
-# nixpkgs に無いプラグインは nix/plugins/pinned-plugins.json 側 (fetchgit) に置く。
+# nixpkgs に無いプラグインは ./pinned-plugins.json 側 (fetchgit) に置く。
 #
 # 生成方法: 稼働中の Neovim から dump した plugin.url と、nixpkgs の
 # meta.homepage を突き合わせて決める。nixpkgs に無いものは
-# nix/plugins/pinned-plugins.json へ移す。
+# ./pinned-plugins.json へ移す。
 #
 # nixpkgs 側が attr を改名・削除した場合は `nix run .#nvim-plugin-update` の
 # 最後の `nix flake check --no-build` が「どのプラグインの attr が無い」かを

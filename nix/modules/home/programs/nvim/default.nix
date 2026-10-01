@@ -9,8 +9,8 @@ let
   nvimDotfilesDir = "${dotfilesDir}/nvim";
 
   # lazy.nvim が使う install 先 (実体とバージョンを持つ)
-  # nix/plugins/default.nix 参照。farm には全プラグインが並んでいる。
-  nvimPlugins = import ../../../../plugins { inherit pkgs; };
+  # ./plugins/default.nix 参照。farm には全プラグインが並んでいる。
+  nvimPlugins = import ./plugins { inherit pkgs; };
 
   treesitterGrammars = pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: [
     plugins.nix
@@ -42,7 +42,7 @@ in
   programs.neovim = {
     enable = true;
 
-    # プラグインの「実体」は nix/plugins/ が持つ。
+    # プラグインの「実体」は同一ディレクトリの plugins/ が持つ。
     # lazy.nvim は plugin manager としてだけ使い、install 先を
     # LAZY_NIX_PLUGINS (nix store) へ差し替える (init.lua の dev.path)。
     # lazy.nvim 自身も pkgs.vimPlugins.lazy-nvim を使うため、
@@ -118,7 +118,7 @@ in
 
   # lazy.nvim の install 先を nix store へ差し替えるための env 変数は
   # programs.neovim.extraWrapperArgs の `--set LAZY_NIX_PLUGINS` で渡す
-  # (nix store の farm = nix/plugins/default.nix)。
+  # (nix store の farm = plugins/default.nix)。
   #
   # nvim/lua/plugins/*.lua はそのまま使う (プラグインの宣言は Lua に残す)。
   # init.lua が os.getenv("LAZY_NIX_PLUGINS") を見て lazy.setup の
