@@ -53,6 +53,11 @@ let
       };
 in
 {
+  dotfiles.programs.fzf = {
+    icon = "🔍";
+    note = "widget / shell 統合";
+  };
+
   programs.fzf = {
     enable = true;
 

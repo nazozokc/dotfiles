@@ -3,6 +3,11 @@
 # corepack の shim は nixpkgs の pnpm と競合して壊れるため使わない
 { pkgs, config, ... }:
 {
+  dotfiles.programs.pnpm = {
+    icon = "📦";
+    note = "PNPM_HOME / store を XDG 準拠へ";
+  };
+
   # pnpm は dev/default.nix で home.packages に追加済み
   # ここでは堅牢化のための設定のみ行う
 

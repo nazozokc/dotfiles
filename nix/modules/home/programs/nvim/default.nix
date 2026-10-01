@@ -39,6 +39,11 @@ let
   ]);
 in
 {
+  dotfiles.programs.nvim = {
+    icon = "🌱";
+    note = "lazy.nvim の実体を nix store へ";
+  };
+
   programs.neovim = {
     enable = true;
 

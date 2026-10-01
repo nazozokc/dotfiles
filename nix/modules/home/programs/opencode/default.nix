@@ -10,6 +10,11 @@ let
   link = config.lib.file.mkOutOfStoreSymlink;
 in
 {
+  dotfiles.programs.opencode = {
+    icon = "🧠";
+    note = "agent / LSP / MCP";
+  };
+
   xdg.configFile = {
     "opencode/opencode.json".text = builtins.toJSON {
       "\$schema" = "https://opencode.ai/config.json";

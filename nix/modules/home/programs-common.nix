@@ -2,6 +2,9 @@
 
 {
   imports = [
+    # 適用メッセージの集約先。各プログラムモジュールは
+    # `dotfiles.programs.<name>` を書くだけ (applied.nix 参照)
+    ./programs/applied.nix
     ./programs/gh
     ./programs/pnpm
     ./programs/bun

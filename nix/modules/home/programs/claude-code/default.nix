@@ -50,6 +50,11 @@ let
   };
 in
 {
+  dotfiles.programs.claude-code = {
+    icon = "🤖";
+    note = "settings.json + CLAUDE.md";
+  };
+
   home.activation.claudeCodeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p "${claudeConfigDir}"
     ${pkgs.jq}/bin/jq -n '${builtins.toJSON settings}' > "${claudeConfigDir}/settings.json"

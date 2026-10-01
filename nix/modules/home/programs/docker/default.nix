@@ -1,5 +1,10 @@
 { ... }:
 {
+  dotfiles.programs.docker = {
+    icon = "🐳";
+    note = "CLI + lazydocker";
+  };
+
   # ===== Docker CLI config =====
   programs.docker-cli = {
     enable = true;

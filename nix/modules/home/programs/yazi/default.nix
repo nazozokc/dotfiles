@@ -1,5 +1,10 @@
 { ... }:
 {
+  dotfiles.programs.yazi = {
+    icon = "🗂️";
+    note = "y ラッパー + nvim opener";
+  };
+
   programs.yazi = {
     enable = true;
 

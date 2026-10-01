@@ -1,5 +1,10 @@
 { config, pkgs, ... }:
 {
+  dotfiles.programs.tmux = {
+    icon = "🪟";
+    note = "prefix C-a + resurrect / ukiyo";
+  };
+
   programs.tmux = {
     enable = true;
 

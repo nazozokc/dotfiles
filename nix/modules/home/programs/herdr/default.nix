@@ -1,6 +1,11 @@
 { ... }:
 
 {
+  dotfiles.programs.herdr = {
+    icon = "🐕";
+    note = "prefix モード + popup helper";
+  };
+
   xdg.configFile."herdr/config.toml".text = ''
     # Herdr configuration.
     #

@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  dotfiles.programs.gh-dash = {
+    icon = "📊";
+    note = "PR / Issue ダッシュボード";
+  };
+
   programs.gh-dash = {
     enable = true;
 
