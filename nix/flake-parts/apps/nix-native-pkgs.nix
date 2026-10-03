@@ -11,17 +11,17 @@ let
 in
 {
   perSystem =
-    { pkgs, system, ... }:
+    { pkgs, ... }:
     let
-      declared =
-        validate (
-          lib.genAttrs pms (pm:
-            let
-              path = ../../native-pkgs/${pm}.nix;
-            in
-            if builtins.pathExists path then import path else [ ]
-          )
-        );
+      declared = validate (
+        lib.genAttrs pms (
+          pm:
+          let
+            path = ../../native-pkgs/${pm}.nix;
+          in
+          if builtins.pathExists path then import path else [ ]
+        )
+      );
 
       nlpDrv = mkNlp { inherit pkgs declared; };
       built = import "${linuxPkg}/nix/lib/apps.nix" {
