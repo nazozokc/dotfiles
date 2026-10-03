@@ -257,6 +257,8 @@ nix/
 │       ├── build.nix                  # apps.build
 │       ├── update.nix                 # apps.update
 │       ├── lazy2nix.nix               # apps.lazy2nix (Neovim プラグイン更新)
+│       ├── llm-agents.nix              # apps.llm-agents-update (llm-agents.nix 由来のエージェント更新)
+│       ├── agent-skills.nix            # apps.agents-skills-update (Agent Skills の更新と自己検証)
 │       └── system.nix                 # apps.system-build / system-check / system-switch
 ├── modules/                           # home-manager / system-manager のモジュール
 │   ├── home/                          # home-manager 共通モジュール
@@ -362,6 +364,12 @@ nix run .#update
 
 # Neovim プラグイン更新 (Nix 管理分)
 nix run .#lazy2nix
+
+# AI エージェント更新 (llm-agents.nix 由来)
+nix run .#llm-agents-update
+
+# Agent Skills の更新と自己検証
+nix run .#agents-skills-update
 ```
 
 ### lazy2nix (`apps.lazy2nix`)
@@ -381,6 +389,72 @@ nix run .#lazy2nix -- --no-check     # flake check をskip
 - pin 済みは `nix/modules/home/programs/nvim/plugins/pinned-plugins.json` の `rev` と `hash` を書き換える。
 - GitHub 以外のホスト (例: SourceHut の `lsp_lines.nvim`) は `[skip]` になる。
 - 反映には `nix run .#switch`。
+
+### llm-agents-update (`apps.llm-agents-update`)
+
+`llm-agents` input (`github:numtide/llm-agents.nix`) を上げて、AI エージェントを更新する。
+
+```bash
+# input bump → nix flake check → nix run .#switch
+nix run .#llm-agents-update
+
+# 個別に絞る
+nix run .#llm-agents-update -- --no-check    # flake check をskip
+nix run .#llm-agents-update -- --no-switch   # switch をskip (更新だけ)
+```
+
+**更新対象は `opencode` と `coderabbit-cli` のみ。**
+
+`nix/overlays/ai-tools.nix` が llm-agents から nixpkgs へ注入しているのはこの 2 つだけ。
+`claude-code` / `codex` / `ollama` / `codexbar` は nixpkgs 由来なので
+このコマンドでは更新されない (`nix flake update nixpkgs` の領域)。
+
+- `llm-agents-intel` は **Intel Mac (x86_64-darwin) 上で実行したときだけ**更新する。
+  それ以外の環境では input が使われないので bump しても lock に差分が出るだけ。
+  判定は `nix/lib/targets.nix` の `isIntelMac` を評価時に解決してシェルへ渡す
+  (`nix run` は現在のマシンで評価されるので、実行環境 = 評価対象のシステム)。
+- rev の前後を `flake.lock` 直読み (`jq`) で表示する。`nix flake metadata` は
+  ネットワークに触れるので使わない。
+- 最後に `nix run .#switch` を実行する。ネイティブ Linux では OS 層で sudo 認証が要る。
+
+### agents-skills-update (`apps.agents-skills-update`)
+
+`agent-skills-nix` input (`github:Kyure-A/agent-skills-nix`) を上げ、
+`agents/skills/` の整合性を検証する。
+
+```bash
+# input bump → 自己検証 → nix flake check → nix run .#switch
+nix run .#agents-skills-update
+
+# 個別に絞る
+nix run .#agents-skills-update -- --no-check     # flake check をskip
+nix run .#agents-skills-update -- --no-switch    # switch をskip
+nix run .#agents-skills-update -- --no-validate  # agents/skills/ の検証をskip
+```
+
+**`agents/skills/*` は 18 個すべて自前の手書きで upstream origin がない。**
+agent-skills-nix の source registry (`registry/sources/*.nix` + npins) は
+このリポジトリでは使っていない。所以「更新」は input bump のみで、
+スキル実体に対しては自己検証だけを行う。
+
+検証する内容 (すべて `[warn]` または `[fail]` で報告し、`[fail]` が 1 件あれば終了コード 1):
+
+| 検査                | 判定     | 内容                                         |
+| ------------------- | -------- | -------------------------------------------- |
+| `SKILL.md` の存在   | `[fail]` | `agents/skills/*/SKILL.md` が無い            |
+| frontmatter         | `[fail]` | `name` / `description` が無い、または空      |
+| name とディレクトリ | `[warn]` | frontmatter の `name` がディレクトリ名と違う |
+| name の形式         | `[warn]` | 小文字 slug (`[a-z0-9]` 始まり) でない       |
+| name の重複         | `[fail]` | 複数ディレクトリで同じ `name` を使っている   |
+| インデックス drift  | 両方     | `agents/CLAUDE.md` との双方向差分            |
+
+- **`agents/CLAUDE.md` のインデックスは自動修正しない。** 報告のみ。
+  skill を追加したら `## ./skills/<name>/SKILL.md` の見出しも手で足すこと。
+- 検査対象は「評価は通るが意図とずれている」ものだけ。
+  source 設定の不備は `discoverCatalog` が評価時に落とし、
+  末尾の `nix flake check --no-build` も評価エラーとして検出する。
+- `name` は SKILL.md の frontmatter が正で、ディレクトリ名は配置先 merely。
+  両者が違うのは致命的ではないため `[warn]` 止まりにしてある。
 
 ### bootstrap (`apps.default`)
 
