@@ -262,12 +262,15 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       imports = [
-        # apps (default=bootstrap / switch / build / update / system-*)
+        # apps (default=bootstrap / switch / build / update / lazy2nix /
+        #       llm-agents-update / agents-skills-update / system-*)
         ./nix/flake-parts/apps/bootstrap.nix
         ./nix/flake-parts/apps/switch.nix
         ./nix/flake-parts/apps/build.nix
         ./nix/flake-parts/apps/update.nix
         ./nix/flake-parts/apps/lazy2nix.nix
+        ./nix/flake-parts/apps/llm-agents.nix
+        ./nix/flake-parts/apps/agent-skills.nix
         ./nix/flake-parts/apps/system.nix
         ./nix/flake-parts/dev-shells.nix
         # nix fmt (treefmt-nix)
