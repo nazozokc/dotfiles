@@ -113,8 +113,7 @@
 
     # Linux ネイティブパッケージマネージャー操作（pacman/apt/dnf/zypper/yum）
     linux-pkgmanager-nix = {
-      url = "github:nazozokc/linux-pkgmanager.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "path:./nix/linux-pkgmanager";
     };
 
     # ---------------------------------------------------------------------------
