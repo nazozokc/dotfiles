@@ -49,8 +49,13 @@ let
   };
 in
 {
-  # 60- 接頭辞でディストリ側 (/usr/lib/sysctl.d/50-default.conf) より後に読ませ、
-  # Nix 管理の drop-in であることがファイル名から分かるようにする
+  # systemd-sysctl は sysctl.d(5) のファイルを「ディレクトリに関係なく
+  # ファイル名の辞書順」で読み、**辞書順で後ろのファイルが勝つ**。
+  # (`/etc/sysctl.d` が優先、ではなく「60- が 50- より後」というルール)
+  #
+  # ディストリ側の既定 (Arch / Debian / Fedora の /usr/lib/sysctl.d/50-default.conf
+  # など) より後で評価させるため 60- 接頭辞にする。sysctl.d(5) が推奨する
+  # 60-90 帯 (/usr/ は 10-40) にそのまま従う。
   environment.etc."sysctl.d/60-nix.conf" = {
     text =
       lib.concatStringsSep "\n" (lib.mapAttrsToList (k: v: "${k} = ${toString v}") settings) + "\n";

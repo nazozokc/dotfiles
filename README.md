@@ -7,13 +7,13 @@
 このリポジトリは Linux / macOS / WSL の dotfiles 管理を行う構成です。
 
 - **Linux / macOS / WSL**: Nix + Home Manager で管理
-- **設定ファイルは可能な限り共通化**: `git/`, `starship/`, `lazygit/`, `bat/`, `nvim/`, `wezterm/`, `opencode/`, `efm-langserver/` は全OSで同一ファイルを共有
+- **設定ファイルは可能な限り共通化**: `nvim/`, `wezterm/`, `opencode/`, `efm-langserver/` は全OSで同一ファイルを共有。`git` / `starship` / `lazygit` / `bat` は Nix が `nix/modules/home/programs/<name>/` から生成する（リポジトリにはディレクトリを置かない）
 
 ---
 
 ## 対応 OS
 
-- Linux: `x86_64-linux` (Arch Linux など)
+- Linux: `x86_64-linux` (systemd ベースのディストリ。Arch Linux / Ubuntu / Debian / Fedora など)
 - Linux: `aarch64-linux` (ARM linux)
 - WSL: `x86_64-linux` (WSL2)
 - macOS: `aarch64-darwin` (Apple Silicon) / `x86_64-darwin` (Intel Mac)
@@ -74,7 +74,8 @@ nix run github:nazozokc/dotfiles
 
 - リポジトリは `~/ghq/github.com/nazozokc/dotfiles` に配置され、続けて自動で `switch` されます
   - clone 先はリポジトリ所有者で決まるので、ローカルユーザー名が変わっても配置先は同じです
-- ユーザー名は bootstrap が `id -un` から取得し、`nix/username.nix` に自動設定します
+- ユーザー名は bootstrap が `id -un` から取得し、`nix/lib/identity.nix` の
+  `username` に自動設定します
   （値が同じなら変更しません / 設定を変えた場合は `commit` してください）
 - 既にクローン済みなら `git remote update`（fetch のみ）となり、ローカルの HEAD がそのまま適用されます
   - HEAD・ブランチは一切変更しません
@@ -196,19 +197,40 @@ wsl --shutdown
 
 ---
 
+## `~/.scripts` — 手書きの補助スクリプト
+
+`my_scripts/` は `~/.scripts` へ symlink される。PATH には載らないので
+`~/.scripts/<name>.sh` で直接呼ぶ。
+
+| スクリプト      | 用途                                                        |
+| --------------- | ----------------------------------------------------------- |
+| `wsl-setup.sh`  | `/etc/wsl.conf` 反映 + `ja_JP.UTF-8` 生成（`sudo` 必須）    |
+| `extract.sh`    | アーカイブ自動判別で展開（tar / zip / 7z / deb / rpm など） |
+| `gh-new.sh`     | GitHub リポジトリを作って clone して cd                     |
+| `gh-pr.sh`      | PR 作成と `--web` 表示                                      |
+| `mkcd.sh`       | ディレクトリ作成して cd                                     |
+| `port-check.sh` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
+
+更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#lazy2nix` が持ち、
+Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で実行する。
+この領域を shell スクリプトで再実装しない。
+
+---
+
 ## 管理対象一覧
 
 - **シェル**: fish, zsh, bash
-- **エディタ**: Neovim, VSCode, Zed
+- **エディタ**: Neovim, VSCode
 - **プロンプト**: starship
 - **CLIツール**: Nix によるパッケージ管理。`nix/modules/home/packages/` 配下で分類 (`base/`, `dev/`, `ai/`, `gui/`, `experimental/`)
-  - **base**: jq, curl, zoxide, eza, tmux, yazi, gh, ghq, jujutsu, docker, lazydocker, nix-tree, cachix, nh など
-  - **dev**: python312, nodejs, bun, deno, rustc, go, jdk, clang, efm-langserver など
+  - **base**: jq, curl, zoxide, fd, eza, tmux, yazi, gh, ghq, jujutsu, docker, lazydocker, nix-tree, cachix, nh など
+  - **dev**: nodejs_latest, bun, deno, rustc, go, jdk, clang, efm-langserver など
   - **ai**: ollama, opencode, codex, claude-code
-  - **gui**: wezterm, ghostty, vscode, zed, spotify, discord, google-chrome など
+  - **gui**: wezterm, ghostty, vscode, spotify, discord, google-chrome など
   - **experimental**: pi-coding-agent, grok-cli, qwen-code
+  - **Linux / WSL 共通**は `nix/lib/packages/shared.nix`（クリップボード / アーカイブ / nmap / fontconfig / gnupg / openssh / XDG / herdr）
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理
-- **Linux GUI (Hyprland)**: hypr + Ambxst (Quickshell 製シェル。bar / launcher / 通知 / ロック / 壁紙 / スクリーンショット / メディア / OSD を統合）
+- **Linux GUI (Hyprland)**: Ambxst (Quickshell 製シェル。bar / launcher / 通知 / ロック / 壁紙 / スクリーンショット / メディア / OSD を統合) + `hypr/` の設定
 - **macOS限定**: nix-darwin によるシステム設定
 
 ---
@@ -234,9 +256,9 @@ nix fmt -- --ci
 - 同じファイルの `repoOwner` が clone 先（`~/ghq/github.com/<repoOwner>/dotfiles`）を
   決めるので、ユーザー名を変えても clone 先は独立しています。
 - bootstrap（`nix run github:nazozokc/dotfiles`）は `id -un` から
-  clone 先リポジトリの `nix/username.nix` を書き換えます。**そのファイルは
-  flake から import されていない**ので、flake 側のユーザー名を変えるときは
-  `nix/lib/identity.nix` を編集してください。
+  clone 先リポジトリの `nix/lib/identity.nix` の `username` を書き換えます
+  （`repoOwner` とコメントは残す）。値が同じなら触りません。
+- 手作業でユーザー名を変える場合も `nix/lib/identity.nix` だけを編集してください。
 - flake の `outputs` 内では環境変数を参照しません。pure 評価なので
   `builtins.getEnv` は空文字を返すだけで、`builtins.currentUser` は Nix 2.35 に存在しません。
   詳細は [`nix/README.md`](./nix/README.md) の「username の決定」を参照。

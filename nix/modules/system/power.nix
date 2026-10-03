@@ -32,6 +32,21 @@
     wantedBy = [ "graphical.target" ];
   };
 
+  # ppd のユニットは `Conflicts=tuned.service tlp.service auto-cpufreq.service
+  # system76-power.service` を宣言している。同じ電源管理役割を持つデーモンを
+  # 同時に起動すると片方が恒久的に失敗する。
+  #
+  # Fedora は tuned、openSUSE は powerdevil 系が既定で入るので、ここを
+  # mask しないとディストリによって ppd が起動できない。
+  # maskedUnits は /dev/null への symlink を作るだけなので、
+  # 元から存在しないユニットを mask しても害はない。
+  systemd.maskedUnits = [
+    "auto-cpufreq.service"
+    "system76-power.service"
+    "tuned.service"
+    "tlp.service"
+  ];
+
   # 既定 profile は balanced (ppd の upstream デフォルト)。
   # AC 接続時に performance へ自動切り替えたい場合は
   # systemd.user.services + powerprofilesctl を home-manager 側に追加すること。

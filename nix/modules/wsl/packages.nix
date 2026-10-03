@@ -1,34 +1,11 @@
 # nix/modules/wsl/packages.nix
 # WSL 固有のパッケージ
+#
+# ネイティブ Linux と WSL で共通するパッケージは
+# nix/lib/packages/shared.nix が単一ソースで持つ。WSL では GUI アプリと
+# デスクトップ用途のパッケージを入れないので、この共通セットだけで足りる。
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    # クリップボード
-    xclip
-    wl-clipboard
-
-    # アーカイブ
-    unzip
-    zip
-
-    # ネットワーク
-    nmap
-
-    # フォント
-    fontconfig
-
-    # window manager
-    herdr
-
-    # セキュリティ/認証
-    gnupg
-    openssh
-
-    # XDG/デスクトップ統合
-    file
-    libnotify
-    xdg-user-dirs
-    xdg-utils
-  ];
+  home.packages = import ../../lib/packages/shared.nix { inherit pkgs; };
 }

@@ -2,13 +2,20 @@
 # Linux OS 層設定のエントリーポイント (numtide/system-manager)
 #
 # home-manager が扱えない OS 層を担当する:
-#   - /etc 配下のファイル (locale / sysctl / fcitx5 / nix.conf)
+#   - /etc 配下のファイル (locale / sysctl / fcitx5)
 #   - systemd システムユニット・タイマー
 #   - システムパッケージ
 #
-# モジュール構成は systemd ベースの全 Linux ディストロで共通。
-# プラットフォーム (x86_64 / aarch64) の違いは nix/modules/system/build.nix が
-# nixpkgs.hostPlatform としてのみ差分化する。
+# 対象は「systemd ベースの Linux」。ディストリは限定しない。
+#   Arch / Ubuntu / Debian / Fedora / openSUSE / Gentoo / Void / NixOS … ただし
+#   実際に検証しているのは Arch Linux と Ubuntu のみ。
+#   systemd 以外の init (OpenRC / runit) や musl libc のディストリ
+#   (Alpine 等) は対象外の前提で、そこでのサポートはしない。
+#
+# モジュール構成は全ディストロで共通。プラットフォーム (x86_64 / aarch64) の
+# 違いは nix/modules/system/build.nix が nixpkgs.hostPlatform としてのみ差分化する。
+# ディストロ固有の分岐はここに書かず、各 submodule 側で「存在しなければ
+# Warning してスキップ」する形に寄せる (存在を前提にした実装にしない)。
 #
 # macOS 側は nix-darwin が同じ役割を持つ。
 # 参考: https://system-manager.net/main/
@@ -17,7 +24,6 @@
 # 全OSで ~/.config/nix/nix.conf を生成し、Nix はユーザー設定をシステム設定より
 # 優先するため、OS 層で /etc/nix/nix.conf を上書きする必要はない。
 {
-  username,
   ...
 }:
 
@@ -27,6 +33,7 @@
     ./sysctl.nix
     ./power.nix
     ./input-method.nix
+    ./nix-installation.nix
   ];
 
   # 対象プラットフォーム (nixpkgs.hostPlatform) は
@@ -34,18 +41,10 @@
   # ここにハードコードしないことで x86_64 / aarch64 の両方で同じモジュール構成を使える。
 
   # system-manager のサポート対象は nixos / ubuntu / debian のみ
-  # (fedora / arch は community 扱い。README 上 untested)。
-  # Arch を含む未対応ディストロで動かすため、preActivationAssertion の
-  # osVersion 検査を skip する。前提条件 (systemd ベース) は満たす。
+  # (fedora / arch / openSUSE 等は community 扱い。README 上 untested)。
+  # preActivationAssertion の osVersion 検査 (=/etc/os-release の ID による許可リスト)
+  # はディストリ別の問題ではないので、無効化してどの systemd 系 Linux でも通す。
+  # 本物の前提条件 (systemd ベース・/etc が書ける・Nix が single/multi-user
+  # どちらかで導入済み) は nix-installation.nix の assertion で別途検証する。
   system-manager.allowAnyDistro = true;
-
-  # Nix は single-user モード (nix-daemon 無し) で運用する。
-  # installer が作る /nix/store は root:nixbld 1775 なので、
-  # store へ書き込むには実行用户在 nixbld グループに居る必要がある。
-  #
-  # userborn は宣言どおりの /etc/group を書き戻すため、
-  # installer が追加した所属を消してしまう。
-  # ここで宣言して所属を維持する (users.users を宣言すると userborn に
-  # ユーザー管理を丸投げするため、グループの members だけ指定する)。
-  users.groups.nixbld.members = [ username ];
 }
