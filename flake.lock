@@ -311,24 +311,6 @@
     },
     "flake-parts_6": {
       "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib_6"
-      },
-      "locked": {
-        "lastModified": 1788450739,
-        "narHash": "sha256-glZLQlzIn1fXH6PazR2iUmTo7kzzyYSshrWhLS9TqCU=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "rev": "31729ca8cbdb4fa927b34e5f4353e6a83f39e993",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "type": "github"
-      }
-    },
-    "flake-parts_7": {
-      "inputs": {
         "nixpkgs-lib": [
           "llm-agents",
           "nixpkgs"
@@ -348,7 +330,7 @@
         "type": "github"
       }
     },
-    "flake-parts_8": {
+    "flake-parts_7": {
       "inputs": {
         "nixpkgs-lib": [
           "llm-agents-intel",
@@ -369,7 +351,7 @@
         "type": "github"
       }
     },
-    "flake-parts_9": {
+    "flake-parts_8": {
       "inputs": {
         "nixpkgs-lib": [
           "system-manager",
@@ -668,35 +650,23 @@
       }
     },
     "linux-pkgmanager-nix": {
-      "inputs": {
-        "flake-parts": "flake-parts_6",
-        "nix-github-actions": "nix-github-actions",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": "treefmt-nix_3"
-      },
       "locked": {
-        "lastModified": 1791014177,
-        "narHash": "sha256-8Cf4wwkiC3a+95kDONcDgiQFh+ndsBJ4GWFb4Yaobh8=",
-        "owner": "nazozokc",
-        "repo": "linux-pkgmanager.nix",
-        "rev": "0a953dabe0556b5065e193d93d0f1ddbfff2ceaf",
-        "type": "github"
+        "path": "./nix/linux-pkgmanager",
+        "type": "path"
       },
       "original": {
-        "owner": "nazozokc",
-        "repo": "linux-pkgmanager.nix",
-        "type": "github"
-      }
+        "path": "./nix/linux-pkgmanager",
+        "type": "path"
+      },
+      "parent": []
     },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
-        "flake-parts": "flake-parts_7",
+        "flake-parts": "flake-parts_6",
         "nixpkgs": "nixpkgs",
         "systems": "systems",
-        "treefmt-nix": "treefmt-nix_4"
+        "treefmt-nix": "treefmt-nix_3"
       },
       "locked": {
         "lastModified": 1791001326,
@@ -715,12 +685,12 @@
     "llm-agents-intel": {
       "inputs": {
         "bun2nix": "bun2nix_2",
-        "flake-parts": "flake-parts_8",
+        "flake-parts": "flake-parts_7",
         "nixpkgs": [
           "nixpkgs-intel"
         ],
         "systems": "systems_2",
-        "treefmt-nix": "treefmt-nix_5"
+        "treefmt-nix": "treefmt-nix_4"
       },
       "locked": {
         "lastModified": 1791001326,
@@ -733,27 +703,6 @@
       "original": {
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "type": "github"
-      }
-    },
-    "nix-github-actions": {
-      "inputs": {
-        "nixpkgs": [
-          "linux-pkgmanager-nix",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1737420293,
-        "narHash": "sha256-F1G5ifvqTpJq7fdkT34e/Jy9VCyzd5XfJ9TO8fHhJWE=",
-        "owner": "nix-community",
-        "repo": "nix-github-actions",
-        "rev": "f4158fa080ef4503c8f4c820967d946c2af31ec9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nix-github-actions",
         "type": "github"
       }
     },
@@ -905,21 +854,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-lib_6": {
-      "locked": {
-        "lastModified": 1788057806,
-        "narHash": "sha256-DTQSMxzDWmT0zhguthvegnVkn7CFqGCv4IHCzk5ZUpM=",
-        "owner": "nix-community",
-        "repo": "nixpkgs.lib",
-        "rev": "596e2e3940e09b2abbeb03f75fa1828c57fcd72c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nixpkgs.lib",
-        "type": "github"
-      }
-    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1790822859,
@@ -987,7 +921,7 @@
         "nixpkgs-intel": "nixpkgs-intel",
         "sops-nix": "sops-nix",
         "system-manager": "system-manager",
-        "treefmt-nix": "treefmt-nix_6",
+        "treefmt-nix": "treefmt-nix_5",
         "zen-browser": "zen-browser"
       }
     },
@@ -1138,7 +1072,7 @@
     "treefmt-nix_3": {
       "inputs": {
         "nixpkgs": [
-          "linux-pkgmanager-nix",
+          "llm-agents",
           "nixpkgs"
         ]
       },
@@ -1159,27 +1093,6 @@
     "treefmt-nix_4": {
       "inputs": {
         "nixpkgs": [
-          "llm-agents",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1786901030,
-        "narHash": "sha256-WSFCsDSE5ffgD2MqzkM2CYjeFiKhRF/dJUN8uedb6YE=",
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "rev": "27b3b12a8e6375f28ebe122f07d230ca5459bbfa",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "treefmt-nix_5": {
-      "inputs": {
-        "nixpkgs": [
           "llm-agents-intel",
           "nixpkgs"
         ]
@@ -1198,7 +1111,7 @@
         "type": "github"
       }
     },
-    "treefmt-nix_6": {
+    "treefmt-nix_5": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -1224,7 +1137,7 @@
           "system-manager",
           "flake-compat"
         ],
-        "flake-parts": "flake-parts_9",
+        "flake-parts": "flake-parts_8",
         "nixpkgs": [
           "system-manager",
           "nixpkgs"
