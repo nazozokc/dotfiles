@@ -1,0 +1,10 @@
+--- a/aider/exceptions.py
++++ b/aider/exceptions.py
+@@ -48,6 +48,7 @@
+     ExInfo("RouterRateLimitError", True, None),
+     ExInfo("ServiceUnavailableError", True, "The API provider's servers are down or overloaded."),
+     ExInfo("UnprocessableEntityError", True, None),
++    ExInfo("VectorStoreSearchError", False, None),
+     ExInfo("UnsupportedParamsError", True, None),
+     ExInfo(
+         "Timeout",

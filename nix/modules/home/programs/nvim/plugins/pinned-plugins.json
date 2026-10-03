@@ -151,8 +151,8 @@
   },
   "zls": {
     "url": "https://github.com/zigtools/zls.git",
-    "rev": "0ea69abdd8f50d81989c00b6a3b9cf8ced7f9522",
+    "rev": "a1638ea47881c48c97095243ad0baea2652f3250",
     "branch": "master",
-    "hash": "sha256-LICZ2CtiKuLP0UOc1dCE6qPLReIInmsiWNpH2kTd2Io="
+    "hash": "sha256-9znG0z/AVVLMtHvVNUL73AngwqVi44jjVYb48Fsh+60="
   }
 }
