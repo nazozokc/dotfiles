@@ -139,9 +139,9 @@
   },
   "vscode-js-debug": {
     "url": "https://github.com/microsoft/vscode-js-debug.git",
-    "rev": "bccbbafdcb6bb96ab0706f411a1e66681d5bc4de",
+    "rev": "1c29ecbd305e91e32d8c4eac8daf10ad127f3a6b",
     "branch": "main",
-    "hash": "sha256-4bYss4fWLGrOsmfKYbaF9zSGl45jmUH73GCuba2IFw0="
+    "hash": "sha256-HMN3ZuXKKqB5rw/8VdFKlrqrbMBweJ+8XwBug3PjCvw="
   },
   "wordcount.nvim": {
     "url": "https://github.com/nazozokc/wordcount.nvim.git",
@@ -151,8 +151,8 @@
   },
   "zls": {
     "url": "https://github.com/zigtools/zls.git",
-    "rev": "a1638ea47881c48c97095243ad0baea2652f3250",
+    "rev": "eab2be0fd74443a27662da809b771c4ad0d2afcf",
     "branch": "master",
-    "hash": "sha256-9znG0z/AVVLMtHvVNUL73AngwqVi44jjVYb48Fsh+60="
+    "hash": "sha256-7BnT4VrhOApLVWDay7w6Jm9z/pNWc4trOLAwu+TfQLk="
   }
 }
