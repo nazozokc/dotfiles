@@ -3,8 +3,8 @@
 #
 # flake の pure 評価では環境変数も whoami も参照できない (Nix 2.35 で実測)。
 #   builtins.getEnv "USER" は "" を返すだけ / builtins.currentUser は存在しない
-# 実行環境のユーザー名は bootstrap (nix/parts/apps/bootstrap.nix) が `id -un` から
-# 取り、この 2 つの値を apps へ渡すことで pure 評価の中に持ち込む。
+# 実行環境のユーザー名は apps.default (bootstrap = nix/flake-parts/apps/bootstrap.nix)
+# が `id -un` で取得し、下の username を直接書き換える。repoOwner は触らない。
 {
   # ローカルユーザー名。
   # homeConfigurations / darwinConfigurations / systemConfigs の attr 名と

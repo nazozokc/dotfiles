@@ -15,7 +15,7 @@ return {
 			-- =====================================================
 			cmdline = {
 				enabled = true,
-				view = "cmdline_popup",
+				view = "cmdline_center",
 
 				format = {
 					cmdline = {

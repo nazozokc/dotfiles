@@ -29,9 +29,15 @@
         XMODIFIERS=@im=fcitx
       '';
       mode = "0644";
+      replaceExisting = true;
     };
 
     # fcitx5 のグローバル設定 (/etc/xdg/fcitx5 はユーザー設定 ~/.config/fcitx5 より優先)
+    #
+    # replaceExisting が必要な理由:
+    #   Debian / Ubuntu / openSUSE / Fedora はディストリパッケージの fcitx5 が
+    #   /etc/xdg/fcitx5/profile を同梱している。置換しないと Nix 側の設定は反映されない。
+    #   元ファイルは <path>.system-manager-backup に退避され、deactivate で復元される。
     "xdg/fcitx5/profile" = {
       text = ''
         [Groups/0]
@@ -55,6 +61,7 @@
         0=Default
       '';
       mode = "0644";
+      replaceExisting = true;
     };
   };
 }

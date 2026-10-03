@@ -60,7 +60,7 @@ nix/modules/home/programs/nvim/plugins/default.nix           両系統を farm (
 
 ```bash
 # Nix 管理分の更新 (rev / hash を nix/modules/home/programs/nvim/plugins/pinned-plugins.json に書く)
-nix run .#nvim-plugin-update
+nix run .#lazy2nix
 
 # 反映
 nix run .#switch

@@ -8,7 +8,7 @@
 # meta.homepage を突き合わせて決める。nixpkgs に無いものは
 # ./pinned-plugins.json へ移す。
 #
-# nixpkgs 側が attr を改名・削除した場合は `nix run .#nvim-plugin-update` の
+# nixpkgs 側が attr を改名・削除した場合は `nix run .#lazy2nix` の
 # 最後の `nix flake check --no-build` が「どのプラグインの attr が無い」かを
 # 評価エラーとして出すので、そこを直してからこのファイルを編集する。
 {

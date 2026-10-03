@@ -19,9 +19,7 @@ let
     let
       dirStr = builtins.toString dir;
       entries = builtins.readDir dir;
-      files = lib.filterAttrs (
-        name: _: lib.hasSuffix ".fish" name || lib.hasSuffix ".disabled" name
-      ) entries;
+      files = lib.filterAttrs (name: _: lib.hasSuffix ".fish" name) entries;
     in
     lib.mapAttrs' (
       name: _:

@@ -30,6 +30,18 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 
 パッケージは `nix/modules/home/packages/` 配下でカテゴリ別に分類されています。`packages/default.nix` が全カテゴリを flatten して `home.packages` に渡します。
 
+パッケージの置き場所は環境の広さで決める。
+
+| 置き場所                                | 対象                           |
+| --------------------------------------- | ------------------------------ |
+| `nix/modules/home/packages/<category>/` | 全環境共通                     |
+| `nix/lib/packages/shared.nix`           | ネイティブ Linux + WSL 共通    |
+| `nix/modules/linux/packages.nix`        | ネイティブ Linux のみ          |
+| `nix/modules/wsl/packages.nix`          | WSL のみ（現状は shared のみ） |
+
+**同じパッケージを 2 箇所に書かない。** home-manager は重複を許すが、
+片方だけ更新すると挙動が割れる。Linux/WSL の共通分は `nix/lib/packages/shared.nix` に集約する。
+
 ### 共通パッケージ (`nix/modules/home/packages/`)
 
 #### base (`base/default.nix`)
@@ -37,22 +49,23 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 基礎 CLI ツール。全環境でインストールされる。
 
 - **シェル**: nushell, zsh
-- **CLI**: jq, curl, wget, zoxide, tree, btop, fastfetch, onefetch, eza, tmux, uv, ncdu, tldr, pet, just, dig
+- **CLI**: jq, curl, wget, zoxide, fd, tree, btop, fastfetch, onefetch, eza, which, tmux, uv, ncdu, tldr, pet, just, dig
 - **ファイラー**: yazi
 - **Nix**: nix-tree, cachix, niv, nix-output-monitor, nh
 - **Docker**: docker, lazydocker
-- **Git/GitHub**: gh, ghq, git-wt, jujutsu, gitui, git-secrets, tig, ghgrab
-- **ユーティリティ**: presenterm, trash-cli, rename, inetutils, lsof, comma, aria2, mise, cmake
-- **認証**: bitwarden-cli, bitwarden-desktop, _1password-cli
-- **メール**: aerc, neomutt, himalaya
+- **Git/GitHub**: gh, ghq, git-wt, jujutsu, gitui, git-secrets, ghgrab
+- **ユーティリティ**: presenterm, trash-cli
+- **その他**: rename, inetutils, comma, aria2, mise, tokei
+
+`cmake` は `dev` のビルドツール側だけ。`bitwarden-cli` は
+`nix/overlays/bitwarden-cli.nix` が Darwin ビルドを補修する。
 
 #### dev (`dev/default.nix`)
 
 開発言語・ツール。
 
 - **汎用**: prettier, telescope
-- **Python**: python312
-- **JavaScript/TypeScript**: nodejs_latest, bun, deno, yarn
+- **JavaScript/TypeScript**: nodejs_latest, bun, deno, yarn, pnpm
   - TypeScript / JavaScript の LSP は `typescript-language-server` ではなく **TypeScript 7 内蔵の LSP** を使う。`pkgs.typescript` は TS7（Go ネイティブ実装）で `tsserver` を持たないため、`nix/overlays/typescript.nix` が `tsc --lsp --stdio` 用の `tsgo` をパッケージとして定義し、nvim（`programs/neovim` の `extraPackages`）と opencode（`programs/opencode` の `lsp.typescript`）がそれを使う
 - **Rust**: rustc, rust-analyzer
 - **Nix**: nil, nixd, nixfmt
@@ -72,12 +85,13 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 AI / LLM 関連ツール。
 
 - ollama, opencode, codex, claude-monitor, claude-code
+- aarch64-darwin のみ: codexbar
 
 #### gui (`gui/default.nix`)
 
 GUI アプリケーション。
 
-- **共通**: audacity, vscode, zed
+- **共通**: audacity, vscode
 - **x86_64-linux固有**: tor-browser
 - **macOS**: chatgpt, obsidian, raycast, vscodium
 - **x86_64-linux + macOS**: spotify, discord, google-chrome
@@ -88,17 +102,28 @@ GUI アプリケーション。
 
 - pi-coding-agent, grok-cli, qwen-code
 
-### Linux固有パッケージ (`nix/modules/linux/packages.nix`)
+### Linux / WSL 共通パッケージ (`nix/lib/packages/shared.nix`)
+
+ネイティブ Linux と WSL の両方に導入する。両モジュールへ並べて書かず、ここへ集約する。
 
 - クリップボード: xclip, wl-clipboard
-- 音声: alsa-utils, pulseaudio, sox
 - アーカイブ: unzip, zip
-- ネットワーク: ethtool, mtr, nmap
-- システム監視: duf, hyperfine, iotop, lm_sensors, procs, sd, sysstat, bandwhich
-- フォント: fontconfig, nerd-fonts.jetbrains-mono
-- セキュリティ: gnupg, openssh, pass, polkit_gnome
-- XDG: file, libnotify, xdg-user-dirs, xdg-utils
+- ネットワーク: nmap
+- フォント: fontconfig
+- セキュリティ/認証: gnupg, openssh
+- XDG/デスクトップ統合: file, libnotify, xdg-user-dirs, xdg-utils
 - ウィンドウマネージャ: herdr
+
+### Linux固有パッケージ (`nix/modules/linux/packages.nix`)
+
+共通分（上の `shared.nix`）はここに書かない。ネイティブ Linux だけのものを置く。
+
+- 音・動画: alsa-utils, pulseaudio, sox
+- ネットワーク: ethtool, mtr
+- システム監視: duf, hyperfine, iotop, lm_sensors, procs, sd, sysstat, bandwhich
+- フォント: nerd-fonts.jetbrains-mono
+- セキュリティ/認証: pass, polkit_gnome
+- microsoft: teams-for-linux
 
 #### Ambxst へ一本化したパッケージ
 
@@ -127,12 +152,8 @@ Ambxst が同一機能を自前で持つため。
 
 ### WSL固有パッケージ (`nix/modules/wsl/packages.nix`)
 
-- クリップボード: xclip, wl-clipboard
-- アーカイブ: unzip, zip
-- ネットワーク: nmap
-- フォント: fontconfig
-- セキュリティ: gnupg, openssh
-- XDG: file, libnotify, xdg-user-dirs, xdg-utils
+- 現状は `nix/lib/packages/shared.nix` のみ（GUI パッケージは入れない）
+- WSL 専用の GUI パッケージが要になったら、ここへ足す
 
 ## クロスプラットフォーム設定共有
 
@@ -223,6 +244,7 @@ nix/
 ├── shared.nix                         # 共通設定 (username, stateVersion, xdg)
 ├── lib/                               # flake が使う「値」と「小物」
 │   ├── identity.nix                   # username / repoOwner (誰の dotfiles か)
+│   ├── packages/shared.nix            # ネイティブ Linux と WSL の共通パッケージ
 │   ├── pkgs.nix                       # pkgsFor (nixpkgs インスタンス生成 + Intelスタック切替)
 │   ├── shell.nix                      # app 共通シェルヘルパ (require_nix_features / is_wsl ...)
 │   └── targets.nix                    # システム別 attr 名・表示 (flakeTarget / hmConfig / sysLabel)
@@ -234,7 +256,7 @@ nix/
 │       ├── switch.nix                 # apps.switch
 │       ├── build.nix                  # apps.build
 │       ├── update.nix                 # apps.update
-│       ├── nvim-plugin-update.nix     # apps.nvim-plugin-update
+│       ├── lazy2nix.nix               # apps.lazy2nix (Neovim プラグイン更新)
 │       └── system.nix                 # apps.system-build / system-check / system-switch
 ├── modules/                           # home-manager / system-manager のモジュール
 │   ├── home/                          # home-manager 共通モジュール
@@ -291,6 +313,7 @@ nix/
 │   │   ├── default.nix                # エントリーポイント (allowAnyDistro)
 │   │   ├── input-method.nix           # fcitx5 グローバル設定と環境変数
 │   │   ├── locale.nix                 # ja_JP.UTF-8 / en_US.UTF-8 の生成と LANG
+│   │   ├── nix-installation.nix       # Nix 導入モードの宣言と実ホストの検証
 │   │   ├── power.nix                  # power-profiles-daemon
 │   │   └── sysctl.nix                 # sysctl.d drop-in と tcp_bbr modprobe
 │   ├── linux/                         # Linux 固有設定
@@ -316,7 +339,8 @@ nix/
 │   ├── compiler-rt.nix                # compiler-rt
 │   ├── fish-plugins.nix               # fish プラグイン
 │   ├── node-packages.nix              # Node.js パッケージ
-│   └── pipx.nix                       # pipx
+│   ├── pipx.nix                       # pipx
+│   └── typescript.nix                 # TS7 内蔵 LSP (tsgo)
 ├── README.md                          # このファイル
 └── AGENTS.md                          # AI エージェント用メモリ
 ```
@@ -337,20 +361,20 @@ nix run .#build
 nix run .#update
 
 # Neovim プラグイン更新 (Nix 管理分)
-nix run .#nvim-plugin-update
+nix run .#lazy2nix
 ```
 
-### nvim-plugin-update (`apps.nvim-plugin-update`)
+### lazy2nix (`apps.lazy2nix`)
 
-`nvim/plugins/` が持つプラグイン実体とバージョンを更新する。
+`nix/modules/home/programs/nvim/plugins/` が持つプラグイン実体とバージョンを更新する。
 
 ```bash
 # nixpkgs 由来 + pin 済み の両方を更新し、最後に nix flake check --no-build
-nix run .#nvim-plugin-update
+nix run .#lazy2nix
 
 # 個別に絞る
-nix run .#nvim-plugin-update -- --no-nixpkgs   # pin 済みだけ
-nix run .#nvim-plugin-update -- --no-check     # flake check をskip
+nix run .#lazy2nix -- --no-nixpkgs   # pin 済みだけ
+nix run .#lazy2nix -- --no-check     # flake check をskip
 ```
 
 - `nixpkgs` 由来は `nix flake update` 経由でのみ更新される (attr 名は `nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix` に固定)。
@@ -368,16 +392,16 @@ nix run .#nvim-plugin-update -- --no-check     # flake check をskip
    - git も無い: `nix shell nixpkgs#git -c git` で一時的に git を用意
    - clone 先は `nix/lib/identity.nix` の `repoOwner` で決める。ローカルユーザー名
      （同ファイルの `username`）とは別物なので、別ユーザーで運用しても clone 先は変わらない
-2. クローン先のリポジトリで `nix/username.nix` を `id -un` へ合わせる
-   - 値が同じなら触らない / ファイルが無ければ新規生成する
+2. クローン先のリポジトリで `nix/lib/identity.nix` の `username` を `id -un` へ合わせる
+   - 値が同じなら触らない
+   - `username` の行だけ置換する（コメントと `repoOwner` は残す）
    - 書き換えた場合は `commit` して残す
-   - **このファイルの値は flake が読まない。** 実行時のユーザー名は
-     `nix/lib/identity.nix` の `username` が正
+   - **flake が読む単一ソース**なので、書き換え後はそのまま `switch` に渡せる
 3. そのディレクトリから `nix run .#switch` に委譲する
    - ユーザー層・OS 層の適用・OS 自動判定・事前チェック・`.wslconfig` チェックは全て `switch` が持つ
 
 - 手元のリポジトリが正なので、既存 clone の **HEAD・ブランチは変更しない**
-  （`nix/username.nix` の自動同期のみ作業ツリーが変わる）
+  （`nix/lib/identity.nix` の自動同期のみ作業ツリーが変わる）
 - `ghq get -u` は内部で `git pull --ff-only` を実行するため使わない
   （ローカルが origin と分岐していると bootstrap 全体が失敗する）
 - ghq root は git config の `[ghq] root` を参照しない
@@ -454,7 +478,7 @@ nix/modules/home/programs/nvim/plugins/default.nix           両系統を 1 つ�
   4. `nix flake check --no-build` で評価確認 → `nix run .#switch`
 - 通常の lazy プラグイン用 `build = "..."` ステップは原則不要。
   `:TSUpdate` のような外部 fetch を行うステップは Nix では機能しないため削除する。
-- `nix run .#nvim-plugin-update` で更新できる (pin 済みのみ自動更新、nixpkgs 由来は `nix flake update`)。
+- `nix run .#lazy2nix` で更新できる (pin 済みのみ自動更新、nixpkgs 由来は `nix flake update`)。
 
 ### 適用範囲
 
@@ -511,12 +535,29 @@ nix run .#system-switch
   sysctl と locale は `environment.etc` と自作 systemd oneshot で実装する。
 - `locale.nix` は `locale-gen` の絶対パスを順に探す (`/usr/bin` → `/usr/sbin`)。
   Arch は前者、Debian / Ubuntu は後者に置くため。
+  どちらも無いディストリ (Alpine 等) では `localedef` で候補 trieset を生成する。
 - ディストリ判定は `system-manager.allowAnyDistro = true` で無効化している
   (既定の許可リストは nixos / ubuntu / debian のみ)。
+- `power.nix` は power-profiles-daemon と競合する power 管理 service
+  (`auto-cpufreq` / `system76-power` / `tuned` / `tlp`) を mask する。
+  PPD 单元の `Conflicts=` とPackages 側を突き合わせて決めた。
+- Nix の導入モードはホストごとに違うので `dotfiles.system.nixStoreAccess` で宣言する
+  (`nix/modules/system/nix-installation.nix`、既定は `daemon`)。
 
-### 信頼性向上
+  | 値       | 導入方法                                                                                           | userborn への宣言                       |
+  | -------- | -------------------------------------------------------------------------------------------------- | --------------------------------------- |
+  | `daemon` | multi-user (`--daemon` / `apt install nix` / `dnf install nix`)。`nix-daemon` が build user を管理 | 宣言しない。build user を壊さない       |
+  | `nixbld` | 旧 installer の single-user。`/nix/store` が `root:nixbld 1775`                                    | `nixbld` の member に実行ユーザーを追加 |
+  | `user`   | 新 installer の single-user。`/nix/store` が実行ユーザー所有、`nixbld` グループ自体が無い          | 宣言しない                              |
 
-- `nix run .#switch` は実行前に `nix flake check --no-build` を自動実行し、評価エラーを事前に検出します。
+  `daemon` モードで `nixbld` への所属を宣言すると、userborn が実行ユーザーを
+  `nixbld` へ追加し、`nix-daemon` を迂回して store を直接書けるようになる
+  (権限の降格)。逆に `nixbld` モードを宣言し損れると store へ書けなくなる。
+  宣言だけでは実モードが見えないので、`system-switch` の
+  `preActivationAssertions` が daemon socket・store の所有者・`/etc/group` を
+  読んで実モードと突き合わせる。宣言 `nixbld` なのに実ホストが別なら権限の降格
+  になるため中断、それ以外のずれは warning のみ
+  (1 リポジトリを複数ホストで共有するため)。
 
 ### 信頼性向上
 
@@ -594,9 +635,10 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
   - impure 評価を採ると `nix flake check` / `nix run .#switch` / home-manager 起動の
     全部に `--impure` を伝播させる必要があり、CI 品質ゲートが壊れる
   - 代替として `apps.default`（bootstrap）が実行時に `id -un` を取得し、
-    clone 先リポジトリの `nix/username.nix` を書き換える（値が同じなら触らない）。
-    **現状 flake はこのファイルを import していない**ので、
-    ユーザー名を変えるときは `nix/lib/identity.nix` を編集する
+    clone 先リポジトリの `nix/lib/identity.nix` の `username` を書き換える
+    （値が同じなら触らない）。`repoOwner` は触らない
+  - 手作業で変える場合も `nix/lib/identity.nix` だけを編集する。
+    `username` を読むのはこの1箇所だけ
 
 ## home.stateVersion ポリシー
 
