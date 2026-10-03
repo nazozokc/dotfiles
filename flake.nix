@@ -111,6 +111,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Linux ネイティブパッケージマネージャー操作（pacman/apt/dnf/zypper/yum）
+    linux-pkgmanager-nix = {
+      url = "github:nazozokc/linux-pkgmanager.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # ---------------------------------------------------------------------------
     # x86_64-darwin (Intel Mac) 専用スタック
     # nixpkgs 26.11 で x86_64-darwin のサポートが削除されたため、
@@ -167,6 +173,7 @@
       zen-browser,
       system-manager,
       ambxst,
+      linux-pkgmanager-nix,
       # x86_64-darwin (Intel Mac) 専用スタック
       nixpkgs-intel,
       home-manager-intel,
@@ -275,6 +282,8 @@
         ./nix/flake-parts/dev-shells.nix
         # nix fmt (treefmt-nix)
         ./nix/modules/home/packages/treefmt.nix
+        # native PM manager (nlp)
+        ./nix/flake-parts/apps/nix-native-pkgs.nix
       ];
       systems = [
         "x86_64-linux" # メイン PC (Arch Linux)
@@ -295,6 +304,7 @@
           # perSystem モジュール (treefmt-nix / nix/flake-parts/*) が参照する pkgs。
           # x86_64-darwin では 26.05 系スタックに差し替える。
           _module.args.pkgs = pkgsFor system;
+
         };
 
       # -------------------------------------------------------------------
