@@ -20,7 +20,7 @@ jobs:
   # checks.<system>.<name> を足した分だけジョブが増える。
   # attr 名を手で列挙しないので、check を追加して CI が回らない、という抜けが起きない
   nix-matrix:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
