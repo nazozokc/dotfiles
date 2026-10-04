@@ -1,11 +1,20 @@
-# nix/native-pkgs/pacman.nix — pacman で導入するパッケージ（nlp 宣言）
+# packages/pacman.nix — pacman で導入するパッケージ (Arch Linux)
 #
-# 生成元: `nix run .#nlp-adopt`（明示導入済みスナップショット）を元に精査する
-# 注意:
-# - ここは「システムのリソース」として明示導入したもののみを書く
-# - 依存として入ったものは含めない
-# - Nix（home-manager/home.packages）経由で入れるものはここに書かない
-# - adopt は宣言検査で却下される名前（空白/特殊文字等）は除外する
-# - 既存宣言とマージする際は、共通する名前を整理してから使う
+# ここに書くのは「システムのリソース」だけ。
+#
+#   - /etc の設定、/usr/share/man の man page
+#   - systemd unit、カーネルモジュール、firmware
+#
+# 逆に、ユーザーの製品 (エディタ、言語ランタイム、CLI ツール) は
+# Nix (home-manager の home.packages) 経由で入れる。ここには書かない。
+# 二重管理になり、片方だけ古いと事故る。
+#
+# 照合は `pacman -T` で行う。
+#   - 全て充足済みなら無出力 + rc=0
+#   - 不足があれば不足名のみ stdout + rc=127
 [
+
+  # man page と補完。/usr/share に入るので Nix 側では扱わない
+  "man-db"
+  "bash-completion"
 ]
