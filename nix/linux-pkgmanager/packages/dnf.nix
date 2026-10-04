@@ -1,4 +1,4 @@
-# packages/pacman.nix — pacman で導入するパッケージ (Arch Linux)
+# packages/dnf.nix — dnf で導入するパッケージ (Fedora / RHEL 9+)
 #
 # ここに書くのは「システムのリソース」だけ。
 #
@@ -9,12 +9,12 @@
 # Nix (home-manager の home.packages) 経由で入れる。ここには書かない。
 # 二重管理になり、片方だけ古いと事故る。
 #
-# 照合は `pacman -T` で行う。
-#   - 全て充足済みなら無出力 + rc=0
-#   - 不足があれば不足名のみ stdout + rc=127
+# 照合は `rpm -q --qf '%{NAME}\n' <宣言>` で行い、充足名を宣言から引く。
+#   - NAME はアーキテクチャ接尾辞を含まない。`libz.x86_64` ではなく `libz`
+#   - 充足名が1つも返らない場合は宣言全体が不足とみなす
 [
 
   # man page と補完。/usr/share に入るので Nix 側では扱わない
-  "man-db"
+  "man-pages"
   "bash-completion"
 ]
