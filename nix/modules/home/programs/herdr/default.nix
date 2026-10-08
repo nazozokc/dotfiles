@@ -55,16 +55,15 @@
 
     # --- Panes ----------------------------------------------------------
     # split names follow WezTerm: d = vertical (side-by-side), e = horizontal.
-    split_vertical = "ctrl+shift+d"
-    split_horizontal = "ctrl+shift+e"
+    # Arrays: direct WezTerm chord + prefix-mode binding for the same action.
+    split_vertical = ["ctrl+shift+d", "prefix+v"]
+    split_horizontal = ["ctrl+shift+e", "prefix+e"]
     close_pane = "ctrl+shift+q"
     zoom = "ctrl+shift+z"
     focus_pane_left = "prefix+h"
     focus_pane_down = "prefix+j"
     focus_pane_up = "prefix+k"
     focus_pane_right = "prefix+l"
-    split_vertical = "prefix+v"
-    split_horizontal = "prefix+e"
     resize_pane_left = "ctrl+shift+alt+h"
     resize_pane_down = "ctrl+shift+alt+j"
     resize_pane_up = "ctrl+shift+alt+k"
