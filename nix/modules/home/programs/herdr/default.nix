@@ -47,8 +47,8 @@
     # terminal (WezTerm keeps ctrl+shift+t/w). The rest mirror WezTerm.
     new_tab = "ctrl+t"
     close_tab = "ctrl+w"
-    previous_tab = "ctrl+shift+["
-    next_tab = "ctrl+shift+]"
+    previous_tab = "ctrl+shift+{"
+    next_tab = "ctrl+shift+}"
     switch_tab = "ctrl+shift+1..9"
     move_tab_previous = "alt+shift+left"
     move_tab_next = "alt+shift+right"
@@ -71,8 +71,8 @@
     last_pane = "prefix+`"
 
     # --- Workspaces -----------------------------------------------------
-    previous_workspace = "ctrl+shift+alt+["
-    next_workspace = "ctrl+shift+alt+]"
+    previous_workspace = "ctrl+shift+alt+{"
+    next_workspace = "ctrl+shift+alt+}"
     switch_workspace = "prefix+shift+1..9"
 
     # --- Utility --------------------------------------------------------
