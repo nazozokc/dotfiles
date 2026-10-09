@@ -64,10 +64,6 @@
     focus_pane_down = "prefix+j"
     focus_pane_up = "prefix+k"
     focus_pane_right = "prefix+l"
-    resize_pane_left = "prefix+alt+h"
-    resize_pane_down = "prefix+alt+j"
-    resize_pane_up = "prefix+alt+k"
-    resize_pane_right = "prefix+alt+l"
     last_pane = "prefix+`"
 
     # --- Workspaces -----------------------------------------------------
