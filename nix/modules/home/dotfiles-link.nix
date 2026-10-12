@@ -51,5 +51,8 @@ in
     ".zshrc".source = link "${dotfilesDirStr}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDirStr}/bash/bashrc";
     ".scripts".source = link "${dotfilesDirStr}/my_scripts";
+
+    ".pi/agent/settings.json".source = link "${dotfilesDirStr}/pi/agent/settings.json";
+    ".pi/agent/keybinding.json".source = link "${dotfilesDirStr}/pi/agent/keybinding.json";
   };
 }
