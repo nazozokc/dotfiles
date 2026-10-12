@@ -22,6 +22,7 @@
     ./programs/opencode
     ./programs/claude-code
     ./programs/codex
+    ./programs/pi
     ./programs/ghostty.nix
     ./programs/ollama
     ./programs/docker

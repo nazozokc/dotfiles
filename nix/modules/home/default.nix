@@ -2,12 +2,6 @@
 # home-manager設定のエントリーポイント
 # 各プラットフォーム共通のモジュールをここで集約する
 {
-  pkgs,
-  dotfilesDir,
-  username,
-  ...
-}:
-{
   imports = [
     ./dotfiles-link.nix
     ./programs/herdr
