@@ -103,9 +103,9 @@
   },
   "ts-expand-hover.nvim": {
     "url": "https://github.com/nemanjamalesija/ts-expand-hover.nvim.git",
-    "rev": "629277cc4b9f9179b3b4439d8a7b820c843a4ee7",
+    "rev": "67b10745d45453f6746198ca34c564c99ce9bb2e",
     "branch": "main",
-    "hash": "sha256-pXX24MG2wMRCl68aGuiL/Urcb1jKP2hHzwAzDccJKWE="
+    "hash": "sha256-CQeM4qfH1Yp0as2DpitmCAUvYCGKqxdnFNfwWOF15sg="
   },
   "utf8.nvim": {
     "url": "https://github.com/uga-rosa/utf8.nvim.git",
@@ -139,9 +139,9 @@
   },
   "vscode-js-debug": {
     "url": "https://github.com/microsoft/vscode-js-debug.git",
-    "rev": "1c29ecbd305e91e32d8c4eac8daf10ad127f3a6b",
+    "rev": "b24ecc5de754e4bfcb194688a59d07cad70440b3",
     "branch": "main",
-    "hash": "sha256-HMN3ZuXKKqB5rw/8VdFKlrqrbMBweJ+8XwBug3PjCvw="
+    "hash": "sha256-uv2c1/8U7Yef/PkrSRdvciMQpdeoRpMt5SGREb4BVNw="
   },
   "wordcount.nvim": {
     "url": "https://github.com/nazozokc/wordcount.nvim.git",
