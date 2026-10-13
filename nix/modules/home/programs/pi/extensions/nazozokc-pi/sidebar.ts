@@ -14,7 +14,9 @@ import { fit, formatTokens, shortenHome } from "./format.ts";
 import {
   activityFragment,
   contextFragment,
+  elapsedFragment,
   sanitizeStatus,
+  toolsCountFragment,
   toolsFragment,
 } from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
@@ -119,6 +121,7 @@ export class NazozokcPiSidebar implements Component {
     push("session", theme.fg("text", data.sessionName ?? "—") + branch);
     push("id", theme.fg("dim", data.sessionId.slice(0, 12)));
     push("cwd", theme.fg("text", shortenHome(data.cwd, this.home)));
+    push("elapsed", elapsedFragment(theme, data));
     middle.push(this.divider(width, theme));
 
     // Model
@@ -132,6 +135,12 @@ export class NazozokcPiSidebar implements Component {
       data.model?.reasoning
         ? theme.fg("muted", data.thinkingLevel || "off")
         : theme.fg("dim", "n/a"),
+    );
+    push(
+      "out",
+      data.model?.maxTokens
+        ? theme.fg("dim", formatTokens(data.model.maxTokens))
+        : theme.fg("dim", "—"),
     );
     middle.push(this.divider(width, theme));
 
@@ -167,6 +176,7 @@ export class NazozokcPiSidebar implements Component {
     push("recent", toolsFragment(theme, data));
     push("compact", theme.fg("dim", data.autoCompact ? "auto" : "manual"));
     push("providers", theme.fg("dim", String(data.providerCount)));
+    push("tools", toolsCountFragment(theme, data));
 
     // Extension statuses
     if (data.statuses.length > 0) {

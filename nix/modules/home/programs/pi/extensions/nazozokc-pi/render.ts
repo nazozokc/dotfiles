@@ -11,6 +11,7 @@ import type { Theme, ThemeColor } from "@earendil-works/pi-coding-agent";
 import {
   fit,
   formatCost,
+  formatDuration,
   formatTokens,
   joinParts,
   makeBar,
@@ -144,6 +145,37 @@ export function statusesLine(
     .map((s) => sanitizeStatus(s.text))
     .join(theme.fg("dim", "  "));
   return fit(joined, width);
+}
+
+/** Elapsed time since the session started: "12m34s", or "—" when unknown. */
+export function elapsedFragment(theme: Theme, data: NazozokcPiData): string {
+  if (data.sessionStartedAt === null) return theme.fg("dim", "—");
+  return theme.fg(
+    "muted",
+    formatDuration(Date.now() - data.sessionStartedAt),
+  );
+}
+
+/** Tool inventory: active/total plus MCP servers/tools when any are present. */
+export function toolsCountFragment(theme: Theme, data: NazozokcPiData): string {
+  const t = data.tools;
+  const parts = [theme.fg("muted", `${t.active}/${t.total} tools`)];
+  if (t.mcpServers > 0) {
+    parts.push(theme.fg("dim", `mcp ${t.mcpServers}srv/${t.mcp}t`));
+  }
+  return joinParts(parts, theme.fg("dim", " "));
+}
+
+/** Context-window and max-output detail: "200k ctx · 16k out". */
+export function contextDetailFragment(
+  theme: Theme,
+  data: NazozokcPiData,
+): string {
+  const ctx = theme.fg("dim", `${formatTokens(data.context.contextWindow)} ctx`);
+  const out = data.model?.maxTokens
+    ? theme.fg("dim", `${formatTokens(data.model.maxTokens)} out`)
+    : theme.fg("dim", "? out");
+  return joinParts([ctx, out], theme.fg("dim", " · "));
 }
 
 /** Active/recent tool summary used by the sidebar. */

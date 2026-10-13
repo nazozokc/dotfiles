@@ -65,7 +65,7 @@ export class NazozokcPiHeader implements Component {
       this.rule(theme) + fit(locationFragment(theme, data, this.home), inner),
       this.rule(theme) +
         leftRight(
-          `${activityFragment(theme, data)}${theme.fg("dim", "   /nazozokc-pi · sidebar alt+h")}`,
+          `${activityFragment(theme, data)}${theme.fg("dim", "   /nazozokc-pi · alt+i help · alt+h sidebar")}`,
           theme.fg("dim", `session ${data.sessionId.slice(0, 8)}`),
           inner,
         ),

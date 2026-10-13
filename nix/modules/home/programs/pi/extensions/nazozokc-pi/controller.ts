@@ -22,9 +22,10 @@ import type {
   NazozokcPiStats,
   NazozokcPiStatus,
   NazozokcPiToolCall,
+  NazozokcPiTools,
 } from "./types.ts";
 
-const RECENT_TOOL_LIMIT = 4;
+const RECENT_TOOL_LIMIT = 8;
 
 /** Tools whose results are not counted as a normal tool call. */
 const HIDDEN_FROM_RECENT = new Set<string>();
@@ -120,6 +121,9 @@ export class NazozokcPiController {
       if (text) statuses.push({ key, text });
     }
 
+    const header = ctx.sessionManager.getHeader();
+    const started = header ? Date.parse(header.timestamp) : Number.NaN;
+
     return {
       model: model
         ? {
@@ -128,6 +132,7 @@ export class NazozokcPiController {
             provider: model.provider,
             reasoning: model.reasoning,
             contextWindow: model.contextWindow,
+            maxTokens: model.maxTokens,
           }
         : null,
       thinkingLevel,
@@ -137,14 +142,41 @@ export class NazozokcPiController {
       branch: this.footerData?.getGitBranch() ?? null,
       sessionName: ctx.sessionManager.getSessionName() ?? null,
       sessionId: ctx.sessionManager.getSessionId(),
+      sessionStartedAt: Number.isNaN(started) ? null : started,
       autoCompact: this.pi.getSettings().compaction?.enabled ?? true,
       providerCount: this.footerData?.getAvailableProviderCount() ?? 0,
+      tools: this.getToolStats(),
       idle: ctx.isIdle(),
       pending: ctx.hasPendingMessages(),
       activeTool: this.getActiveTool(),
       recentTools: [...this.recentTools],
       statuses,
     };
+  }
+
+  /**
+   * Tool inventory: how many tools are registered/active, and how many come
+   * from MCP servers. MCP tools are named `mcp__<server>__<tool>`, so the
+   * server set is derived from tool names (and namespaces when present).
+   */
+  private getToolStats(): NazozokcPiTools {
+    const all = this.pi.getAllTools();
+    const activeNames = new Set(this.pi.getActiveTools());
+    let mcp = 0;
+    let active = 0;
+    const servers = new Set<string>();
+    for (const tool of all) {
+      if (activeNames.has(tool.name)) active += 1;
+      const namespace = tool.namespace?.name;
+      const isMcp = tool.name.startsWith("mcp__") || !!namespace?.startsWith("mcp__");
+      if (!isMcp) continue;
+      mcp += 1;
+      const server = namespace?.startsWith("mcp__")
+        ? namespace
+        : `mcp__${tool.name.split("__")[1] ?? ""}`;
+      if (server !== "mcp__") servers.add(server);
+    }
+    return { total: all.length, active, mcp, mcpServers: servers.size };
   }
 
   private getActiveTool(): NazozokcPiToolCall | null {
