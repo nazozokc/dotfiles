@@ -60,7 +60,11 @@ export class NazozokcPiPanel implements Component {
       width >= 72
         ? `${theme.fg("dim", "  ·  ")}${statsFragment(theme, data)}`
         : "";
-    const line2 = leftRight(`${context}${stats}`, elapsedFragment(theme, data), width);
+    const line2 = leftRight(
+      `${context}${stats}`,
+      elapsedFragment(theme, data),
+      width,
+    );
 
     const auto = theme.fg("dim", data.autoCompact ? "auto" : "manual");
     const line3 = leftRight(

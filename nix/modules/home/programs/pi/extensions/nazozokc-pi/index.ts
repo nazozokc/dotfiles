@@ -163,13 +163,8 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
       .map((cmd) => ({ name: cmd.name, description: cmd.description }));
     void c.ui.custom<undefined>(
       (_tui, theme, _keybindings, done) =>
-        new NazozokcPiHelp(
-          getData,
-          getTheme,
-          home,
-          commands,
-          done,
-          () => controller.getTerminalRows(),
+        new NazozokcPiHelp(getData, getTheme, home, commands, done, () =>
+          controller.getTerminalRows(),
         ),
       screenOptions,
     );
@@ -191,13 +186,8 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
     const current = c.sessionManager.getSessionFile();
     const chosen = await c.ui.custom<string | undefined>(
       (_tui, theme, _keybindings, done) =>
-        new NazozokcPiSessions(
-          theme,
-          done,
-          sessions,
-          current,
-          home,
-          () => controller.getTerminalRows(),
+        new NazozokcPiSessions(theme, done, sessions, current, home, () =>
+          controller.getTerminalRows(),
         ),
       screenOptions,
     );

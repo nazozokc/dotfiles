@@ -3,7 +3,7 @@
 {
   dotfiles.programs.pi = {
     icon = "🥧";
-    note = "settings / keybindings / codex-usage / editor / nazozokc-pi";
+    note = "settings / keybindings / codex-usage / editor / nazozokc-pi / agent-modes";
   };
 
   imports = [
@@ -14,6 +14,8 @@
   xdg.configFile."pi/agent/extensions/codex-usage.ts".source = ./extensions/codex-usage.ts;
   xdg.configFile."pi/agent/extensions/editor.ts".source = ./extensions/editor.ts;
   xdg.configFile."pi/agent/extensions/nazozokc-pi".source = ./extensions/nazozokc-pi;
+
+  xdg.configFile."pi/agent/extensions/agent-modes".source = ./extensions/agent-modes;
 
   home.sessionVariables = {
     PI_CODING_AGENT_DIR = "${config.xdg.configHome}/pi/agent";

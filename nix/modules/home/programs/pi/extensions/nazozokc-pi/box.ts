@@ -18,9 +18,7 @@ function border(theme: Theme, text: string): string {
 /** Top rule with a title: `╭─ TITLE ────╮` (the title is fitted to the width). */
 export function boxTop(theme: Theme, width: number, title: string): string {
   if (width < 4) return border(theme, fit("╭╮", width));
-  const label = theme.bold(
-    theme.fg("accent", fit(` ${title} `, width - 3)),
-  );
+  const label = theme.bold(theme.fg("accent", fit(` ${title} `, width - 3)));
   const fill = Math.max(0, width - 3 - visibleWidth(label));
   return border(theme, "╭─") + label + border(theme, "─".repeat(fill) + "╮");
 }

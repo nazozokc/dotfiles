@@ -150,10 +150,7 @@ export function statusesLine(
 /** Elapsed time since the session started: "12m34s", or "—" when unknown. */
 export function elapsedFragment(theme: Theme, data: NazozokcPiData): string {
   if (data.sessionStartedAt === null) return theme.fg("dim", "—");
-  return theme.fg(
-    "muted",
-    formatDuration(Date.now() - data.sessionStartedAt),
-  );
+  return theme.fg("muted", formatDuration(Date.now() - data.sessionStartedAt));
 }
 
 /** Tool inventory: active/total plus MCP servers/tools when any are present. */
@@ -171,7 +168,10 @@ export function contextDetailFragment(
   theme: Theme,
   data: NazozokcPiData,
 ): string {
-  const ctx = theme.fg("dim", `${formatTokens(data.context.contextWindow)} ctx`);
+  const ctx = theme.fg(
+    "dim",
+    `${formatTokens(data.context.contextWindow)} ctx`,
+  );
   const out = data.model?.maxTokens
     ? theme.fg("dim", `${formatTokens(data.model.maxTokens)} out`)
     : theme.fg("dim", "? out");

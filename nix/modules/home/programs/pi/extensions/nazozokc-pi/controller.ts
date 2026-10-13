@@ -168,7 +168,8 @@ export class NazozokcPiController {
     for (const tool of all) {
       if (activeNames.has(tool.name)) active += 1;
       const namespace = tool.namespace?.name;
-      const isMcp = tool.name.startsWith("mcp__") || !!namespace?.startsWith("mcp__");
+      const isMcp =
+        tool.name.startsWith("mcp__") || !!namespace?.startsWith("mcp__");
       if (!isMcp) continue;
       mcp += 1;
       const server = namespace?.startsWith("mcp__")
