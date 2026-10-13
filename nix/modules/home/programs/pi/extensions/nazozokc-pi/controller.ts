@@ -69,6 +69,11 @@ export class NazozokcPiController {
     this.tui?.requestRender();
   }
 
+  /** Live terminal height in rows, or undefined when the TUI is not attached. */
+  getTerminalRows(): number | undefined {
+    return this.tui?.terminal?.rows;
+  }
+
   // --- event handlers ------------------------------------------------------
 
   onToolStart(toolCallId: string, toolName: string): void {

@@ -75,7 +75,12 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
       sidebarHandle?.setHidden(false);
       return;
     }
-    const component: Component = new NazozokcPiSidebar(getData, getTheme, home);
+    const component: Component = new NazozokcPiSidebar(
+      getData,
+      getTheme,
+      home,
+      () => controller.getTerminalRows(),
+    );
     void c.ui
       .custom<undefined>(
         (_tui: TUI, theme: Theme, _keybindings, done) => {
