@@ -67,9 +67,7 @@ export class NazozokcPiSessions implements Component {
 
   render(width: number): string[] {
     const theme = this.theme;
-    const lines: string[] = [
-      boxTop(theme, width, "π nazozokc-pi · sessions"),
-    ];
+    const lines: string[] = [boxTop(theme, width, "π nazozokc-pi · sessions")];
 
     if (this.sessions.length === 0) {
       lines.push(boxRow(theme, width, theme.fg("dim", " no sessions found")));
@@ -78,7 +76,9 @@ export class NazozokcPiSessions implements Component {
       const start = window.start;
       const end = window.end;
       for (let i = start; i < end; i++) {
-        lines.push(this.row(theme, width, this.sessions[i], i === this.selected));
+        lines.push(
+          this.row(theme, width, this.sessions[i], i === this.selected),
+        );
       }
       if (start > 0) {
         lines.unshift(
@@ -96,7 +96,13 @@ export class NazozokcPiSessions implements Component {
       }
     }
 
-    lines.push(boxRow(theme, width, theme.fg("dim", " ↑↓ move · enter switch · esc close")));
+    lines.push(
+      boxRow(
+        theme,
+        width,
+        theme.fg("dim", " ↑↓ move · enter switch · esc close"),
+      ),
+    );
     lines.push(boxBottom(theme, width));
     return lines;
   }
@@ -140,9 +146,14 @@ export class NazozokcPiSessions implements Component {
 
   private shortCwd(cwd: string): string {
     if (!cwd) return "?";
-    const path = this.home && cwd.startsWith(this.home) ? "~" + cwd.slice(this.home.length) : cwd;
+    const path =
+      this.home && cwd.startsWith(this.home)
+        ? "~" + cwd.slice(this.home.length)
+        : cwd;
     const parts = path.split("/").filter(Boolean);
-    return parts.length <= 2 ? path : `${parts[0]}/…/${parts[parts.length - 1]}`;
+    return parts.length <= 2
+      ? path
+      : `${parts[0]}/…/${parts[parts.length - 1]}`;
   }
 
   private relative(date: Date): string {

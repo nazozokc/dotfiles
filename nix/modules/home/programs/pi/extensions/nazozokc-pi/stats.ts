@@ -11,12 +11,7 @@ import type { Component } from "@earendil-works/pi-tui";
 import { matchesKey } from "@earendil-works/pi-tui";
 
 import { boxBottom, boxDivider, boxLabelRow, boxRow, boxTop } from "./box.ts";
-import {
-  formatCost,
-  formatDuration,
-  formatTokens,
-  makeBar,
-} from "./format.ts";
+import { formatCost, formatDuration, formatTokens, makeBar } from "./format.ts";
 import { contextDetailFragment } from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
 
@@ -73,7 +68,10 @@ export class NazozokcPiStats implements Component {
     const s = data.stats;
     const ctx = data.context;
 
-    row("model", theme.fg("text", data.model?.name || data.model?.id || "no-model"));
+    row(
+      "model",
+      theme.fg("text", data.model?.name || data.model?.id || "no-model"),
+    );
     row("provider", theme.fg("muted", data.model?.provider ?? "—"));
     row(
       "thinking",
@@ -120,7 +118,10 @@ export class NazozokcPiStats implements Component {
       "tools",
       `${theme.fg("muted", `${data.tools.active}/${data.tools.total}`)}${
         data.tools.mcpServers > 0
-          ? theme.fg("dim", ` · mcp ${data.tools.mcpServers}srv/${data.tools.mcp}t`)
+          ? theme.fg(
+              "dim",
+              ` · mcp ${data.tools.mcpServers}srv/${data.tools.mcp}t`,
+            )
           : ""
       }`,
     );
