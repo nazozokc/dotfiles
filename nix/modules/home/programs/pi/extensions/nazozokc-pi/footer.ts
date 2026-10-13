@@ -14,7 +14,7 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import type { Component } from "@earendil-works/pi-tui";
 
-import { fit, leftRight, shortenHome } from "./format.ts";
+import { fit, formatDuration, leftRight, shortenHome } from "./format.ts";
 import { sanitizeStatus } from "./render.ts";
 
 export class NazozokcPiFooter implements Component {
@@ -48,10 +48,16 @@ export class NazozokcPiFooter implements Component {
       const location = shortenHome(ctx.cwd, this.home);
       const branch = this.footerData.getGitBranch();
       const name = ctx.sessionManager.getSessionName();
+      const header = ctx.sessionManager.getHeader();
+      const started = header ? Date.parse(header.timestamp) : Number.NaN;
+      const elapsed = Number.isNaN(started)
+        ? null
+        : theme.fg("dim", `⏱ ${formatDuration(Date.now() - started)}`);
       const left = [
         theme.fg("text", location),
         branch ? theme.fg("success", branch) : null,
         name ? theme.fg("muted", `• ${name}`) : null,
+        elapsed,
       ]
         .filter((p): p is string => Boolean(p))
         .join(theme.fg("dim", " "));

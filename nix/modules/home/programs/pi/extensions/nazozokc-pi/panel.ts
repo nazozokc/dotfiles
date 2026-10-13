@@ -1,9 +1,9 @@
 /**
  * nazozokc-pi extension — status panel.
  *
- * A two-line widget pinned above the editor: identity/activity on top, context
- * pressure and token/cost totals below. Kept to two lines so it never fights
- * the transcript for vertical space.
+ * A three-line widget pinned above the editor: identity/activity on top,
+ * context pressure and token/cost totals below, then the tool inventory and
+ * elapsed time. Kept compact so it never fights the transcript for space.
  */
 
 import type { Theme } from "@earendil-works/pi-coding-agent";
@@ -12,9 +12,12 @@ import type { Component } from "@earendil-works/pi-tui";
 import { leftRight } from "./format.ts";
 import {
   activityFragment,
+  contextDetailFragment,
   contextFragment,
+  elapsedFragment,
   locationFragment,
   statsFragment,
+  toolsCountFragment,
 } from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
 
@@ -57,9 +60,15 @@ export class NazozokcPiPanel implements Component {
       width >= 72
         ? `${theme.fg("dim", "  ·  ")}${statsFragment(theme, data)}`
         : "";
-    const auto = theme.fg("dim", data.autoCompact ? "auto" : "manual");
-    const line2 = leftRight(`${context}${stats}`, auto, width);
+    const line2 = leftRight(`${context}${stats}`, elapsedFragment(theme, data), width);
 
-    return [line1, line2];
+    const auto = theme.fg("dim", data.autoCompact ? "auto" : "manual");
+    const line3 = leftRight(
+      `${" ".repeat(3)}${toolsCountFragment(theme, data)}${theme.fg("dim", "  ·  ")}${contextDetailFragment(theme, data)}`,
+      auto,
+      width,
+    );
+
+    return [line1, line2, line3];
   }
 }

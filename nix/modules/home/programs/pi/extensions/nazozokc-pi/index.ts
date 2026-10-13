@@ -6,15 +6,18 @@
  * extension statuses (e.g. codex-usage) are preserved by re-rendering them in
  * the custom footer and sidebar.
  *
- * The sidebar is a non-capturing overlay anchored to the top-right, so it sits
- * beside the header (the top info area) and is shown from session start. It can
- * still be dismissed and brought back.
+ * The sidebar is a non-capturing overlay anchored to the top-right. It stays
+ * hidden by default and is opened on demand with `alt+h` or
+ * `/nazozokc-pi sidebar`.
  *
  * Commands:
- *   /nazozokc-pi [sidebar|panel|help]   Toggle a surface / show help
+ *   /nazozokc-pi [sidebar|panel|help|stats|sessions]
+ *                                Toggle a surface / open a screen
  *
  * Shortcuts:
  *   alt+h                        Toggle the sidebar
+ *   alt+i                        Open the help / cheatsheet screen
+ *   alt+s                        Open the stats dashboard
  */
 
 import type {
@@ -23,17 +26,28 @@ import type {
   ExtensionContext,
   Theme,
 } from "@earendil-works/pi-coding-agent";
-import type { Component, OverlayHandle, TUI } from "@earendil-works/pi-tui";
+import { SessionManager } from "@earendil-works/pi-coding-agent";
+import type {
+  Component,
+  KeyId,
+  OverlayHandle,
+  TUI,
+} from "@earendil-works/pi-tui";
 
 import { NazozokcPiController } from "./controller.ts";
 import { NazozokcPiEditor } from "./editor.ts";
 import { NazozokcPiFooter } from "./footer.ts";
 import { NazozokcPiHeader } from "./header.ts";
+import { NazozokcPiHelp } from "./help.ts";
 import { NazozokcPiPanel } from "./panel.ts";
+import { NazozokcPiSessions } from "./sessions.ts";
 import { NazozokcPiSidebar } from "./sidebar.ts";
+import { NazozokcPiStats } from "./stats.ts";
 import type { NazozokcPiData } from "./types.ts";
 
 const SIDEBAR_KEY = "alt+h";
+const HELP_KEY = "alt+i";
+const STATS_KEY = "alt+s";
 const SIDEBAR_WIDTH = 48;
 const SIDEBAR_MIN_TERMINAL_WIDTH = 110;
 const PANEL_KEY = "nazozokc-pi";
@@ -130,6 +144,66 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
     else setSidebarVisible(!sidebarVisible);
   }
 
+  // --- on-demand screens ---------------------------------------------------
+
+  /** Capturable centered overlay options shared by help/stats/sessions. */
+  const screenOptions = {
+    overlay: true,
+    overlayOptions: {
+      anchor: "center" as const,
+      width: "80%" as const,
+      maxHeight: "85%" as const,
+      margin: 1,
+    },
+  };
+
+  function openHelp(c: ExtensionContext): void {
+    const commands = pi
+      .getCommands()
+      .map((cmd) => ({ name: cmd.name, description: cmd.description }));
+    void c.ui.custom<undefined>(
+      (_tui, theme, _keybindings, done) =>
+        new NazozokcPiHelp(
+          getData,
+          getTheme,
+          home,
+          commands,
+          done,
+          () => controller.getTerminalRows(),
+        ),
+      screenOptions,
+    );
+  }
+
+  function openStats(c: ExtensionContext): void {
+    void c.ui.custom<undefined>(
+      (_tui, theme, _keybindings, done) =>
+        new NazozokcPiStats(getData, getTheme, done, () =>
+          controller.getTerminalRows(),
+        ),
+      screenOptions,
+    );
+  }
+
+  async function openSessions(c: ExtensionCommandContext): Promise<void> {
+    const sessions = await SessionManager.listAll();
+    sessions.sort((a, b) => b.modified.getTime() - a.modified.getTime());
+    const current = c.sessionManager.getSessionFile();
+    const chosen = await c.ui.custom<string | undefined>(
+      (_tui, theme, _keybindings, done) =>
+        new NazozokcPiSessions(
+          theme,
+          done,
+          sessions,
+          current,
+          home,
+          () => controller.getTerminalRows(),
+        ),
+      screenOptions,
+    );
+    if (chosen && chosen !== current) await c.switchSession(chosen);
+  }
+
   // --- surface installation ------------------------------------------------
 
   function installPanel(c: ExtensionContext): void {
@@ -192,8 +266,6 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
     controller.reset();
     resetSidebarState();
     installAll(c);
-    // Show the sidebar from the start so the top-right readout is always there.
-    openSidebar(c);
     controller.requestRender();
   });
 
@@ -257,9 +329,9 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
   // --- command + shortcut --------------------------------------------------
 
   pi.registerCommand("nazozokc-pi", {
-    description: "Toggle nazozokc-pi surfaces (sidebar, panel)",
+    description: "nazozokc-pi surfaces (sidebar, panel, help, stats, sessions)",
     getArgumentCompletions: (prefix) => {
-      const options = ["sidebar", "panel", "help"];
+      const options = ["sidebar", "panel", "help", "stats", "sessions"];
       const matches = options.filter((o) => o.startsWith(prefix));
       return matches.length > 0
         ? matches.map((value) => ({ value, label: value }))
@@ -282,9 +354,17 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
           controller.requestRender();
           return;
         case "help":
+          openHelp(c);
+          return;
+        case "stats":
+          openStats(c);
+          return;
+        case "sessions":
+          await openSessions(c);
+          return;
         default:
           c.ui.notify(
-            "nazozokc-pi — /nazozokc-pi sidebar | /nazozokc-pi panel | alt+h toggles the sidebar",
+            "nazozokc-pi — sidebar | panel | help | stats | sessions",
             "info",
           );
           return;
@@ -292,12 +372,22 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
     },
   });
 
-  pi.registerShortcut(SIDEBAR_KEY, {
-    description: "Toggle nazozokc-pi sidebar",
-    handler: (c) => {
-      if (c.mode !== "tui") return;
-      ctx = c;
-      toggleSidebar(c);
-    },
-  });
+  const registerTuiShortcut = (
+    key: KeyId,
+    description: string,
+    open: (c: ExtensionContext) => void,
+  ): void => {
+    pi.registerShortcut(key, {
+      description,
+      handler: (c) => {
+        if (c.mode !== "tui") return;
+        ctx = c;
+        open(c);
+      },
+    });
+  };
+
+  registerTuiShortcut(SIDEBAR_KEY, "Toggle nazozokc-pi sidebar", toggleSidebar);
+  registerTuiShortcut(HELP_KEY, "Open nazozokc-pi help", openHelp);
+  registerTuiShortcut(STATS_KEY, "Open nazozokc-pi stats", openStats);
 }
