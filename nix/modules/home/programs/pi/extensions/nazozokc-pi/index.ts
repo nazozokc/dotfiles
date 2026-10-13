@@ -1,10 +1,14 @@
 /**
  * nazozokc-pi extension — entry point.
  *
- * Installs a custom header, status panel, footer and editor, plus a toggleable
- * right-hand sidebar, all driven by a single `NazozokcPiController` snapshot. Existing
+ * Installs a custom header, status panel, footer and editor, plus a right-hand
+ * sidebar, all driven by a single `NazozokcPiController` snapshot. Existing
  * extension statuses (e.g. codex-usage) are preserved by re-rendering them in
  * the custom footer and sidebar.
+ *
+ * The sidebar is a non-capturing overlay anchored to the top-right, so it sits
+ * beside the header (the top info area) and is shown from session start. It can
+ * still be dismissed and brought back.
  *
  * Commands:
  *   /nazozokc-pi [sidebar|panel|help]   Toggle a surface / show help
@@ -49,10 +53,28 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
 
   // --- sidebar lifecycle ---------------------------------------------------
 
+  let sidebarHandle: OverlayHandle | null = null;
   let sidebarClose: ((result: undefined) => void) | null = null;
+  let sidebarVisible = false;
 
+  /**
+   * Drop tracking for the overlay. `resetExtensionUI()` (session switch/fork/
+   * new, `/reload`) pops the overlay from the stack, so the handle and close
+   * callback must not be trusted across a session boundary.
+   */
+  function resetSidebarState(): void {
+    sidebarHandle = null;
+    sidebarClose = null;
+    sidebarVisible = false;
+  }
+
+  /** Register the overlay once per session and make sure it is shown. */
   function openSidebar(c: ExtensionContext): void {
-    if (sidebarClose) return;
+    sidebarVisible = true;
+    if (sidebarClose) {
+      sidebarHandle?.setHidden(false);
+      return;
+    }
     const component: Component = new NazozokcPiSidebar(getData, getTheme, home);
     void c.ui
       .custom<undefined>(
@@ -64,40 +86,43 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
             invalidate: () => component.invalidate?.(),
             dispose: () => {
               sidebarClose = null;
+              sidebarHandle = null;
             },
           };
         },
         {
           overlay: true,
           overlayOptions: {
-            anchor: "right-center",
+            anchor: "top-right",
             width: SIDEBAR_WIDTH,
-            maxHeight: "92%",
-            margin: { top: 1, right: 1, bottom: 1 },
+            maxHeight: "96%",
+            margin: { top: 0, right: 1, bottom: 1 },
             nonCapturing: true,
             visible: (termWidth: number) =>
               termWidth >= SIDEBAR_MIN_TERMINAL_WIDTH,
           },
-          onHandle: (_handle: OverlayHandle) => {
-            // Handle kept for symmetry; closing goes through the completion
-            // callback so the component is disposed.
+          onHandle: (handle: OverlayHandle) => {
+            sidebarHandle = handle;
+            // The handle resolves asynchronously; honor an early toggle-off.
+            if (!sidebarVisible) handle.setHidden(true);
           },
         },
       )
       .finally(() => {
         sidebarClose = null;
+        sidebarHandle = null;
       });
   }
 
-  function closeSidebar(): void {
-    const done = sidebarClose;
-    sidebarClose = null;
-    done?.(undefined);
+  /** Toggle by hiding the overlay, so the stack order stays untouched. */
+  function setSidebarVisible(visible: boolean): void {
+    sidebarVisible = visible;
+    sidebarHandle?.setHidden(!visible);
   }
 
   function toggleSidebar(c: ExtensionContext): void {
-    if (sidebarClose) closeSidebar();
-    else openSidebar(c);
+    if (!sidebarClose) openSidebar(c);
+    else setSidebarVisible(!sidebarVisible);
   }
 
   // --- surface installation ------------------------------------------------
@@ -160,12 +185,17 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
     if (c.mode !== "tui") return;
     ctx = c;
     controller.reset();
+    resetSidebarState();
     installAll(c);
+    // Show the sidebar from the start so the top-right readout is always there.
+    openSidebar(c);
     controller.requestRender();
   });
 
   pi.on("session_shutdown", () => {
-    closeSidebar();
+    const done = sidebarClose;
+    resetSidebarState();
+    done?.(undefined);
     ctx = undefined;
   });
 
