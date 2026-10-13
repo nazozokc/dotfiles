@@ -177,6 +177,12 @@ alias typescript-environment="sudo npm i -D typescript ts-node-dev @types/node @
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# home-manager session variables (PI_CODING_AGENT_DIR など)
+HM_SESSION_VARS="$HOME/.local/state/nix/profiles/home-manager/home-path/etc/profile.d/hm-session-vars.sh"
+if [[ -f "$HM_SESSION_VARS" ]]; then
+  source "$HM_SESSION_VARS"
+fi
+
 if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi

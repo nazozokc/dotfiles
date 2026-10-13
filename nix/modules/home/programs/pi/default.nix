@@ -9,7 +9,6 @@
   imports = [
     ./settings.nix
     ./keybindings.nix
-    ./plugin.nix
   ];
 
   home.sessionVariables = {

@@ -80,7 +80,9 @@ if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 # home-manager session variables
-HM_SESSION_VARS="$HOME/.local/state/home-manager/gcroots/current-home/home-path/etc/profile.d/hm-session-vars.sh"
+# current-home gcroot は switch が途中失敗すると古い世代を指したままになる。
+# switch で必ず更新される home-manager プロファイルを参照する。
+HM_SESSION_VARS="$HOME/.local/state/nix/profiles/home-manager/home-path/etc/profile.d/hm-session-vars.sh"
 if [ -f "$HM_SESSION_VARS" ]; then
   # shellcheck source=/dev/null
   . "$HM_SESSION_VARS"
