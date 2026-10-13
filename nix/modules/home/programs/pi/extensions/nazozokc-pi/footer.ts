@@ -7,7 +7,11 @@
  * which renders less often than the footer.
  */
 
-import type { ExtensionContext, ReadonlyFooterDataProvider, Theme } from "@earendil-works/pi-coding-agent";
+import type {
+  ExtensionContext,
+  ReadonlyFooterDataProvider,
+  Theme,
+} from "@earendil-works/pi-coding-agent";
 import type { Component } from "@earendil-works/pi-tui";
 
 import { fit, leftRight, shortenHome } from "./format.ts";
@@ -55,7 +59,8 @@ export class NazozokcPiFooter implements Component {
       const model = ctx.model
         ? `${theme.bold(theme.fg("text", ctx.model.name || ctx.model.id))}${
             ctx.model.reasoning
-              ? theme.fg("dim", " · ") + theme.fg("muted", ctx.thinkingLevel ?? "off")
+              ? theme.fg("dim", " · ") +
+                theme.fg("muted", ctx.thinkingLevel ?? "off")
               : ""
           }`
         : theme.fg("dim", "no-model");
@@ -73,7 +78,9 @@ export class NazozokcPiFooter implements Component {
     const entries = [...this.footerData.getExtensionStatuses()];
     if (entries.length === 0) return null;
     entries.sort(([a], [b]) => a.localeCompare(b));
-    const joined = entries.map(([, text]) => sanitizeStatus(text)).join(theme.fg("dim", "  "));
+    const joined = entries
+      .map(([, text]) => sanitizeStatus(text))
+      .join(theme.fg("dim", "  "));
     return fit(joined, width);
   }
 }

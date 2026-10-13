@@ -7,14 +7,19 @@
  * the base implementation owns the border so the working status stays visible.
  */
 
-import type { KeybindingsManager, Theme } from "@earendil-works/pi-coding-agent";
+import type {
+  KeybindingsManager,
+  Theme,
+} from "@earendil-works/pi-coding-agent";
 import { CustomEditor } from "@earendil-works/pi-coding-agent";
 import { visibleWidth } from "@earendil-works/pi-tui";
 import type { EditorTheme, TUI } from "@earendil-works/pi-tui";
 
 import type { NazozokcPiData } from "./types.ts";
 
-type WorkingIndicator = Parameters<CustomEditor["setWorkingStatusIndicator"]>[0];
+type WorkingIndicator = Parameters<
+  CustomEditor["setWorkingStatusIndicator"]
+>[0];
 
 export class NazozokcPiEditor extends CustomEditor {
   private working = false;
@@ -58,10 +63,18 @@ export class NazozokcPiEditor extends CustomEditor {
   private rightLabel(theme: Theme, data: NazozokcPiData | null): string {
     if (!data) return "";
     const parts: string[] = [];
-    parts.push(theme.fg("muted", data.model?.name || data.model?.id || "no-model"));
-    if (data.model?.reasoning) parts.push(theme.fg("dim", data.thinkingLevel || "off"));
+    parts.push(
+      theme.fg("muted", data.model?.name || data.model?.id || "no-model"),
+    );
+    if (data.model?.reasoning)
+      parts.push(theme.fg("dim", data.thinkingLevel || "off"));
     if (data.context.percent !== null) {
-      const token = data.context.percent > 90 ? "error" : data.context.percent > 70 ? "warning" : "dim";
+      const token =
+        data.context.percent > 90
+          ? "error"
+          : data.context.percent > 70
+            ? "warning"
+            : "dim";
       parts.push(theme.fg(token, `${data.context.percent.toFixed(0)}%`));
     }
     return parts.join(theme.fg("dim", " · "));

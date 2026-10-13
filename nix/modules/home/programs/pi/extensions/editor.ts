@@ -75,7 +75,10 @@ export default function (pi: ExtensionAPI) {
       }
       const content = await editInEditor(ctx.ui.getEditorText());
       if (content === null) {
-        ctx.ui.notify("Editor exited with an error; input unchanged", "warning");
+        ctx.ui.notify(
+          "Editor exited with an error; input unchanged",
+          "warning",
+        );
         return;
       }
       ctx.ui.setEditorText(content);
