@@ -22,23 +22,41 @@ import type { NazozokcPiData } from "./types.ts";
 const LABEL_WIDTH = 9;
 const BAR_WIDTH = 12;
 
+/**
+ * Rows reserved at the bottom of the screen for the input dock (panel + editor
+ * + footer). The sidebar is anchored to the top, so it must stop above this
+ * band or it would cover the input field on shorter terminals.
+ */
+const DOCK_RESERVE = 8;
+const MIN_SIDEBAR_ROWS = 6;
+
 export class NazozokcPiSidebar implements Component {
   private readonly getData: () => NazozokcPiData | null;
   private readonly getTheme: () => Theme;
   private readonly home: string | undefined;
+  private readonly getTerminalRows: (() => number | undefined) | undefined;
 
   constructor(
     getData: () => NazozokcPiData | null,
     getTheme: () => Theme,
     home: string | undefined,
+    getTerminalRows?: () => number | undefined,
   ) {
     this.getData = getData;
     this.getTheme = getTheme;
     this.home = home;
+    this.getTerminalRows = getTerminalRows;
   }
 
   invalidate(): void {
     // Stateless: renders fresh from getData() each call.
+  }
+
+  /** Largest height that still leaves the input dock uncovered. */
+  private maxRows(): number {
+    const rows = this.getTerminalRows?.();
+    if (!rows || rows <= 0) return Number.POSITIVE_INFINITY;
+    return Math.max(MIN_SIDEBAR_ROWS, rows - DOCK_RESERVE);
   }
 
   private border(theme: Theme, text: string): string {
@@ -90,10 +108,10 @@ export class NazozokcPiSidebar implements Component {
     const data = this.getData();
     if (!data) return [];
 
-    const lines: string[] = [this.top(width, theme)];
+    const middle: string[] = [];
 
     const push = (label: string, value: string): void => {
-      lines.push(this.row(width, theme, label, value));
+      middle.push(this.row(width, theme, label, value));
     };
 
     // Session
@@ -101,7 +119,7 @@ export class NazozokcPiSidebar implements Component {
     push("session", theme.fg("text", data.sessionName ?? "—") + branch);
     push("id", theme.fg("dim", data.sessionId.slice(0, 12)));
     push("cwd", theme.fg("text", shortenHome(data.cwd, this.home)));
-    lines.push(this.divider(width, theme));
+    middle.push(this.divider(width, theme));
 
     // Model
     push(
@@ -115,7 +133,7 @@ export class NazozokcPiSidebar implements Component {
         ? theme.fg("muted", data.thinkingLevel || "off")
         : theme.fg("dim", "n/a"),
     );
-    lines.push(this.divider(width, theme));
+    middle.push(this.divider(width, theme));
 
     // Context + tokens + cost
     push("ctx", contextFragment(theme, data, BAR_WIDTH));
@@ -142,7 +160,7 @@ export class NazozokcPiSidebar implements Component {
         `${data.stats.messages} msg · ${data.stats.toolCalls} tools`,
       ),
     );
-    lines.push(this.divider(width, theme));
+    middle.push(this.divider(width, theme));
 
     // Activity
     push("activity", activityFragment(theme, data));
@@ -152,7 +170,7 @@ export class NazozokcPiSidebar implements Component {
 
     // Extension statuses
     if (data.statuses.length > 0) {
-      lines.push(this.divider(width, theme));
+      middle.push(this.divider(width, theme));
       for (const status of [...data.statuses].sort((a, b) =>
         a.key.localeCompare(b.key),
       )) {
@@ -160,9 +178,29 @@ export class NazozokcPiSidebar implements Component {
       }
     }
 
-    lines.push(this.bottom(width, theme));
-    return lines;
+    // Keep the input dock clear: drop the lowest-priority rows (which sit at
+    // the bottom, nearest the input) and mark the cut with an ellipsis.
+    const cap = this.maxRows();
+    const budget = cap === Number.POSITIVE_INFINITY ? cap : cap - 2;
+    if (middle.length <= budget) {
+      return [this.top(width, theme), ...middle, this.bottom(width, theme)];
+    }
+    const shown = shownRows(middle, budget);
+    return [
+      this.top(width, theme),
+      ...shown,
+      this.row(width, theme, "…", theme.fg("dim", "truncated")),
+      this.bottom(width, theme),
+    ];
   }
+}
+
+/** Keep as many rows as fit, but never leave a divider as the last row. */
+function shownRows(rows: string[], budget: number): string[] {
+  if (budget <= 0) return [];
+  let count = Math.max(0, budget - 1);
+  while (count > 0 && rows[count - 1].includes("├")) count -= 1;
+  return rows.slice(0, count);
 }
 
 function truncate(text: string, width: number): string {
