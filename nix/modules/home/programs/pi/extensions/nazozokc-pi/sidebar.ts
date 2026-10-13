@@ -11,7 +11,12 @@ import type { Component } from "@earendil-works/pi-tui";
 import { visibleWidth } from "@earendil-works/pi-tui";
 
 import { fit, formatTokens, shortenHome } from "./format.ts";
-import { activityFragment, contextFragment, sanitizeStatus, toolsFragment } from "./render.ts";
+import {
+  activityFragment,
+  contextFragment,
+  sanitizeStatus,
+  toolsFragment,
+} from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
 
 const LABEL_WIDTH = 9;
@@ -22,7 +27,11 @@ export class NazozokcPiSidebar implements Component {
   private readonly getTheme: () => Theme;
   private readonly home: string | undefined;
 
-  constructor(getData: () => NazozokcPiData | null, getTheme: () => Theme, home: string | undefined) {
+  constructor(
+    getData: () => NazozokcPiData | null,
+    getTheme: () => Theme,
+    home: string | undefined,
+  ) {
     this.getData = getData;
     this.getTheme = getTheme;
     this.home = home;
@@ -39,7 +48,11 @@ export class NazozokcPiSidebar implements Component {
   private top(width: number, theme: Theme): string {
     const title = theme.bold(theme.fg("accent", " NAZOZOKC-PI "));
     const fill = Math.max(0, width - 3 - visibleWidth(title));
-    return this.border(theme, "╭─") + title + this.border(theme, "─".repeat(fill) + "╮");
+    return (
+      this.border(theme, "╭─") +
+      title +
+      this.border(theme, "─".repeat(fill) + "╮")
+    );
   }
 
   private divider(width: number, theme: Theme): string {
@@ -50,15 +63,26 @@ export class NazozokcPiSidebar implements Component {
     return this.border(theme, "╰" + "─".repeat(Math.max(0, width - 2)) + "╯");
   }
 
-  private row(width: number, theme: Theme, label: string, value: string): string {
+  private row(
+    width: number,
+    theme: Theme,
+    label: string,
+    value: string,
+  ): string {
     const inner = Math.max(0, width - 4);
     const labelWidth = Math.min(LABEL_WIDTH, Math.max(0, inner - 1));
     const valueWidth = Math.max(0, inner - labelWidth - 1);
-    const labelText = theme.fg("muted", label.padEnd(labelWidth).slice(0, labelWidth));
+    const labelText = theme.fg(
+      "muted",
+      label.padEnd(labelWidth).slice(0, labelWidth),
+    );
     const valueText = truncate(value, valueWidth);
     const content = " " + labelText + " " + valueText;
-    const padded = content + " ".repeat(Math.max(0, width - 2 - visibleWidth(content)));
-    return this.border(theme, "│") + fit(padded, width - 2) + this.border(theme, "│");
+    const padded =
+      content + " ".repeat(Math.max(0, width - 2 - visibleWidth(content)));
+    return (
+      this.border(theme, "│") + fit(padded, width - 2) + this.border(theme, "│")
+    );
   }
 
   render(width: number): string[] {
@@ -80,11 +104,16 @@ export class NazozokcPiSidebar implements Component {
     lines.push(this.divider(width, theme));
 
     // Model
-    push("model", theme.fg("text", data.model?.name || data.model?.id || "no-model"));
+    push(
+      "model",
+      theme.fg("text", data.model?.name || data.model?.id || "no-model"),
+    );
     push("provider", theme.fg("muted", data.model?.provider ?? "—"));
     push(
       "thinking",
-      data.model?.reasoning ? theme.fg("muted", data.thinkingLevel || "off") : theme.fg("dim", "n/a"),
+      data.model?.reasoning
+        ? theme.fg("muted", data.thinkingLevel || "off")
+        : theme.fg("dim", "n/a"),
     );
     lines.push(this.divider(width, theme));
 
@@ -106,7 +135,13 @@ export class NazozokcPiSidebar implements Component {
         : theme.fg("muted", `${data.stats.cacheHitRate.toFixed(0)}% hit`),
     );
     push("cost", theme.fg("muted", `$${data.stats.cost.toFixed(3)}`));
-    push("calls", theme.fg("dim", `${data.stats.messages} msg · ${data.stats.toolCalls} tools`));
+    push(
+      "calls",
+      theme.fg(
+        "dim",
+        `${data.stats.messages} msg · ${data.stats.toolCalls} tools`,
+      ),
+    );
     lines.push(this.divider(width, theme));
 
     // Activity
@@ -118,7 +153,9 @@ export class NazozokcPiSidebar implements Component {
     // Extension statuses
     if (data.statuses.length > 0) {
       lines.push(this.divider(width, theme));
-      for (const status of [...data.statuses].sort((a, b) => a.key.localeCompare(b.key))) {
+      for (const status of [...data.statuses].sort((a, b) =>
+        a.key.localeCompare(b.key),
+      )) {
         push(status.key.slice(0, LABEL_WIDTH), sanitizeStatus(status.text));
       }
     }

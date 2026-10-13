@@ -16,7 +16,13 @@ import type {
 import type { SessionEntry } from "@earendil-works/pi-coding-agent";
 import type { TUI } from "@earendil-works/pi-tui";
 
-import type { NazozokcPiContext, NazozokcPiData, NazozokcPiStats, NazozokcPiStatus, NazozokcPiToolCall } from "./types.ts";
+import type {
+  NazozokcPiContext,
+  NazozokcPiData,
+  NazozokcPiStats,
+  NazozokcPiStatus,
+  NazozokcPiToolCall,
+} from "./types.ts";
 
 const RECENT_TOOL_LIMIT = 4;
 
@@ -73,7 +79,10 @@ export class NazozokcPiController {
   onToolEnd(toolCallId: string, toolName: string): void {
     this.activeTools.delete(toolCallId);
     if (!HIDDEN_FROM_RECENT.has(toolName)) {
-      this.recentTools = [toolName, ...this.recentTools.filter((t) => t !== toolName)];
+      this.recentTools = [
+        toolName,
+        ...this.recentTools.filter((t) => t !== toolName),
+      ];
       if (this.recentTools.length > RECENT_TOOL_LIMIT) {
         this.recentTools = this.recentTools.slice(0, RECENT_TOOL_LIMIT);
       }
@@ -147,7 +156,10 @@ export class NazozokcPiController {
    * append-only and every append moves the leaf, so the key changes whenever
    * the data can.
    */
-  private getSnapshot(ctx: ExtensionContext): { stats: NazozokcPiStats; context: NazozokcPiContext } {
+  private getSnapshot(ctx: ExtensionContext): {
+    stats: NazozokcPiStats;
+    context: NazozokcPiContext;
+  } {
     const session = ctx.sessionManager;
     const modelId = ctx.model?.id ?? "-";
     const key = `${session.getSessionId()}:${session.getLeafId() ?? "-"}:${modelId}`;
@@ -206,9 +218,13 @@ export function computeStats(entries: SessionEntry[]): NazozokcPiStats {
           const assistant = message as AssistantMessage;
           addUsage(assistant.usage);
           const promptTokens =
-            assistant.usage.input + assistant.usage.cacheRead + assistant.usage.cacheWrite;
+            assistant.usage.input +
+            assistant.usage.cacheRead +
+            assistant.usage.cacheWrite;
           cacheHitRate =
-            promptTokens > 0 ? (assistant.usage.cacheRead / promptTokens) * 100 : cacheHitRate;
+            promptTokens > 0
+              ? (assistant.usage.cacheRead / promptTokens) * 100
+              : cacheHitRate;
           for (const block of assistant.content) {
             if (block.type === "toolCall") toolCalls += 1;
           }

@@ -77,7 +77,10 @@ export function leftRight(left: string, right: string, width: number): string {
 }
 
 /** Join non-empty fragments with a separator. */
-export function joinParts(parts: Array<string | null | undefined>, sep: string): string {
+export function joinParts(
+  parts: Array<string | null | undefined>,
+  sep: string,
+): string {
   return parts.filter((p): p is string => Boolean(p && p.length > 0)).join(sep);
 }
 

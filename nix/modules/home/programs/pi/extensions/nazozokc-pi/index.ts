@@ -43,7 +43,8 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
   let panelEnabled = true;
 
   const getCtx = (): ExtensionContext | undefined => ctx;
-  const getData = (): NazozokcPiData | null => (ctx ? controller.getData(ctx) : null);
+  const getData = (): NazozokcPiData | null =>
+    ctx ? controller.getData(ctx) : null;
   const getTheme = (): Theme => ctx?.ui.theme ?? (fallbackTheme as Theme);
 
   // --- sidebar lifecycle ---------------------------------------------------

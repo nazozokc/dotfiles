@@ -8,7 +8,14 @@
 
 import type { Theme, ThemeColor } from "@earendil-works/pi-coding-agent";
 
-import { fit, formatCost, formatTokens, joinParts, makeBar, shortenHome } from "./format.ts";
+import {
+  fit,
+  formatCost,
+  formatTokens,
+  joinParts,
+  makeBar,
+  shortenHome,
+} from "./format.ts";
 import type { NazozokcPiData } from "./types.ts";
 
 const THINK_TOKEN: Record<string, ThemeColor> = {
@@ -46,7 +53,10 @@ export function modelFragment(theme: Theme, data: NazozokcPiData): string {
 }
 
 /** Thinking level, colored by its token. */
-export function thinkingFragment(theme: Theme, data: NazozokcPiData): string | null {
+export function thinkingFragment(
+  theme: Theme,
+  data: NazozokcPiData,
+): string | null {
   if (!data.model?.reasoning) return null;
   const level = data.thinkingLevel || "off";
   const token = THINK_TOKEN[level] ?? "muted";
@@ -54,7 +64,11 @@ export function thinkingFragment(theme: Theme, data: NazozokcPiData): string | n
 }
 
 /** Context bar + percentage + used/window tokens. */
-export function contextFragment(theme: Theme, data: NazozokcPiData, barWidth: number): string {
+export function contextFragment(
+  theme: Theme,
+  data: NazozokcPiData,
+  barWidth: number,
+): string {
   const { percent, tokens, contextWindow } = data.context;
   const color = contextColor(percent);
   const barText = theme.fg(color, makeBar((percent ?? 0) / 100, barWidth));
@@ -73,8 +87,10 @@ export function statsFragment(theme: Theme, data: NazozokcPiData): string {
   if (s.input) parts.push(theme.fg("muted", `↑${formatTokens(s.input)}`));
   if (s.output) parts.push(theme.fg("muted", `↓${formatTokens(s.output)}`));
   if (s.cacheRead) parts.push(theme.fg("dim", `R${formatTokens(s.cacheRead)}`));
-  if (s.cacheWrite) parts.push(theme.fg("dim", `W${formatTokens(s.cacheWrite)}`));
-  if (s.cacheHitRate !== null) parts.push(theme.fg("dim", `CH${s.cacheHitRate.toFixed(0)}%`));
+  if (s.cacheWrite)
+    parts.push(theme.fg("dim", `W${formatTokens(s.cacheWrite)}`));
+  if (s.cacheHitRate !== null)
+    parts.push(theme.fg("dim", `CH${s.cacheHitRate.toFixed(0)}%`));
   if (s.cost) parts.push(theme.fg("muted", formatCost(s.cost)));
   if (s.toolCalls) parts.push(theme.fg("dim", `${s.toolCalls} tools`));
   return joinParts(parts, theme.fg("dim", " · "));
@@ -86,7 +102,11 @@ export function sessionTitle(data: NazozokcPiData): string {
 }
 
 /** Location line: cwd (with ~) plus git branch and session name. */
-export function locationFragment(theme: Theme, data: NazozokcPiData, home: string | undefined): string {
+export function locationFragment(
+  theme: Theme,
+  data: NazozokcPiData,
+  home: string | undefined,
+): string {
   const cwd = shortenHome(data.cwd, home);
   const parts = [theme.fg("text", cwd)];
   if (data.branch) parts.push(theme.fg("success", data.branch));
@@ -106,14 +126,23 @@ export function activityFragment(theme: Theme, data: NazozokcPiData): string {
 
 /** Sanitized single-line status text (newlines/tabs collapsed). */
 export function sanitizeStatus(text: string): string {
-  return text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim();
+  return text
+    .replace(/[\r\n\t]/g, " ")
+    .replace(/ +/g, " ")
+    .trim();
 }
 
 /** Extension statuses joined for a footer line, or null when none. */
-export function statusesLine(theme: Theme, data: NazozokcPiData, width: number): string | null {
+export function statusesLine(
+  theme: Theme,
+  data: NazozokcPiData,
+  width: number,
+): string | null {
   if (data.statuses.length === 0) return null;
   const sorted = [...data.statuses].sort((a, b) => a.key.localeCompare(b.key));
-  const joined = sorted.map((s) => sanitizeStatus(s.text)).join(theme.fg("dim", "  "));
+  const joined = sorted
+    .map((s) => sanitizeStatus(s.text))
+    .join(theme.fg("dim", "  "));
   return fit(joined, width);
 }
 
@@ -123,5 +152,7 @@ export function toolsFragment(theme: Theme, data: NazozokcPiData): string {
     return `${theme.fg("warning", "●")} ${theme.fg("text", data.activeTool.name)}`;
   }
   if (data.recentTools.length === 0) return theme.fg("dim", "none yet");
-  return data.recentTools.map((t) => theme.fg("muted", t)).join(theme.fg("dim", "  "));
+  return data.recentTools
+    .map((t) => theme.fg("muted", t))
+    .join(theme.fg("dim", "  "));
 }

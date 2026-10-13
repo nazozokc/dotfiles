@@ -11,7 +11,12 @@ import { VERSION } from "@earendil-works/pi-coding-agent";
 import type { Component } from "@earendil-works/pi-tui";
 
 import { fit, leftRight } from "./format.ts";
-import { activityFragment, locationFragment, modelFragment, thinkingFragment } from "./render.ts";
+import {
+  activityFragment,
+  locationFragment,
+  modelFragment,
+  thinkingFragment,
+} from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
 
 const LEFT_INSET = 1;
@@ -22,7 +27,11 @@ export class NazozokcPiHeader implements Component {
   private readonly getTheme: () => Theme;
   private readonly home: string | undefined;
 
-  constructor(getData: () => NazozokcPiData | null, getTheme: () => Theme, home: string | undefined) {
+  constructor(
+    getData: () => NazozokcPiData | null,
+    getTheme: () => Theme,
+    home: string | undefined,
+  ) {
     this.getData = getData;
     this.getTheme = getTheme;
     this.home = home;
@@ -47,7 +56,9 @@ export class NazozokcPiHeader implements Component {
 
     const brand = `${theme.bold(theme.fg("text", "π nazozokc-pi"))} ${theme.fg("dim", `v${VERSION}`)}`;
     const thinking = thinkingFragment(theme, data);
-    const right = thinking ? `${modelFragment(theme, data)}  ${thinking}` : modelFragment(theme, data);
+    const right = thinking
+      ? `${modelFragment(theme, data)}  ${thinking}`
+      : modelFragment(theme, data);
 
     return [
       this.rule(theme) + leftRight(brand, right, inner),

@@ -10,7 +10,12 @@ import type { Theme } from "@earendil-works/pi-coding-agent";
 import type { Component } from "@earendil-works/pi-tui";
 
 import { leftRight } from "./format.ts";
-import { activityFragment, contextFragment, locationFragment, statsFragment } from "./render.ts";
+import {
+  activityFragment,
+  contextFragment,
+  locationFragment,
+  statsFragment,
+} from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
 
 const RULE = "▌";
@@ -20,7 +25,11 @@ export class NazozokcPiPanel implements Component {
   private readonly getTheme: () => Theme;
   private readonly home: string | undefined;
 
-  constructor(getData: () => NazozokcPiData | null, getTheme: () => Theme, home: string | undefined) {
+  constructor(
+    getData: () => NazozokcPiData | null,
+    getTheme: () => Theme,
+    home: string | undefined,
+  ) {
     this.getData = getData;
     this.getTheme = getTheme;
     this.home = home;
@@ -44,7 +53,10 @@ export class NazozokcPiPanel implements Component {
     const line1 = leftRight(identity, activityFragment(theme, data), width);
 
     const context = `${" ".repeat(3)}${contextFragment(theme, data, barWidth)}`;
-    const stats = width >= 72 ? `${theme.fg("dim", "  ·  ")}${statsFragment(theme, data)}` : "";
+    const stats =
+      width >= 72
+        ? `${theme.fg("dim", "  ·  ")}${statsFragment(theme, data)}`
+        : "";
     const auto = theme.fg("dim", data.autoCompact ? "auto" : "manual");
     const line2 = leftRight(`${context}${stats}`, auto, width);
 
