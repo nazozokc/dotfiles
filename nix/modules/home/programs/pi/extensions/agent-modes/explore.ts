@@ -3,7 +3,7 @@
  *
  * Exploration agent - Focus on understanding codebase, finding patterns, gathering context.
  */
-import type { ModeConfig } from "./types.ts";
+import { READ_ONLY_TOOLS_PARALLEL, type ModeConfig } from "./types.ts";
 
 export const exploreMode: ModeConfig = {
   name: "explore",
@@ -12,5 +12,6 @@ export const exploreMode: ModeConfig = {
     "Switch to explore mode - understand codebase, find patterns, gather context",
   prompt:
     "You are an exploration agent. Focus on understanding the codebase, finding patterns, and gathering context.",
+  tools: [...READ_ONLY_TOOLS_PARALLEL],
   notifyMessage: "🔍 Switched to explore mode",
 };

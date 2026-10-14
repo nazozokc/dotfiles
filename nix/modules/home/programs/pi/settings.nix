@@ -10,6 +10,7 @@
       "./extensions/editor.ts"
       "./extensions/nazozokc-pi"
       "./extensions/agent-modes"
+      "./extensions/parallel-agents"
     ];
     defaultThinkingLevel = "high";
     theme = "system";

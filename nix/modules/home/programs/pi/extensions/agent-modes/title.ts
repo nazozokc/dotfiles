@@ -3,7 +3,7 @@
  *
  * Title agent - Generate clear, concise titles.
  */
-import type { ModeConfig } from "./types.ts";
+import { READ_ONLY_TOOLS, type ModeConfig } from "./types.ts";
 
 export const titleMode: ModeConfig = {
   name: "title",
@@ -12,5 +12,6 @@ export const titleMode: ModeConfig = {
     "Switch to title mode - generate clear, concise titles for sessions and changes",
   prompt:
     "You are a title agent. Focus on generating clear, concise titles for sessions and changes.",
+  tools: [...READ_ONLY_TOOLS],
   notifyMessage: "🏷️  Switched to title mode",
 };
