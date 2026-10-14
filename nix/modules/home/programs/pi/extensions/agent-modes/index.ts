@@ -69,7 +69,8 @@ export default function agentModesExtension(pi: ExtensionAPI): void {
     }
   });
 
-  // Cycle modes with Tab / Shift+Tab in TUI
+  // Cycle modes with Tab in the TUI. Shift+Tab is left to pi's reserved
+  // `app.thinking.cycle` binding (thinking level).
   const registerTuiShortcut = (
     key: KeyId,
     description: string,
@@ -86,9 +87,6 @@ export default function agentModesExtension(pi: ExtensionAPI): void {
 
   registerTuiShortcut("tab", "Cycle agent mode (next)", (ctx) =>
     cycleMode("next", ctx),
-  );
-  registerTuiShortcut("shift+tab", "Cycle agent mode (prev)", (ctx) =>
-    cycleMode("prev", ctx),
   );
 
   // Show help on demand
