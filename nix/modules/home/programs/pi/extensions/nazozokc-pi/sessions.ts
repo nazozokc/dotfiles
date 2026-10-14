@@ -1,9 +1,10 @@
 /**
  * nazozokc-pi extension — session switcher overlay.
  *
- * Opened with `alt+o` or `/nazozokc-pi sessions`. Lists the recent sessions
- * (most recently modified first) and returns the chosen session path so the
- * command handler can call `ctx.switchSession()`.
+ * Opened with `/nazozokc-pi sessions` (command only: switching sessions needs
+ * `ExtensionCommandContext`, which shortcuts do not receive). Lists the recent
+ * sessions (most recently modified first) and returns the chosen session path
+ * so the command handler can call `ctx.switchSession()`.
  */
 
 import type { SessionInfo, Theme } from "@earendil-works/pi-coding-agent";

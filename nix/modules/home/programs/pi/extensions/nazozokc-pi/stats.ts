@@ -11,8 +11,8 @@ import type { Component } from "@earendil-works/pi-tui";
 import { matchesKey } from "@earendil-works/pi-tui";
 
 import { boxBottom, boxDivider, boxLabelRow, boxRow, boxTop } from "./box.ts";
-import { formatCost, formatDuration, formatTokens, makeBar } from "./format.ts";
-import { contextDetailFragment } from "./render.ts";
+import { formatCost, formatTokens, makeBar } from "./format.ts";
+import { contextDetailFragment, elapsedFragment } from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
 
 const LABEL_WIDTH = 11;
@@ -135,7 +135,7 @@ export class NazozokcPiStats implements Component {
 
     row("session", theme.fg("text", data.sessionName ?? "—"));
     row("id", theme.fg("dim", data.sessionId.slice(0, 16)));
-    row("elapsed", theme.fg("muted", this.elapsed(data)));
+    row("elapsed", elapsedFragment(theme, data));
     row("started", theme.fg("dim", this.startedAt(data)));
     row("compact", theme.fg("dim", data.autoCompact ? "auto" : "manual"));
     row("providers", theme.fg("dim", String(data.providerCount)));
@@ -158,11 +158,6 @@ export class NazozokcPiStats implements Component {
       boxRow(theme, width, theme.fg("dim", " esc / q to close")),
       boxBottom(theme, width),
     ];
-  }
-
-  private elapsed(data: NazozokcPiData): string {
-    if (data.sessionStartedAt === null) return "—";
-    return formatDuration(Date.now() - data.sessionStartedAt);
   }
 
   private startedAt(data: NazozokcPiData): string {

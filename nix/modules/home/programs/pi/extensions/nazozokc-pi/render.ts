@@ -9,7 +9,6 @@
 import type { Theme, ThemeColor } from "@earendil-works/pi-coding-agent";
 
 import {
-  fit,
   formatCost,
   formatDuration,
   formatTokens,
@@ -131,20 +130,6 @@ export function sanitizeStatus(text: string): string {
     .replace(/[\r\n\t]/g, " ")
     .replace(/ +/g, " ")
     .trim();
-}
-
-/** Extension statuses joined for a footer line, or null when none. */
-export function statusesLine(
-  theme: Theme,
-  data: NazozokcPiData,
-  width: number,
-): string | null {
-  if (data.statuses.length === 0) return null;
-  const sorted = [...data.statuses].sort((a, b) => a.key.localeCompare(b.key));
-  const joined = sorted
-    .map((s) => sanitizeStatus(s.text))
-    .join(theme.fg("dim", "  "));
-  return fit(joined, width);
 }
 
 /** Elapsed time since the session started: "12m34s", or "—" when unknown. */

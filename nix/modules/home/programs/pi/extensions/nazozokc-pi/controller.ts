@@ -27,12 +27,8 @@ import type {
 
 const RECENT_TOOL_LIMIT = 8;
 
-/** Tools whose results are not counted as a normal tool call. */
-const HIDDEN_FROM_RECENT = new Set<string>();
-
 export class NazozokcPiController {
   private readonly pi: ExtensionAPI;
-  private readonly home: string | undefined;
 
   private footerData: ReadonlyFooterDataProvider | null = null;
   private tui: TUI | null = null;
@@ -44,9 +40,8 @@ export class NazozokcPiController {
   private memoStats: NazozokcPiStats | null = null;
   private memoContext: NazozokcPiContext | null = null;
 
-  constructor(pi: ExtensionAPI, home: string | undefined) {
+  constructor(pi: ExtensionAPI) {
     this.pi = pi;
-    this.home = home;
   }
 
   /** Wire the live TUI (from the first component factory). */
@@ -60,10 +55,6 @@ export class NazozokcPiController {
    */
   attachFooterData(footerData: ReadonlyFooterDataProvider): void {
     this.footerData = footerData;
-  }
-
-  getHome(): string | undefined {
-    return this.home;
   }
 
   requestRender(): void {
@@ -84,19 +75,13 @@ export class NazozokcPiController {
 
   onToolEnd(toolCallId: string, toolName: string): void {
     this.activeTools.delete(toolCallId);
-    if (!HIDDEN_FROM_RECENT.has(toolName)) {
-      this.recentTools = [
-        toolName,
-        ...this.recentTools.filter((t) => t !== toolName),
-      ];
-      if (this.recentTools.length > RECENT_TOOL_LIMIT) {
-        this.recentTools = this.recentTools.slice(0, RECENT_TOOL_LIMIT);
-      }
+    this.recentTools = [
+      toolName,
+      ...this.recentTools.filter((t) => t !== toolName),
+    ];
+    if (this.recentTools.length > RECENT_TOOL_LIMIT) {
+      this.recentTools = this.recentTools.slice(0, RECENT_TOOL_LIMIT);
     }
-    this.requestRender();
-  }
-
-  onBoundary(): void {
     this.requestRender();
   }
 
