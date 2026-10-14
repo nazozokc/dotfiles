@@ -3,7 +3,7 @@
  *
  * Summary agent - Concise, accurate summaries.
  */
-import type { ModeConfig } from "./types.ts";
+import { READ_ONLY_TOOLS, type ModeConfig } from "./types.ts";
 
 export const summaryMode: ModeConfig = {
   name: "summary",
@@ -11,5 +11,6 @@ export const summaryMode: ModeConfig = {
   description: "Switch to summary mode - generate concise, accurate summaries",
   prompt:
     "You are a summarization agent. Focus on concise, accurate summaries of conversations, changes, and context.",
+  tools: [...READ_ONLY_TOOLS],
   notifyMessage: "📝 Switched to summary mode",
 };

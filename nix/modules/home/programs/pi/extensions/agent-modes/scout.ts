@@ -3,7 +3,7 @@
  *
  * Scout agent - Quick information gathering and answering questions.
  */
-import type { ModeConfig } from "./types.ts";
+import { READ_ONLY_TOOLS_PARALLEL, type ModeConfig } from "./types.ts";
 
 export const scoutMode: ModeConfig = {
   name: "scout",
@@ -12,5 +12,6 @@ export const scoutMode: ModeConfig = {
     "Switch to scout mode - quick information gathering and answering questions",
   prompt:
     "You are a scout agent. Focus on quick information gathering and answering questions about the codebase.",
+  tools: [...READ_ONLY_TOOLS_PARALLEL],
   notifyMessage: "🏃 Switched to scout mode",
 };
