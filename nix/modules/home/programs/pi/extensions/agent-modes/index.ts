@@ -1,109 +1,116 @@
 /**
  * Agent modes extension
  *
- * Provides commands to switch between agent modes:
- *   /plan, /build, /dangerously-skip-permission, /explore, /scout, /summary, /title
+ * Switches between agent modes with the per-mode commands
+ * (/plan, /build, /explore, /scout, /summary, /title, /dangerously-skip-permission)
+ * or by cycling with Tab.
  *
- * Registers these commands for easy mode switching. Mode state is tracked
- * and reapplied on session start.
+ * Activating a mode does three things:
+ *   1. stores it as the current mode (reapplied on session start),
+ *   2. injects its directive into the system prompt for every turn
+ *      (as an <agent_mode> prompt section),
+ *   3. shows it persistently in the footer status bar, e.g. "mode:plan".
+ *
+ * The footer indicator is the source of truth: it is always visible, so the
+ * active mode never has to be guessed from a transient notification.
  */
 import type {
   ExtensionAPI,
   ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
-import type { KeyId } from "@earendil-works/pi-tui";
-import { registerPlanMode } from "./plan.ts";
-import { registerBuildMode } from "./build.ts";
-import { registerDangerouslySkipPermissionMode } from "./dangerously-skip-permission.ts";
-import { registerExploreMode } from "./explore.ts";
-import { registerScoutMode } from "./scout.ts";
-import { registerSummaryMode } from "./summary.ts";
-import { registerTitleMode } from "./title.ts";
 
-let currentMode: string | null = null;
+import { planMode } from "./plan.ts";
+import { buildMode } from "./build.ts";
+import { exploreMode } from "./explore.ts";
+import { scoutMode } from "./scout.ts";
+import { summaryMode } from "./summary.ts";
+import { titleMode } from "./title.ts";
+import { dangerouslySkipPermissionMode } from "./dangerously-skip-permission.ts";
+import type { AgentMode, ModeConfig } from "./types.ts";
 
-const modes = [
-  "plan",
-  "build",
-  "explore",
-  "scout",
-  "summary",
-  "title",
-  "dangerously-skip-permission",
-] as const;
+/** Status key. Sorts before "codex-usage", so the mode is never truncated. */
+const STATUS_KEY = "agent-mode";
+/** System prompt section that carries the active mode directive. */
+const SECTION = "agent_mode";
+
+/** Cycle order used by Tab. */
+const MODES: readonly ModeConfig[] = [
+  planMode,
+  buildMode,
+  exploreMode,
+  scoutMode,
+  summaryMode,
+  titleMode,
+  dangerouslySkipPermissionMode,
+];
+
+const MODE_BY_NAME = new Map<string, ModeConfig>(MODES.map((m) => [m.name, m]));
+
+/** `null` until a mode is first selected; shown as "default". */
+let currentMode: AgentMode | null = null;
+
+/** Footer label, e.g. "mode:plan". */
+function statusText(ctx: ExtensionContext, name: string): string {
+  const theme = ctx.ui.theme;
+  return `${theme.fg("accent", "mode")}${theme.fg("dim", ":")}${theme.bold(
+    theme.fg("text", name),
+  )}`;
+}
 
 export default function agentModesExtension(pi: ExtensionAPI): void {
-  const setCurrentMode = (mode: string): void => {
+  const activate = (mode: AgentMode, ctx: ExtensionContext): void => {
     currentMode = mode;
-  };
-
-  const getCurrentMode = (): string | null => currentMode;
-
-  const cycleMode = (dir: "next" | "prev", ctx: ExtensionContext): void => {
-    if (modes.length === 0) return;
-    const idx = currentMode
-      ? modes.indexOf(currentMode as (typeof modes)[number])
-      : -1;
-    const nextIdx =
-      dir === "next"
-        ? (idx + 1 + modes.length) % modes.length
-        : (idx - 1 + modes.length) % modes.length;
-    const mode = modes[nextIdx];
-    void (pi as any).executeCommand?.(mode, "");
-  };
-
-  // Register all mode commands
-  registerPlanMode(pi, setCurrentMode);
-  registerBuildMode(pi, setCurrentMode);
-  registerDangerouslySkipPermissionMode(pi, setCurrentMode);
-  registerExploreMode(pi, setCurrentMode);
-  registerScoutMode(pi, setCurrentMode);
-  registerSummaryMode(pi, setCurrentMode);
-  registerTitleMode(pi, setCurrentMode);
-
-  // Show current mode on session start
-  pi.on("session_start", (_event, ctx: ExtensionContext) => {
-    if (ctx.mode !== "tui") return;
-    if (currentMode) {
-      ctx.ui.notify(`Active agent mode: ${currentMode}`, "info");
+    const cfg = MODE_BY_NAME.get(mode);
+    if (!cfg) return;
+    if (ctx.mode === "tui") {
+      ctx.ui.setStatus(STATUS_KEY, statusText(ctx, cfg.name));
     }
+    ctx.ui.notify(cfg.notifyMessage, cfg.notifyType ?? "info");
+  };
+
+  // Inject the active mode directive into the system prompt for every turn.
+  pi.on("before_agent_start", (event) => {
+    if (!currentMode) return;
+    const cfg = MODE_BY_NAME.get(currentMode);
+    if (cfg) event.systemPromptOptions.sections[SECTION] = cfg.prompt;
   });
 
-  // Cycle modes with Tab in the TUI. Shift+Tab is left to pi's reserved
-  // `app.thinking.cycle` binding (thinking level).
-  const registerTuiShortcut = (
-    key: KeyId,
-    description: string,
-    handler: (ctx: ExtensionContext) => void,
-  ): void => {
-    pi.registerShortcut(key, {
-      description,
-      handler: (ctx) => {
-        if (ctx.mode !== "tui") return;
-        handler(ctx);
-      },
+  // resetExtensionUI() (session switch/fork/new, /reload) clears statuses, so
+  // the indicator must be restored on every session start.
+  pi.on("session_start", (_event, ctx) => {
+    if (ctx.mode !== "tui") return;
+    ctx.ui.setStatus(STATUS_KEY, statusText(ctx, currentMode ?? "default"));
+  });
+
+  // One command per mode.
+  for (const cfg of MODES) {
+    pi.registerCommand(cfg.command, {
+      description: cfg.description,
+      handler: async (_args, ctx) => activate(cfg.name, ctx),
     });
-  };
+  }
 
-  registerTuiShortcut("tab", "Cycle agent mode (next)", (ctx) =>
-    cycleMode("next", ctx),
-  );
+  // Tab cycles to the next mode. Shift+Tab is left to pi's reserved
+  // `app.thinking.cycle` binding (thinking level).
+  pi.registerShortcut("tab", {
+    description: "Cycle agent mode",
+    handler: (ctx) => {
+      if (ctx.mode !== "tui") return;
+      const idx = currentMode
+        ? MODES.findIndex((m) => m.name === currentMode)
+        : -1;
+      activate(MODES[(idx + 1) % MODES.length].name, ctx);
+    },
+  });
 
-  // Show help on demand
   pi.registerCommand("agent-modes", {
     description:
       "Show available agent modes (plan, build, dangerously-skip-permission, explore, scout, summary, title)",
-    handler: async (_args: string, ctx: ExtensionContext) => {
-      const modesList = [
-        "plan - Planning, architecture, design",
-        "build - Implementation, bug fixes, coding",
-        "dangerously-skip-permission - Skip permission prompts (CAUTION)",
-        "explore - Codebase exploration, pattern finding",
-        "scout - Quick info gathering",
-        "summary - Concise summaries",
-        "title - Generate titles",
-      ].join("\n");
-      ctx.ui.notify(`Available modes:\n${modesList}`, "info");
+    handler: async (_args, ctx) => {
+      const list = MODES.map((m) => `${m.command} — ${m.description}`).join(
+        "\n",
+      );
+      ctx.ui.notify(`Available modes (Tab cycles):\n${list}`, "info");
     },
   });
 }
