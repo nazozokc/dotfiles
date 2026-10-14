@@ -37,11 +37,6 @@ export function formatCost(n: number): string {
   return `$${n.toFixed(2)}`;
 }
 
-/** Percentage with one decimal, or "?" when unknown. */
-export function formatPercent(p: number | null): string {
-  return p === null ? "?" : `${p.toFixed(1)}%`;
-}
-
 /** Proportional bar made of block glyphs (each glyph is one cell wide). */
 export function makeBar(ratio: number, width: number): string {
   const w = Math.max(1, Math.floor(width));
@@ -62,13 +57,6 @@ export function shortenHome(path: string, home: string | undefined): string {
 export function fit(text: string, width: number): string {
   if (width <= 0) return "";
   return truncateToWidth(text, width, "…");
-}
-
-/** Pad an (ANSI-aware) string with spaces to an exact visible width. */
-export function padTo(text: string, width: number): string {
-  const w = visibleWidth(text);
-  if (w >= width) return fit(text, width);
-  return text + " ".repeat(width - w);
 }
 
 /**
@@ -94,9 +82,4 @@ export function joinParts(
   sep: string,
 ): string {
   return parts.filter((p): p is string => Boolean(p && p.length > 0)).join(sep);
-}
-
-/** A single-cell block glyph for the context/usage bar. */
-export function bar(ratio: number, width: number): string {
-  return makeBar(ratio, width);
 }

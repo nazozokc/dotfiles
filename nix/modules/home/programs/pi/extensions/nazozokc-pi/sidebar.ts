@@ -2,15 +2,16 @@
  * nazozokc-pi extension — sidebar.
  *
  * A vertically stacked readout rendered as a non-capturing overlay anchored to
- * the right edge, so it never steals keyboard focus from the editor. Toggled
- * with `alt+h` or `/nazozokc-pi sidebar`.
+ * the top-right, so it never steals keyboard focus from the editor. Toggled
+ * with `alt+h` or `/nazozokc-pi sidebar`; the overlay lifecycle is owned by
+ * `sidebar-host.ts`.
  */
 
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import type { Component } from "@earendil-works/pi-tui";
-import { visibleWidth } from "@earendil-works/pi-tui";
 
-import { fit, formatTokens, shortenHome } from "./format.ts";
+import { boxBottom, boxDivider, boxLabelRow, boxTop } from "./box.ts";
+import { formatTokens, shortenHome } from "./format.ts";
 import {
   activityFragment,
   contextFragment,
@@ -61,50 +62,6 @@ export class NazozokcPiSidebar implements Component {
     return Math.max(MIN_SIDEBAR_ROWS, rows - DOCK_RESERVE);
   }
 
-  private border(theme: Theme, text: string): string {
-    return theme.fg("border", text);
-  }
-
-  private top(width: number, theme: Theme): string {
-    const title = theme.bold(theme.fg("accent", " NAZOZOKC-PI "));
-    const fill = Math.max(0, width - 3 - visibleWidth(title));
-    return (
-      this.border(theme, "╭─") +
-      title +
-      this.border(theme, "─".repeat(fill) + "╮")
-    );
-  }
-
-  private divider(width: number, theme: Theme): string {
-    return this.border(theme, "├" + "─".repeat(Math.max(0, width - 2)) + "┤");
-  }
-
-  private bottom(width: number, theme: Theme): string {
-    return this.border(theme, "╰" + "─".repeat(Math.max(0, width - 2)) + "╯");
-  }
-
-  private row(
-    width: number,
-    theme: Theme,
-    label: string,
-    value: string,
-  ): string {
-    const inner = Math.max(0, width - 4);
-    const labelWidth = Math.min(LABEL_WIDTH, Math.max(0, inner - 1));
-    const valueWidth = Math.max(0, inner - labelWidth - 1);
-    const labelText = theme.fg(
-      "muted",
-      label.padEnd(labelWidth).slice(0, labelWidth),
-    );
-    const valueText = truncate(value, valueWidth);
-    const content = " " + labelText + " " + valueText;
-    const padded =
-      content + " ".repeat(Math.max(0, width - 2 - visibleWidth(content)));
-    return (
-      this.border(theme, "│") + fit(padded, width - 2) + this.border(theme, "│")
-    );
-  }
-
   render(width: number): string[] {
     const theme = this.getTheme();
     const data = this.getData();
@@ -113,7 +70,7 @@ export class NazozokcPiSidebar implements Component {
     const middle: string[] = [];
 
     const push = (label: string, value: string): void => {
-      middle.push(this.row(width, theme, label, value));
+      middle.push(boxLabelRow(theme, width, label, value, LABEL_WIDTH));
     };
 
     // Session
@@ -122,7 +79,7 @@ export class NazozokcPiSidebar implements Component {
     push("id", theme.fg("dim", data.sessionId.slice(0, 12)));
     push("cwd", theme.fg("text", shortenHome(data.cwd, this.home)));
     push("elapsed", elapsedFragment(theme, data));
-    middle.push(this.divider(width, theme));
+    middle.push(boxDivider(theme, width));
 
     // Model
     push(
@@ -142,7 +99,7 @@ export class NazozokcPiSidebar implements Component {
         ? theme.fg("dim", formatTokens(data.model.maxTokens))
         : theme.fg("dim", "—"),
     );
-    middle.push(this.divider(width, theme));
+    middle.push(boxDivider(theme, width));
 
     // Context + tokens + cost
     push("ctx", contextFragment(theme, data, BAR_WIDTH));
@@ -169,7 +126,7 @@ export class NazozokcPiSidebar implements Component {
         `${data.stats.messages} msg · ${data.stats.toolCalls} tools`,
       ),
     );
-    middle.push(this.divider(width, theme));
+    middle.push(boxDivider(theme, width));
 
     // Activity
     push("activity", activityFragment(theme, data));
@@ -180,7 +137,7 @@ export class NazozokcPiSidebar implements Component {
 
     // Extension statuses
     if (data.statuses.length > 0) {
-      middle.push(this.divider(width, theme));
+      middle.push(boxDivider(theme, width));
       for (const status of [...data.statuses].sort((a, b) =>
         a.key.localeCompare(b.key),
       )) {
@@ -193,14 +150,18 @@ export class NazozokcPiSidebar implements Component {
     const cap = this.maxRows();
     const budget = cap === Number.POSITIVE_INFINITY ? cap : cap - 2;
     if (middle.length <= budget) {
-      return [this.top(width, theme), ...middle, this.bottom(width, theme)];
+      return [
+        boxTop(theme, width, "NAZOZOKC-PI"),
+        ...middle,
+        boxBottom(theme, width),
+      ];
     }
     const shown = shownRows(middle, budget);
     return [
-      this.top(width, theme),
+      boxTop(theme, width, "NAZOZOKC-PI"),
       ...shown,
-      this.row(width, theme, "…", theme.fg("dim", "truncated")),
-      this.bottom(width, theme),
+      boxLabelRow(theme, width, "…", theme.fg("dim", "truncated"), LABEL_WIDTH),
+      boxBottom(theme, width),
     ];
   }
 }
@@ -211,8 +172,4 @@ function shownRows(rows: string[], budget: number): string[] {
   let count = Math.max(0, budget - 1);
   while (count > 0 && rows[count - 1].includes("├")) count -= 1;
   return rows.slice(0, count);
-}
-
-function truncate(text: string, width: number): string {
-  return fit(text, width);
 }

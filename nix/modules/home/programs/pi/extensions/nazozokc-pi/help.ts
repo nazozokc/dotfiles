@@ -11,7 +11,7 @@ import type { Component } from "@earendil-works/pi-tui";
 import { matchesKey, visibleWidth } from "@earendil-works/pi-tui";
 
 import { boxBottom, boxDivider, boxLabelRow, boxRow, boxTop } from "./box.ts";
-import { fit } from "./format.ts";
+import { fit, shortenHome } from "./format.ts";
 import {
   contextFragment,
   elapsedFragment,
@@ -94,7 +94,7 @@ export class NazozokcPiHelp implements Component {
           : theme.fg("dim", "n/a"),
       );
       label("session", theme.fg("text", sessionTitle(data)));
-      label("cwd", theme.fg("text", this.short(data.cwd)));
+      label("cwd", theme.fg("text", shortenHome(data.cwd, this.home)));
       label("elapsed", elapsedFragment(theme, data));
       label("ctx", contextFragment(theme, data, BAR_WIDTH));
     } else {
@@ -140,14 +140,6 @@ export class NazozokcPiHelp implements Component {
       boxRow(theme, width, theme.fg("dim", " esc / q to close")),
       boxBottom(theme, width),
     ];
-  }
-
-  private short(path: string): string {
-    if (!this.home) return path;
-    if (path === this.home) return "~";
-    if (path.startsWith(this.home + "/"))
-      return "~" + path.slice(this.home.length);
-    return path;
   }
 
   /** Leave room for the top/bottom rules and the footer hint. */

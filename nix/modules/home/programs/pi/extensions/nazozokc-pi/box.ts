@@ -1,9 +1,8 @@
 /**
  * nazozokc-pi extension — bordered box primitives.
  *
- * Shared frame helpers for the on-demand overlay screens (help, stats,
- * sessions). The sidebar keeps its own copy because it renders on every frame
- * and predates these; new screens use this module.
+ * Shared frame helpers for every bordered surface: the on-demand overlay
+ * screens (help, stats, sessions) and the sidebar.
  */
 
 import type { Theme } from "@earendil-works/pi-coding-agent";
