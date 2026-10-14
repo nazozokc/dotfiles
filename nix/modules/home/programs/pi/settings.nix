@@ -4,6 +4,7 @@
     packages = [
       "npm:opencode-pi"
       "npm:pi-vim"
+      "npm:pi-web-access"
     ];
     extensions = [
       "./extensions/codex-usage.ts"
