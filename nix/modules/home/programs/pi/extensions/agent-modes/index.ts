@@ -41,7 +41,9 @@ export default function agentModesExtension(pi: ExtensionAPI): void {
 
   const cycleMode = (dir: "next" | "prev", ctx: ExtensionContext): void => {
     if (modes.length === 0) return;
-    const idx = currentMode ? modes.indexOf(currentMode as (typeof modes)[number]) : -1;
+    const idx = currentMode
+      ? modes.indexOf(currentMode as (typeof modes)[number])
+      : -1;
     const nextIdx =
       dir === "next"
         ? (idx + 1 + modes.length) % modes.length
@@ -82,7 +84,9 @@ export default function agentModesExtension(pi: ExtensionAPI): void {
     });
   };
 
-  registerTuiShortcut("tab", "Cycle agent mode (next)", (ctx) => cycleMode("next", ctx));
+  registerTuiShortcut("tab", "Cycle agent mode (next)", (ctx) =>
+    cycleMode("next", ctx),
+  );
   registerTuiShortcut("shift+tab", "Cycle agent mode (prev)", (ctx) =>
     cycleMode("prev", ctx),
   );
