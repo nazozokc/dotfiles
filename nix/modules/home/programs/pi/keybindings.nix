@@ -10,6 +10,7 @@
     "tui.editor.deleteWordBackward" = [ "ctrl+w" ];
     "tui.editor.deleteWordForward" = [ "alt+d" ];
     "tui.input.accept" = [ "ctrl+y" ];
+    "tui.input.tab" = [ "ctrl+tab" ];
     "tui.history.prev" = [ "ctrl+p" ];
     "tui.history.next" = [ "ctrl+n" ];
     "tui.search.toggle" = [ "ctrl+r" ];
