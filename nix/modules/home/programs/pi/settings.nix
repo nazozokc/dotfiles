@@ -5,6 +5,12 @@
       "npm:opencode-pi"
       "npm:pi-vim"
     ];
+    extensions = [
+      "./extensions/codex-usage.ts"
+      "./extensions/editor.ts"
+      "./extensions/nazozokc-pi"
+      "./extensions/agent-modes"
+    ];
     defaultThinkingLevel = "high";
     theme = "system";
     quietStartup = "header";
