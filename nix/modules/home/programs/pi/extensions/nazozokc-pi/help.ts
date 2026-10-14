@@ -28,6 +28,7 @@ const SHORTCUTS: Array<[string, string]> = [
   ["alt+i", "this help"],
   ["alt+s", "stats dashboard"],
   ["esc / q", "close this screen"],
+  ["tab", "cycle agent mode"],
   ["shift+tab", "cycle thinking level"],
   ["ctrl+l", "select model"],
   ["ctrl+o", "expand tool output"],
