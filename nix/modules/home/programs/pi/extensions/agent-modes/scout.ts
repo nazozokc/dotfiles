@@ -13,5 +13,6 @@ export const scoutMode: ModeConfig = {
   prompt:
     "You are a scout agent. Focus on quick information gathering and answering questions about the codebase.",
   tools: [...READ_ONLY_TOOLS_PARALLEL],
+  confirm: false,
   notifyMessage: "🏃 Switched to scout mode",
 };

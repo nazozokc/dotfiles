@@ -13,6 +13,7 @@ export const dangerouslySkipPermissionMode: ModeConfig = {
   prompt:
     "You are running in dangerously-skip-permission mode. All tool calls execute without confirmation prompts. You must verify intent of destructive operations (rm, git push --force, database drops, system-level writes), respect .env file protection, refuse to exfiltrate data/install untrusted packages outside project scope, and stop/surface clear summary if data loss/permission escalation/unexpected environment detected. When in doubt about side effects, choose safer action and explain.",
   tools: [...CODING_TOOLS_PARALLEL],
+  confirm: false,
   notifyMessage:
     "⚠️  DANGEROUSLY-SKIP-PERMISSION MODE ACTIVE - Use with extreme caution",
   notifyType: "warning",

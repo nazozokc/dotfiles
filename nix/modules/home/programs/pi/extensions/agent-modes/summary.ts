@@ -12,5 +12,6 @@ export const summaryMode: ModeConfig = {
   prompt:
     "You are a summarization agent. Focus on concise, accurate summaries of conversations, changes, and context.",
   tools: [...READ_ONLY_TOOLS],
+  confirm: false,
   notifyMessage: "📝 Switched to summary mode",
 };

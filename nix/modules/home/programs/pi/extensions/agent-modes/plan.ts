@@ -13,5 +13,6 @@ export const planMode: ModeConfig = {
   prompt:
     "You are a planning agent. Focus on architecture, design, and creating detailed implementation plans. Think before acting.",
   tools: [...READ_ONLY_TOOLS_PARALLEL],
+  confirm: false,
   notifyMessage: "📋 Switched to plan mode",
 };

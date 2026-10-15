@@ -13,5 +13,6 @@ export const buildMode: ModeConfig = {
   prompt:
     "You are a build agent. Focus on implementing features, fixing bugs, and writing code. Follow existing patterns and conventions.",
   tools: [...CODING_TOOLS_PARALLEL],
+  confirm: true,
   notifyMessage: "🔨 Switched to build mode",
 };

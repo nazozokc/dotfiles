@@ -24,6 +24,13 @@ export interface ModeConfig {
    * tools (parallel).
    */
   tools: string[];
+  /**
+   * Whether this mode asks the user to approve each mutating tool call
+   * (anything outside the read-only set) before it runs. Read-only tools are
+   * never confirmed, so this only matters for modes that can also run bash,
+   * edit, write, parallel sub-agents, or custom/MCP tools.
+   */
+  confirm: boolean;
   /** Transient notification shown when the mode is activated. */
   notifyMessage: string;
   /** Notification severity. Defaults to "info". */
