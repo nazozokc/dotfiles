@@ -12,6 +12,7 @@
       "./extensions/nazozokc-pi"
       "./extensions/agent-modes"
       "./extensions/parallel-agents"
+      "./extensions/git"
     ];
     defaultThinkingLevel = "high";
     theme = "system";
