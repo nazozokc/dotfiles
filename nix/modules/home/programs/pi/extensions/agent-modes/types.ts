@@ -39,9 +39,14 @@ export interface ModeConfig {
 
 /** Read-only tool set. */
 export const READ_ONLY_TOOLS = ["read", "grep", "find", "ls"] as const;
-/** Read-only tools plus the parallel sub-agent tool. */
-export const READ_ONLY_TOOLS_PARALLEL = [...READ_ONLY_TOOLS, "parallel"];
-/** Full coding tool set plus the parallel sub-agent tool. */
+/**
+ * Read-only tools plus the extension tools that stay available in every mode:
+ * the parallel sub-agent tool and the git tool. Git writes are gated by the git
+ * extension's own approval dialog, so the tool is safe to keep active even in
+ * read-only modes.
+ */
+export const READ_ONLY_TOOLS_PARALLEL = [...READ_ONLY_TOOLS, "parallel", "git"];
+/** Full coding tool set plus the parallel sub-agent and git tools. */
 export const CODING_TOOLS_PARALLEL = [
   "read",
   "bash",
@@ -51,4 +56,5 @@ export const CODING_TOOLS_PARALLEL = [
   "find",
   "ls",
   "parallel",
+  "git",
 ];

@@ -8,7 +8,7 @@
  *
  * The dialog is skipped when any of these hold:
  *   - the active mode has `confirm: false`,
- *   - the tool is one of the built-in read-only tools,
+ *   - the tool is one of the built-in read-only tools or the git tool,
  *   - the tool declares `readOnlyHint: true` (MCP / custom tools),
  *   - no dialog-capable UI is available (headless `pi -p`), where a prompt
  *     would be declined instantly and every call would fail.
@@ -21,8 +21,12 @@ import type {
   ToolCallEventResult,
 } from "@earendil-works/pi-coding-agent";
 
-/** Built-in tools that never change state and are never confirmed. */
-const READ_ONLY_TOOLS = new Set(["read", "grep", "find", "ls"]);
+/**
+ * Tools that agent-modes never confirms: the built-in read-only tools, plus the
+ * `git` tool whose writes are gated by the git extension's own dialog. Skipping
+ * it here avoids a second prompt for the same call.
+ */
+const SKIP_CONFIRMATION = new Set(["read", "grep", "find", "ls", "git"]);
 
 /** Longest input preview rendered in the dialog. */
 const INPUT_PREVIEW_LIMIT = 200;
@@ -49,11 +53,12 @@ export function installToolConfirmation(
     "tool_call",
     async (event, ctx): Promise<ToolCallEventResult | undefined> => {
       if (!isConfirmationEnabled() || !ctx.hasUI) return;
-      if (READ_ONLY_TOOLS.has(event.toolName)) return;
+      if (SKIP_CONFIRMATION.has(event.toolName)) return;
 
       const readOnly = pi
         .getAllTools()
-        .find((tool) => tool.name === event.toolName)?.annotations?.readOnlyHint;
+        .find((tool) => tool.name === event.toolName)
+        ?.annotations?.readOnlyHint;
       if (readOnly === true) return;
 
       const approved = await ctx.ui.confirm(

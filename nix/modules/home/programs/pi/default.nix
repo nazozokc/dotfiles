@@ -3,7 +3,7 @@
 {
   dotfiles.programs.pi = {
     icon = "🥧";
-    note = "settings / keybindings / codex-usage / editor / nazozokc-pi / agent-modes / parallel-agents";
+    note = "settings / keybindings / codex-usage / editor / nazozokc-pi / agent-modes / parallel-agents / git";
   };
 
   imports = [
@@ -16,6 +16,7 @@
   xdg.configFile."pi/agent/extensions/nazozokc-pi".source = ./extensions/nazozokc-pi;
   xdg.configFile."pi/agent/extensions/agent-modes".source = ./extensions/agent-modes;
   xdg.configFile."pi/agent/extensions/parallel-agents".source = ./extensions/parallel-agents;
+  xdg.configFile."pi/agent/extensions/git".source = ./extensions/git;
   xdg.configFile."pi/agent/extensions/shared".source = ./extensions/shared;
 
   # グローバル指示
