@@ -13,5 +13,6 @@ export const exploreMode: ModeConfig = {
   prompt:
     "You are an exploration agent. Focus on understanding the codebase, finding patterns, and gathering context.",
   tools: [...READ_ONLY_TOOLS_PARALLEL],
+  confirm: false,
   notifyMessage: "🔍 Switched to explore mode",
 };

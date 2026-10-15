@@ -12,6 +12,10 @@
  *      (as an <agent_mode> prompt section),
  *   4. shows it persistently in the footer status bar, e.g. "mode:plan".
  *
+ * Each mode's `confirm` flag (see types.ts) decides whether mutating tool calls
+ * pop an approval dialog; the handler lives in confirm.ts. Read-only modes set
+ * it false, build sets it true.
+ *
  * The active mode is also broadcast on the `agent-mode:changed` event bus
  * channel so other extensions (parallel-agents) can make sub-agents follow it.
  *
@@ -30,6 +34,7 @@ import { scoutMode } from "./scout.ts";
 import { summaryMode } from "./summary.ts";
 import { titleMode } from "./title.ts";
 import { dangerouslySkipPermissionMode } from "./dangerously-skip-permission.ts";
+import { installToolConfirmation } from "./confirm.ts";
 import type { AgentMode, ModeConfig } from "./types.ts";
 import {
   AGENT_MODE_CHANNEL,
@@ -57,6 +62,15 @@ const MODE_BY_NAME = new Map<string, ModeConfig>(MODES.map((m) => [m.name, m]));
 /** `null` until a mode is first selected; shown as "default". */
 let currentMode: AgentMode | null = null;
 
+/**
+ * Whether the active mode asks for approval before mutating tool calls.
+ * With no mode selected yet the full tool set is live, so stay cautious.
+ */
+function confirmationEnabled(): boolean {
+  const cfg = currentMode ? MODE_BY_NAME.get(currentMode) : undefined;
+  return cfg ? cfg.confirm : true;
+}
+
 /** Footer label, e.g. "mode:plan". */
 function statusText(ctx: ExtensionContext, name: string): string {
   const theme = ctx.ui.theme;
@@ -66,6 +80,9 @@ function statusText(ctx: ExtensionContext, name: string): string {
 }
 
 export default function agentModesExtension(pi: ExtensionAPI): void {
+  // Ask for approval before mutating tool calls, per the active mode.
+  installToolConfirmation(pi, confirmationEnabled);
+
   // Apply the mode's tool set to the main agent and broadcast it so that
   // parallel sub-agents can follow the same mode.
   const applyMode = (cfg: ModeConfig): void => {
