@@ -96,6 +96,9 @@ local lazyOpts = {
 	git = {
 		timeout = 600,
 	},
+	install = { enabled = false },
+	checker = { enabled = false },
+	change_detection = { enabled = false },
 }
 
 if nixPlugins then

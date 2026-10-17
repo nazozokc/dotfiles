@@ -103,9 +103,9 @@
   },
   "ts-expand-hover.nvim": {
     "url": "https://github.com/nemanjamalesija/ts-expand-hover.nvim.git",
-    "rev": "67b10745d45453f6746198ca34c564c99ce9bb2e",
+    "rev": "8b9a5b7e5385df10c8778a6e19d42e72dca10168",
     "branch": "main",
-    "hash": "sha256-CQeM4qfH1Yp0as2DpitmCAUvYCGKqxdnFNfwWOF15sg="
+    "hash": "sha256-fwC2zDOYn1IkNCD972jBUsnW062ONCPA7kHU040g93I="
   },
   "utf8.nvim": {
     "url": "https://github.com/uga-rosa/utf8.nvim.git",
@@ -139,9 +139,9 @@
   },
   "vscode-js-debug": {
     "url": "https://github.com/microsoft/vscode-js-debug.git",
-    "rev": "b24ecc5de754e4bfcb194688a59d07cad70440b3",
+    "rev": "49b9128f4b3872ab71fe22d1b97c12dcf7296df3",
     "branch": "main",
-    "hash": "sha256-uv2c1/8U7Yef/PkrSRdvciMQpdeoRpMt5SGREb4BVNw="
+    "hash": "sha256-iR6mltmXdqGmbIW7D+7QqvdhdG6o55QHT16S1DuZ4rI="
   },
   "wordcount.nvim": {
     "url": "https://github.com/nazozokc/wordcount.nvim.git",
@@ -151,8 +151,8 @@
   },
   "zls": {
     "url": "https://github.com/zigtools/zls.git",
-    "rev": "eab2be0fd74443a27662da809b771c4ad0d2afcf",
+    "rev": "9b1f4943a8ce1cdcc68ed01692b958be864760fd",
     "branch": "master",
-    "hash": "sha256-7BnT4VrhOApLVWDay7w6Jm9z/pNWc4trOLAwu+TfQLk="
+    "hash": "sha256-8HGTHJQAFhRcO7WN+oFZfgW9gBQkCs1ven+/M2tON2k="
   }
 }
