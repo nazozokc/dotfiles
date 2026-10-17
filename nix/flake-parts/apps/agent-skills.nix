@@ -239,12 +239,12 @@ in
                           echo ""
                         fi
 
-                        echo "  反映します: nix run .#switch"
+                        echo "[4/4] 反映します: nix run .#switch"
                         nix run .#switch |& ${pkgs.nix-output-monitor}/bin/nom
                         echo ""
                         echo "  完了"
                       else
-                        echo "  反映はスキップしました (--no-switch)"
+                        echo "[4/4] 反映はスキップしました (--no-switch)"
                         echo "  反映するには: nix run .#switch"
                       fi
         ''}/bin/agents-skills-update";
