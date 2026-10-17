@@ -100,7 +100,7 @@ in
                       before_primary=$(read_rev llm-agents)
                       before_intel=$(read_rev llm-agents-intel)
 
-                      echo "[1/4] 更新前"
+                      echo "[1/5] 更新前"
                       echo "      llm-agents       : $before_primary"
                       if ${isIntelMacShell}; then
                         echo "      llm-agents-intel : $before_intel"
@@ -110,7 +110,7 @@ in
                       # -------------------------------------------------------------------
                       # 2. input bump
                       # -------------------------------------------------------------------
-                      echo "[2/4] nix flake update $inputs_to_update"
+                      echo "[2/5] nix flake update $inputs_to_update"
                       # shellcheck disable=SC2086
                       nix flake update $inputs_to_update |& ${pkgs.nix-output-monitor}/bin/nom
                       echo ""
@@ -121,7 +121,7 @@ in
                       after_primary=$(read_rev llm-agents)
                       after_intel=$(read_rev llm-agents-intel)
 
-                      echo "[3/4] 更新後"
+                      echo "[3/5] 更新後"
                       changed=0
 
                       if [ "$before_primary" = "$after_primary" ]; then
@@ -152,11 +152,11 @@ in
                       # 4. 検証
                       # -------------------------------------------------------------------
                       if [ "$run_check" = 1 ]; then
-                        echo "[4/4] nix flake check --no-build で設定の整合を検証"
+                        echo "[4/5] nix flake check --no-build で設定の整合を検証"
                         nix flake check --no-build |& ${pkgs.nix-output-monitor}/bin/nom
                         echo "      OK"
                       else
-                        echo "[4/4] 検証をスキップしました (--no-check)"
+                        echo "[4/5] 検証をスキップしました (--no-check)"
                       fi
                       echo ""
 
@@ -169,12 +169,12 @@ in
                           echo ""
                         fi
 
-                        echo "  反映します: nix run .#switch"
+                        echo "[5/5] 反映します: nix run .#switch"
                         nix run .#switch |& ${pkgs.nix-output-monitor}/bin/nom
                         echo ""
                         echo "  完了"
                       else
-                        echo "  反映はスキップしました (--no-switch)"
+                        echo "[5/5] 反映はスキップしました (--no-switch)"
                         echo "  反映するには: nix run .#switch"
                       fi
         ''}/bin/llm-agents-update";

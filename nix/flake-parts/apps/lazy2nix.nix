@@ -101,7 +101,7 @@ in
                     # 1. nixpkgs input
                     # -------------------------------------------------------------------
                     if [ "$run_nixpkgs" = 1 ]; then
-                      echo "[1/2] nixpkgs input を更新"
+                      echo "[1/3] nixpkgs input を更新"
                       nix flake update nixpkgs |& ${pkgs.nix-output-monitor}/bin/nom
                       if ${isIntelMacShell}; then
                         nix flake update nixpkgs-intel |& ${pkgs.nix-output-monitor}/bin/nom
@@ -117,7 +117,7 @@ in
                     skipped=0
 
                     if [ "$run_pinned" = 1 ]; then
-                      echo "[2/2] pin 済みプラグインを更新"
+                      echo "[2/3] pin 済みプラグインを更新"
                       tmp="$lock.tmp"
                       ${jq} '.' "$lock" >"$tmp"
 
