@@ -17,8 +17,10 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v22
       - name: Update flake.lock
+        working-directory: nix
         run: nix flake update
       - name: Check flake
+        working-directory: nix
         run: nix flake check
       - name: Create Pull Request
         id: cpr
