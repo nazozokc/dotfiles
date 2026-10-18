@@ -6,7 +6,7 @@
   imports = [ inputs.treefmt-nix.flakeModule ];
 
   perSystem =
-    { pkgs, ... }:
+    { pkgs, system, ... }:
     {
       treefmt = {
         # nix fmt で全ファイルを一括フォーマット
@@ -36,7 +36,12 @@
           # Markdown / JSON / YAML / TypeScript
           prettier = {
             enable = true;
-            package = pkgs.prettier;
+            # prettier は nixpkgs バージョンで出力が変わる (3.8.3 と 3.9.10 では
+            # `_` のエスケープとコードブロック後の空行が食い違う)。
+            # x86_64-darwin は unstable から削除済みで Intel スタック (26.05) を
+            # 使うため、全プラットフォームで 26.05 の prettier に固定して
+            # フォーマット結果を揃える (差異は nix fmt -- --ci が毎回落とすため)。
+            package = inputs.nixpkgs-intel.legacyPackages.${system}.prettier;
             includes = [
               "*.md"
               "*.json"
