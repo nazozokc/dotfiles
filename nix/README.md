@@ -388,13 +388,13 @@ nix run .#config-update
 
 **`#switch` との差分 = flake check と OS 層を外した home-manager のみ。**
 
-| | `#update` | `#config-update` | `#switch` |
-| --- | --- | --- | --- |
-| `flake.lock` 更新 | ✅ | ❌ | ❌ |
-| `nix flake check` | ❌ | ❌ | ✅ |
-| home-manager (ユーザー層) | ❌ | ✅ | ✅ |
-| OS 層 (system-manager / nix-darwin) | ❌ | ❌ | ✅ |
-| sudo | ❌ | ❌ | ✅ (ネイティブ Linux) |
+|                                     | `#update` | `#config-update` | `#switch`             |
+| ----------------------------------- | --------- | ---------------- | --------------------- |
+| `flake.lock` 更新                   | ✅        | ❌               | ❌                    |
+| `nix flake check`                   | ❌        | ❌               | ✅                    |
+| home-manager (ユーザー層)           | ❌        | ✅               | ✅                    |
+| OS 層 (system-manager / nix-darwin) | ❌        | ❌               | ✅                    |
+| sudo                                | ❌        | ❌               | ✅ (ネイティブ Linux) |
 
 - **「最新版」はローカル編集の反映のみ**。git pull はしない
 - home-manager activation が走るので symlink の 2 系統が両方更新される:
