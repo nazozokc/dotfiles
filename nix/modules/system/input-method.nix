@@ -12,8 +12,20 @@
 #   - fcitx5 を environment.systemPackages に入れない
 #     (home-manager 側が fcitx5-with-addons を user -Service で起動するため、
 #      PATH 上で 2 種類の fcitx5 が競合し設定ディレクトリも分散する)
-_:
+#
+# system-manager と NixOS の両方で import できる:
+#   replaceExisting は system-manager 独自オプション (NixOS には無い) のため、
+#   サブオプションの有無で system-manager 上かどうかを判定して付ける。
+{
+  lib,
+  options,
+  ...
+}:
 
+let
+  isSystemManager = options.environment.etc.type.getSubOptions [ ] ? replaceExisting;
+  etcAttrs = lib.optionalAttrs isSystemManager { replaceExisting = true; };
+in
 {
   environment.etc = {
     # システム既定の入力メソッド環境変数。
@@ -27,8 +39,8 @@ _:
         XMODIFIERS=@im=fcitx
       '';
       mode = "0644";
-      replaceExisting = true;
-    };
+    }
+    // etcAttrs;
 
     # fcitx5 のグローバル設定 (/etc/xdg/fcitx5 はユーザー設定 ~/.config/fcitx5 より優先)
     #
@@ -36,6 +48,7 @@ _:
     #   Debian / Ubuntu / openSUSE / Fedora はディストリパッケージの fcitx5 が
     #   /etc/xdg/fcitx5/profile を同梱している。置換しないと Nix 側の設定は反映されない。
     #   元ファイルは <path>.system-manager-backup に退避され、deactivate で復元される。
+    #   NixOS にはディストリパッケージが無く /etc/xdg も空なので不要。
     "xdg/fcitx5/profile" = {
       text = ''
         [Groups/0]
@@ -59,7 +72,7 @@ _:
         0=Default
       '';
       mode = "0644";
-      replaceExisting = true;
-    };
+    }
+    // etcAttrs;
   };
 }

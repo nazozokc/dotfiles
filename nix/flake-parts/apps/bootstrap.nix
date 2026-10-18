@@ -26,6 +26,13 @@ in
 
           ${c.shell.nixFeatureGuard}
 
+          ${c.shell.detectHelpers}
+
+          # sudo 実行 (sudo nix run github:nazozokc/dotfiles) では
+          # HOME が /root になり ghq root / identity.nix の username が
+          # root になる。SUDO_USER へ demote してから処理を始める
+          demoteToSudoUser "$@"
+
           # ghq root の解決順は 環境変数 → $HOME/ghq
           # ([ghq] root の git config は dotfiles 未適用時には存在しないため参照しない)
           root="''${GHQ_ROOT:-$HOME/ghq}"
