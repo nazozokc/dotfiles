@@ -234,7 +234,7 @@ dotfiles.programs.bat = {
   `nvim` / `herdr` / `aerospace` は共通 import の外から読み込まれるが
   オプションは同一 namespace なので同じ書き方でよい
 - 並びは名前昇順で固定。attrset の列挙順は安定しないため
-- 色付きは `noteColor` / `normalColor`。home-manager _activation が
+- 色付きは `noteColor` / `normalColor`。home-manager \_activation が
   定義済みで、`NO_COLOR` と非 tty の判定も既存メッセージと同じ
 
 ## モジュール構造

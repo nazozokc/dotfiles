@@ -133,6 +133,7 @@ When deciding to save a memory:
    {"id": "2026-09-15-...", "category": "patterns", "tags": [...], "created": "2026-09-15", "agent": "...", "title": "...", "summary": "...", "content": "..."}
    EOF
    ```
+
    - Filename: `<created>-<title 20文字以内>-<agent>.jsonl` (see File Naming)
    - The object MUST be valid single-line JSON: escape `"` as `\"` and newlines as `\n`
    - Validate after writing when in doubt: `jq empty ~/ghq/github.com/nazozokc/agent-memory/<category>/<filename>.jsonl`
