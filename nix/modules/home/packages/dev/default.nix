@@ -15,8 +15,7 @@ with pkgs;
 
   # rust
   rustc
-  # rustup は cargo と _cargo completion が衝突するため除外。
-  rust-analyzer
+  rustup
 
   # nix
   nil
@@ -42,7 +41,6 @@ with pkgs;
   efm-langserver
 
   # package tools
-  cargo
   cmake
   ninja
 
