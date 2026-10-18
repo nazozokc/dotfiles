@@ -16,6 +16,7 @@ with pkgs;
   # rust
   rustc
   rust-analyzer
+  rustup
 
   # nix
   nil

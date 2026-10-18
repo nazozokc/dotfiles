@@ -1,9 +1,17 @@
 # nix/modules/linux/default.nix
 # Linux モジュールのエントリーポイント
 # 各責務を packages.nix / programs.nix に分離
+#
+# useNixGL = false (NixOS) のとき:
+#   - targets.genericLinux を無効化 (NixOS は XDG / ドライバを自前で持つ)
+#   - wezterm / ghostty / zen-browser を nixGL で wrap しない
+#     (NixOS の GPU ライブラリは /run/opengl-driver が正で、
+#      nixGL の store パスで上書きするとドライバ不一致になる)
 {
   config,
   pkgs,
+  lib,
+  useNixGL ? true,
   nixGLPackages,
   zenBrowser,
   ambxstPackages,
@@ -12,13 +20,11 @@
 }:
 
 let
-  # Wrapped version of wezterm with nixGL so it can find system GPU libraries
-  # (libEGL.so etc.) on non-NixOS Linux (Arch Linux).
-  wezterm-wrapped = config.lib.nixGL.wrap pkgs.wezterm;
-  # ghostty also needs nixGL wrapping for same reason
-  ghostty-wrapped = config.lib.nixGL.wrap pkgs.ghostty;
-  # Zen Browser (Firefox ベース) も GPU アクセラレーションに nixGL が必要
-  zen-browser-wrapped = config.lib.nixGL.wrap zenBrowser;
+  # nixGL が有効なときだけ GPU ライブラリを bridge する wrap を掛ける
+  wrapGpu = pkg: if useNixGL then config.lib.nixGL.wrap pkg else pkg;
+  wezterm-wrapped = wrapGpu pkgs.wezterm;
+  ghostty-wrapped = wrapGpu pkgs.ghostty;
+  zen-browser-wrapped = wrapGpu zenBrowser;
   link = config.lib.file.mkOutOfStoreSymlink;
 in
 {
@@ -32,8 +38,8 @@ in
   # Generic Linux support – enables XDG paths, nixGL, etc. for non-NixOS distros
   # ---------------------------------------------------------------------------
   targets.genericLinux = {
-    enable = true;
-    nixGL = {
+    enable = useNixGL;
+    nixGL = lib.mkIf useNixGL {
       packages = nixGLPackages;
       # Provide nixGLMesa script for ad-hoc wrapping of other GPU apps
       installScripts = [ "mesa" ];
@@ -41,7 +47,7 @@ in
   };
 
   # ---------------------------------------------------------------------------
-  # nixGL-wrapped GUI apps + Ambxst
+  # GUI apps + Ambxst
   # ---------------------------------------------------------------------------
   # On non-NixOS, Nix-packaged GUI apps can't find system GPU libraries
   # (libEGL.so etc.) because their RUNPATH only contains Nix store paths.

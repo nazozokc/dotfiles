@@ -1,6 +1,11 @@
 # nix/modules/linux/build.nix
-# Linux 向け home-manager 設定を生成するヘルパー (mkLinuxHomeConfig)
+# Linux 向け home-manager 設定生成ヘルパー (mkLinuxHomeConfig)
 # x86_64 / aarch64 で共通のモジュール構成を使い回す
+#
+# useNixGL: 非 NixOS Linux (Arch / Ubuntu ...) では true。
+#   NixOS では false を渡すこと。NixOS の GPU ドライバは
+#   /run/opengl-driver が正しく、nixGL の store ライブラリで
+#   上書きするとドライバ不一致で GUI が壊れる。
 {
   self,
   username,
@@ -13,7 +18,10 @@
   zen-browser,
   ambxst,
 }:
-system:
+{
+  system,
+  useNixGL ? true,
+}:
 let
   pkgs = pkgsFor system;
   # Zen Browser は nixpkgs に無いので外部 flake から取る。
@@ -30,7 +38,12 @@ in
 home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
   extraSpecialArgs = {
-    inherit pkgs username zenBrowser;
+    inherit
+      pkgs
+      username
+      zenBrowser
+      useNixGL
+      ;
     dotfilesDir = self.outPath;
     nixGLPackages = nixGL.packages.${system};
     # Ambxst のビルド済みパッケージ (nixosModules は使わない / 理由は flake.nix 参照)

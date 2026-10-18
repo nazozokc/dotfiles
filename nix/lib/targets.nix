@@ -21,6 +21,11 @@ rec {
   # WSL 用の home-manager 設定名
   wslConfigName = "${username}-wsl";
 
+  # NixOS 用の home-manager 設定名 (nixGL wrap なし版)。
+  # 非 NixOS Linux では nixGL で GPU ライブラリを bridge するが、
+  # NixOS では /run/opengl-driver が正しく、nixGL はドライバ不一致の原因になる
+  nixosHomeConfigName = "${username}-nixos";
+
   # nix run .#build がビルドするターゲット
   hmConfig =
     if isDarwin then
@@ -33,6 +38,10 @@ rec {
 
   # system-manager へ渡す attr (systemConfigs.<name> 相当)
   systemConfigName = linuxConfigName;
+
+  # NixOS の設定名 (nixosConfigurations.<name>)。
+  # systemConfigs / homeConfigurations と同じ命名規則を共有する
+  nixosConfigName = linuxConfigName;
 
   # app 実行時に表示する人間向けのシステム名
   sysLabel =

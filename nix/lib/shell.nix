@@ -88,6 +88,38 @@
       [ "$(uname)" = "Darwin" ]
     }
 
+    # NixOS の判定。/etc/NIXOS は NixOS の stage-2 が置くマーカーファイル。
+    # (大文字 NIXOS。/etc/NixOS ではないので注意)
+    is_nixos() {
+      [ -f /etc/NIXOS ]
+    }
+
+    # root で起動された app を SUDO_USER へ demote する。
+    #
+    # `sudo nix run .#switch` のような実行では:
+    #   - HOME が /root になる (ghq root / XDG パスが壊れる)
+    #   - `id -un` が root を返す (bootstrap の identity.nix 同期が root になる)
+    #   - clone / git 操作が root 所有で実行され、後からユーザーが触ると
+    #     git の dubious ownership エラーになる
+    # そこで app 冒頭で自プロセスを SUDO_USER として re-exec する。
+    # NIX_CONFIG は sudo の env_reset で捨てるため明示的に引き継ぐ。
+    # GHQ_ROOT は渡さない (demote 後の $HOME/ghq が正しく解決される)。
+    demoteToSudoUser() {
+      if [ "$(id -u)" = 0 ] && [ -n "''${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ]; then
+        exec sudo -u "$SUDO_USER" -H \
+          env "NIX_CONFIG=''${NIX_CONFIG:-}" \
+          "$0" "$@"
+      fi
+
+      if [ "$(id -u)" = 0 ] && [ -z "''${SUDO_USER:-}" ]; then
+        echo "[!] root として直接実行されました" >&2
+        echo "    この app は通常ユーザーで sudo して実行してください:" >&2
+        echo "      sudo nix --extra-experimental-features \"nix-command flakes\" run github:nazozokc/dotfiles" >&2
+        echo "    (root 直実行では ghq root / identity.nix の username が root になります)" >&2
+        exit 1
+      fi
+    }
+
     # single-user Nix (daemon 無し) では /nix/store (root:nixbld 1775) への
     # 書き込みに nixbld グループ所属が必須。
     # system-manager の userborn が /etc/group を宣言どおり書き戻すため、
