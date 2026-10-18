@@ -211,7 +211,7 @@ wsl --shutdown
 | `mkcd.sh`       | ディレクトリ作成して cd                                     |
 | `port-check.sh` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
 
-更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#lazy2nix` が持ち、
+更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#nvim-install` / `.#nvim-update` が持ち、
 Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で実行する。
 この領域を shell スクリプトで再実装しない。
 

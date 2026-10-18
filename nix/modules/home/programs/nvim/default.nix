@@ -10,7 +10,13 @@ let
 
   # lazy.nvim が使う install 先 (実体とバージョンを持つ)
   # ./plugins/default.nix 参照。farm には全プラグインが並んでいる。
-  nvimPlugins = import ./plugins { inherit pkgs; };
+  # 実体とバージョンの正本は nvim/nvim-plug-manage/flake.lock。
+  nvimPlugins = import ./plugins {
+    inherit
+      pkgs
+      dotfilesDir
+      ;
+  };
 
   treesitterGrammars = pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: [
     plugins.nix

@@ -40,4 +40,22 @@ in
   # ref 文字列を埋め込めば version は flake.lock から解決されるため、
   # #switch の評価はネットワーク不要になる。OS 層の実行時にだけ取得が要る。
   systemManagerRef = "github:numtide/system-manager";
+
+  # Neovim プラグインの正本ディレクトリ (flake.nix + flake.lock)。
+  # 実体とバージョンはここに集約され、nvim/.../plugins/default.nix が farm を組む。
+  nvimPlugDir = "nvim/nvim-plug-manage";
+
+  # GitHub API の未認証レート制限は 60/h。プラグイン 135 件を lock すると
+  # 確実に越えて HTTP 403 になる。gh がログイン済みなら access-tokens として
+  # NIX_CONFIG へ足す (子の nix プロセスまで届く)。
+  ghAccessToken = pkgs: ''
+          if ! printf '%s' "''${NIX_CONFIG:-}" | ${pkgs.gnugrep}/bin/grep -q '^access-tokens'; then
+            _gh_token="$(${pkgs.gh}/bin/gh auth token 2>/dev/null || true)"
+            if [ -n "$_gh_token" ]; then
+              export NIX_CONFIG="''${NIX_CONFIG:+$NIX_CONFIG
+    }access-tokens = github.com=$_gh_token"
+            fi
+            unset _gh_token
+          fi
+  '';
 }

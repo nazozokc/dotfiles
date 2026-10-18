@@ -256,7 +256,8 @@ nix/
 │       ├── switch.nix                 # apps.switch
 │       ├── build.nix                  # apps.build
 │       ├── update.nix                 # apps.update
-│       ├── lazy2nix.nix               # apps.lazy2nix (Neovim プラグイン更新)
+│       ├── nvim-install.nix           # apps.nvim-install (プラグイン input の lock)
+│       ├── nvim-update.nix            # apps.nvim-update (プラグイン input の bump)
 │       ├── llm-agents.nix              # apps.llm-agents-update (llm-agents.nix 由来のエージェント更新)
 │       ├── agent-skills.nix            # apps.agents-skills-update (Agent Skills の更新と自己検証)
 │       └── system.nix                 # apps.system-build / system-check / system-switch
@@ -297,9 +298,7 @@ nix/
 │   │       ├── nvim/                  # Neovim (直接 import, Farm 生成)
 │   │       │   ├── default.nix         # programs.neovim 設定 (init.lua / extraWrapperArgs / extraPackages)
 │   │       │   └── plugins/           # プラグインの実体とバージョン (nix store)
-│   │       │       ├── default.nix     # farm 生成 (nixpkgs 由来 + pin 済みの統合)
-│   │       │       ├── nixpkgs-plugins.nix  # プラグイン名 -> nixpkgs.vimPlugins の attr
-│   │       │       └── pinned-plugins.json  # nixpkgs に無いプラグイン (url / branch / rev / hash)
+│   │       │       └── default.nix     # farm 生成 (nvim/nvim-plug-manage/flake.lock が入力)
 │   │       ├── ollama/                # Ollama (ローカル LLM)
 │   │       ├── opencode/              # OpenCode (AI エージェント)
 │   │       ├── sops/                  # sops-nix (シークレット管理)
@@ -362,8 +361,11 @@ nix run .#build
 # flake更新
 nix run .#update
 
-# Neovim プラグイン更新 (Nix 管理分)
-nix run .#lazy2nix
+# Neovim プラグインの追加分を lock (既存のバージョンは動かさない)
+nix run .#nvim-install
+
+# Neovim プラグインを全部更新 (nix flake update)
+nix run .#nvim-update
 
 # AI エージェント更新 (llm-agents.nix 由来)
 nix run .#llm-agents-update
@@ -372,22 +374,22 @@ nix run .#llm-agents-update
 nix run .#agents-skills-update
 ```
 
-### lazy2nix (`apps.lazy2nix`)
+### nvim-install / nvim-update (`apps.nvim-install` / `apps.nvim-update`)
 
-`nix/modules/home/programs/nvim/plugins/` が持つプラグイン実体とバージョンを更新する。
+`nvim/nvim-plug-manage/flake.lock` を書き換えてプラグインの実体とバージョンを更新する。
 
 ```bash
-# nixpkgs 由来 + pin 済み の両方を更新し、最後に nix flake check --no-build
-nix run .#lazy2nix
+# flake.nix へ足した input を解決するだけ (既存 input のバージョンは動かさない)
+nix run .#nvim-install
 
-# 個別に絞る
-nix run .#lazy2nix -- --no-nixpkgs   # pin 済みだけ
-nix run .#lazy2nix -- --no-check     # flake check をskip
+# 全 input を最新へ bump する
+nix run .#nvim-update
 ```
 
-- `nixpkgs` 由来は `nix flake update` 経由でのみ更新される (attr 名は `nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix` に固定)。
-- pin 済みは `nix/modules/home/programs/nvim/plugins/pinned-plugins.json` の `rev` と `hash` を書き換える。
-- GitHub 以外のホスト (例: SourceHut の `lsp_lines.nvim`) は `[skip]` になる。
+- どちらも `nvim/nvim-plug-manage/` で `nix flake lock` / `nix flake update` を回すだけ。
+  rev と narHash が同時に動くので、ハッシュを手で書く必要は無い。
+- GitHub API は未認証だと 60 req/h しか許さない。136 input の lock は確実に超えるため、
+  両 app は `gh auth token` を `NIX_CONFIG` の `access-tokens` へ渡してから nix を起動する。
 - 反映には `nix run .#switch`。
 
 ### llm-agents-update (`apps.llm-agents-update`)
@@ -519,21 +521,45 @@ nix --extra-experimental-features "nix-command flakes" run github:nazozokc/dotfi
 ### Neovim プラグイン管理
 
 プラグイン「宣言」は Lua (`nvim/lua/plugins/*.lua`) に残し、プラグイン「実体とバージョン」は Nix が持つ。
+正本は **`nvim/nvim-plug-manage/flake.lock` ただ1つ**。
 
 ```
-nvim/lua/plugins/*.lua      宣言 (lazy-loading / dependencies / opts)
-nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix  プラグイン名 -> pkgs.vimPlugins.<attr>
-nix/modules/home/programs/nvim/plugins/pinned-plugins.json  nixpkgs に無いものの url / branch / rev / hash
-nix/modules/home/programs/nvim/plugins/default.nix           両系統を 1 つの farm (symlink 一覧) にまとめる
+nvim/lua/plugins/*.lua                宣言 (lazy-loading / dependencies / opts)
+nvim/nvim-plug-manage/flake.nix       プラグインの input 一覧 (入力名 = lazy の plugin.name)
+nvim/nvim-plug-manage/flake.lock      rev と narHash の正本  ← ここだけ見ればバージョンが分かる
+nix/modules/home/programs/nvim/plugins/default.nix
+                                      flake.lock から farm (symlink 一覧) を組む
 ```
 
+- `flake.lock` の `narHash` は `fetchFromGitHub` / `fetchgit` の `outputHash` と一致する
+  (NAR ハッシュは tarball を展開して top-level を削った木そのもの。flake の github/git
+  fetcher と `fetchFromGitHub`/`fetchgit` で同じ値になる)。よってハッシュを別に管理しない。
+- farm は `pkgs.vimUtils.buildVimPlugin` を使わない。`toVimPlugin` が
+  `neovimRequireCheckHook` を `preDistPhases` へ足すため、素のソースでは依存プラグイン
+  (plenary / nvim-nio / nvim-cmp ...) を require できず失敗する。nixpkgs は
+  `overrides.nix` の `dependencies` でそれを埋めているが、lazy.nvim 運用では依存解決は
+  Lua 側の仕事なので farm はソースを置くだけでよい。`doc/tags` だけはビルド時に焼く
+  (nix store は read-only で、起動後に lazy.nvim から `:helptags` を書けないため)。
+- 例外は3件だけ。nixpkgs 側にビルド手順かパッチがあるものは `pkgs.vimPlugins` から取る
+  (`plugins/default.nix` の `fromNixpkgs`)。これらは `nvim-plug-manage/flake.nix` には
+  入れていない (バージョンは root の nixpkgs input が持つ)。
+
+  | プラグイン                  | 理由                                           |
+  | --------------------------- | ---------------------------------------------- |
+  | `lazy.nvim`                 | 自身の helptags 生成を消すパッチ               |
+  | `denops.vim`                | deno のパスを Nix のものへ焼き込む `postPatch` |
+  | `telescope-fzf-native.nvim` | `libfzf.so` を `make` でビルドする             |
+
+- farm のリンク名は lazy.nvim の `plugin.name` (= `flake.nix` の入力名)。
+  `init.lua` が `<farm>/<plugin.name>` を `dev.path` として解決するため、
+  store の basename や nixpkgs の属性名では絶対に合わない。
 - farm は `home.sessionVariables` ではなく `programs.neovim.extraWrapperArgs` の
   `--set LAZY_NIX_PLUGINS` で渡す。`wrapNeovim` が `export` に翻訳するため、
   どのシェルやデスクトップアプリから起動しても必ず効く。
 - `init.lua` は `os.getenv("LAZY_NIX_PLUGINS")` を見て `lazy.setup` の
   `dev.path` / `dev.fallback` を組み立てる。未設定なら従来の git clone にフォールバックする。
-- よって `nvim/lazy-lock.json` に並ぶのは Nix 管理外のプラグインだけ
-  (現状は `swagger-preview.nvim` 1件)。`lazy-lock.json` には触らない。
+- `nvim/lazy-lock.json` は farm に全プラグインが入った今は実質不要 (state 配下の
+  lockfile の種としてのみ残っている)。`dev.path` が効く限り lazy はgit clone しない。
 - lazy.nvim が書き込む lockfile の実体は **state 配下**
   (`~/.local/state/nvim/lazy/lazy-lock.json`)。`~/.config/nvim/lazy-lock.json` は
   `dotfilesDir = self.outPath` 経由の nix store への symlink なので read-only。
@@ -541,18 +567,15 @@ nix/modules/home/programs/nvim/plugins/default.nix           両系統を 1 つ�
   離れるわけではないため、`nix run .#switch` を再実行しても書き可能にはならない。
   `init.lua` が起動時にリポジトリの `nvim/lazy-lock.json` を種としてコピーし、
   既に書き可能な state's 側があればそちらを引き継ぐ。
-  `:Lazy update` 後のピンをリポジトリへ戻す:
-  ```bash
-  cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
-  ```
 - プラグインを追加する手順:
   1. `nvim/lua/plugins/*.lua` に宣言を書く
-  2. nixpkgs にあれば `nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix` に attr を足す
-  3. 無ければ `nix/modules/home/programs/nvim/plugins/pinned-plugins.json` に url / branch / rev / hash を足す
-  4. `nix flake check --no-build` で評価確認 → `nix run .#switch`
+  2. `nvim/nvim-plug-manage/flake.nix` に `"<owner>/<repo>"` 形式の input を足す
+     (入力名は lazy の plugin.name。nixpkgs に build 手順つきの override があるものだけ
+     `plugins/default.nix` の `fromNixpkgs` へ)
+  3. `nix run .#nvim-install` で lock → `nix flake check --no-build` → `nix run .#switch`
 - 通常の lazy プラグイン用 `build = "..."` ステップは原則不要。
   `:TSUpdate` のような外部 fetch を行うステップは Nix では機能しないため削除する。
-- `nix run .#lazy2nix` で更新できる (pin 済みのみ自動更新、nixpkgs 由来は `nix flake update`)。
+- `nix run .#nvim-update` で全プラグインを更新できる (`nix flake update`)。
 
 ### 適用範囲
 
