@@ -764,7 +764,7 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
 
 - **一番参照**: <https://github.com/ryoppippi/dotfiles>
 - **少し参照**: <https://github.com/mozumasu/dotfiles>
-- **参考にはなりそう**: <https://github.com/ntsk/dotfiles>
+- **参考になりそう**: <https://github.com/ntsk/dotfiles>
 
 ## 運用ポリシー
 
