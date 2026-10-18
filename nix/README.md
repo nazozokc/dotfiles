@@ -256,6 +256,7 @@ nix/
 │       ├── switch.nix                 # apps.switch
 │       ├── build.nix                  # apps.build
 │       ├── update.nix                 # apps.update
+│       ├── config-update.nix          # apps.config-update (設定反映だけ・sudo 不要)
 │       ├── nvim-install.nix           # apps.nvim-install (プラグイン input の lock)
 │       ├── nvim-update.nix            # apps.nvim-update (プラグイン input の bump)
 │       ├── llm-agents.nix              # apps.llm-agents-update (llm-agents.nix 由来のエージェント更新)
@@ -361,6 +362,9 @@ nix run .#build
 # flake更新
 nix run .#update
 
+# config のみ反映 (ローカル編集を store へ・home-manager のみ・sudo 不要)
+nix run .#config-update
+
 # Neovim プラグインの宣言同期と lock (既存のバージョンは動かさない)
 nix run .#nvim-install
 
@@ -373,6 +377,40 @@ nix run .#llm-agents-update
 # Agent Skills の更新と自己検証
 nix run .#agents-skills-update
 ```
+
+### config-update (`apps.config-update`)
+
+ローカル編集を `/nix/store` の config (symlink 先) へ反映する軽量コマンド。
+
+```bash
+nix run .#config-update
+```
+
+**`#switch` との差分 = flake check と OS 層を外した home-manager のみ。**
+
+| | `#update` | `#config-update` | `#switch` |
+| --- | --- | --- | --- |
+| `flake.lock` 更新 | ✅ | ❌ | ❌ |
+| `nix flake check` | ❌ | ❌ | ✅ |
+| home-manager (ユーザー層) | ❌ | ✅ | ✅ |
+| OS 層 (system-manager / nix-darwin) | ❌ | ❌ | ✅ |
+| sudo | ❌ | ❌ | ✅ (ネイティブ Linux) |
+
+- **「最新版」はローカル編集の反映のみ**。git pull はしない
+- home-manager activation が走るので symlink の 2 系統が両方更新される:
+  `mkOutOfStoreSymlink` (`dotfilesDir` = `self.outPath` の store スナップショット) と
+  home-manager 生成物 (git / starship / opencode.json など)
+- **git 未追跡ファイルは store に含まれない**ため、実行前の `[1/3] 状態確認` で
+  `git status --porcelain` の `??` を警告する (新規 config を `git add` しないと反映されない)
+- WSL では `check_wslconfig` で Windows 側 `.wslconfig` のずれも検出する
+  (nix が適用できない config のため)
+- 適用後は `rebuild_ksycoca` で GUI の世代切替検知を助ける (Linux のみ・no-op 保証)
+- **macOS は standalone の `homeConfigurations` が無い**ので、
+  `darwinConfigurations.<name>.config.home-manager.users.<name>.activationPackage` を
+  `nix build --no-link --print-out-paths` で取得して `$out/activate` を直接実行する
+  (nix-darwin の OS 層は触らない)。`nom` は `--print-out-paths` の capture を壊すため
+  併用しない (実測済み)。**未検証 — 失敗したら `#switch` へ委譲する**
+- 完了後、起動中のアプリは旧設定のまま。opencode 等は再起動し新規セッションを開くこと
 
 ### nvim-install / nvim-update (`apps.nvim-install` / `apps.nvim-update`)
 

@@ -268,12 +268,14 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       imports = [
-        # apps (default=bootstrap / switch / build / update / nvim-install / nvim-update /
-        #       llm-agents-update / agents-skills-update / system-*)
+        # apps (default=bootstrap / switch / build / update / config-update /
+        #       nvim-install / nvim-update / llm-agents-update /
+        #       agents-skills-update / system-*)
         ./nix/flake-parts/apps/bootstrap.nix
         ./nix/flake-parts/apps/switch.nix
         ./nix/flake-parts/apps/build.nix
         ./nix/flake-parts/apps/update.nix
+        ./nix/flake-parts/apps/config-update.nix
         ./nix/flake-parts/apps/nvim-install.nix
         ./nix/flake-parts/apps/nvim-update.nix
         ./nix/flake-parts/apps/llm-agents.nix

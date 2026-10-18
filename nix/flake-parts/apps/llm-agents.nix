@@ -112,7 +112,7 @@ in
                       # -------------------------------------------------------------------
                       echo "[2/5] nix flake update $inputs_to_update"
                       # shellcheck disable=SC2086
-                      nix flake update $inputs_to_update |& ${pkgs.nix-output-monitor}/bin/nom
+                      nix flake update $inputs_to_update
                       echo ""
 
                       # -------------------------------------------------------------------
@@ -153,7 +153,7 @@ in
                       # -------------------------------------------------------------------
                       if [ "$run_check" = 1 ]; then
                         echo "[4/5] nix flake check --no-build で設定の整合を検証"
-                        nix flake check --no-build |& ${pkgs.nix-output-monitor}/bin/nom
+                        nix flake check --no-build
                         echo "      OK"
                       else
                         echo "[4/5] 検証をスキップしました (--no-check)"
