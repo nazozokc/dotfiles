@@ -42,9 +42,9 @@ nvim/
 
 ```
 nvim/lua/plugins/*.lua             宣言 (lazy-loading / dependencies / opts)
-nix/modules/home/programs/nvim/plugins/nixpkgs-plugins.nix  プラグイン名 -> pkgs.vimPlugins.<attr>
-nix/modules/home/programs/nvim/plugins/pinned-plugins.json  nixpkgs に無いものの url / branch / rev / hash
-nix/modules/home/programs/nvim/plugins/default.nix           両系統を farm (symlink 一覧) にまとめる
+nvim/nvim-plug-manage/flake.nix    プラグインの input 一覧 (入力名 = lazy の plugin.name)
+nvim/nvim-plug-manage/flake.lock   rev / narHash の正本
+nix/modules/home/programs/nvim/plugins/default.nix  lock から farm (symlink 一覧) を組む
 ```
 
 - `LAZY_NIX_PLUGINS` が farm の path。`nix run .#switch` で Neovim が使う
@@ -59,32 +59,31 @@ nix/modules/home/programs/nvim/plugins/default.nix           両系統を farm (
 ### 更新
 
 ```bash
-# Nix 管理分の更新 (rev / hash を nix/modules/home/programs/nvim/plugins/pinned-plugins.json に書く)
-nix run .#lazy2nix
+# flake.nix へ足した input を解決するだけ
+nix run .#nvim-install
+
+# 全プラグインを最新へ bump
+nix run .#nvim-update
 
 # 反映
 nix run .#switch
 ```
 
-nixpkgs 由来のプラグインは attr 名が固定されているので `nix flake update` 経由でしか更新されない。
-Nix 管理外のプラグイン (現状 `swagger-preview.nvim`) は lazy.nvim 側
-(`:Lazy update swagger-preview.nvim`) で更新する。
+- どちらも `nvim/nvim-plug-manage/` で `nix flake lock` / `nix flake update` を回すだけ。
+  rev と narHash が同時に動くのでハッシュを手で書かない。
+- 例外の3件 (`lazy.nvim` / `denops.vim` / `telescope-fzf-native.nvim`) だけは
+  root の nixpkgs input 由来なので `nix run .#update` で動く。
 
 ### 注意事項
 
-- `lazy-lock.json` には触らない。Nix 管理外のプラグインの記録用になる。
+- `lazy-lock.json` には触らない。farm が全プラグインを持つので lazy は git clone しない。
 - ただし lazy.nvim が書き込む実体は **state 配下**
   (`~/.local/state/nvim/lazy/lazy-lock.json`) にある。`~/.config/nvim/lazy-lock.json`
   は nix store への symlink (read-only) なので直接書き込めない。
-  `:Lazy update` で得たピンは state に残るので、リポジトリへ戻すときは
-  ```bash
-  cp ~/.local/state/nvim/lazy/lazy-lock.json nvim/lazy-lock.json
-  ```
-  state の lockfile は「書込可能なら残す」ので、再起動で消えない。
 - `build = "..."` ステップは原則不要。`:TSUpdate` のように外部 fetch を
   行うステップは Nix (read-only store) では機能しない。
-- `nix/modules/home/programs/nvim/plugins/pinned-plugins.json` の `rev` は commit、`hash` は `fetchgit` 用の
-  SRI ハッシュ。両者を一致させていないと `hash mismatch` でビルドが失敗する。
+- farm は `pkgs.vimUtils.buildVimPlugin` を使わない (`neovimRequireCheckHook` が
+  素のソースでは依存を require できないため)。ビルド時に焼くのは `doc/tags` だけ。
 
 ---
 

@@ -107,6 +107,15 @@
         return 0
       fi
 
+      # 新 installer の single-user (`user` モード, nix-installation.nix 参照):
+      # /nix/store が実行ユーザー自身所有で nixbld グループ自体が無い。
+      # 所属チェックを通すと必死に false positive を出すため、
+      # 実際に書けるなら問題なしとみなす。
+      # (daemon / nixbld モードでは store は root 所有なのでこの分岐に入らない)
+      if [ -w /nix/store ]; then
+        return 0
+      fi
+
       if id -nG | grep -qw nixbld; then
         return 0
       fi
