@@ -54,14 +54,14 @@ return {
 					font = "14", -- font size
 				},
 				-- this will change the font size on wezterm when in zen mode
-				-- See alse also the Plugins/Wezterm section in this projects README
+				-- See also the Plugins/Wezterm section in this projects README
 				wezterm = {
 					enabled = false,
 					-- can be either an absolute font size or the number of incremental steps
 					font = "+4", -- (10% increase per step)
 				},
 				-- this will change the scale factor in Neovide when in zen mode
-				-- See alse also the Plugins/Wezterm section in this projects README
+				-- See also the Plugins/Wezterm section in this projects README
 				neovide = {
 					enabled = false,
 					-- Will multiply the current scale factor by this number

@@ -1,5 +1,8 @@
-{ config, ... }:
+{ config, dotfilesDir, ... }:
 
+let
+  link = config.lib.file.mkOutOfStoreSymlink;
+in
 {
   dotfiles.programs.pi = {
     icon = "🥧";
@@ -11,17 +14,19 @@
     ./keybindings.nix
   ];
 
-  xdg.configFile."pi/agent/extensions/codex-usage.ts".source = ./extensions/codex-usage.ts;
-  xdg.configFile."pi/agent/extensions/editor.ts".source = ./extensions/editor.ts;
-  xdg.configFile."pi/agent/extensions/nazozokc-pi".source = ./extensions/nazozokc-pi;
-  xdg.configFile."pi/agent/extensions/agent-modes".source = ./extensions/agent-modes;
-  xdg.configFile."pi/agent/extensions/parallel-agents".source = ./extensions/parallel-agents;
-  xdg.configFile."pi/agent/extensions/git".source = ./extensions/git;
-  xdg.configFile."pi/agent/extensions/shared".source = ./extensions/shared;
+  xdg.configFile = {
+    "pi/agent/extensions/codex-usage.ts".source = ./extensions/codex-usage.ts;
+    "pi/agent/extensions/editor.ts".source = ./extensions/editor.ts;
+    "pi/agent/extensions/nazozokc-pi".source = ./extensions/nazozokc-pi;
+    "pi/agent/extensions/agent-modes".source = ./extensions/agent-modes;
+    "pi/agent/extensions/parallel-agents".source = ./extensions/parallel-agents;
+    "pi/agent/extensions/git".source = ./extensions/git;
+    "pi/agent/extensions/shared".source = ./extensions/shared;
+  };
 
   # グローバル指示
   home.file.".pi/agent/AGENTS.md" = {
-    source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/ghq/github.com/nazozokc/dotfiles/pi/AGENTS.md";
+    source = link "${dotfilesDir}/pi/AGENTS.md";
   };
 
   home.sessionVariables = {

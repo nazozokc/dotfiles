@@ -4,7 +4,7 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-local set_enviroment_variables = {
+local set_environment_variables = {
 	TERM = "xterm-256color",
 }
 

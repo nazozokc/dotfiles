@@ -206,7 +206,7 @@ in
 
       skills = {
         paths = [
-          "${dotfilesDir}/opencode/skills"
+          "${dotfilesDir}/agents/skills"
         ];
       };
 

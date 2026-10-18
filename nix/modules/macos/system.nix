@@ -6,8 +6,61 @@
   ########################################
   # nix-darwin 基本設定
   ########################################
-  system.stateVersion = 4;
-  system.primaryUser = username;
+  system = {
+    stateVersion = 4;
+    primaryUser = username;
+
+    ########################################
+    # macOS システム設定（詳細）
+    ########################################
+    defaults = {
+      # Dock
+      dock = {
+        autohide = true;
+        tilesize = 45;
+        show-recents = false;
+        mineffect = "genie";
+        orientation = "bottom";
+      };
+
+      # Finder
+      finder = {
+        AppleShowAllExtensions = true;
+        AppleShowAllFiles = true;
+        ShowPathbar = true;
+        ShowStatusBar = true;
+        FXEnableExtensionChangeWarning = false;
+        FXPreferredViewStyle = "Nlsv";
+      };
+
+      # グローバル設定
+      NSGlobalDomain = {
+        AppleInterfaceStyle = "Dark";
+        AppleShowAllExtensions = true;
+        KeyRepeat = 2;
+        InitialKeyRepeat = 25;
+        "com.apple.trackpad.scaling" = 1.3;
+        NSAutomaticCapitalizationEnabled = false;
+        NSAutomaticDashSubstitutionEnabled = false;
+        NSAutomaticPeriodSubstitutionEnabled = false;
+        NSAutomaticQuoteSubstitutionEnabled = false;
+        NSAutomaticSpellingCorrectionEnabled = false;
+      };
+
+      # スクリーンショット
+      screencapture = {
+        location = "~/Pictures/Screenshots";
+        type = "png";
+      };
+
+      # トラックパッド
+      trackpad = {
+        Clicking = true;
+        TrackpadRightClick = true;
+        TrackpadThreeFingerDrag = false;
+      };
+    };
+  };
 
   # 既存 Nix インストールの nixbld GID に合わせる
   ids.gids.nixbld = 350;
@@ -30,68 +83,18 @@
     ignoreShellProgramCheck = true;
   };
 
-  environment.shells = [ pkgs.fish ];
-
   ########################################
   # シェル
   ########################################
-  programs.fish.enable = true;
+  programs = {
+    fish.enable = true;
+    nix-index.enable = true;
+  };
 
   ########################################
   # macOS セキュリティ / 権限
   ########################################
   security.pam.services.sudo_local.touchIdAuth = true;
-
-  ########################################
-  # macOS システム設定（詳細）
-  ########################################
-  system.defaults = {
-    # Dock
-    dock = {
-      autohide = true;
-      tilesize = 45;
-      show-recents = false;
-      mineffect = "genie";
-      orientation = "bottom";
-    };
-
-    # Finder
-    finder = {
-      AppleShowAllExtensions = true;
-      AppleShowAllFiles = true;
-      ShowPathbar = true;
-      ShowStatusBar = true;
-      FXEnableExtensionChangeWarning = false;
-      FXPreferredViewStyle = "Nlsv";
-    };
-
-    # グローバル設定
-    NSGlobalDomain = {
-      AppleInterfaceStyle = "Dark";
-      AppleShowAllExtensions = true;
-      KeyRepeat = 2;
-      InitialKeyRepeat = 25;
-      "com.apple.trackpad.scaling" = 1.3;
-      NSAutomaticCapitalizationEnabled = false;
-      NSAutomaticDashSubstitutionEnabled = false;
-      NSAutomaticPeriodSubstitutionEnabled = false;
-      NSAutomaticQuoteSubstitutionEnabled = false;
-      NSAutomaticSpellingCorrectionEnabled = false;
-    };
-
-    # スクリーンショット
-    screencapture = {
-      location = "~/Pictures/Screenshots";
-      type = "png";
-    };
-
-    # トラックパッド
-    trackpad = {
-      Clicking = true;
-      TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = false;
-    };
-  };
 
   ########################################
   # フォント
@@ -103,19 +106,15 @@
   ########################################
   # macOS 固有ツール
   ########################################
-  environment.systemPackages = with pkgs; [
-    blueutil
-    git
-    mas
-    switchaudio-osx
-    terminal-notifier
-    keycastr
-  ];
-
-  ########################################
-  # プログラム設定
-  ########################################
-  programs = {
-    nix-index.enable = true;
+  environment = {
+    shells = [ pkgs.fish ];
+    systemPackages = with pkgs; [
+      blueutil
+      git
+      mas
+      switchaudio-osx
+      terminal-notifier
+      keycastr
+    ];
   };
 }

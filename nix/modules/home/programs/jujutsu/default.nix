@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+_: {
   dotfiles.programs.jujutsu = {
     icon = "🍣";
     note = "delta 差分 + 短縮 alias";

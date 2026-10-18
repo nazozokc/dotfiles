@@ -15,37 +15,39 @@
 {
   environment.systemPackages = [ pkgs.power-profiles-daemon ];
 
-  # ppd 同梱のユニットを /etc/systemd/system/ に配置する。
-  # systemd.packages は $package/lib/systemd/system/* を symlink する。
-  #
-  # ppd 0.30 が同梱するのは power-profiles-daemon.service のみ。
-  # socket ユニットは同梱されないので定義しないこと
-  # (systemd.services に "power-profiles-daemon.socket" と書くと
-  #  system-manager が "power-profiles-daemon.socket.service" という
-  #  実在しないユニットを生成してしまう)。
-  systemd.packages = [ pkgs.power-profiles-daemon ];
+  systemd = {
+    # ppd 同梱のユニットを /etc/systemd/system/ に配置する。
+    # systemd.packages は $package/lib/systemd/system/* を symlink する。
+    #
+    # ppd 0.30 が同梱するのは power-profiles-daemon.service のみ。
+    # socket ユニットは同梱されないので定義しないこと
+    # (systemd.services に "power-profiles-daemon.socket" と書くと
+    #  system-manager が "power-profiles-daemon.socket.service" という
+    #  実在しないユニットを生成してしまう)。
+    packages = [ pkgs.power-profiles-daemon ];
 
-  # packages 経由のユニットは [Install] WantedBy が効かないため、
-  # .wants シンボリックリンクを wantedBy で明示的に作る。
-  # 同梱ユニットの [Install] WantedBy=graphical.target に合わせている。
-  systemd.services.power-profiles-daemon = {
-    wantedBy = [ "graphical.target" ];
+    # packages 経由のユニットは [Install] WantedBy が効かないため、
+    # .wants シンボリックリンクを wantedBy で明示的に作る。
+    # 同梱ユニットの [Install] WantedBy=graphical.target に合わせている。
+    services.power-profiles-daemon = {
+      wantedBy = [ "graphical.target" ];
+    };
+
+    # ppd のユニットは `Conflicts=tuned.service tlp.service auto-cpufreq.service
+    # system76-power.service` を宣言している。同じ電源管理役割を持つデーモンを
+    # 同時に起動すると片方が恒久的に失敗する。
+    #
+    # Fedora は tuned、openSUSE は powerdevil 系が既定で入るので、ここを
+    # mask しないとディストリによって ppd が起動できない。
+    # maskedUnits は /dev/null への symlink を作るだけなので、
+    # 元から存在しないユニットを mask しても害はない。
+    maskedUnits = [
+      "auto-cpufreq.service"
+      "system76-power.service"
+      "tuned.service"
+      "tlp.service"
+    ];
   };
-
-  # ppd のユニットは `Conflicts=tuned.service tlp.service auto-cpufreq.service
-  # system76-power.service` を宣言している。同じ電源管理役割を持つデーモンを
-  # 同時に起動すると片方が恒久的に失敗する。
-  #
-  # Fedora は tuned、openSUSE は powerdevil 系が既定で入るので、ここを
-  # mask しないとディストリによって ppd が起動できない。
-  # maskedUnits は /dev/null への symlink を作るだけなので、
-  # 元から存在しないユニットを mask しても害はない。
-  systemd.maskedUnits = [
-    "auto-cpufreq.service"
-    "system76-power.service"
-    "tuned.service"
-    "tlp.service"
-  ];
 
   # 既定 profile は balanced (ppd の upstream デフォルト)。
   # AC 接続時に performance へ自動切り替えたい場合は

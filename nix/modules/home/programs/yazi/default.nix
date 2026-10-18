@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   dotfiles.programs.yazi = {
     icon = "🗂️";
     note = "y ラッパー + nvim opener";

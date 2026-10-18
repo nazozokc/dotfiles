@@ -6,6 +6,11 @@ let
   };
 in
 {
+  dotfiles.programs.vscode = {
+    icon = "🟦";
+    note = "Catppuccin / 19 拡張 / userSettings 同期";
+  };
+
   programs.vscode = {
     enable = true;
 

@@ -1,0 +1,18 @@
+name: "CI: typos"
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typos:
+    name: typos
+    uses: ./.github/workflows/_nix-ci.yml
+    with:
+      runs-on: ubuntu-latest
+      run-command: nix build .#checks.x86_64-linux.typos --print-build-logs
+      timeout-minutes: 10

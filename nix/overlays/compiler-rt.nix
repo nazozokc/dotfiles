@@ -15,7 +15,7 @@ prev.lib.optionalAttrs
   (prev.stdenv.hostPlatform.isDarwin && prev.stdenv.hostPlatform.system == "x86_64-darwin")
   {
     llvmPackages_18 = prev.llvmPackages_18.overrideScope (
-      llFinal: llPrev: {
+      _llFinal: llPrev: {
         compiler-rt = llPrev.compiler-rt.overrideAttrs (old: {
           cmakeFlags = old.cmakeFlags ++ [
             (final.lib.cmakeBool "COMPILER_RT_BUILD_XRAY" false)

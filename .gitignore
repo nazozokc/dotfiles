@@ -24,6 +24,11 @@ Temporary Items
 
 .mypy_cache/*
 
+# Python (nvim の生成スクリプト等で作られる一時物)
+.ruff_cache/
+__pycache__/
+*.pyc
+
 result
 
 .devenv

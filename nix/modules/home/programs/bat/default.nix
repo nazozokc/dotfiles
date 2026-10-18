@@ -1,7 +1,4 @@
-{
-  ...
-}:
-{
+_: {
   dotfiles.programs.bat = {
     icon = "🦇";
     note = "TwoDark / less pager";

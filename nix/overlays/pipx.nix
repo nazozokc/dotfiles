@@ -1,4 +1,4 @@
-final: prev: {
+_final: prev: {
   pipx = prev.pipx.overrideAttrs (old: {
     disabledTests = (old.disabledTests or [ ]) ++ [
       # Tests fail due to strict PEP 508 @ URL format checking in pipx 1.8.0

@@ -1,7 +1,4 @@
-{
-  ...
-}:
-{
+_: {
   dotfiles.programs.starship = {
     icon = "🚀";
     note = "fish_prompt.fish を飾る";

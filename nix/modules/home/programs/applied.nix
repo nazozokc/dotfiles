@@ -28,10 +28,8 @@
 }:
 
 let
-  entries = (
-    lib.sort (a: b: a.name < b.name) (
-      lib.mapAttrsToList (name: value: { inherit name; } // value) config.dotfiles.programs
-    )
+  entries = lib.sort (a: b: a.name < b.name) (
+    lib.mapAttrsToList (name: value: { inherit name; } // value) config.dotfiles.programs
   );
 
   nameWidth = lib.foldl' (acc: e: lib.max acc (lib.stringLength e.name)) 0 entries;

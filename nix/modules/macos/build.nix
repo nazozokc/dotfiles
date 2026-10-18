@@ -35,35 +35,39 @@ darwin'.lib.darwinSystem {
     ./default.nix
     homeManager'.darwinModules.home-manager
     {
-      nixpkgs.config.allowUnfree = true;
-      # 26.05 で x86_64-darwin の非推奨警告を抑止 (26.11 ではキー自体が不要)
-      nixpkgs.config.allowDeprecatedx86_64Darwin = isIntel;
-      nixpkgs.config.permittedInsecurePackages = [
-        "pnpm-9.15.9"
-        "pnpm-10.34.0"
-        "electron-39.8.10"
-      ];
-      nixpkgs.config.problems = {
-        handlers.dlinfo.broken = "warn";
-      };
-      home-manager.useGlobalPkgs = true;
-      home-manager.extraSpecialArgs = {
-        inherit pkgs username;
-        dotfilesDir = self.outPath;
-      };
-      home-manager.users.${username} = {
-        imports = [
-          sops-nix.homeManagerModules.sops
-          ../../shared.nix
-          ./darwin-home.nix
-          (import ../home/tools-read.nix { inherit pkgs; })
-          ../home
-          agent-skills-nix.homeManagerModules.default
-        ]
-        ++ nixpkgs.lib.optionals isIntel [
-          # home-manager release-26.05 は stateVersion 26.11 を受け付けないため 26.05 に固定
-          { home.stateVersion = nixpkgs.lib.mkForce "26.05"; }
+      nixpkgs.config = {
+        allowUnfree = true;
+        # 26.05 で x86_64-darwin の非推奨警告を抑止 (26.11 ではキー自体が不要)
+        allowDeprecatedx86_64Darwin = isIntel;
+        permittedInsecurePackages = [
+          "pnpm-9.15.9"
+          "pnpm-10.34.0"
+          "electron-39.8.10"
         ];
+        problems = {
+          handlers.dlinfo.broken = "warn";
+        };
+      };
+      home-manager = {
+        useGlobalPkgs = true;
+        extraSpecialArgs = {
+          inherit pkgs username;
+          dotfilesDir = self.outPath;
+        };
+        users.${username} = {
+          imports = [
+            sops-nix.homeManagerModules.sops
+            ../../shared.nix
+            ./darwin-home.nix
+            (import ../home/tools-read.nix { inherit pkgs; })
+            ../home
+            agent-skills-nix.homeManagerModules.default
+          ]
+          ++ nixpkgs.lib.optionals isIntel [
+            # home-manager release-26.05 は stateVersion 26.11 を受け付けないため 26.05 に固定
+            { home.stateVersion = nixpkgs.lib.mkForce "26.05"; }
+          ];
+        };
       };
     }
   ];

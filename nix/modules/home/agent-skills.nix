@@ -1,6 +1,5 @@
 # nix/modules/home-manager/agent-skills.nix
-{ ... }:
-{
+_: {
   programs.agent-skills = {
     enable = true;
     sources.local = {

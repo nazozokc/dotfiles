@@ -12,9 +12,7 @@
 #   - fcitx5 を environment.systemPackages に入れない
 #     (home-manager 側が fcitx5-with-addons を user -Service で起動するため、
 #      PATH 上で 2 種類の fcitx5 が競合し設定ディレクトリも分散する)
-{
-  ...
-}:
+_:
 
 {
   environment.etc = {

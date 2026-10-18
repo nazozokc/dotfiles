@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   dotfiles.programs.docker = {
     icon = "🐳";
     note = "CLI + lazydocker";

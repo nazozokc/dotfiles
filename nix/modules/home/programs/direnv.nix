@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+_: {
   dotfiles.programs.direnv = {
     icon = "📂";
     note = "nix-direnv + 環境変数の差分だけ表示";

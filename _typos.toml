@@ -1,0 +1,26 @@
+# typos (crate-ci/typos) の誤検知リスト
+# `nix build .#checks.<system>.typos` で検証される
+
+[default.extend-words]
+# noice.nvim — プラグイン名 (folke/noice.nvim)
+noice = "noice"
+Noice = "Noice"
+# systemd-localed — systemd のロケールデーモン名
+localed = "localed"
+# ts-enviroment — fish function 名 (abbr.fish)。ユーザーが呼んでいる識別子なので
+# lint のためにリネームしない。直すなら別途 user-facing な変更として行う
+enviroment = "enviroment"
+
+[default.extend-identifiers]
+# :enew — Neovim 組み込みコマンド (barbar / snacks のキーマップ)
+enew = "enew"
+# <leader>nd / <leader>fo — キーマップのラベル
+nd = "nd"
+fo = "fo"
+
+[files]
+extend-exclude = [
+  # lock ファイル (rev ハッシュが誤検知の対象になる)
+  "**/flake.lock",
+  "**/lazy-lock.json",
+]

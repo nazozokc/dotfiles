@@ -2,8 +2,8 @@
 # Neovim プラグインの実体とバージョンを Nix store の farm (symlink 一覧) にまとめる。
 #
 # 正本は nvim/nvim-plug-manage/flake.lock。
-#   プラグインを追加する → nvim/nvim-plug-manage/flake.nix に input を足して
-#                          nix run .#nvim-install  (lock を解決するだけ / bump しない)
+#   プラグインを追加する → nvim/lua/plugins/*.lua に宣言して
+#                          nix run .#nvim-install  (sync-inputs.lua が input 追加して lock / bump しない)
 #   全部更新する         → nix run .#nvim-update   (nix flake update)
 #   反映する             → nix run .#switch
 #
@@ -16,7 +16,7 @@ let
   inherit (pkgs) lib;
 
   lock = builtins.fromJSON (builtins.readFile "${dotfilesDir}/nvim/nvim-plug-manage/flake.lock");
-  nodes = lock.nodes;
+  inherit (lock) nodes;
 
   # nixpkgs 側にビルド手順かパッチがあるプラグインだけ pkgs.vimPlugins から取る。
   # 値は vimPlugins の属性名。これらは nvim/nvim-plug-manage/flake.nix には

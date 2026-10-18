@@ -242,13 +242,18 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 
 ## 運用ルール（品質ゲート）
 
-- PR では **Nix Flake Check**（`nix flake check`）と **treefmt check**（`nix fmt -- --ci`）を必須とします。
+- PR では **Nix Flake Check**（`nix flake check`）を必須とします（`flake check` は deadnix/statix/shellcheck/typos/treefmt のチェックも含みます）。
 - ローカルでも PR 前に次を実行してください。
 
 ```bash
 nix flake check
-nix fmt -- --ci
+nix fmt -- --ci  # 必要に応じて自動フォーマット（treefmt）
 ```
+
+**補助チェック（個別実行）**
+
+- typos のみ: `nix build .#checks.x86_64-linux.typos --print-build-logs`
+- lint のみ: `nix build .#checks.x86_64-linux.deadnix .#checks.x86_64-linux.statix .#checks.x86_64-linux.shellcheck --print-build-logs`
 
 ## ユーザー名
 

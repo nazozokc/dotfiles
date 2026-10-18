@@ -173,7 +173,6 @@
       zen-browser,
       system-manager,
       ambxst,
-      linux-pkgmanager-nix,
       # x86_64-darwin (Intel Mac) 専用スタック
       nixpkgs-intel,
       home-manager-intel,
@@ -281,6 +280,8 @@
         ./nix/flake-parts/apps/agent-skills.nix
         ./nix/flake-parts/apps/system.nix
         ./nix/flake-parts/dev-shells.nix
+        # 品質ゲート (deadnix / statix / shellcheck / typos)
+        ./nix/flake-parts/checks.nix
         # nix fmt (treefmt-nix)
         ./nix/modules/home/packages/treefmt.nix
         # native PM manager (nlp)

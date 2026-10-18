@@ -14,7 +14,7 @@
 #   `tsc` 本体は noembed ビルドのため `lib/typescript/` 配下に置かれていないと
 #   同梱 lib.d.ts を解決できない。symlinkJoin で本体 (lib/) をそのまま共有し、
 #   `bin/tsgo` だけを追加することで store path を増やさず名前だけ差し替える。
-final: prev:
+_final: prev:
 
 let
   tsgo = prev.symlinkJoin {

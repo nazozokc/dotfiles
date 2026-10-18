@@ -23,9 +23,7 @@
 # /etc/nix/nix.conf は扱わない。nix/modules/nix-conf.nix (home-manager) が
 # 全OSで ~/.config/nix/nix.conf を生成し、Nix はユーザー設定をシステム設定より
 # 優先するため、OS 層で /etc/nix/nix.conf を上書きする必要はない。
-{
-  ...
-}:
+_:
 
 {
   imports = [

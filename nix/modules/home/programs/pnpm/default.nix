@@ -1,7 +1,7 @@
 # pnpm configuration
 # nixpkgs の pnpm はバージョン固定されており、壊れにくい
 # corepack の shim は nixpkgs の pnpm と競合して壊れるため使わない
-{ pkgs, config, ... }:
+{ config, ... }:
 {
   dotfiles.programs.pnpm = {
     icon = "📦";

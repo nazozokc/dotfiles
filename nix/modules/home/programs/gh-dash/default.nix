@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+_:
 
 {
   dotfiles.programs.gh-dash = {

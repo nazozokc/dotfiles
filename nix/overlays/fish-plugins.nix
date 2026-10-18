@@ -1,5 +1,5 @@
 # nix/overlays/fish-plugins.nix
-final: prev:
+_final: prev:
 let
   buildFishPlugin = prev.fishPlugins.buildFishPlugin;
 
@@ -41,7 +41,7 @@ let
 in
 {
   fishPlugins = {
-    fisher = fisher;
+    inherit fisher;
     # fishna = fishna;
   };
   inherit fisher;

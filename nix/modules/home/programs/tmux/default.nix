@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   dotfiles.programs.tmux = {
     icon = "🪟";

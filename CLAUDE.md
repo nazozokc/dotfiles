@@ -17,16 +17,18 @@
 
 # 何を管理しているか
 
-- neovim
-- fish
-- zsh
-- lazygit
-- wezterm
-- ghostty
-- opencode
-- starship
-- bash
-- efm-langserver
+設定モジュール (`nix/modules/home/programs/`) で管理:
+
+- シェル / ターミナル: fish, zsh, bash, starship, tmux, ghostty, wezterm
+- エディタ: neovim, vscode (Linux/macOS), efm-langserver
+- AI エージェント: opencode, pi, claude-code, codex, ollama
+- Git / GitHub: git, lazygit, gh, gh-dash, jujutsu
+- ターミナルツール: bat, fzf, yazi, direnv, pnpm, bun, docker, sops, cmux
+- デスクトップ: hypr (Hyprland), herdr, aerospace (macOS)
+- その他: mise, my_scripts, agents/skills
+
+OS 層 (`/etc`・systemd) は system-manager で管理 (上記「管理方法」参照)。
+プラットフォーム別の適用範囲は `nix/README.md` を参照。
 
 # 回答スタイル
 

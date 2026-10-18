@@ -361,7 +361,7 @@ nix run .#build
 # flake更新
 nix run .#update
 
-# Neovim プラグインの追加分を lock (既存のバージョンは動かさない)
+# Neovim プラグインの宣言同期と lock (既存のバージョンは動かさない)
 nix run .#nvim-install
 
 # Neovim プラグインを全部更新 (nix flake update)
@@ -379,15 +379,20 @@ nix run .#agents-skills-update
 `nvim/nvim-plug-manage/flake.lock` を書き換えてプラグインの実体とバージョンを更新する。
 
 ```bash
-# flake.nix へ足した input を解決するだけ (既存 input のバージョンは動かさない)
+# lua/plugins の宣言を flake.nix の inputs へ自動追加してから lock (既存 input のバージョンは動かさない)
 nix run .#nvim-install
 
 # 全 input を最新へ bump する
 nix run .#nvim-update
 ```
 
-- どちらも `nvim/nvim-plug-manage/` で `nix flake lock` / `nix flake update` を回すだけ。
-  rev と narHash が同時に動くので、ハッシュを手で書く必要は無い。
+- `nvim-install` は先に `sync-inputs.lua` (`nvim -l`) を回す。
+  `nvim/lua/plugins/*.lua` を読み、flake.nix に無い plugin.name だけを追加してから
+  `nix flake lock` を回す。既存 input の url は触らない
+  (fork / codeberg 等の URL 例外を保持)。Lua から消えた input は
+  orphan として報告するだけで削除しない。
+- `nvim-update` は `nix flake update` で全 input を bump する。
+- rev と narHash が同時に動くので、ハッシュを手で書く必要は無い。
 - GitHub API は未認証だと 60 req/h しか許さない。136 input の lock は確実に超えるため、
   両 app は `gh auth token` を `NIX_CONFIG` の `access-tokens` へ渡してから nix を起動する。
 - 反映には `nix run .#switch`。
@@ -525,6 +530,7 @@ nix --extra-experimental-features "nix-command flakes" run github:nazozokc/dotfi
 
 ```
 nvim/lua/plugins/*.lua                宣言 (lazy-loading / dependencies / opts)
+nvim/nvim-plug-manage/sync-inputs.lua 宣言から flake.nix の inputs へ自動同期 (nvim-install が呼ぶ)
 nvim/nvim-plug-manage/flake.nix       プラグインの input 一覧 (入力名 = lazy の plugin.name)
 nvim/nvim-plug-manage/flake.lock      rev と narHash の正本  ← ここだけ見ればバージョンが分かる
 nix/modules/home/programs/nvim/plugins/default.nix
@@ -568,11 +574,15 @@ nix/modules/home/programs/nvim/plugins/default.nix
   `init.lua` が起動時にリポジトリの `nvim/lazy-lock.json` を種としてコピーし、
   既に書き可能な state's 側があればそちらを引き継ぐ。
 - プラグインを追加する手順:
-  1. `nvim/lua/plugins/*.lua` に宣言を書く
-  2. `nvim/nvim-plug-manage/flake.nix` に `"<owner>/<repo>"` 形式の input を足す
-     (入力名は lazy の plugin.name。nixpkgs に build 手順つきの override があるものだけ
-     `plugins/default.nix` の `fromNixpkgs` へ)
-  3. `nix run .#nvim-install` で lock → `nix flake check --no-build` → `nix run .#switch`
+  1. `nvim/lua/plugins/*.lua` に宣言を書く (`"owner/repo"` か url 文字列)
+  2. `nix run .#nvim-install` で同期と lock → `nix flake check --no-build` → `nix run .#switch`
+     (`sync-inputs.lua` が宣言を読み、flake.nix の inputs へ自動追加する。
+     手で input を足す必要は無い)
+  - nixpkgs に build 手順つきの override があるものだけ `plugins/default.nix` の
+    `fromNixpkgs` へ足す (root の nixpkgs input 由来。現状は3件)
+  - flake.nix の inputs ブロックは `sync-inputs.lua` が再生成する。
+    URL を手で直した場合は保持される (既存優先)。
+    Lua から消したプラグインの input は削除されない (orphan 報告のみ)。
 - 通常の lazy プラグイン用 `build = "..."` ステップは原則不要。
   `:TSUpdate` のような外部 fetch を行うステップは Nix では機能しないため削除する。
 - `nix run .#nvim-update` で全プラグインを更新できる (`nix flake update`)。
@@ -760,10 +770,14 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
 
 ### CI品質ゲート
 
-- PR の必須チェックは以下。
-  - `nix flake check`
-  - `nix fmt -- --ci`
-- 上記は Linux / macOS の両方で実行する。
+- PR の必須チェックは `nix flake check`（Linux / macOS 両方で実行）。
+  - `flake check` には deadnix / statix / shellcheck / typos / treefmt の各チェックも含まれます。
+- 補助チェックとして個別に実行する場合は以下のようにします。
+
+```bash
+nix build .#checks.x86_64-linux.typos --print-build-logs
+nix build .#checks.x86_64-linux.deadnix .#checks.x86_64-linux.statix .#checks.x86_64-linux.shellcheck --print-build-logs
+```
 
 ### sops-nix シークレット運用
 

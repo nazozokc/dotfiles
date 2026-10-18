@@ -48,14 +48,16 @@ in
   programs.git = {
     enable = true;
     settings = {
-      # LF統一
-      core.autocrlf = "input";
+      core = {
+        # LF統一
+        autocrlf = "input";
 
-      # WSL権限差分問題回避
-      core.filemode = false;
+        # WSL権限差分問題回避
+        filemode = false;
 
-      # メタデータ保持
-      core.symlinks = true;
+        # メタデータ保持
+        symlinks = true;
+      };
     };
   };
 

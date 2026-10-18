@@ -3,15 +3,21 @@
 # Neovim プラグインの「実体とバージョン」を flake input で持つ。
 # 正本はこのディレクトリの flake.lock (rev と narHash)。
 #
-#   追加  : ここへ input を足して `(cd nvim/nvim-plug-manage && nix flake lock)`
+#   追加  : nvim/lua/plugins/*.lua に宣言して nix run .#nvim-install
+#           (sync-inputs.lua が宣言から inputs へ自動追加してから lock する)
 #   更新  : nix run .#nvim-update
 #   適用  : nix run .#switch
 #
 # 入力名は必ず lazy.nvim の plugin.name と一致させること
 # (nvim/lua/plugins/*.lua の名前。farm がそのままリンク名にする)。
 #
+# inputs ブロックは sync-inputs.lua が再生成する。
+#   - 既存 input の url は優先される (fork / codeberg 等の例外は手編集で足してOK)
+#   - Lua から消したプラグインの input は削除されない (orphan として報告のみ)
+#   - 新規は Lua 宣言から自動追加。GitHub 以外は Lua 側の url 文字列で指定する
+#
 # flake = false : プラグインはただのソース木なので flake としては扱わない。
-# ビルドは nvim/modules/home/programs/nvim/plugins/default.nix が行い、
+# ビルドは nix/modules/home/programs/nvim/plugins/default.nix が行い、
 # flake.lock の narHash をそのまま fetchFromGitHub/fetchgit のハッシュに使う。
 {
   description = "Neovim plugin sources (single source of truth = flake.lock)";

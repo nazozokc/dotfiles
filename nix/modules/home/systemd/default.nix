@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   systemd.user.services = {
     # ===== nix-store-gc — Weekly Nix store garbage collection =====

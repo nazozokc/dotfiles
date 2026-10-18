@@ -23,11 +23,12 @@ lazy.nvim は plugin manager としてのみ使い、install 先を nix store �
 ```
 nvim/
 ├── init.lua              # エントリーポイント・キーマップ
-├── lazy-lock.json        # 種 (seed)。Nix 管理外のみ (現状 swagger-preview.nvim 1件)
+├── lazy-lock.json        # 種 (seed)。実体は farm (nix store) から解決される
 ├── lua/
 │   ├── plugins.lua       # プラグイン定義（空）
 │   ├── vim-options.lua   # 基本設定
 │   └── plugins/          # プラグイン設定（各ファイル）
+├── nvim-plug-manage/     # プラグイン実体のバージョン管理 (flake.nix / flake.lock / sync-inputs.lua)
 └── template/             # sonictemplate のテンプレート
     ├── gitignore/
     ├── javascript/
@@ -42,6 +43,7 @@ nvim/
 
 ```
 nvim/lua/plugins/*.lua             宣言 (lazy-loading / dependencies / opts)
+nvim/nvim-plug-manage/sync-inputs.lua  宣言から flake.nix の inputs へ自動同期 (nvim-install が呼ぶ)
 nvim/nvim-plug-manage/flake.nix    プラグインの input 一覧 (入力名 = lazy の plugin.name)
 nvim/nvim-plug-manage/flake.lock   rev / narHash の正本
 nix/modules/home/programs/nvim/plugins/default.nix  lock から farm (symlink 一覧) を組む
@@ -59,7 +61,7 @@ nix/modules/home/programs/nvim/plugins/default.nix  lock から farm (symlink �
 ### 更新
 
 ```bash
-# flake.nix へ足した input を解決するだけ
+# lua/plugins の宣言を flake.nix の inputs へ自動追加して lock
 nix run .#nvim-install
 
 # 全プラグインを最新へ bump
@@ -69,7 +71,11 @@ nix run .#nvim-update
 nix run .#switch
 ```
 
-- どちらも `nvim/nvim-plug-manage/` で `nix flake lock` / `nix flake update` を回すだけ。
+- `nvim-install` は `sync-inputs.lua` (`nvim -l`) で `lua/plugins/*.lua` を読み、
+  flake.nix に無い plugin.name だけを追加してから `nix flake lock` を回す。
+  既存 input の url は触らない (fork / codeberg 等の URL 例外を保持)。
+  Lua から消えた input は orphan として報告するだけで削除しない。
+- `nvim-update` は `nix flake update` で全 input を bump する。
   rev と narHash が同時に動くのでハッシュを手で書かない。
 - 例外の3件 (`lazy.nvim` / `denops.vim` / `telescope-fzf-native.nvim`) だけは
   root の nixpkgs input 由来なので `nix run .#update` で動く。

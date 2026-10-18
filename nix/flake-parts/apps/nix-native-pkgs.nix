@@ -32,7 +32,7 @@ in
       };
     in
     {
-      apps = built.apps;
+      inherit (built) apps;
       packages.nlp = built.package;
     };
 }
