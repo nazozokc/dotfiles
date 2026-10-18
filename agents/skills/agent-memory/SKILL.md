@@ -128,6 +128,7 @@ When deciding to save a memory:
 1. **Determine category**: Choose an existing directory or create a new one
 2. **Generate id**: `YYYY-MM-DD-<session>-<agent>` (see File Schema)
 3. **Write one JSON object** to a new file (never modify or delete existing files):
+
    ```bash
    cat > ~/ghq/github.com/nazozokc/agent-memory/patterns/2026-09-15-日付セル状態判定-core-opencode.jsonl <<'EOF'
    {"id": "2026-09-15-...", "category": "patterns", "tags": [...], "created": "2026-09-15", "agent": "...", "title": "...", "summary": "...", "content": "..."}
@@ -137,6 +138,7 @@ When deciding to save a memory:
    - Filename: `<created>-<title 20文字以内>-<agent>.jsonl` (see File Naming)
    - The object MUST be valid single-line JSON: escape `"` as `\"` and newlines as `\n`
    - Validate after writing when in doubt: `jq empty ~/ghq/github.com/nazozokc/agent-memory/<category>/<filename>.jsonl`
+
 4. **Do NOT git commit/push**: This skill is write-only. The user manages the repo separately.
 
 ## Decision Criteria: What to Save
