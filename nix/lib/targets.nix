@@ -21,6 +21,12 @@ rec {
   # WSL 用の home-manager 設定名
   wslConfigName = "${username}-wsl";
 
+  # NixOS の設定名
+  # - nixosConfigurations.<username>   … OS 層 (nixos-rebuild / dry-activate / toplevel)
+  # - homeConfigurations.<username>-nixos … ユーザー層 (nixGL なし版 home-manager)
+  nixosConfigName = username;
+  nixosHomeConfigName = "${username}-nixos";
+
   # nix run .#build がビルドするターゲット
   hmConfig =
     if isDarwin then

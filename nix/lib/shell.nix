@@ -88,6 +88,12 @@
       [ "$(uname)" = "Darwin" ]
     }
 
+    # NixOS 判定。stage-1 ブートスクリプトが /etc/NIXOS マーカーを置く。
+    # nixpkgs の慣例どおり「ファイルの存在」で判定する (中身に依存しない)
+    is_nixos() {
+      [ -e /etc/NIXOS ]
+    }
+
     # single-user Nix (daemon 無し) では /nix/store (root:nixbld 1775) への
     # 書き込みに nixbld グループ所属が必須。
     # system-manager の userborn が /etc/group を宣言どおり書き戻すため、

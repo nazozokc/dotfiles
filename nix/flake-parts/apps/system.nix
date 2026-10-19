@@ -88,25 +88,27 @@ in
           type = "app";
           meta.description = "OS 層の dry-run。評価と生成物差分を確認する (sudo 不要)";
           program = "${pkgs.writeShellScriptBin "system-check" ''
-            set -eo pipefail
+              set -eo pipefail
 
-            ${c.shell.nixFeatureGuard}
+              ${c.shell.nixFeatureGuard}
 
-            ${c.shell.detectHelpers}
+              ${c.shell.detectHelpers}
 
-            demoteToSudoUser "$@"
+              demoteToSudoUser "$@"
 
-            require_nixbld
+              require_nixbld
 
-            ${linuxOnlyGuard}
-            echo "  cmd    : system-check"
-            echo ""
+              ${linuxOnlyGuard}
+              echo "  cmd    : system-check"
+              echo ""
             if is_nixos; then
-              # dry-activate: 適用せずに差分のみ確認 (sudo 不要)
-              nixos-rebuild dry-activate --flake .#${t.nixosConfigName}
-            else
-              ${systemManagerRun "build"}
-            fi
+              # dry-activate: 適用せずに差分のみ確認。
+              # switch-to-configuration が root を要求するため sudo_nix 経由にする
+              # (差分表示のみで適用はしない)
+              sudo_nix nixos-rebuild dry-activate --flake .#${t.nixosConfigName}
+              else
+                ${systemManagerRun "build"}
+              fi
           ''}/bin/system-check";
         };
 

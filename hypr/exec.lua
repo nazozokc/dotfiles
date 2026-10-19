@@ -12,6 +12,22 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("fcitx5 -d --replace")
 
 	-- Polkit authentication agent
-	-- Ambxst は polkit agent を同梱しないので必要
-	hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
+	-- Ambxst は polkit agent を同梱しないので必要。
+	-- 実体のある場所が環境ごとに違う:
+	--   Nix   (home.packages の polkit_gnome) → ~/.nix-profile/libexec/
+	--   Arch など distro パッケージ           → /usr/lib/polkit-gnome/
+	-- 存在するものを順に探して最初の 1 つだけ起動する
+	local candidates = {
+		os.getenv("HOME") .. "/.nix-profile/libexec/polkit-gnome-authentication-agent-1",
+		"/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
+		"/usr/libexec/polkit-gnome/polkit-gnome-authentication-agent-1",
+	}
+	for _, path in ipairs(candidates) do
+		local f = io.open(path, "r")
+		if f then
+			f:close()
+			hl.exec_cmd(path)
+			break
+		end
+	end
 end)

@@ -26,11 +26,7 @@ nixpkgs.lib.nixosSystem {
   # username をモジュールへ渡す (nix/modules/nixos/ 側からの参照用)
   specialArgs = { inherit username; };
   modules = [
-    # 共有モジュール (system-manager と同じ実体を両対応化してある)
-    ../system/sysctl.nix
-    ../system/input-method.nix
-    ../system/locale.nix
-
+    # 共有モジュール (sysctl / input-method / locale) は default.nix が import する
     ./default.nix
     hostModule
 

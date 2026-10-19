@@ -671,8 +671,9 @@ NixOS ホストは system-manager を使わず、NixOS ネイティブの
 - 適用: `sudo nixos-rebuild switch --flake .#nazozokc`
   (または `nix run .#switch` / `.#system-switch` が自動委譲)
 - ユーザー層は standalone home-manager の `homeConfigurations."<username>-nixos"`
-  (`mkLinuxHomeConfig { useNixGL = false; }`)。nixGL は不要
-  (NixOS の GPU ドライバは `/run/opengl-driver` が正)
+  (`mkLinuxHomeConfig { system = "x86_64-linux"; useNixGL = false; }`)。nixGL は不要
+  (NixOS の GPU ドライバは `/run/opengl-driver` が正)。`useNixGL = false` で
+  nixGL wrap と `targets.genericLinux` が無効になる
 
 **共通化ポリシー** — `nix/modules/system/` のモジュールは
 `options.environment.etc.type.getSubOptions [ ] ? replaceExisting` で
