@@ -15,7 +15,7 @@ with pkgs;
 
   # rust
   rustc
-  rust-analyzer
+  rustup
 
   # nix
   nil
@@ -41,7 +41,6 @@ with pkgs;
   efm-langserver
 
   # package tools
-  cargo
   cmake
   ninja
 
