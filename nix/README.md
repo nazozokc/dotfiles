@@ -6,13 +6,13 @@
 
 ## システム構成
 
-| コンポーネント     | Linux / WSL                            | macOS (Apple Silicon)         | macOS (Intel)                   |
-| ------------------ | -------------------------------------- | ----------------------------- | ------------------------------- |
-| nixpkgs            | unstable                               | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
-| OS 層設定          | system-manager (ネイティブ Linux のみ) | —                             | —                               |
-| システム設定       | home-manager                           | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
-| ユーザーパッケージ | home-manager                           | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
-| シェル             | fish                                   | fish                          | fish                            |
+| コンポーネント     | Linux (system-manager)                 | Linux (NixOS)                   | macOS (Apple Silicon)         | macOS (Intel)                   |
+| ------------------ | -------------------------------------- | ------------------------------- | ----------------------------- | ------------------------------- |
+| nixpkgs            | unstable                               | unstable                        | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
+| OS 層設定          | system-manager (ネイティブ Linux のみ) | `nixosConfigurations`           | —                             | —                               |
+| システム設定       | home-manager                           | `nixos-rebuild`                 | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
+| ユーザーパッケージ | home-manager                           | home-manager (`nazozokc-nixos`) | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
+| シェル             | fish                                   | fish                            | fish                          | fish                            |
 
 ## Intel Mac (x86_64-darwin) について
 
@@ -313,11 +313,19 @@ nix/
 │   ├── system/                        # OS 層設定 (system-manager, ネイティブ Linux 全ディストロ)
 │   │   ├── build.nix                  # 設定生成ヘルパー (mkSystemConfig / hostPlatform 注入)
 │   │   ├── default.nix                # エントリーポイント (allowAnyDistro)
-│   │   ├── input-method.nix           # fcitx5 グローバル設定と環境変数
-│   │   ├── locale.nix                 # ja_JP.UTF-8 / en_US.UTF-8 の生成と LANG
+│   │   ├── input-method.nix           # fcitx5 グローバル設定と環境変数 (NixOS 両対応)
+│   │   ├── locale.nix                 # ja_JP.UTF-8 / en_US.UTF-8 の生成と LANG (NixOS 両対応)
 │   │   ├── nix-installation.nix       # Nix 導入モードの宣言と実ホストの検証
 │   │   ├── power.nix                  # power-profiles-daemon
-│   │   └── sysctl.nix                 # sysctl.d drop-in と tcp_bbr modprobe
+│   │   └── sysctl.nix                 # sysctl.d drop-in と tcp_bbr modprobe (NixOS 両対応)
+│   ├── nixos/                         # NixOS 固有設定 (nixosConfigurations)
+│   │   ├── build.nix                  # 設定生成ヘルパー (mkNixosConfig / nixosSystem)
+│   │   ├── default.nix                # エントリーポイント (共有モジュール + system.nix)
+│   │   └── system.nix                 # hostName / i18n / users / pipewire / nix.settings
+│   ├── hosts/                         # NixOS ホスト定義
+│   │   └── nazozokc/                  # x86_64-linux デスクトップ
+│   │       ├── default.nix            # boot.loader (systemd-boot) + hardware-configuration import
+│   │       └── hardware-configuration.nix # disk layout (実機の nixos-generate-config 出力)
 │   ├── linux/                         # Linux 固有設定
 │   │   ├── build.nix                  # 設定生成ヘルパー (mkLinuxHomeConfig)
 │   │   ├── default.nix                # エントリーポイント (nixGL, zen-browser, ambxst, hypr link)
@@ -388,13 +396,13 @@ nix run .#config-update
 
 **`#switch` との差分 = flake check と OS 層を外した home-manager のみ。**
 
-|                                     | `#update` | `#config-update` | `#switch`             |
-| ----------------------------------- | --------- | ---------------- | --------------------- |
-| `flake.lock` 更新                   | ✅        | ❌               | ❌                    |
-| `nix flake check`                   | ❌        | ❌               | ✅                    |
-| home-manager (ユーザー層)           | ❌        | ✅               | ✅                    |
-| OS 層 (system-manager / nix-darwin) | ❌        | ❌               | ✅                    |
-| sudo                                | ❌        | ❌               | ✅ (ネイティブ Linux) |
+|                                             | `#update` | `#config-update` | `#switch`                     |
+| ------------------------------------------- | --------- | ---------------- | ----------------------------- |
+| `flake.lock` 更新                           | ✅        | ❌               | ❌                            |
+| `nix flake check`                           | ❌        | ❌               | ✅                            |
+| home-manager (ユーザー層)                   | ❌        | ✅               | ✅                            |
+| OS 層 (system-manager / NixOS / nix-darwin) | ❌        | ❌               | ✅                            |
+| sudo                                        | ❌        | ❌               | ✅ (ネイティブ Linux / NixOS) |
 
 - **「最新版」はローカル編集の反映のみ**。git pull はしない
 - home-manager activation が走るので symlink の 2 系統が両方更新される:
@@ -518,6 +526,13 @@ agent-skills-nix の source registry (`registry/sources/*.nix` + npins) は
    - **flake が読む単一ソース**なので、書き換え後はそのまま `switch` に渡せる
 3. そのディレクトリから `nix run .#switch` に委譲する
    - ユーザー層・OS 層の適用・OS 自動判定・事前チェック・`.wslconfig` チェックは全て `switch` が持つ
+   - NixOS 上では `switch` が `/etc/NIXOS` を検出し、home-manager (`-nixos` 版) →
+     `nixos-rebuild switch` へ自動委譲する
+
+- `sudo nix run github:nazozokc/dotfiles` で実行した場合、app 冒頭の
+  `demoteToSudoUser` が SUDO_USER として re-exec する
+  (`HOME` が `/root` になり ghq root / `identity.nix` の username が
+  root になるのを防ぐ)。root 直実行 (SUDO_USER 無し) はエラー退出する
 
 - 手元のリポジトリが正なので、既存 clone の **HEAD・ブランチは変更しない**
   （`nix/lib/identity.nix` の自動同期のみ作業ツリーが変わる）
@@ -632,18 +647,61 @@ nix/modules/home/programs/nvim/plugins/default.nix
 | 環境             | ユーザー層                | OS 層                            |
 | ---------------- | ------------------------- | -------------------------------- |
 | ネイティブ Linux | home-manager              | system-manager (sudo 必要)       |
+| NixOS            | home-manager (`-nixos`)   | nixos-rebuild (sudo 必要)        |
 | WSL              | home-manager              | 対象外 (Windows 側 `.wslconfig`) |
 | macOS            | home-manager (nix-darwin) | nix-darwin                       |
 
 - 順序は ユーザー層 → OS 層。`sudo` 認証に失敗してもユーザー層は適用済みになる
 - WSL は `system-*` の各 app が実行を拒否する（`.wslconfig` の管轄）
 - OS 層だけを適用したい場合は `nix run .#system-switch`
+- NixOS の判定は `/etc/NIXOS` マーカー (`is_nixos`)。検出すると
+  home-manager は `.#<username>-nixos` (nixGL なし版) を、OS 層は
+  `nixos-rebuild switch --flake .#<username>` を使う
+
+### NixOS (`nixosConfigurations`)
+
+NixOS ホストは system-manager を使わず、NixOS ネイティブの
+`nixosConfigurations` で管理する。
+
+- モジュール: `nix/modules/nixos/` (build / default / system.nix)
+- ホスト定義: `nix/hosts/<name>/` (default.nix + hardware-configuration.nix)
+  - `hardware-configuration.nix` は実機の disk layout をコミットする。
+    初回はスタブ (`/dev/disk/by-label/nixos` / `BOOT`) が入っているので、
+    実機で `nixos-generate-config --show-hardware-config` を実行して差し替える
+- 適用: `sudo nixos-rebuild switch --flake .#nazozokc`
+  (または `nix run .#switch` / `.#system-switch` が自動委譲)
+- ユーザー層は standalone home-manager の `homeConfigurations."<username>-nixos"`
+  (`mkLinuxHomeConfig { system = "x86_64-linux"; useNixGL = false; }`)。nixGL は不要
+  (NixOS の GPU ドライバは `/run/opengl-driver` が正)。`useNixGL = false` で
+  nixGL wrap と `targets.genericLinux` が無効になる
+
+**共通化ポリシー** — `nix/modules/system/` のモジュールは
+`options.environment.etc.type.getSubOptions [ ] ? replaceExisting` で
+system-manager 上かを判定し、両対応している:
+
+| モジュール             | NixOS での扱い                                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `sysctl.nix`           | import 済み。`environment.etc."sysctl.d"` は NixOS でもそのまま動く                                           |
+| `input-method.nix`     | import 済み。`replaceExisting` を条件分岐済み                                                                 |
+| `locale.nix`           | import 済み。`locale.conf` / `vconsole.conf` / oneshot は NixOS では自動 skip。正は i18n / console モジュール |
+| `power.nix`            | **import しない**。NixOS は `services.power-profiles-daemon.enable = true` が正                               |
+| `nix-installation.nix` | **import しない**。`system-manager.preActivationAssertions` が NixOS に無く評価エラー                         |
+
+- NixOS の `i18n` モジュールは `imperativeLocale = false` (既定) なら
+  `environment.etc."locale.conf".source` を無条件生成する。共有 `locale.nix` の
+  `text` 定義とモジュールシステムで衝突するため、共有側は `isSystemManager`
+  判定で skip し、NixOS 側は `i18n.defaultLocale` / `console.keyMap` が正
+- `programs.fish.enable = true` は必須 (users.users.<name>.shell の検証で要求)
+- overlay の `fishPlugins` は `prev.fishPlugins //` で merge すること。
+  丸ごと差し替えると `foreign-env` が消え NixOS の `programs.fish.enable` が
+  評価エラーになる
 
 ### OS 層設定 (system-manager)
 
 ネイティブ Linux の OS 層（`/etc`・systemd システムユニット）は
 [numtide/system-manager](https://system-manager.net/main/) で管理する。
 macOS 側の nix-darwin に相当する役割。
+**NixOS は対象外**（上記「NixOS」参照。`nixos-rebuild` が OS 層を持つ）。
 `nix run .#switch` でも適用されるが、単独で実行するコマンド如下。
 
 ```bash
@@ -738,9 +796,14 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
 │   └── apps/common.nix                   # identity / shell.nix / targets.nix / system-manager input
 ├── Linux:   mkLinuxHomeConfig (nix/modules/linux/build.nix)
 │              → nix/modules/home/      + nix/modules/linux/
+│              (useNixGL = false で NixOS 用 home に切替)
 │           systemConfigs.{nazozokc,nazozokc-aarch64} (system-manager)
 │              → mkSystemConfig (nix/modules/system/build.nix)
 │                 → nix/modules/system/  (OS 層: /etc・systemd システムユニット)
+├── NixOS:   nixosConfigurations.nazozokc
+│              → mkNixosConfig (nix/modules/nixos/build.nix)
+│                 → nix/modules/nixos/ + nix/modules/system/ (共有 3 モジュール)
+│                 → nix/hosts/nazozokc/  (hardware-configuration + boot.loader)
 ├── WSL:     mkWSLHomeConfig (nix/modules/wsl/build.nix)
 │              → nix/modules/home/wsl.nix + nix/modules/wsl/
 └── macOS:   mkDarwinConfig (nix/modules/macos/build.nix)

@@ -19,6 +19,8 @@ in
 
       # 3 コマンド共通の前提チェック (systemConfigName の案内まで出す)
       # 末尾の改行を落として、埋め込み後に空行が増えないようにする
+      # NixOS では systemConfigs ではなく nixosConfigurations を使うため
+      # is_nixos 分岐でターゲット表示を切り替える
       linuxOnlyGuard = pkgs.lib.removeSuffix "\n" ''
         if is_darwin; then
           echo "[!] system-manager は Linux 専用です"
@@ -31,8 +33,13 @@ in
           exit 1
         fi
 
-        echo "  system : ${t.sysLabel}"
-        echo "  target : .#systemConfigs.${t.systemConfigName}"
+        if is_nixos; then
+          echo "  system : ${t.sysLabel} (NixOS)"
+          echo "  target : .#${t.nixosConfigName} (nixosConfigurations)"
+        else
+          echo "  system : ${t.sysLabel}"
+          echo "  target : .#systemConfigs.${t.systemConfigName}"
+        fi
       '';
 
       # system-manager 呼び出しの共通前置き。
@@ -54,7 +61,7 @@ in
       apps = {
         system-build = {
           type = "app";
-          meta.description = "OS 層 (system-manager) の toplevel をビルドする (副作用なし)";
+          meta.description = "OS 層 (system-manager / NixOS) の toplevel をビルドする (副作用なし)";
           program = "${pkgs.writeShellScriptBin "system-build" ''
             set -eo pipefail
 
@@ -62,12 +69,18 @@ in
 
             ${c.shell.detectHelpers}
 
+            demoteToSudoUser "$@"
+
             require_nixbld
 
             ${linuxOnlyGuard}
             echo "  cmd    : system-build"
             echo ""
-            ${pkgs.nix-output-monitor}/bin/nom build .#systemConfigs.${t.systemConfigName}
+            if is_nixos; then
+              ${pkgs.nix-output-monitor}/bin/nom build .#nixosConfigurations.${t.nixosConfigName}.config.system.build.toplevel
+            else
+              ${pkgs.nix-output-monitor}/bin/nom build .#systemConfigs.${t.systemConfigName}
+            fi
           ''}/bin/system-build";
         };
 
@@ -75,18 +88,27 @@ in
           type = "app";
           meta.description = "OS 層の dry-run。評価と生成物差分を確認する (sudo 不要)";
           program = "${pkgs.writeShellScriptBin "system-check" ''
-            set -eo pipefail
+              set -eo pipefail
 
-            ${c.shell.nixFeatureGuard}
+              ${c.shell.nixFeatureGuard}
 
-            ${c.shell.detectHelpers}
+              ${c.shell.detectHelpers}
 
-            require_nixbld
+              demoteToSudoUser "$@"
 
-            ${linuxOnlyGuard}
-            echo "  cmd    : system-check"
-            echo ""
-            ${systemManagerRun "build"}
+              require_nixbld
+
+              ${linuxOnlyGuard}
+              echo "  cmd    : system-check"
+              echo ""
+            if is_nixos; then
+              # dry-activate: 適用せずに差分のみ確認。
+              # switch-to-configuration が root を要求するため sudo_nix 経由にする
+              # (差分表示のみで適用はしない)
+              sudo_nix nixos-rebuild dry-activate --flake .#${t.nixosConfigName}
+              else
+                ${systemManagerRun "build"}
+              fi
           ''}/bin/system-check";
         };
 
@@ -100,15 +122,23 @@ in
 
             ${c.shell.detectHelpers}
 
+            demoteToSudoUser "$@"
+
             require_nixbld
 
             ${linuxOnlyGuard}
             echo "  cmd    : system-switch"
             echo ""
-            echo "[!] /etc と systemd システムユニットを書き換えます"
-            echo "    既存ファイルは .system-manager-backup として退避されます"
-            echo ""
-            ${systemManagerRun "switch"}
+            if is_nixos; then
+              echo "[!] nixos-rebuild switch を実行します (sudo 必要)"
+              echo ""
+              sudo_nix nixos-rebuild switch --flake .#${t.nixosConfigName}
+            else
+              echo "[!] /etc と systemd システムユニットを書き換えます"
+              echo "    既存ファイルは .system-manager-backup として退避されます"
+              echo ""
+              ${systemManagerRun "switch"}
+            fi
           ''}/bin/system-switch";
         };
       };

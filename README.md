@@ -15,6 +15,7 @@
 
 - Linux: `x86_64-linux` (systemd ベースのディストリ。Arch Linux / Ubuntu / Debian / Fedora など)
 - Linux: `aarch64-linux` (ARM linux)
+- **NixOS**: `x86_64-linux` (`nixosConfigurations`。`nixos-rebuild switch --flake .#nazozokc`)
 - WSL: `x86_64-linux` (WSL2)
 - macOS: `aarch64-darwin` (Apple Silicon) / `x86_64-darwin` (Intel Mac)
 
@@ -83,6 +84,9 @@ nix run github:nazozokc/dotfiles
 - ghq / git がまだ無い環境では git にフォールバックするため、Nix だけで bootstrap できます
 - Linux の OS 層（`/etc`・systemd システムユニット）も `switch` が適用します（sudo 必要 / WSL は対象外）。
   OS 層だけを適用する場合は `nix run github:nazozokc/dotfiles#system-switch`
+- **NixOS** 上では `/etc/NIXOS` を自動検出し、home-manager（nixGL なし版）→
+  `nixos-rebuild switch --flake .#nazozokc` まで自動で適用します。
+  sudo で実行した場合は `demoteToSudoUser` が SUDO_USER として re-exec します
 
 初回のみ `nix.conf` が未生成なので、**一番外側のコマンドだけ** `nix-command` を
 コマンドラインで明示する必要があります（`nix run` 自体が experimental feature を

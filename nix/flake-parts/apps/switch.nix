@@ -25,6 +25,10 @@ in
 
           ${c.shell.detectHelpers}
 
+          # sudo 実行時は SUDO_USER へ demote してから処理を始める
+          # (HOME / identity.nix の username が root になるのを防ぐ)
+          demoteToSudoUser "$@"
+
           # nixbld 所属は「必須」にしない。single-user Nix でも
           # 所属が無ければ後段のビルドが失敗するだけなので、
           # 止めずに原因を警告するだけにする
@@ -51,6 +55,25 @@ in
             echo ""
             # sudo は既定で環境変数を捨てるため、NIX_CONFIG を引き継ぐ
             sudo_nix nix run nix-darwin -- switch --flake ${t.flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+          elif is_nixos; then
+            # NixOS: ユーザー層 (home-manager standalone, nixGL なし) → OS 層 (nixos-rebuild)
+            echo "  system : ${t.sysLabel} (NixOS)"
+            echo "  target : .#${t.nixosHomeConfigName} + .#${t.nixosConfigName}"
+            echo "  cmd    : switch"
+            echo ""
+            nix run github:nix-community/home-manager -- switch --flake .#${t.nixosHomeConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+
+            # 世代切替で ksycoca の mtime が壊れる問題は NixOS でも同じ
+            rebuild_ksycoca
+
+            echo ""
+            echo "  system : ${t.sysLabel} (NixOS)"
+            echo "  target : .#${t.nixosConfigName}"
+            echo "  cmd    : nixos-rebuild switch"
+            echo ""
+            echo "[!] OS 層を適用します (nixos-rebuild switch・sudo 必要)"
+            echo ""
+            sudo_nix nixos-rebuild switch --flake .#${t.nixosConfigName}
           else
             echo "  system : ${t.sysLabel}"
             echo "  target : ${t.flakeTarget}"

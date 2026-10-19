@@ -25,6 +25,9 @@ in
 
           ${c.shell.detectHelpers}
 
+          # sudo 実行時の demote (HOME が /root になるのを防ぐ)
+          demoteToSudoUser "$@"
+
           require_nixbld
 
           if is_wsl; then
@@ -33,6 +36,12 @@ in
             echo "  cmd    : build"
             echo ""
             ${pkgs.nix-output-monitor}/bin/nom build .#homeConfigurations.${t.wslConfigName}.activationPackage
+          elif is_nixos; then
+            echo "  system : ${t.sysLabel} (NixOS)"
+            echo "  target : .#homeConfigurations.${t.nixosHomeConfigName}.activationPackage"
+            echo "  cmd    : build"
+            echo ""
+            ${pkgs.nix-output-monitor}/bin/nom build .#homeConfigurations.${t.nixosHomeConfigName}.activationPackage
           else
             echo "  system : ${t.sysLabel}"
             echo "  target : ${t.hmConfig}"

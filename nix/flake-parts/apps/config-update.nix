@@ -33,6 +33,9 @@ in
 
           ${c.shell.detectHelpers}
 
+          # sudo 実行時の demote (HOME が /root になるのを防ぐ)
+          demoteToSudoUser "$@"
+
           # activationPackage のビルドで store へ書くため警告のみ (switch と同じ扱い)
           warn_nixbld
 
@@ -71,6 +74,10 @@ in
             out=$(nix build --no-link --print-out-paths \
               ".#darwinConfigurations.${t.darwinConfigName}.config.home-manager.users.${username}.activationPackage")
             "$out/activate"
+          elif is_nixos; then
+            # NixOS 用 home-manager 設定は nixGL wrap なし版 (nazozokc-nixos)
+            nix run github:nix-community/home-manager -- switch --flake .#${t.nixosHomeConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            rebuild_ksycoca
           else
             nix run github:nix-community/home-manager -- switch --flake ${t.flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
             rebuild_ksycoca

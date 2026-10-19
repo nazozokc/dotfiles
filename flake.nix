@@ -264,6 +264,17 @@
           username
           ;
       };
+
+      # NixOS 向けシステム設定生成 (nix/modules/nixos/build.nix)
+      # system-manager (非 NixOS ディストロ) とは別モジュールツリーを使う。
+      # hostModule は nix/hosts/<name>/default.nix (hardware-configuration 等)
+      mkNixosConfig = import ./nix/modules/nixos/build.nix {
+        inherit
+          nixpkgs
+          username
+          overlay
+          ;
+      };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
@@ -316,10 +327,20 @@
       # -------------------------------------------------------------------
       flake = {
         # Linux 向け home-manager 設定
+        # 非 NixOS Linux (Arch / Ubuntu ...) は useNixGL = true (既定)。
+        # NixOS 用は useNixGL = false (GPU ドライバは /run/opengl-driver が正)
         homeConfigurations = {
-          ${username} = mkLinuxHomeConfig "x86_64-linux";
-          "${username}-aarch64" = mkLinuxHomeConfig "aarch64-linux";
+          ${username} = mkLinuxHomeConfig {
+            system = "x86_64-linux";
+          };
+          "${username}-aarch64" = mkLinuxHomeConfig {
+            system = "aarch64-linux";
+          };
           "${username}-wsl" = mkWSLHomeConfig "x86_64-linux";
+          "${username}-nixos" = mkLinuxHomeConfig {
+            system = "x86_64-linux";
+            useNixGL = false;
+          };
         };
 
         # macOS 向け nix-darwin 設定 (Apple Silicon / Intel Mac)
@@ -346,6 +367,18 @@
         systemConfigs = {
           ${username} = mkSystemConfig "x86_64-linux";
           "${username}-aarch64" = mkSystemConfig "aarch64-linux";
+        };
+
+        # -------------------------------------------------------------------
+        # NixOS 向けシステム設定 (nixosConfigurations)
+        # -------------------------------------------------------------------
+        # systemConfigs (system-manager) とは別物: NixOS ネイティブの
+        # nixosSystem で組む。適用は `sudo nixos-rebuild switch --flake .#nazozokc`。
+        #
+        # hostModule は nix/hosts/<name>/default.nix。hardware-configuration.nix
+        # はこちらで用意せず、ホストごとに実機の disk layout から生成する。
+        nixosConfigurations = {
+          ${username} = mkNixosConfig "x86_64-linux" ./nix/hosts/nazozokc;
         };
       };
     };

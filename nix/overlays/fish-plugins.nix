@@ -40,7 +40,9 @@ let
   # };
 in
 {
-  fishPlugins = {
+  # prev.fishPlugins と merge する (丸ごと差し替えると foreign-env 等が消え、
+  # NixOS の programs.fish.enable が foreign-env を参照できず評価エラーになる)
+  fishPlugins = prev.fishPlugins // {
     inherit fisher;
     # fishna = fishna;
   };
