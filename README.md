@@ -4,9 +4,10 @@
 
 # Nazozo Dotfiles
 
-このリポジトリは Linux / macOS / WSL の dotfiles 管理を行う構成です。
+このリポジトリは Linux / NixOS / macOS / WSL の dotfiles 管理を行う構成です。
 
-- **Linux / macOS / WSL**: Nix + Home Manager で管理
+- **ユーザー層**: Nix + Home Manager で全OS共通に管理
+- **OS層**: ネイティブ Linux は `numtide/system-manager`（`/etc`・systemd システムユニット）、NixOS は `nixosConfigurations`（`nixos-rebuild`）、macOS は nix-darwin、WSL は home-manager のみ（`.wslconfig` / `wsl.conf` は別系統）
 - **設定ファイルは可能な限り共通化**: `nvim/`, `wezterm/`, `opencode/`, `efm-langserver/` は全OSで同一ファイルを共有。`git` / `starship` / `lazygit` / `bat` は Nix が `nix/modules/home/programs/<name>/` から生成する（リポジトリにはディレクトリを置かない）
 
 ---
@@ -137,12 +138,17 @@ nix run github:nazozokc/dotfiles
 # dotfilesやパッケージ更新
 nix run .#switch
 
+# 設定のみ反映 (flake check・OS層なし・sudo 不要)
+nix run .#config-update
+
 # バージョン更新
 nix run .#update
 ```
 
-- Linux は Home Manager 単体で管理
-- macOS は nix-darwin を通して Home Manager を管理
+- ネイティブ Linux: ユーザー層 (home-manager) → OS 層 (system-manager) の順に適用 (sudo 必要)
+- NixOS: `/etc/NIXOS` を検出し、home-manager (nixGL なし版) → `nixos-rebuild switch`
+- macOS: nix-darwin を通して Home Manager を管理
+- OS 層だけを適用する場合は `nix run .#system-check` / `.#system-build` / `.#system-switch`
 - GUIアプリも Nix で管理可能
 - 既存の PATH 環境を壊さず管理できます
 
@@ -215,9 +221,22 @@ wsl --shutdown
 | `mkcd.sh`       | ディレクトリ作成して cd                                     |
 | `port-check.sh` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
 
-更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#nvim-install` / `.#nvim-update` が持ち、
+更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#config-update` / `.#nvim-install` / `.#nvim-update` / `.#llm-agents-update` / `.#agents-skills-update` が持ち、
 Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で実行する。
 この領域を shell スクリプトで再実装しない。
+
+---
+
+## ディストロのパッケージマネージャ宣言 (nlp)
+
+ネイティブ Linux では [linux-pkgmanager.nix](https://github.com/nazozokc/linux-pkgmanager.nix) で
+ディストロ標準のパッケージマネージャ (pacman / apt / dnf / zypper / yum) の
+導入済みパッケージを宣言的に扱う（OS 本体のカーネル・ドライバはディストロ管理のまま）。
+
+- 宣言は `nix/native-pkgs/<pm>.nix` にパッケージ名のリストで書く（検出された pm に対応するファイルのみ使われる）
+- `nix run .#nlp-status` / `.#nlp-diff` — 検出した pm と宣言件数の表示 / 宣言と導入済みの差分確認
+- `nix run .#nlp-adopt` / `.#nlp-apply` / `.#nlp-update` — 導入済みを宣言の雛形として出力 / 不足パッケージの導入 / pm 更新と不足分の補完
+- `nix build .#nlp` で `nlp` バイナリ単体も取得できる
 
 ---
 
@@ -229,11 +248,14 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 - **CLIツール**: Nix によるパッケージ管理。`nix/modules/home/packages/` 配下で分類 (`base/`, `dev/`, `ai/`, `gui/`, `experimental/`)
   - **base**: jq, curl, zoxide, fd, eza, tmux, yazi, gh, ghq, jujutsu, docker, lazydocker, nix-tree, cachix, nh など
   - **dev**: nodejs_latest, bun, deno, rustc, go, jdk, clang, efm-langserver など
-  - **ai**: ollama, opencode, codex, claude-code
-  - **gui**: wezterm, ghostty, vscode, spotify, discord, google-chrome など
+  - **ai**: ollama, opencode, codex, claude-code, claude-monitor など
+  - **gui**: vscode, audacity, spotify, discord, google-chrome など (x86_64-linux 固有で tor-browser / macOS 固有で obsidian, raycast, vscodium)
   - **experimental**: pi-coding-agent, grok-cli, qwen-code
   - **Linux / WSL 共通**は `nix/lib/packages/shared.nix`（クリップボード / アーカイブ / nmap / fontconfig / gnupg / openssh / XDG / herdr）
+- **ターミナル**: wezterm, ghostty (Linux では nixGL で wrap して導入)
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理
+- **Linux の OS 層**: system-manager が `/etc` (locale / sysctl / fcitx5 等) と systemd システムユニットを管理。config は `nix/modules/system/`
+- **NixOS**: `nixosConfigurations` (`nix/modules/nixos/` + `nix/hosts/<name>/`。Hyprland / polkit / Bluetooth / Docker / nix store GC 等)
 - **Linux GUI (Hyprland)**: Ambxst (Quickshell 製シェル。bar / launcher / 通知 / ロック / 壁紙 / スクリーンショット / メディア / OSD を統合) + `hypr/` の設定
 - **macOS限定**: nix-darwin によるシステム設定
 
@@ -241,7 +263,8 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 
 ## 注意事項
 
-- OS本体やカーネルは pacman（Linux）や macOS 標準管理に任せる
+- ネイティブ Linux (Arch など) の OS 本体・カーネルは pacman 等のディストロ管理に任せる（宣言済みパッケージの差分は上記 `nlp` で確認できる）
+- NixOS では OS 全体 (カーネル・ブートローダ含む) を `nixosConfigurations` で管理する
 - Home Manager によるリンクや設定は既存の dotfiles を上書きする場合があります
 
 ## 運用ルール（品質ゲート）
