@@ -35,10 +35,8 @@ in
           # (停止するのは build / system-* 側。nixbld_membership_ok を参照)
           warn_nixbld
 
-          # 事前チェック: flake の評価エラーを検出
-          echo "[pre-flight] nix flake check --no-build ..."
-          nix flake check --no-build
-          echo ""
+          # flake check は全 outputs を評価するため switch ごとに走らせると重い。
+          # 必要なときは個別に `nix flake check --no-build` を実行する。
 
           if is_wsl; then
             echo "  system : WSL (x86_64)"
