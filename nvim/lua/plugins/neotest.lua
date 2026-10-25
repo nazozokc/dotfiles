@@ -2,9 +2,11 @@ return {
 	"nvim-neotest/neotest",
 	cmd = { "Neotest" },
 	dependencies = {
+		"nvim-neotest/nvim-nio",
 		"nvim-neotest/neotest-jest",
 		"marilari88/neotest-vitest",
 		"thenbe/neotest-playwright",
+		"hoxbro/neotest-rust",
 	},
 	opts = function(_, opts)
 		opts.adapters = opts.adapters or {}
@@ -26,5 +28,7 @@ return {
 				},
 			})
 		)
+
+		table.insert(opts.adapters, require("neotest-rust"))
 	end,
 }

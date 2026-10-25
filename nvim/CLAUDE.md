@@ -146,10 +146,11 @@ nix run .#switch
 
 ### デバッグ / テスト
 
-| プラグイン | 用途           |
-| ---------- | -------------- |
-| nvim-dap   | デバッガー     |
-| neotest    | テストランナー |
+| プラグイン  | 用途            |
+| ----------- | --------------- |
+| nvim-dap    | デバッガー      |
+| neotest     | テストランナー  |
+| crates.nvim | Cargo.toml 管理 |
 
 ---
 
@@ -224,8 +225,35 @@ nix run .#switch
 - **html** - HTML / JSX / TSX（JSX/TSX では tsgo と診断が重複しないよう html 限定）
 - **lua_ls** - Lua
 - **solargraph** - Ruby
+- **rust-analyzer** - Rust（rustaceanvim が設定。`nix run .#switch` 反映後に有効）
 - **nixd** - Nix
 - **efm** - 汎用フォーマッター
+
+### Rust（rustaceanvim）
+
+rust-tools.nvim（archived）の代わりに [rustaceanvim](https://github.com/mrcjkb/rustaceanvim) を使う。
+filetype plugin 形式なので `lazy = false`。
+
+- **rust-analyzer の取得元**: home-manager の PATH には rustup shim があるため、
+  wrapper 環境変数 `RUST_ANALYZER`（nix store の実体）を `server.cmd` に渡す。
+  shim 経由だと `rust-analyzer` への再帰で落ちる
+- **設定**: `cargo.features = "all"`、`procMacro.enable = true`、
+  `checkOnSave = true`（`check.command = "clippy"`）
+- **rust バッファのキーマップ**:
+
+| キー         | 動作                           |
+| ------------ | ------------------------------ |
+| `K`          | Hover actions                  |
+| `<Leader>rr` | Runnables                      |
+| `<Leader>rd` | Debuggables（DAP で実行）      |
+| `<Leader>rm` | Expand Macro                   |
+| `<Leader>th` | Inlay Hints トグル（自動有効） |
+
+- **デバッグ**: codelldb（`vscode-extensions.vadimcn.vscode-lldb`）。
+  wrapper 環境変数 `CODELLDB` / `LIBLLDB` から `rustaceanvim.dap` が
+  adapter を組み、Attach 時に `dap.configurations.rust` を自動登録する
+- **テスト**: neotest（`hoxbro/neotest-rust`）が PATH 上の `cargo-nextest` を使う
+- **Cargo.toml**: crates.nvim（crates.io のバージョン補完）。
 
 ### SQL の接続設定（.sqls/config.yml）
 

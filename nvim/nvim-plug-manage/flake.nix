@@ -83,6 +83,10 @@
       url = "github:wsdjeg/cpicker.nvim";
       flake = false;
     };
+    "crates.nvim" = {
+      url = "github:Saecki/crates.nvim";
+      flake = false;
+    };
     "denops-signature_help" = {
       url = "github:matsui54/denops-signature_help";
       flake = false;
@@ -251,6 +255,10 @@
       url = "github:thenbe/neotest-playwright";
       flake = false;
     };
+    "neotest-rust" = {
+      url = "github:hoxbro/neotest-rust";
+      flake = false;
+    };
     "neotest-vitest" = {
       url = "github:marilari88/neotest-vitest";
       flake = false;
@@ -325,6 +333,10 @@
     };
     "nvim-neoclip.lua" = {
       url = "github:AckslD/nvim-neoclip.lua";
+      flake = false;
+    };
+    "nvim-nio" = {
+      url = "github:nvim-neotest/nvim-nio";
       flake = false;
     };
     "nvim-notify" = {
@@ -423,8 +435,8 @@
       url = "github:MeanderingProgrammer/render-markdown.nvim";
       flake = false;
     };
-    "rust-tools.nvim" = {
-      url = "github:simrat39/rust-tools.nvim";
+    "rustaceanvim" = {
+      url = "github:mrcjkb/rustaceanvim";
       flake = false;
     };
     "satellite.nvim" = {

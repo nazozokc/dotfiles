@@ -15,6 +15,7 @@ return {
 			python = { "black" },
 			c = { "clang-format" },
 			cpp = { "clang-format" },
+			rust = { "rustfmt" },
 		},
 	},
 	keys = {

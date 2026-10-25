@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   config,
   dotfilesDir,
   ...
@@ -17,31 +18,55 @@ let
       ;
   };
 
-  treesitterGrammars = pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: [
-    plugins.nix
-    plugins.lua
-    plugins.typescript
-    plugins.tsx
-    plugins.javascript
-    plugins.python
-    plugins.rust
-    plugins.go
-    plugins.json
-    plugins.yaml
-    plugins.toml
-    plugins.markdown
-    plugins.markdown_inline
-    plugins.html
-    plugins.css
-    plugins.bash
-    plugins.dockerfile
-    plugins.gitignore
-    plugins.regex
-    plugins.diff
-    plugins.c
-    plugins.cpp
-    plugins.sql
-  ]);
+  # Treesitter の言語一覧。queries は nvim-treesitter 本体 (farm) が
+  # runtime/queries を持つので、無い言語のフォールバックだけ nixpkgs 側から供給する。
+  tsGrammars = with pkgs.tree-sitter-grammars; [
+    tree-sitter-nix
+    tree-sitter-lua
+    tree-sitter-typescript
+    tree-sitter-tsx
+    tree-sitter-javascript
+    tree-sitter-python
+    tree-sitter-rust
+    tree-sitter-go
+    tree-sitter-json
+    tree-sitter-yaml
+    tree-sitter-toml
+    tree-sitter-markdown
+    tree-sitter-markdown-inline
+    tree-sitter-html
+    tree-sitter-css
+    tree-sitter-bash
+    tree-sitter-dockerfile
+    tree-sitter-gitignore
+    tree-sitter-regex
+    tree-sitter-diff
+    tree-sitter-c
+    tree-sitter-cpp
+    tree-sitter-sql
+  ];
+
+  # nixpkgs の grammar パッケージの out は `parser` (拡張子無しの .so) ひとつ。
+  # nvim は `parser/<lang>.so` を探すので、言語名ごとに symlink を集める。
+  # 言語名は store path の pname (例: tree-sitter-typescript-0.23.2) から
+  # バージョンを落として出す (tsGrammars の言語名が正本)。
+  treesitterParsers = pkgs.runCommand "nvim-treesitter-parsers" { } ''
+    mkdir -p $out/parser
+    ${lib.concatMapStrings (drv: ''
+      name=$(basename ${drv})
+      lang=''${name#*-tree-sitter-}
+      lang=''${lang%%-[0-9]*}
+      ln -s ${drv}/parser "$out/parser/$lang.so"
+      if [ -d ${drv}/queries ]; then
+        mkdir -p "$out/queries/$lang"
+        cp -r ${drv}/queries/. "$out/queries/$lang/"
+      fi
+    '') tsGrammars}
+  '';
+
+  # Rust の DAP (rustaceanvim が CODELLDB / LIBLLDB で読む)。
+  # codelldb は wrapped bash script、liblldb は拡張内 lldb symlink の lib。
+  vscode-lldb = pkgs.vscode-extensions.vadimcn.vscode-lldb;
 in
 {
   dotfiles.programs.nvim = {
@@ -77,9 +102,24 @@ in
       "--set"
       "LAZY_NIX_PLUGINS"
       "${nvimPlugins.path}"
+      # Treesitter parser bundle (rust など検証で必要になった言語を入れる)
       "--set"
       "TREESITTER_GRAMMARS"
-      "${treesitterGrammars}"
+      "${treesitterParsers}"
+      # rust-analyzer。home-manager の rustup shim は無限再帰 (shim → profile →
+      # shim) で落ちるため、nvim wrapper の PATH には入れず絶対パスで渡す。
+      # rustaceanvim.lua が cmd として使う。
+      "--set"
+      "RUST_ANALYZER"
+      "${pkgs.rust-analyzer}/bin/rust-analyzer"
+      # rust の DAP。無い環境 (Windows の apply.ps1 など) では Lua 側が
+      # デバッグ設定を作らない。
+      "--set"
+      "CODELLDB"
+      "${vscode-lldb}/share/vscode/extensions/vadimcn.vscode-lldb/adapter/codelldb"
+      "--set"
+      "LIBLLDB"
+      "${vscode-lldb}/share/vscode/extensions/vadimcn.vscode-lldb/lldb/lib/liblldb.so"
     ];
 
     # These packages are only available when NeoVim is running
@@ -99,6 +139,11 @@ in
       tsgo
       sqls
       clang-tools
+
+      # Rust: neotest-rust が PATH 上の `cargo-nextest` を使う。
+      # rust-analyzer は shim と紛れるため PATH に入れず
+      # extraWrapperArgs の RUST_ANALYZER で渡す。
+      cargo-nextest
 
       # Python tools
       ruff
