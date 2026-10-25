@@ -22,7 +22,8 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 
 - `home.stateVersion` は home-manager 26.05 の制約により `mkForce "26.05"` に固定。
 - 以下のパッケージは nixpkgs 側の非対応により **Intel Mac ではインストールされません**:
-  - `oterm` — fastmcp → duckdb → pyarrow → arrow-cpp（x86_64-darwin で broken）
+  - `oterm` — fastmcp → duckdb → pyarrow → arrow-cpp（x86_64-darwin で broken）。
+    現在は全プラットフォームで無効化中（nixpkgs mcp 2.x と fastmcp 3.x の不整合。`nix/modules/home/programs/ollama/default.nix` のコメント参照）
   - `aider-chat-full` — grep-ast → tree-sitter-language-pack（x86_64-darwin のバンドルなし）
 - 対象設定: `darwinConfigurations.nazozokc-x86_64`（Apple Silicon は `nazozokc`）
 
