@@ -7,7 +7,7 @@
 
 let
   # dotfilesDir が文字列であることを保証 (Nix path リテラルだと flake で壊れる)
-  dotfilesDirStr = builtins.toString dotfilesDir;
+  dotfilesDirStr = toString dotfilesDir;
 
   link = config.lib.file.mkOutOfStoreSymlink;
 
@@ -17,7 +17,7 @@ let
   symlinkDir =
     dir: prefix:
     let
-      dirStr = builtins.toString dir;
+      dirStr = toString dir;
       entries = builtins.readDir dir;
       files = lib.filterAttrs (name: _: lib.hasSuffix ".fish" name) entries;
     in
@@ -51,5 +51,6 @@ in
     ".zshrc".source = link "${dotfilesDirStr}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDirStr}/bash/bashrc";
     ".scripts".source = link "${dotfilesDirStr}/my_scripts";
+    ".config/schrun".source = link "${dotfilesDirStr}/schrun";
   };
 }
