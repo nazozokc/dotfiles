@@ -7,7 +7,7 @@ with pkgs;
   telescope
 
   # js,ts
-  nodePackages_latest
+  nodejs_latest
   bun
   deno
   yarn
