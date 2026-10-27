@@ -41,6 +41,7 @@ in
   // symlinkDir "${dotfilesDirStr}/fish/conf.d" ".config/fish/conf.d"
   // symlinkDir "${dotfilesDirStr}/fish/functions" ".config/fish/functions"
   // symlinkDir "${dotfilesDirStr}/fish/completions" ".config/fish/completions"
+  // symlinkDir "${dotfilesDirStr}/schrun" ".config/schrun"
   // {
     ".config/wezterm".source = link "${dotfilesDirStr}/wezterm";
     ".config/efm-langserver" = {
@@ -51,6 +52,5 @@ in
     ".zshrc".source = link "${dotfilesDirStr}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDirStr}/bash/bashrc";
     ".scripts".source = link "${dotfilesDirStr}/my_scripts";
-    ".config/schrun".source = link "${dotfilesDirStr}/schrun";
   };
 }
