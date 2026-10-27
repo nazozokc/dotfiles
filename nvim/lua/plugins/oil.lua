@@ -13,7 +13,9 @@ return {
 	opts = function()
 		return {
 			use_default_keymaps = false,
-			show_hidden = true,
+			view_options = {
+				show_hidden = true,
+			},
 
 			keymaps = {
 				["?"] = "actions.show_help",
