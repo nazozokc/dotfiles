@@ -5,6 +5,7 @@ return {
 		"mrcjkb/rustaceanvim",
 		-- バージョンは farm (nvim-plug-manage/flake.lock の rev) が固定する
 		lazy = false,
+		ft = { "rust" },
 		config = function()
 			-- nvim wrapper の PATH では home-manager の rustup shim が先に解決され、
 			-- rust-analyzer は shim → profile → shim の無限再帰で落ちる。
