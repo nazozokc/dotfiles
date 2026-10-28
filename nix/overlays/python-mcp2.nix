@@ -19,9 +19,9 @@
 #
 # fastmcp 4.x 化の PR https://github.com/NixOS/nixpkgs/pull/563493 が
 # マージされて mcp 2.x 対応の fastmcp 4.x が入ったら削除してよい。
-final: prev: {
+_final: prev: {
   pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-    (pyfinal: pyprev: {
+    (_pyfinal: pyprev: {
       posthog = pyprev.posthog.overridePythonAttrs (old: {
         meta = old.meta // {
           broken = false;
