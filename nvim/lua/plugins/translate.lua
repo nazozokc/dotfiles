@@ -11,8 +11,8 @@ return {
 				},
 				keymaps = {
 					i = "<C-s>",
-					n = "<Leader>T",
-					v = "<Leader>T",
+					n = "<Leader>ts",
+					v = "<Leader>ts",
 				},
 			})
 		end,
