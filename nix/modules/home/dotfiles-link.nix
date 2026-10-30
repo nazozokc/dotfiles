@@ -41,7 +41,7 @@ in
   // symlinkDir "${dotfilesDirStr}/fish/conf.d" ".config/fish/conf.d"
   // symlinkDir "${dotfilesDirStr}/fish/functions" ".config/fish/functions"
   // symlinkDir "${dotfilesDirStr}/fish/completions" ".config/fish/completions"
-  // symlinkDir "${dotfilesDirStr}/schrun" ".config/schrun"
+  // symlinkDir "${dotfilesDirStr}/schrun/agent-memory-manage.json" ".config/schrun/agent-memory-manage.json"
   // {
     ".config/wezterm".source = link "${dotfilesDirStr}/wezterm";
     ".config/efm-langserver" = {
