@@ -1,5 +1,6 @@
 return {
 	"nazozokc/wordcount.nvim",
+	event = "BufReadPre",
 	config = function()
 		require("wordcount").setup({
 			enabled = true,
