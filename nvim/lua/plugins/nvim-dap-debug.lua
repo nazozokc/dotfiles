@@ -2,11 +2,9 @@
 -- Debug (JS / TS) 軽量最適化
 -- =========================
 return {
-
-	-- DAP 本体（常駐させない）
 	{
 		"mfussenegger/nvim-dap",
-		event = "VeryLazy",
+		event = "BufReadPre",
 		config = function()
 			local dap = require("dap")
 
