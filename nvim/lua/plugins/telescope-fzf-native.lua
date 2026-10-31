@@ -1,6 +1,6 @@
 return {
 	"nvim-telescope/telescope-fzf-native.nvim",
-	event = "VeryLazy",
+	cmd = { "Telescope" },
 	config = function()
 		require("telescope").setup({
 			extensions = {
