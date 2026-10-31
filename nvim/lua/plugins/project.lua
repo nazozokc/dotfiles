@@ -1,6 +1,6 @@
 return {
-	"ahmedkhalf/project.nvim",
-	event = "VeryLazy",
+	"DrKJeff16/project.nvim",
+	lazy = false,
 	config = function()
 		require("project_nvim").setup({
 			manual_mode = false,
