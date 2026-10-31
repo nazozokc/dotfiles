@@ -41,22 +41,5 @@
 
       # microsoft
       teams-for-linux
-
-      # -----------------------------------------------------------------------
-      # Ambxst へ一本化したため削除したもの
-      #
-      #   waybar          → Ambxst bar
-      #   dunst           → Ambxst notifications
-      #   rofi            → Ambxst launcher (fuzzel 同梱)
-      #   vicinae         → Ambxst launcher
-      #   hyprlock        → Ambxst lockscreen (PAM)
-      #   hypridle        → Ambxst idle / auto-lock
-      #   wlogout         → Ambxst powermenu
-      #   awww            → Ambxst wallpaper manager
-      #   grim / slurp    → Ambxst screenshot
-      #   pavucontrol     → Ambxst 同梱 (apps.nix)
-      #   playerctl       → Ambxst 同梱 (media.nix) + media key OSD
-      #   brightnessctl   → Ambxst 同梱 (tools.nix) + brightness OSD
-      # -----------------------------------------------------------------------
     ]);
 }
