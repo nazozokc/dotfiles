@@ -13,7 +13,7 @@ return {
 	{
 		"echasnovski/mini.surround",
 		version = false,
-		event = "VeryLazy",
+		event = "BufReadPre",
 		config = function()
 			require("mini.surround").setup({
 				mappings = { add = "sa", delete = "sd", replace = "sr", update_n_lines = "sn" },
