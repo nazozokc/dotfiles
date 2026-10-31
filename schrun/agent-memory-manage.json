@@ -1,6 +1,6 @@
 {
   "description": "agent memory managed schedule",
   "cron": "5 21 * * *",
-  "run": "/home/nazozokc/ghq/github.com/nazozokc/agent-memory/に移動して規約違反の記憶や形式と違うものを直したり、同じような記憶をマージしてください",
+  "run": "opencode run /home/nazozokc/ghq/github.com/nazozokc/agent-memory/に移動して規約違反の記憶や形式と違うものを直したり、同じような記憶をマージしてください",
   "enabled": true
 }

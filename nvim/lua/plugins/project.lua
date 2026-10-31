@@ -1,6 +1,6 @@
 return {
 	"ahmedkhalf/project.nvim",
-	ft = { "js", "ts" },
+	ft = { "javascript", "typescript" },
 	config = function()
 		require("project_nvim").setup({
 			manual_mode = false,

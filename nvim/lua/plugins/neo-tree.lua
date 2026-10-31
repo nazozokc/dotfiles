@@ -1,6 +1,5 @@
 return {
 	"nvim-neo-tree/neo-tree.nvim",
-	event = "VeryLazy",
 	cmd = "Neotree",
 	branch = "v3.x",
 	dependencies = {

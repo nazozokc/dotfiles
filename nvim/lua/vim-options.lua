@@ -6,6 +6,8 @@ vim.g.mapleader = " "
 vim.o.background = "dark"
 
 vim.opt.swapfile = false
+vim.opt.spell = true
+vim.opt.spelllang = { "en" }
 
 vim.opt.modeline = false
 vim.opt.modelines = 0
