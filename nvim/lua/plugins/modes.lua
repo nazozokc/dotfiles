@@ -1,7 +1,7 @@
 return {
 	{
 		"mvllow/modes.nvim",
-		event = "VeryLazy",
+		event = "BufReadPre",
 		config = function()
 			require("modes").setup({
 				-- モードごとの色（Kanagawa準拠）
