@@ -2,16 +2,14 @@ return {
 	event = "InsertEnter",
 	"hrsh7th/nvim-cmp",
 	dependencies = {
-		-- 補完ソース
-		"hrsh7th/cmp-nvim-lsp",
-		"hrsh7th/cmp-buffer",
-		"hrsh7th/cmp-path",
-		"hrsh7th/cmp-calc",
+		{ "hrsh7th/cmp-nvim-lsp", lazy = true },
+		{ "hrsh7th/cmp-buffer", lazy = true },
+		{ "hrsh7th/cmp-path", lazy = true },
+		{ "hrsh7th/cmp-calc", lazy = true },
 
-		-- スニペット
-		"L3MON4D3/LuaSnip",
-		"saadparwaiz1/cmp_luasnip",
-		"rafamadriz/friendly-snippets",
+		{ "L3MON4D3/LuaSnip", lazy = true },
+		{ "saadparwaiz1/cmp_luasnip", lazy = true },
+		{ "rafamadriz/friendly-snippets", lazy = true },
 	},
 
 	config = function()
