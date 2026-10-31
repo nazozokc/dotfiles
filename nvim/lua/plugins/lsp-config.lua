@@ -19,7 +19,7 @@ return {
 				jdtls = "jdtls",
 				sqls = "sqls",
 				tailwindcss = "tailwindcss-language-server",
-				tsgo = "tsgo",
+				tsc = "tsc",
 			}
 
 			local servers_to_enable = {}
@@ -119,12 +119,12 @@ return {
 
 			-- ===== TypeScript / JavaScript =====
 			-- TS7 (Go ネイティブ実装) 内蔵の LSP (`tsc --lsp --stdio`) を nvim-lspconfig の
-			-- `tsgo` 設定で起動する。tsserver を廃した typescript-language-server /
+			-- `tsc` 設定で起動する。tsserver を廃した typescript-language-server /
 			-- typescript-tools.nvim は tsserver.js (TS5) に依存するため使っていない。
 			--
 			-- 診断は pull diagnostics (textDocument/diagnostic)。Neovim 0.11+ は
 			-- クライアントが対応していれば自動で pull を使う。
-			vim.lsp.config("tsgo", {
+			vim.lsp.config("tsc", {
 				capabilities = capabilities,
 				settings = {
 					-- 設定は js/ts / typescript / javascript / editor セクションの
