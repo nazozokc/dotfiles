@@ -3,8 +3,6 @@ return {
 		-- rust-analyzer 統合 (rust-tools.nvim の後継)。
 		-- filetype plugin のため lazy = false が推奨 (:h rustaceanvim)。
 		"mrcjkb/rustaceanvim",
-		-- バージョンは farm (nvim-plug-manage/flake.lock の rev) が固定する
-		lazy = false,
 		ft = { "rust" },
 		config = function()
 			-- nvim wrapper の PATH では home-manager の rustup shim が先に解決され、

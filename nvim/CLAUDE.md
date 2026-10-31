@@ -218,7 +218,7 @@ nix run .#switch
 
 以下の言語サーバーを設定済み：
 
-- **tsgo** - TypeScript / JavaScript / JSX / TSX（TypeScript 7 内蔵の LSP / `tsc --lsp --stdio`）
+- **tsc** - TypeScript / JavaScript / JSX / TSX（TypeScript 7 内蔵の LSP / `tsc --lsp --stdio`）
 - **clangd** - C / C++（`fallbackFlags: -std=c++20` で compile_commands.json 無しでも動作）
 - **sqls** - SQL
 - **tailwindcss** - Tailwind CSS（`tailwind.config.*` 検出時のみ起動）
