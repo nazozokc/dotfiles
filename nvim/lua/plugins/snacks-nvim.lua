@@ -2,6 +2,43 @@ return {
 	"folke/snacks.nvim",
 	priority = 1000,
 	lazy = false,
+	keys = {
+		{
+			"<leader><leader>",
+			function()
+				require("snacks.picker").files()
+			end,
+			desc = "Files",
+		},
+		{
+			"<leader>g",
+			function()
+				require("snacks.picker").grep()
+			end,
+			desc = "Live Grep",
+		},
+		{
+			"<leader>b",
+			function()
+				require("snacks.picker").buffers()
+			end,
+			desc = "Buffers",
+		},
+		{
+			"<leader>r",
+			function()
+				require("snacks.picker").recent()
+			end,
+			desc = "Recent Files",
+		},
+		{
+			"<leader>z",
+			function()
+				require("snacks").zen.toggle()
+			end,
+			desc = "Zen Mode",
+		},
+	},
 
 	opts = {
 		-- =========================

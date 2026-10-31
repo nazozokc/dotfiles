@@ -3,6 +3,7 @@ return {
 	cmd = "Oil",
 	keys = {
 		{ "<leader>m", "<cmd>Oil<CR>", desc = "Open Oil" },
+		{ "<leader>c", "<cmd>Oil ~/ghq/github.com/nazozokc/dotfiles/<CR>", desc = "Open dotfiles in Oil" },
 	},
 	dependencies = {
 		"echasnovski/mini.icons",
