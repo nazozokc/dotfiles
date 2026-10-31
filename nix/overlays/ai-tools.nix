@@ -20,8 +20,20 @@ final: prev: {
   #
   # nixpkgs が持つ 2 つの例外追加 patch の後に、1 件だけ足す。
   # upstream fix: https://github.com/Aider-AI/aider/pull/5782
-  aider-chat-full = prev.aider-chat-full.overridePythonAttrs (old: {
-    dependencies = old.dependencies ++ [ final.python3Packages.rsa ];
-    patches = old.patches ++ [ ../patches/aider-chat/add-vector-store-search-error.patch ];
-  });
+  aider-chat-full =
+    let
+      # PostHog 7.71 のテストは MCP 2 非対応。Aider の依存スコープだけ MCP 1 を使う。
+      python3Packages = final.python3Packages.overrideScope (
+        pyFinal: pyPrev: {
+          posthog = pyPrev.posthog.override { mcp = pyFinal.mcp_1; };
+        }
+      );
+      aider = (prev.aider-chat.override { inherit python3Packages; }).withOptional {
+        withAll = true;
+      };
+    in
+    aider.overridePythonAttrs (old: {
+      dependencies = old.dependencies ++ [ python3Packages.rsa ];
+      patches = old.patches ++ [ ../patches/aider-chat/add-vector-store-search-error.patch ];
+    });
 }
