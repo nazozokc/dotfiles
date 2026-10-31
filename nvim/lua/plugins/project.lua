@@ -1,8 +1,8 @@
 return {
 	"DrKJeff16/project.nvim",
-	lazy = false,
+	event = "VeryLazy",
 	config = function()
-		require("project_nvim").setup({
+		require("project").setup({
 			manual_mode = false,
 
 			-- Methods of detecting the root directory. **"lsp"** uses the native neovim
