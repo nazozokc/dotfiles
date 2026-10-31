@@ -1,6 +1,6 @@
 return {
 	"vim-test/vim-test",
-	event = "VeryLazy",
+	cmd = { "TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit" },
 	dependencies = {
 		"preservim/vimux",
 	},
