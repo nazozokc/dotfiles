@@ -120,6 +120,26 @@ in
       "--set"
       "LIBLLDB"
       "${vscode-lldb}/share/vscode/extensions/vadimcn.vscode-lldb/lldb/lib/liblldb.so"
+      # WSL のみ: nvim の PATH から /mnt/* を除外する。
+      # /mnt/c は 9p で遅く、vim.fn.executable() が未インストールの
+      # コマンド (rg, fcitx5-remote 等) を探すたびに 50+ エントリを
+      # stat して ~280ms かかる。nvim だけ PATH を絞る。
+      "--run"
+      ''
+        if [ -n "''${WSL_DISTRO_NAME:-}" ]; then
+          IFS=':' read -r -a _path_parts <<< "$PATH"
+          _path_clean=""
+          for _d in "''${_path_parts[@]}"; do
+            case "$_d" in
+              /mnt/*) ;;
+              *) _path_clean="''${_path_clean:+$_path_clean:}$_d" ;;
+            esac
+          done
+          PATH="$_path_clean"
+          export PATH
+          unset _path_parts _path_clean _d
+        fi
+      ''
     ];
 
     # These packages are only available when NeoVim is running
