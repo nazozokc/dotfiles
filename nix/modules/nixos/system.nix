@@ -16,7 +16,7 @@
 {
   # ---- ネットワーク --------------------------------------------------------
   networking = {
-    hostName = nazozokc;
+    hostName = "nazozokc";
     networkmanager.enable = true;
   };
 
