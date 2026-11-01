@@ -1,7 +1,7 @@
 name: Update flake.lock (auto-merge)
 on:
   schedule:
-    - cron: "0 */3 * * *" # 3時間ごと
+    - cron: "0 */5 * * *" # 3時間ごと
   workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
