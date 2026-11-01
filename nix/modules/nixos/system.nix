@@ -16,7 +16,7 @@
 {
   # ---- ネットワーク --------------------------------------------------------
   networking = {
-    hostName = NIXOS-NAZOKANA;
+    hostName = nazozokc;
     networkmanager.enable = true;
   };
 
