@@ -122,4 +122,3 @@ if nixPlugins then
 end
 
 require("lazy").setup("plugins", lazyOpts)
-

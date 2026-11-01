@@ -99,11 +99,11 @@
     "claudecode.nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1793458489,
-        "narHash": "sha256-ZZ1sxbCwv0E+07D/Gn0REkd1IQDAAkf+Q1SlxdDRgzs=",
+        "lastModified": 1793500071,
+        "narHash": "sha256-YUJP/XPuX2Xb92pyZNoIdCmbtV5yQPmyPsi2XOU/Rhs=",
         "owner": "coder",
         "repo": "claudecode.nvim",
-        "rev": "3b1cb75f92ad77289d44d6e69917b88ddf3f170f",
+        "rev": "22b1772992b9dddf73780f0d3607798c5cfce0f3",
         "type": "github"
       },
       "original": {
@@ -1794,11 +1794,11 @@
     "rustaceanvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1793406410,
-        "narHash": "sha256-1gZ1J8rAIf2iIYwjRxGqXuaY+LztwOKxPTZL2PK95WI=",
+        "lastModified": 1793492963,
+        "narHash": "sha256-O0X3/8x9uRsqz8IlmYy88ITjw5Q9NKKtyZPUMaD4YUk=",
         "owner": "mrcjkb",
         "repo": "rustaceanvim",
-        "rev": "3da79b08f963341193755bec04796b73a99c655e",
+        "rev": "9c5c1aa055b33aa17d4f113724b1e5c4f1f77a1e",
         "type": "github"
       },
       "original": {
