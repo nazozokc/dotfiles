@@ -11,6 +11,7 @@ return {
 
 			local server_cmds = {
 				html = "vscode-html-language-server",
+				cssls = "vscode-css-language-server",
 				lua_ls = "lua-language-server",
 				solargraph = "solargraph",
 				efm = "efm-langserver",
@@ -49,6 +50,20 @@ return {
 						-- JSX/TSX の診断は tsserver が担当するため、
 						-- html LSP の診断は html ファイルのみ通す（重複防止）
 						if vim.bo[ctx.bufnr].filetype == "html" then
+							vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx)
+						end
+					end,
+				},
+			})
+
+			vim.lsp.config("cssls", {
+				capabilities = capabilities,
+				filetypes = { "html", "css", "javascriptreact", "typescriptreact" },
+				handlers = {
+					["textDocument/publishDiagnostics"] = function(err, result, ctx)
+						-- JSX/TSX の診断は tsserver が担当するため、
+						-- cssls の診断は css ファイルのみ通す（重複防止）
+						if vim.bo[ctx.bufnr].filetype == "css" then
 							vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx)
 						end
 					end,
