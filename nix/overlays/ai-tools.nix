@@ -12,14 +12,16 @@ final: prev: {
 
   # aider-chat-full with bedrock (boto3) needs rsa at runtime
   #
-  # litellm 1.102.1 が `VectorStoreSearchError` を export し始めたが、aider
-  # 0.86.1 の `aider/exceptions.py` の EXCEPTIONS に無い。
-  # `_load()` は `strict` 引数に関わらず無条件に raise するため、ビルドの
-  # pytest だけでなく**実行時も** `LiteLLMExceptions()` の生成
-  # (models.py / base_coder.py) で落ちる。テストを無効化しても実害は消えない。
+  # nixpkgs の litellm は aider 0.86.1 が想定するより新しく、例外クラスを
+  # export するたびに増える。aider の `LiteLLMExceptions._load()` は
+  # EXCEPTIONS に無い例外名を見つけると `strict` 引数に関わらず無条件に
+  # raise するため、ビルドの pytest だけでなく**実行時も**
+  # `LiteLLMExceptions()` の生成 (models.py / base_coder.py) で落ちる。
+  # テストを無効化しても実害は消えない。
   #
-  # nixpkgs が持つ 2 つの例外追加 patch の後に、1 件だけ足す。
-  # upstream fix: https://github.com/Aider-AI/aider/pull/5782
+  # nixpkgs も `ErrorEventError` を allowlist に足す patch で回避しているが
+  # 名前が増えるたびに追随が必要になる。未知の例外は `get_ex_info()` が
+  # `ExInfo(None, None, None)` へフォールバックするので、チェック自体を外す。
   aider-chat-full =
     let
       # PostHog 7.71 のテストは MCP 2 非対応。Aider の依存スコープだけ MCP 1 を使う。
@@ -34,6 +36,6 @@ final: prev: {
     in
     aider.overridePythonAttrs (old: {
       dependencies = old.dependencies ++ [ python3Packages.rsa ];
-      patches = old.patches ++ [ ../patches/aider-chat/add-vector-store-search-error.patch ];
+      patches = old.patches ++ [ ../patches/aider-chat/ignore-unknown-litellm-exceptions.patch ];
     });
 }

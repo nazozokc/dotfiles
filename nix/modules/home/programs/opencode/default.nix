@@ -195,6 +195,10 @@ in
             ];
             enabled = true;
           };
+
+          TypescriptDocs = {
+            url = "https://gitmcp.io/microsoft/TypeScript";
+          };
         }
         // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux linuxMcp;
 
