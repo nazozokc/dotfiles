@@ -28,6 +28,14 @@ final: prev: {
       streamlit = pyPrev.streamlit.overridePythonAttrs (old: {
         pythonRelaxDeps = (old.pythonRelaxDeps or [ ]) ++ [ "pillow" ];
       });
+
+      # tree-sitter-language-pack は cargo-setup-hook が設定する
+      # ZSTD_SYS_USE_PKG_CONFIG=1 により zstd を pkg-config で探すが、
+      # pkg-config と libzstd の開発ファイルが依存に入っていない。
+      tree-sitter-language-pack = pyPrev.tree-sitter-language-pack.overridePythonAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.pkg-config ];
+        buildInputs = (old.buildInputs or [ ]) ++ [ prev.zstd ];
+      });
     })
   ];
 }

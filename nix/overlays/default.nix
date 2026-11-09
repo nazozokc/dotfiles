@@ -6,6 +6,7 @@ prev.lib.composeManyExtensions [
   (import ./compiler-rt.nix)
   (import ./node-packages.nix)
   (import ./python-packages.nix)
+  (import ./rust-packages.nix)
   (import ./fish-plugins.nix)
   (import ./typescript.nix)
 ] final prev
