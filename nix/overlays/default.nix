@@ -5,6 +5,7 @@ prev.lib.composeManyExtensions [
   (import ./bitwarden-cli.nix)
   (import ./compiler-rt.nix)
   (import ./node-packages.nix)
+  (import ./python-packages.nix)
   (import ./fish-plugins.nix)
   (import ./typescript.nix)
 ] final prev
