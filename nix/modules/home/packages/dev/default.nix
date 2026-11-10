@@ -12,7 +12,6 @@ with pkgs;
   deno
   yarn
   pnpm
-  aube
 
   # rust
   rustc
