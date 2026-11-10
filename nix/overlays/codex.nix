@@ -6,17 +6,15 @@
 #   AWS_LC_SYS_USE_SYSTEM=1 requires a system-installed AWS-LC, but none was found.
 #
 # Cause:
-#   Recent cargoSetupHook (nixpkgs#537108) sets AWS_LC_SYS_USE_SYSTEM=1 to prefer
-#   system libraries. The detection then fails because it finds OpenSSL (which
-#   lacks AWS-LC's base.h) instead of the aws-lc package in buildInputs.
+#   cargoSetupHook (nixpkgs#537108) sets AWS_LC_SYS_USE_SYSTEM=1 via the
+#   cargoUseSystemLibs preConfigureHook. Detection then fails because it finds
+#   OpenSSL (missing AWS-LC's base.h) instead of the aws-lc package.
 #
 # Fix:
-#   Unset the force-system flag so aws-lc-sys falls back to building from the
-#   bundled source.
+#   Set dontCargoUseSystemLibs to skip the hook entirely. This is the intended
+#   opt-out mechanism in cargo-setup-hook.sh.
 final: prev: {
   codex = prev.codex.overrideAttrs (old: {
-    env = (old.env or { }) // {
-      AWS_LC_SYS_USE_SYSTEM = "0";
-    };
+    dontCargoUseSystemLibs = true;
   });
 }
