@@ -197,7 +197,9 @@ in
           };
 
           TypescriptDocs = {
+            type = "social";
             url = "https://gitmcp.io/microsoft/TypeScript";
+            enabled = true;
           };
         }
         // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux linuxMcp;
