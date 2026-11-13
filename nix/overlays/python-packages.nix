@@ -12,9 +12,9 @@
 # パッケージを利用可能にする。
 #
 # 復活条件: nixpkgs 側で posthog が mcp 2.x 対応したらこの overlay を削除する。
-final: prev: {
+_final: prev: {
   pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-    (pyFinal: pyPrev: {
+    (_pyFinal: pyPrev: {
       posthog = pyPrev.posthog.overridePythonAttrs (old: {
         # テストは mcp 2.x の API 変更で落ちる (実行時依存ではない)
         doCheck = false;
