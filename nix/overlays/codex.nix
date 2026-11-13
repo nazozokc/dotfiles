@@ -13,8 +13,8 @@
 # Fix:
 #   Set dontCargoUseSystemLibs to skip the hook entirely. This is the intended
 #   opt-out mechanism in cargo-setup-hook.sh.
-final: prev: {
-  codex = prev.codex.overrideAttrs (old: {
+_final: prev: {
+  codex = prev.codex.overrideAttrs (_old: {
     dontCargoUseSystemLibs = true;
   });
 }

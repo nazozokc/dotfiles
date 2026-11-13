@@ -9,7 +9,7 @@
 # でビルドが落ちる。
 #
 # 復活条件: nixpkgs 側で presenterm に pkg-config / oniguruma が追加されたら削除する。
-final: prev: {
+_final: prev: {
   presenterm = prev.presenterm.overrideAttrs (old: {
     nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.pkg-config ];
     buildInputs = (old.buildInputs or [ ]) ++ [ prev.oniguruma ];
