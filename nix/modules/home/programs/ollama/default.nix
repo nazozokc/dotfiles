@@ -1,5 +1,4 @@
-_:
-{
+_: {
   dotfiles.programs.ollama = {
     icon = "🦙";
     note = "127.0.0.1:11434";
