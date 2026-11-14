@@ -1,6 +1,4 @@
-{
-  ...
-}:
+_:
 {
   dotfiles.programs.ollama = {
     icon = "🦙";
