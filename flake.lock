@@ -477,11 +477,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1794696603,
-        "narHash": "sha256-Hg3jbCeH+Rs+jiAzJdJuWmX0ywehUYjeOtwIu5X6vHI=",
+        "lastModified": 1794766032,
+        "narHash": "sha256-DmArQpZHfeaFg7m4PWzVdLQbmSAckqUOkAhckCrOCsY=",
         "owner": "ryoppippi",
         "repo": "gh-nippou",
-        "rev": "b9d5760d9b654d517995aaf60746389d4533fef3",
+        "rev": "9c0940bd093362b33688b3bce439853a7f01dd80",
         "type": "github"
       },
       "original": {
@@ -500,11 +500,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1794696603,
-        "narHash": "sha256-Hg3jbCeH+Rs+jiAzJdJuWmX0ywehUYjeOtwIu5X6vHI=",
+        "lastModified": 1794766032,
+        "narHash": "sha256-DmArQpZHfeaFg7m4PWzVdLQbmSAckqUOkAhckCrOCsY=",
         "owner": "ryoppippi",
         "repo": "gh-nippou",
-        "rev": "b9d5760d9b654d517995aaf60746389d4533fef3",
+        "rev": "9c0940bd093362b33688b3bce439853a7f01dd80",
         "type": "github"
       },
       "original": {
