@@ -21,6 +21,7 @@
 {
   system,
   useNixGL ? true,
+  extraModules ? [ ],
 }:
 let
   pkgs = pkgsFor system;
@@ -49,10 +50,13 @@ home-manager.lib.homeManagerConfiguration {
     # Ambxst のビルド済みパッケージ (nixosModules は使わない / 理由は flake.nix 参照)
     ambxstPackages = ambxst.packages.${system};
   };
-  modules = commonHomeModules ++ [
-    ../nix-conf.nix
-    ../home
-    (import ../home/tools-read.nix { inherit pkgs; })
-    ./default.nix
-  ];
+  modules =
+    commonHomeModules
+    ++ [
+      ../nix-conf.nix
+      ../home
+      (import ../home/tools-read.nix { inherit pkgs; })
+      ./default.nix
+    ]
+    ++ extraModules;
 }

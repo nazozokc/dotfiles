@@ -4,7 +4,10 @@
 # #switch との差分:
 #   - `nix flake check --no-build` を走らせない
 #   - OS 層 (system-manager / nix-darwin) を触らない = sudo 不要
-#   - home-manager (ユーザー層) の再適用だけする
+#   - packages の activation を外した専用設定で、設定ファイルだけ反映する
+#
+# 専用設定 (nix/modules/home/config-update.nix) が installPackages を無効化するため、
+# ~/.nix-profile の packages は更新されない (packages の更新は #switch の役割)。
 #
 # home-manager activation が対象なので、symlink の 2 系統が両方更新される:
 #   - mkOutOfStoreSymlink (dotfilesDir = self.outPath の store スナップショット)
@@ -25,7 +28,7 @@ in
     {
       apps.config-update = {
         type = "app";
-        meta.description = "ローカル編集を nix store の config へ反映する (home-manager のみ・sudo 不要)";
+        meta.description = "ローカル編集を nix store の config へ反映する (packages は触らない・sudo 不要)";
         program = "${pkgs.writeShellScriptBin "config-update" ''
           set -eo pipefail
 
@@ -59,27 +62,27 @@ in
           # -------------------------------------------------------------------
           # 2. 反映
           # -------------------------------------------------------------------
-          echo "[2/3] home-manager を再適用 (ユーザー層のみ・sudo 不要)"
+          echo "[2/3] home-manager を再適用 (packages は触らない・sudo 不要)"
           if is_wsl; then
             # nix が適用できない Windows 側 .wslconfig のずれだけ先に検出
             check_wslconfig
-            nix run github:nix-community/home-manager -- switch --flake .#${t.wslConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateWslConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
             rebuild_ksycoca
           elif is_darwin; then
             # darwin には standalone の homeConfigurations が無いので、
-            # darwinConfigurations に組み込まれた activationPackage を直接 activate
+            # config-update 用 darwinConfigurations の activationPackage を直接 activate
             # する (nix-darwin の OS 層は触らない)。
             # --print-out-paths は stdout、ビルドログは stderr。nom は stdout を
             # エスケープで汚して capture を壊すので併用しない (実測済み)。
             out=$(nix build --no-link --print-out-paths \
-              ".#darwinConfigurations.${t.darwinConfigName}.config.home-manager.users.${username}.activationPackage")
-            "$out/activate"
+              ".#darwinConfigurations.${t.configUpdateDarwinConfigName}.config.home-manager.users.${username}.activationPackage")
+            "$out/activate" --driver-version 1
           elif is_nixos; then
             # NixOS 用 home-manager 設定は nixGL wrap なし版 (nazozokc-nixos)
-            nix run github:nix-community/home-manager -- switch --flake .#${t.nixosHomeConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateNixosConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
             rebuild_ksycoca
           else
-            nix run github:nix-community/home-manager -- switch --flake ${t.flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+            nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
             rebuild_ksycoca
           fi
           echo ""

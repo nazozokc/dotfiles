@@ -9,7 +9,10 @@
   sops-nix,
   agent-skills-nix,
 }:
-system:
+{
+  system,
+  extraModules ? [ ],
+}:
 let
   pkgs = pkgsFor system;
   commonHomeModules = [
@@ -25,10 +28,13 @@ home-manager.lib.homeManagerConfiguration {
     inherit pkgs username;
     dotfilesDir = self.outPath;
   };
-  modules = commonHomeModules ++ [
-    ../nix-conf.nix
-    ../home/wsl.nix
-    (import ./tools-read.nix { inherit pkgs; })
-    ./default.nix
-  ];
+  modules =
+    commonHomeModules
+    ++ [
+      ../nix-conf.nix
+      ../home/wsl.nix
+      (import ./tools-read.nix { inherit pkgs; })
+      ./default.nix
+    ]
+    ++ extraModules;
 }

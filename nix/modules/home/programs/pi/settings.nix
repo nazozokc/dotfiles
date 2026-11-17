@@ -1,3 +1,8 @@
+{ config, pkgs, ... }:
+
+let
+  mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
+in
 {
   xdg.configFile."pi/agent/settings.json".text = builtins.toJSON {
     "$schema" = "https://pi.dev/schemas/settings.schema.json";
@@ -23,5 +28,9 @@
     autocompleteMaxVisible = 8;
     showHardwareCursor = false;
     doubleEscapeAction = "tree";
+  };
+
+  xdg.configFile."pi/agent/mcp.json".text = builtins.toJSON {
+    mcpServers = mcpConfig.pi;
   };
 }
