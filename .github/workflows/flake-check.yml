@@ -43,4 +43,5 @@ jobs:
     with:
       runs-on: ${{ matrix.os }}
       run-command: nix fmt -- --ci
-      timeout-minutes: 10
+      # macos-15-intel は formatter の初回ビルドに 10 分以上かかることがある
+      timeout-minutes: 20
