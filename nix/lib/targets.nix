@@ -27,6 +27,12 @@ rec {
   # nixosConfigName (= linuxConfigName) と同じく aarch64 だけサフィックスを付ける
   nixosHomeConfigName = if isAarch64Linux then "${username}-nixos-aarch64" else "${username}-nixos";
 
+  # config-update 用の設定名。詳細は nix/modules/home/config-update.nix
+  configUpdateConfigName = "${linuxConfigName}-config-update";
+  configUpdateWslConfigName = "${wslConfigName}-config-update";
+  configUpdateNixosConfigName = "${nixosHomeConfigName}-config-update";
+  configUpdateDarwinConfigName = "${darwinConfigName}-config-update";
+
   # nix run .#build がビルドするターゲット
   hmConfig =
     if isDarwin then

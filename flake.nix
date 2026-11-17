@@ -238,6 +238,9 @@
           ;
       };
 
+      # config-update 用: packages の activation だけを外す module
+      configUpdateModule = ./nix/modules/home/config-update.nix;
+
       # macOS (nix-darwin) 向け設定生成 (nix/modules/macos/build.nix)
       # Apple Silicon/Intel で 26.11/26.05 系スタックを使い分ける
       mkDarwinConfig = import ./nix/modules/macos/build.nix {
@@ -336,7 +339,7 @@
           "${username}-aarch64" = mkLinuxHomeConfig {
             system = "aarch64-linux";
           };
-          "${username}-wsl" = mkWSLHomeConfig "x86_64-linux";
+          "${username}-wsl" = mkWSLHomeConfig { system = "x86_64-linux"; };
           "${username}-nixos" = mkLinuxHomeConfig {
             system = "x86_64-linux";
             useNixGL = false;
@@ -345,12 +348,46 @@
             system = "aarch64-linux";
             useNixGL = false;
           };
+
+          # config-update 用: installPackages activation を外し packages を触らない
+          "${username}-config-update" = mkLinuxHomeConfig {
+            system = "x86_64-linux";
+            extraModules = [ configUpdateModule ];
+          };
+          "${username}-aarch64-config-update" = mkLinuxHomeConfig {
+            system = "aarch64-linux";
+            extraModules = [ configUpdateModule ];
+          };
+          "${username}-wsl-config-update" = mkWSLHomeConfig {
+            system = "x86_64-linux";
+            extraModules = [ configUpdateModule ];
+          };
+          "${username}-nixos-config-update" = mkLinuxHomeConfig {
+            system = "x86_64-linux";
+            useNixGL = false;
+            extraModules = [ configUpdateModule ];
+          };
+          "${username}-nixos-aarch64-config-update" = mkLinuxHomeConfig {
+            system = "aarch64-linux";
+            useNixGL = false;
+            extraModules = [ configUpdateModule ];
+          };
         };
 
         # macOS 向け nix-darwin 設定 (Apple Silicon / Intel Mac)
         darwinConfigurations = {
-          ${username} = mkDarwinConfig "aarch64-darwin";
-          "${username}-x86_64" = mkDarwinConfig "x86_64-darwin";
+          ${username} = mkDarwinConfig { system = "aarch64-darwin"; };
+          "${username}-x86_64" = mkDarwinConfig { system = "x86_64-darwin"; };
+
+          # config-update 用: home-manager 側の installPackages だけを外す
+          "${username}-config-update" = mkDarwinConfig {
+            system = "aarch64-darwin";
+            extraHomeModules = [ configUpdateModule ];
+          };
+          "${username}-x86_64-config-update" = mkDarwinConfig {
+            system = "x86_64-darwin";
+            extraHomeModules = [ configUpdateModule ];
+          };
         };
 
         # -------------------------------------------------------------------

@@ -138,7 +138,7 @@ nix run github:nazozokc/dotfiles
 # dotfilesやパッケージ更新
 nix run .#switch
 
-# 設定のみ反映 (flake check・OS層なし・sudo 不要)
+# 設定のみ反映 (flake check・OS層・packages 更新なし・sudo 不要)
 nix run .#config-update
 
 # バージョン更新

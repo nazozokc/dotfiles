@@ -266,6 +266,7 @@ nix/
 ├── modules/                           # home-manager / system-manager のモジュール
 │   ├── home/                          # home-manager 共通モジュール
 │   │   ├── default.nix                # エントリーポイント (Linux/WSL 共通)
+│   │   ├── config-update.nix          # config-update 用 (installPackages を無効化)
 │   │   ├── wsl.nix                    # WSL エントリーポイント (packages なし)
 │   │   ├── dotfiles-link.nix          # fish/wezterm/zsh/bash/my_scripts の symlink 管理
 │   │   ├── tools-read.nix             # Linux 用ツール読み取り
@@ -398,15 +399,21 @@ nix run .#agents-skills-update
 nix run .#config-update
 ```
 
-**`#switch` との差分 = flake check と OS 層を外した home-manager のみ。**
+**`#switch` との差分 = flake check・OS 層・packages の更新を外した設定のみ。**
 
 |                                             | `#update` | `#config-update` | `#switch`                     |
 | ------------------------------------------- | --------- | ---------------- | ----------------------------- |
 | `flake.lock` 更新                           | ✅        | ❌               | ❌                            |
 | `nix flake check`                           | ❌        | ❌               | ✅                            |
-| home-manager (ユーザー層)                   | ❌        | ✅               | ✅                            |
+| home-manager の設定ファイル・symlink        | ❌        | ✅               | ✅                            |
+| `~/.nix-profile` の packages                | ❌        | ❌               | ✅                            |
 | OS 層 (system-manager / NixOS / nix-darwin) | ❌        | ❌               | ✅                            |
 | sudo                                        | ❌        | ❌               | ✅ (ネイティブ Linux / NixOS) |
+
+`*-config-update` という専用の home-manager 設定を使い、
+`nix/modules/home/config-update.nix` が `home.activation.installPackages` を
+無効化する。設定ファイル・symlink・その他の activation は通常どおり走る。
+packages の更新は `#switch` の役割。
 
 - **「最新版」はローカル編集の反映のみ**。git pull はしない
 - home-manager activation が走るので symlink の 2 系統が両方更新される:
@@ -418,8 +425,8 @@ nix run .#config-update
   (nix が適用できない config のため)
 - 適用後は `rebuild_ksycoca` で GUI の世代切替検知を助ける (Linux のみ・no-op 保証)
 - **macOS は standalone の `homeConfigurations` が無い**ので、
-  `darwinConfigurations.<name>.config.home-manager.users.<name>.activationPackage` を
-  `nix build --no-link --print-out-paths` で取得して `$out/activate` を直接実行する
+  `darwinConfigurations.<name>-config-update.config.home-manager.users.<name>.activationPackage` を
+  `nix build --no-link --print-out-paths` で取得して `$out/activate --driver-version 1` を直接実行する
   (nix-darwin の OS 層は触らない)。`nom` は `--print-out-paths` の capture を壊すため
   併用しない (実測済み)。**未検証 — 失敗したら `#switch` へ委譲する**
 - 完了後、起動中のアプリは旧設定のまま。opencode 等は再起動し新規セッションを開くこと

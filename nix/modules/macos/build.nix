@@ -13,7 +13,10 @@
   sops-nix,
   agent-skills-nix,
 }:
-system:
+{
+  system,
+  extraHomeModules ? [ ],
+}:
 let
   isIntel = system == "x86_64-darwin";
   darwin' = if isIntel then darwin-intel else darwin;
@@ -57,7 +60,8 @@ darwin'.lib.darwinSystem {
           ++ nixpkgs.lib.optionals isIntel [
             # home-manager release-26.05 は stateVersion 26.11 を受け付けないため 26.05 に固定
             { home.stateVersion = nixpkgs.lib.mkForce "26.05"; }
-          ];
+          ]
+          ++ extraHomeModules;
         };
       };
     }

@@ -6,8 +6,8 @@
 }:
 
 let
-  homeDir = config.home.homeDirectory;
   link = config.lib.file.mkOutOfStoreSymlink;
+  mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
 in
 {
   dotfiles.programs.opencode = {
@@ -167,42 +167,7 @@ in
         };
       };
 
-      mcp =
-        let
-          linuxMcp = {
-            playwright = {
-              type = "local";
-              command = [
-                "${pkgs.playwright-mcp}/bin/playwright-mcp"
-                "--browser"
-                "chromium"
-                "--no-sandbox"
-              ];
-              env = {
-                PWMCP_PROFILES_DIR_FOR_TEST = "${homeDir}/.local/share/playwright-mcp/profiles";
-              };
-              enabled = true;
-            };
-          };
-        in
-        {
-          context7 = {
-            type = "local";
-            command = [
-              "${pkgs.bun}/bin/bunx"
-              "-y"
-              "@upstash/context7-mcp"
-            ];
-            enabled = true;
-          };
-
-          TypescriptDocs = {
-            type = "social";
-            url = "https://gitmcp.io/microsoft/TypeScript";
-            enabled = true;
-          };
-        }
-        // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux linuxMcp;
+      mcp = mcpConfig.opencode;
 
       # These paths are glob patterns resolved by opencode at runtime, not by Nix
       instructions = [
