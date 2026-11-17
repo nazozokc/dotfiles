@@ -23,6 +23,7 @@ _:
     ./programs/claude-code
     ./programs/codex
     ./programs/pi
+    ./programs/t3code
     ./programs/ghostty.nix
     ./programs/ollama
     ./programs/docker
