@@ -15,10 +15,8 @@
 
 {
   # ---- ネットワーク --------------------------------------------------------
-  networking = {
-    hostName = "nazozokc";
-    networkmanager.enable = true;
-  };
+  # hostName はホスト固有値なので nix/hosts/<name>/default.nix が持つ
+  networking.networkmanager.enable = true;
 
   # ---- ロケール / コンソール ------------------------------------------------
   # NixOS は glibcLocales パッケージ方式のため locale-gen は不要。
@@ -94,42 +92,68 @@
   # nixGL は不要 (NixOS はドライバを OS 層で配線する)。
   hardware.graphics.enable = true;
 
-  # ---- 音声 -----------------------------------------------------------------
-  # pipewire + pulse 互換 (Ambxst / pavucontrol は pulse ソケットを使う)。
-  # 最小構成: JACK / ALSA の追加機能は有効化しない
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-  };
+  # ---- システムサービス -----------------------------------------------------
+  services = {
+    # 音声: pipewire + pulse 互換 (Ambxst / pavucontrol は pulse ソケットを使う)。
+    # 最小構成: JACK / ALSA の追加機能は有効化しない
+    pipewire = {
+      enable = true;
+      pulse.enable = true;
+    };
 
-  # ---- 電源管理 -------------------------------------------------------------
-  # power.nix (system-manager 用) は systemd.packages + wantedBy で
-  # ppd を動かすが、NixOS にはネイティブの services.power-profiles-daemon が有る。
-  services.power-profiles-daemon.enable = true;
+    # 電源管理: power.nix (system-manager 用) は systemd.packages + wantedBy で
+    # ppd を動かすが、NixOS にはネイティブの services.power-profiles-daemon が有る。
+    power-profiles-daemon.enable = true;
+
+    # Ambxst (Quickshell) のバッテリー / 電源ウィジェットは UPower の D-Bus
+    # インターフェースを参照する。NixOS 既定では無効なので明示する。
+    upower.enable = true;
+
+    # SSD の TRIM を週次で実行する。NixOS 既定は無効。
+    fstrim.enable = true;
+
+    # ファイルマネージャ / ポータルからドライブをマウントするための daemon。
+    udisks2.enable = true;
+
+    # GIO の VFS (ゴミ箱・リモート・最近使ったファイル)。GTK 系アプリの
+    # ファイル選択ダイアログが gvfs を要求するため有効化する。
+    gvfs.enable = true;
+  };
 
   # ---- Nix 設定 -------------------------------------------------------------
-  # NixOS は nix-command / flakes を既定で有効化しているが、明示しておく
-  # (将来のデフォルト変更に依存しないため)。
-  # trusted-users に username を足すことで sudo 無しで substituter 利用等が可能に。
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    trusted-users = [
-      "root"
-      username
-    ];
-  };
+  nix = {
+    # NixOS は nix-command / flakes を既定で有効化しているが、明示しておく
+    # (将来のデフォルト変更に依存しないため)。
+    # trusted-users に username を足すことで sudo 無しで substituter 利用等が可能に。
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      trusted-users = [
+        "root"
+        username
+      ];
+      # store 内の同一ファイルを hardlink で共有する (home-manager の
+      # auto-optimise-store 相当)。GC の前に回すと削除対象が減る。
+      auto-optimise-store = true;
+    };
 
-  # システムプロファイルの GC。home-manager 側のユーザープロファイル GC
-  # (systemd/user の nix-store-gc・weekly) と同じ週次で回す。
-  # --delete-older-than 14d: 14 日より古い世代を削る。
-  # 直近の世代は残るので rollback は保つ
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
+    # システムプロファイルの GC。home-manager 側のユーザープロファイル GC
+    # (systemd/user の nix-store-gc・weekly) と同じ週次で回す。
+    # --delete-older-than 14d: 14 日より古い世代を削る。
+    # 直近の世代は残るので rollback は保つ
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 14d";
+    };
+
+    # hardlink 最適化を週次で自動実行する。gc と同じ頻度に揃える。
+    optimise = {
+      automatic = true;
+      dates = "weekly";
+    };
   };
 
   # ---- stateVersion ---------------------------------------------------------

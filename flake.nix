@@ -341,6 +341,10 @@
             system = "x86_64-linux";
             useNixGL = false;
           };
+          "${username}-nixos-aarch64" = mkLinuxHomeConfig {
+            system = "aarch64-linux";
+            useNixGL = false;
+          };
         };
 
         # macOS 向け nix-darwin 設定 (Apple Silicon / Intel Mac)
@@ -377,8 +381,10 @@
         #
         # hostModule は nix/hosts/<name>/default.nix。hardware-configuration.nix
         # はこちらで用意せず、ホストごとに実機の disk layout から生成する。
+        # attr 名は targets.nix の nixosConfigName (= linuxConfigName) と揃える。
         nixosConfigurations = {
           ${username} = mkNixosConfig "x86_64-linux" ./nix/hosts/nazozokc;
+          "${username}-aarch64" = mkNixosConfig "aarch64-linux" ./nix/hosts/nazozokc-aarch64;
         };
       };
     };

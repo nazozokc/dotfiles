@@ -23,8 +23,9 @@ rec {
 
   # NixOS 用の home-manager 設定名 (nixGL wrap なし版)。
   # 非 NixOS Linux では nixGL で GPU ライブラリを bridge するが、
-  # NixOS では /run/opengl-driver が正しく、nixGL はドライバ不一致の原因になる
-  nixosHomeConfigName = "${username}-nixos";
+  # NixOS では /run/opengl-driver が正しく、nixGL はドライバ不一致の原因になる。
+  # nixosConfigName (= linuxConfigName) と同じく aarch64 だけサフィックスを付ける
+  nixosHomeConfigName = if isAarch64Linux then "${username}-nixos-aarch64" else "${username}-nixos";
 
   # nix run .#build がビルドするターゲット
   hmConfig =

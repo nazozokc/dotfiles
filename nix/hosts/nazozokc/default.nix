@@ -9,11 +9,18 @@ _: {
     ./hardware-configuration.nix
   ];
 
+  # ---- ホスト名 -------------------------------------------------------------
+  # ホスト固有値は hosts/<name>/ に閉じる (system.nix は共通設定だけを持つ)。
+  # attr 名 (nixosConfigurations.<name>) と揃える。
+  networking.hostName = "nazozokc";
+
   # ---- ブートローダー -------------------------------------------------------
   # UEFI + systemd-boot。NixOS の標準構成。
   # installer が /boot に EFI エントリを作った前提 (nixos-infect 等では不要)。
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
+    # /boot を世代で埋め尽くさない。直近 10 世代を残す。
+    systemd-boot.configurationLimit = 10;
   };
 }

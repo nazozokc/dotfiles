@@ -6,13 +6,13 @@
 
 ## システム構成
 
-| コンポーネント     | Linux (system-manager)                 | Linux (NixOS)                   | macOS (Apple Silicon)         | macOS (Intel)                   |
-| ------------------ | -------------------------------------- | ------------------------------- | ----------------------------- | ------------------------------- |
-| nixpkgs            | unstable                               | unstable                        | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
-| OS 層設定          | system-manager (ネイティブ Linux のみ) | `nixosConfigurations`           | —                             | —                               |
-| システム設定       | home-manager                           | `nixos-rebuild`                 | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
-| ユーザーパッケージ | home-manager                           | home-manager (`nazozokc-nixos`) | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
-| シェル             | fish                                   | fish                            | fish                          | fish                            |
+| コンポーネント     | Linux (system-manager)                 | Linux (NixOS)                                    | macOS (Apple Silicon)         | macOS (Intel)                   |
+| ------------------ | -------------------------------------- | ------------------------------------------------ | ----------------------------- | ------------------------------- |
+| nixpkgs            | unstable                               | unstable                                         | unstable                      | 26.05 (`nixpkgs-26.05-darwin`)  |
+| OS 層設定          | system-manager (ネイティブ Linux のみ) | `nixosConfigurations`                            | —                             | —                               |
+| システム設定       | home-manager                           | `nixos-rebuild`                                  | nix-darwin                    | nix-darwin (`nix-darwin-26.05`) |
+| ユーザーパッケージ | home-manager                           | home-manager (`<user>-nixos` / `-nixos-aarch64`) | home-manager (nix-darwin統合) | home-manager (nix-darwin統合)   |
+| シェル             | fish                                   | fish                                             | fish                          | fish                            |
 
 ## Intel Mac (x86_64-darwin) について
 
@@ -322,10 +322,13 @@ nix/
 │   ├── nixos/                         # NixOS 固有設定 (nixosConfigurations)
 │   │   ├── build.nix                  # 設定生成ヘルパー (mkNixosConfig / nixosSystem)
 │   │   ├── default.nix                # エントリーポイント (共有モジュール + system.nix)
-│   │   └── system.nix                 # hostName / i18n / users / pipewire / nix.settings
-│   ├── hosts/                         # NixOS ホスト定義
-│   │   └── nazozokc/                  # x86_64-linux デスクトップ
-│   │       ├── default.nix            # boot.loader (systemd-boot) + hardware-configuration import
+│   │   └── system.nix                 # i18n / users / pipewire / デスクトップ daemon / nix.settings
+│   ├── hosts/                         # NixOS ホスト定義 (hostName / boot / disk layout)
+│   │   ├── nazozokc/                  # x86_64-linux デスクトップ
+│   │   │   ├── default.nix            # hostName + boot.loader (systemd-boot) + hardware import
+│   │   │   └── hardware-configuration.nix # disk layout (実機の nixos-generate-config 出力)
+│   │   └── nazozokc-aarch64/          # aarch64-linux (ARM デスクトップ / VPS)
+│   │       ├── default.nix            # hostName + boot.loader (systemd-boot) + hardware import
 │   │       └── hardware-configuration.nix # disk layout (実機の nixos-generate-config 出力)
 │   ├── linux/                         # Linux 固有設定
 │   │   ├── build.nix                  # 設定生成ヘルパー (mkLinuxHomeConfig)
@@ -665,14 +668,20 @@ NixOS ホストは system-manager を使わず、NixOS ネイティブの
 `nixosConfigurations` で管理する。
 
 - モジュール: `nix/modules/nixos/` (build / default / system.nix)
+  - `system.nix` は全ホスト共通の OS 設定のみ。hostName / ブートローダ /
+    ディスクレイアウトはホスト側 (`nix/hosts/<name>/`) が持つ
 - ホスト定義: `nix/hosts/<name>/` (default.nix + hardware-configuration.nix)
+  - `nazozokc` … x86_64-linux デスクトップ (`nixosConfigurations.nazozokc`)
+  - `nazozokc-aarch64` … aarch64-linux (`nixosConfigurations.nazozokc-aarch64`)
   - `hardware-configuration.nix` は実機の disk layout をコミットする。
     初回はスタブ (`/dev/disk/by-label/nixos` / `BOOT`) が入っているので、
     実機で `nixos-generate-config --show-hardware-config` を実行して差し替える
 - 適用: `sudo nixos-rebuild switch --flake .#nazozokc`
-  (または `nix run .#switch` / `.#system-switch` が自動委譲)
+  (`nazozokc-aarch64` では `.#nazozokc-aarch64`)。
+  または `nix run .#switch` / `.#system-switch` が自動委譲
 - ユーザー層は standalone home-manager の `homeConfigurations."<username>-nixos"`
-  (`mkLinuxHomeConfig { system = "x86_64-linux"; useNixGL = false; }`)。nixGL は不要
+  (aarch64 は `"<username>-nixos-aarch64"`)。いずれも
+  `mkLinuxHomeConfig { system = ...; useNixGL = false; }` で nixGL は使わない
   (NixOS の GPU ドライバは `/run/opengl-driver` が正)。`useNixGL = false` で
   nixGL wrap と `targets.genericLinux` が無効になる
 
@@ -793,6 +802,7 @@ nix develop .#editors
 flake.nix                                 # 配線のみ (inputs / imports / 設定の属性)
 ├── nix/lib/identity.nix                  # username・repoOwner
 ├── pkgsFor (nix/lib/pkgs.nix)            → nixpkgs インスタンス生成 (Intelスタック切替)
+│   └── nix/lib/nixpkgs-config.nix        # nixpkgs.config の単一ソース (pkgs / macOS / NixOS 共有)
 ├── imports → nix/flake-parts/            # devShells と apps (nix run .#*)
 │   └── apps/common.nix                   # identity / shell.nix / targets.nix / system-manager input
 ├── Linux:   mkLinuxHomeConfig (nix/modules/linux/build.nix)
@@ -801,10 +811,10 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
 │           systemConfigs.{nazozokc,nazozokc-aarch64} (system-manager)
 │              → mkSystemConfig (nix/modules/system/build.nix)
 │                 → nix/modules/system/  (OS 層: /etc・systemd システムユニット)
-├── NixOS:   nixosConfigurations.nazozokc
+├── NixOS:   nixosConfigurations.{nazozokc,nazozokc-aarch64}
 │              → mkNixosConfig (nix/modules/nixos/build.nix)
 │                 → nix/modules/nixos/ + nix/modules/system/ (共有 3 モジュール)
-│                 → nix/hosts/nazozokc/  (hardware-configuration + boot.loader)
+│                 → nix/hosts/<name>/  (hostName + hardware-configuration + boot.loader)
 ├── WSL:     mkWSLHomeConfig (nix/modules/wsl/build.nix)
 │              → nix/modules/home/wsl.nix + nix/modules/wsl/
 └── macOS:   mkDarwinConfig (nix/modules/macos/build.nix)
