@@ -23,18 +23,9 @@ let
 in
 import nixpkgs' {
   localSystem.system = system;
-  config = {
-    allowUnfree = true;
-    # 26.05 で x86_64-darwin の非推奨警告を抑止 (26.11 ではキー自体が不要)
+  # 値の単一ソースは nix/lib/nixpkgs-config.nix (macOS / NixOS 側と共有)
+  config = import ./nixpkgs-config.nix {
     allowDeprecatedx86_64Darwin = isIntel;
-    permittedInsecurePackages = [
-      "pnpm-9.15.9"
-      "pnpm-10.34.0"
-      "electron-39.8.10"
-    ];
-    problems = {
-      handlers.dlinfo.broken = "warn";
-    };
   };
   overlays = [
     (_: _: { _llm-agents = llmAgents'; })

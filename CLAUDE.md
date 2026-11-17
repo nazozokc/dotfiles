@@ -15,9 +15,10 @@
   `.#system-build` / `.#system-switch` (WSL では switch 不可)。
   x86_64 / aarch64 の両方で同じモジュール構成を使います。
 - **NixOS** の場合は `nixosConfigurations` (`nix/modules/nixos/` + `nix/hosts/`) を使い、
-  `nixos-rebuild switch --flake .#nazozokc` で適用します。
+  `nixos-rebuild switch --flake .#nazozokc` (aarch64 は `.#nazozokc-aarch64`) で適用します。
   `nix run .#switch` は `/etc/NIXOS` を検出して自動で nixos-rebuild に委譲します。
-  ホストの disk layout は `nix/hosts/<name>/hardware-configuration.nix` にコミットします。
+  ホスト固有値 (hostName / ブートローダ / disk layout) は `nix/hosts/<name>/` に、
+  共通設定は `nix/modules/nixos/system.nix` に置きます。
 
 # 何を管理しているか
 

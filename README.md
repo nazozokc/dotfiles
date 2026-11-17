@@ -16,7 +16,7 @@
 
 - Linux: `x86_64-linux` (systemd ベースのディストリ。Arch Linux / Ubuntu / Debian / Fedora など)
 - Linux: `aarch64-linux` (ARM linux)
-- **NixOS**: `x86_64-linux` (`nixosConfigurations`。`nixos-rebuild switch --flake .#nazozokc`)
+- **NixOS**: `x86_64-linux` / `aarch64-linux` (`nixosConfigurations`。`nixos-rebuild switch --flake .#nazozokc` / `.#nazozokc-aarch64`)
 - WSL: `x86_64-linux` (WSL2)
 - macOS: `aarch64-darwin` (Apple Silicon) / `x86_64-darwin` (Intel Mac)
 
@@ -255,7 +255,7 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 - **ターミナル**: wezterm, ghostty (Linux では nixGL で wrap して導入)
 - **Home Manager**: dotfiles (`.config/*`), ホームディレクトリリンク管理
 - **Linux の OS 層**: system-manager が `/etc` (locale / sysctl / fcitx5 等) と systemd システムユニットを管理。config は `nix/modules/system/`
-- **NixOS**: `nixosConfigurations` (`nix/modules/nixos/` + `nix/hosts/<name>/`。Hyprland / polkit / Bluetooth / Docker / nix store GC 等)
+- **NixOS**: `nixosConfigurations` (`nix/modules/nixos/` + `nix/hosts/<name>/`。Hyprland / polkit / Bluetooth / Docker / UPower / fstrim / nix store GC・optimise 等。hostName・ブートローダ・ディスクはホスト側)
 - **Linux GUI (Hyprland)**: Ambxst (Quickshell 製シェル。bar / launcher / 通知 / ロック / 壁紙 / スクリーンショット / メディア / OSD を統合) + `hypr/` の設定
 - **macOS限定**: nix-darwin によるシステム設定
 
