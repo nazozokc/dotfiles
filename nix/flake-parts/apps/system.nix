@@ -69,6 +69,8 @@ in
 
             ${c.shell.detectHelpers}
 
+            ${c.nomHelper pkgs}
+
             demoteToSudoUser "$@"
 
             require_nixbld
@@ -77,9 +79,9 @@ in
             echo "  cmd    : system-build"
             echo ""
             if is_nixos; then
-              ${pkgs.nix-output-monitor}/bin/nom build .#nixosConfigurations.${t.nixosConfigName}.config.system.build.toplevel
+              run_nom build .#nixosConfigurations.${t.nixosConfigName}.config.system.build.toplevel
             else
-              ${pkgs.nix-output-monitor}/bin/nom build .#systemConfigs.${t.systemConfigName}
+              run_nom build .#systemConfigs.${t.systemConfigName}
             fi
           ''}/bin/system-build";
         };

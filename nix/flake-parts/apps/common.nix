@@ -45,6 +45,30 @@ in
   # 実体とバージョンはここに集約され、nvim/.../plugins/default.nix が farm を組む。
   nvimPlugDir = "nvim/nvim-plug-manage";
 
+  # nix-output-monitor (nom) を「TTY のときだけ」通すラッパ関数を返す。
+  #
+  # nom は ANSI のカーソル移動で Downloads / Dependency Graph テーブルを
+  # 上書き描画するライブ UI。よって次の 2 条件で出力が壊れる:
+  #
+  #   1. stdout が TTY でない (パイプ / リダイレクト / CI / エージェントの capture)
+  #      → 再描画が効かず、制御文字とテーブルの断片が積み上がる
+  #   2. nom の出力をさらに nom へ通す (二重 nom)
+  #      → 内側が描画したテーブルを外側が nix ログと誤解釈し、
+  #        ヘッダ (┏━━━ Downloads │ Host) が延々と再描画される
+  #
+  # `... |& nom` の代わりに `run_nom ...` と書く。非 TTY では素の nix 出力を流す。
+  # ビルドしないコマンド (nix flake update / flake check --no-build) には
+  # nom を使わない。ライブ表示の価値が無く、壊れるリスクだけがある。
+  nomHelper = pkgs: ''
+    run_nom() {
+      if [ -t 1 ]; then
+        "$@" |& ${pkgs.nix-output-monitor}/bin/nom
+      else
+        "$@"
+      fi
+    }
+  '';
+
   # GitHub API の未認証レート制限は 60/h。プラグイン 135 件を lock すると
   # 確実に越えて HTTP 403 になる。gh がログイン済みなら access-tokens として
   # NIX_CONFIG へ足す (子の nix プロセスまで届く)。

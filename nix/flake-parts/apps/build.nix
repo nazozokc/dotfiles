@@ -25,6 +25,8 @@ in
 
           ${c.shell.detectHelpers}
 
+          ${c.nomHelper pkgs}
+
           # sudo 実行時の demote (HOME が /root になるのを防ぐ)
           demoteToSudoUser "$@"
 
@@ -35,19 +37,19 @@ in
             echo "  target : .#${t.wslConfigName}"
             echo "  cmd    : build"
             echo ""
-            ${pkgs.nix-output-monitor}/bin/nom build .#homeConfigurations.${t.wslConfigName}.activationPackage
+            run_nom build .#homeConfigurations.${t.wslConfigName}.activationPackage
           elif is_nixos; then
             echo "  system : ${t.sysLabel} (NixOS)"
             echo "  target : .#homeConfigurations.${t.nixosHomeConfigName}.activationPackage"
             echo "  cmd    : build"
             echo ""
-            ${pkgs.nix-output-monitor}/bin/nom build .#homeConfigurations.${t.nixosHomeConfigName}.activationPackage
+            run_nom build .#homeConfigurations.${t.nixosHomeConfigName}.activationPackage
           else
             echo "  system : ${t.sysLabel}"
             echo "  target : ${t.hmConfig}"
             echo "  cmd    : build"
             echo ""
-            ${pkgs.nix-output-monitor}/bin/nom build .#${t.hmConfig}
+            run_nom build .#${t.hmConfig}
           fi
         ''}/bin/build";
       };

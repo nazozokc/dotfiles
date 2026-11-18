@@ -20,7 +20,9 @@ in
           ${c.shell.nixFeatureGuard}
 
           ${t.printInfo "update"}
-          nix flake update |& ${pkgs.nix-output-monitor}/bin/nom
+          # flake update はビルドしない。nom はライブ表示の価値が無く、
+          # 非 TTY では Downloads テーブルが壊れるだけなので使わない。
+          nix flake update
         ''}/bin/update";
       };
     };
