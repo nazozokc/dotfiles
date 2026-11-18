@@ -3,7 +3,6 @@ final: prev:
 prev.lib.composeManyExtensions [
   (import ./ai-tools.nix)
   (import ./bitwarden-cli.nix)
-  (import ./codex.nix)
   (import ./compiler-rt.nix)
   (import ./node-packages.nix)
   (import ./python-packages.nix)
