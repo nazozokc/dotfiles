@@ -170,7 +170,10 @@ in
                         fi
 
                         echo "[5/5] 反映します: nix run .#switch"
-                        nix run .#switch |& ${pkgs.nix-output-monitor}/bin/nom
+                        # switch 自身が内部で nom を通す (TTY のときだけ)。
+                        # ここで包むと二重 nom になり、内側の描画済みテーブルを
+                        # 外側が再描画して出力が壊れる。
+                        nix run .#switch
                         echo ""
                         echo "  完了"
                       else

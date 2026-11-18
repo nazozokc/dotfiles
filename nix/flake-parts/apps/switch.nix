@@ -25,6 +25,8 @@ in
 
           ${c.shell.detectHelpers}
 
+          ${c.nomHelper pkgs}
+
           # sudo 実行時は SUDO_USER へ demote してから処理を始める
           # (HOME / identity.nix の username が root になるのを防ぐ)
           demoteToSudoUser "$@"
@@ -44,7 +46,7 @@ in
             echo "  cmd    : switch"
             echo ""
             check_wslconfig
-            nix run github:nix-community/home-manager -- switch --flake .#${t.wslConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            run_nom nix run github:nix-community/home-manager -- switch --flake .#${t.wslConfigName}
             rebuild_ksycoca
           elif is_darwin; then
             echo "  system : ${t.sysLabel}"
@@ -52,14 +54,14 @@ in
             echo "  cmd    : switch"
             echo ""
             # sudo は既定で環境変数を捨てるため、NIX_CONFIG を引き継ぐ
-            sudo_nix nix run nix-darwin -- switch --flake ${t.flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+            run_nom sudo_nix nix run nix-darwin -- switch --flake ${t.flakeTarget}
           elif is_nixos; then
             # NixOS: ユーザー層 (home-manager standalone, nixGL なし) → OS 層 (nixos-rebuild)
             echo "  system : ${t.sysLabel} (NixOS)"
             echo "  target : .#${t.nixosHomeConfigName} + .#${t.nixosConfigName}"
             echo "  cmd    : switch"
             echo ""
-            nix run github:nix-community/home-manager -- switch --flake .#${t.nixosHomeConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            run_nom nix run github:nix-community/home-manager -- switch --flake .#${t.nixosHomeConfigName}
 
             # 世代切替で ksycoca の mtime が壊れる問題は NixOS でも同じ
             rebuild_ksycoca
@@ -77,7 +79,7 @@ in
             echo "  target : ${t.flakeTarget}"
             echo "  cmd    : switch"
             echo ""
-            nix run github:nix-community/home-manager -- switch --flake ${t.flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
+            run_nom nix run github:nix-community/home-manager -- switch --flake ${t.flakeTarget}
 
             # 世代切替で nix store のパスが変わる。ksycoca は mtime が
             # epoch 固定の store を変更検知できないため、明示再構築する。

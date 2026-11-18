@@ -36,6 +36,8 @@ in
 
           ${c.shell.detectHelpers}
 
+          ${c.nomHelper pkgs}
+
           # sudo 実行時の demote (HOME が /root になるのを防ぐ)
           demoteToSudoUser "$@"
 
@@ -66,7 +68,7 @@ in
           if is_wsl; then
             # nix が適用できない Windows 側 .wslconfig のずれだけ先に検出
             check_wslconfig
-            nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateWslConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            run_nom nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateWslConfigName}
             rebuild_ksycoca
           elif is_darwin; then
             # darwin には standalone の homeConfigurations が無いので、
@@ -79,10 +81,10 @@ in
             "$out/activate" --driver-version 1
           elif is_nixos; then
             # NixOS 用 home-manager 設定は nixGL wrap なし版 (nazozokc-nixos)
-            nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateNixosConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            run_nom nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateNixosConfigName}
             rebuild_ksycoca
           else
-            nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateConfigName} |& ${pkgs.nix-output-monitor}/bin/nom
+            run_nom nix run github:nix-community/home-manager -- switch --flake .#${t.configUpdateConfigName}
             rebuild_ksycoca
           fi
           echo ""

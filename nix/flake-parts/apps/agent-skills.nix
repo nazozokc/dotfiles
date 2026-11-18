@@ -102,7 +102,7 @@ in
                       echo "[1/4] agent-skills-nix input"
                       before=$(${jq} -r '.nodes["agent-skills-nix"].locked.rev // "unknown"' "$lock")
                       echo "      更新前 : $before"
-                      nix flake update agent-skills-nix |& ${pkgs.nix-output-monitor}/bin/nom
+                      nix flake update agent-skills-nix
                       after=$(${jq} -r '.nodes["agent-skills-nix"].locked.rev // "unknown"' "$lock")
                       echo "      更新後 : $after"
                       if [ "$before" = "$after" ]; then
@@ -223,7 +223,7 @@ in
                       # -------------------------------------------------------------------
                       if [ "$run_check" = 1 ]; then
                         echo "[3/4] nix flake check --no-build で設定の整合を検証"
-                        nix flake check --no-build |& ${pkgs.nix-output-monitor}/bin/nom
+                        nix flake check --no-build
                         echo "      OK"
                       else
                         echo "[3/4] 検証をスキップしました (--no-check)"
@@ -240,7 +240,9 @@ in
                         fi
 
                         echo "[4/4] 反映します: nix run .#switch"
-                        nix run .#switch |& ${pkgs.nix-output-monitor}/bin/nom
+                        # switch 自身が内部で nom を通す (TTY のときだけ)。
+                        # ここで包むと二重 nom になり出力が壊れる。
+                        nix run .#switch
                         echo ""
                         echo "  完了"
                       else
