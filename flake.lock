@@ -409,22 +409,6 @@
         "type": "github"
       }
     },
-    "gh-brag": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793158591,
-        "narHash": "sha256-URA+SXiNBmsIf8CvCkGi8ogo04FcHRAWgnalKzUyrfw=",
-        "owner": "jackchuka",
-        "repo": "gh-brag",
-        "rev": "085de47314b29199c8fae77492aafb4647653c83",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jackchuka",
-        "repo": "gh-brag",
-        "type": "github"
-      }
-    },
     "gh-graph": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -925,7 +909,6 @@
         "darwin": "darwin",
         "darwin-intel": "darwin-intel",
         "flake-parts": "flake-parts",
-        "gh-brag": "gh-brag",
         "gh-graph": "gh-graph",
         "gh-graph-intel": "gh-graph-intel",
         "gh-nippou": "gh-nippou",

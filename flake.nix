@@ -53,12 +53,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # GitHub CLI 拡張: 自慢ツール (flake 非対応なので flake = false)
-    gh-brag = {
-      url = "github:jackchuka/gh-brag";
-      flake = false;
-    };
-
     # nix-index の DB をビルド済みで提供 (nix-index 自体のビルドをスキップ)
     nix-index-database = {
       url = "github:nix-community/nix-index-database";

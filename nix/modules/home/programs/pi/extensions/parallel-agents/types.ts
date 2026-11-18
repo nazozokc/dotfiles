@@ -12,14 +12,6 @@ export interface ParallelAgentConfig {
   prompt: string;
 }
 
-/** One task in a `parallel` tool call. */
-export interface TaskSpec {
-  /** Name of a defined agent. */
-  agent: string;
-  /** Task prompt for the sub-agent. */
-  prompt: string;
-}
-
 /** Result of one sub-agent run. */
 export interface SubAgentResult {
   name: string;
