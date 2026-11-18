@@ -47,12 +47,6 @@ export function git(
   return run(pi, "git", args, cwd, options);
 }
 
-/** Whether `cwd` is inside a git work tree. */
-export async function isRepo(pi: ExtensionAPI, cwd: string): Promise<boolean> {
-  const { code } = await git(pi, ["rev-parse", "--is-inside-work-tree"], cwd);
-  return code === 0;
-}
-
 /** Snapshot of the work tree used by the footer, guard and status screen. */
 export interface RepoStatus {
   branch: string;

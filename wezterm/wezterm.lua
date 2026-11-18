@@ -4,10 +4,6 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-local set_environment_variables = {
-	TERM = "xterm-256color",
-}
-
 -- Order matters: keys/leader must come after basic setup.
 require("config.appearance").apply(config)
 require("config.font").apply(config)
