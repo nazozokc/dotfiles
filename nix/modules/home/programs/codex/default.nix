@@ -11,6 +11,7 @@
 let
   homeDir = config.home.homeDirectory;
   mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
+  permConfig = import ../../../../overlays/mcp/permissions.nix { };
   mcpToml = (pkgs.formats.toml { }).generate "mcp.toml" {
     mcp_servers = mcpConfig.codex;
   };
@@ -35,16 +36,19 @@ in
           printf '{}\n' > "$config"
         fi
         tmp="$(mktemp "${homeDir}/.codex/config.toml.XXXXXX")"
-        ${python}/bin/python3 - "$config" "${mcpToml}" "$tmp" <<'PY'
+        ${python}/bin/python3 - "$config" "${mcpToml}" "$tmp" '${builtins.toJSON permConfig.codex}' <<'PY'
+    import json
     import sys
     import tomllib
     import tomli_w
 
-    config_path, mcp_path, out_path = sys.argv[1:4]
+    config_path, mcp_path, out_path, perms_json = sys.argv[1:5]
     with open(config_path, "rb") as f:
         config = tomllib.load(f)
     with open(mcp_path, "rb") as f:
         mcp = tomllib.load(f)
+    # 権限は共通定義 (overlays/mcp/permissions.nix) を正本として上書きする
+    config.update(json.loads(perms_json))
     config["mcp_servers"] = {**config.get("mcp_servers", {}), **mcp["mcp_servers"]}
     with open(out_path, "wb") as f:
         tomli_w.dump(config, f)

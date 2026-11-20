@@ -8,7 +8,7 @@
 
 - **ユーザー層**: Nix + Home Manager で全OS共通に管理
 - **OS層**: ネイティブ Linux は `numtide/system-manager`（`/etc`・systemd システムユニット）、NixOS は `nixosConfigurations`（`nixos-rebuild`）、macOS は nix-darwin、WSL は home-manager のみ（`.wslconfig` / `wsl.conf` は別系統）
-- **設定ファイルは可能な限り共通化**: `nvim/`, `wezterm/`, `opencode/`, `efm-langserver/` は全OSで同一ファイルを共有。`git` / `starship` / `lazygit` / `bat` は Nix が `nix/modules/home/programs/<name>/` から生成する（リポジトリにはディレクトリを置かない）
+- **設定ファイルは可能な限り共通化**: `nvim/`, `wezterm/`, `efm-langserver/` は全OSで同一ファイルを共有。`opencode/` は `rules/`・`output-style/`・`AGENTS.md` を共有し、本体の `opencode.json` は Nix が生成する。`git` / `starship` / `lazygit` / `bat` は Nix が `nix/modules/home/programs/<name>/` から生成する（リポジトリにはディレクトリを置かない）
 
 ---
 
@@ -221,7 +221,7 @@ wsl --shutdown
 | `mkcd.sh`       | ディレクトリ作成して cd                                     |
 | `port-check.sh` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
 
-更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#config-update` / `.#nvim-install` / `.#nvim-update` / `.#llm-agents-update` / `.#agents-skills-update` が持ち、
+更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#config-update` / `.#nvim-install` / `.#nvim-update` / `.#llm-agents-update` / `.#agents-skills-update` / `.#agents-doctor` が持ち、
 Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で実行する。
 この領域を shell スクリプトで再実装しない。
 
@@ -304,6 +304,10 @@ nix fmt -- --ci  # 必要に応じて自動フォーマット（treefmt）
   - `api/anthropic_api_key` → `~/.config/secrets/anthropic_api_key`
 - 鍵は `~/.config/sops/age/keys.txt` を使用します。
 - `secrets/common.yaml` が存在しない場合、secret は読み込まれません（CIの非復号チェックを壊さないため）。
+- `fish/conf.d/ai-secrets.fish` が `OPENAI_API_KEY_PATH` / `ANTHROPIC_API_KEY_PATH` / `GITHUB_TOKEN_PATH` のファイルを読み、
+  `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GITHUB_PERSONAL_ACCESS_TOKEN` を export します。
+  opencode / Claude Code / Codex / pi と MCP サーバーはこれを自動で読むため、
+  `opencode auth login` のような対話設定なしで推論と MCP 呼び出しを開始できます。
 
 ## home.stateVersion ポリシー
 

@@ -1,11 +1,15 @@
 # nix/modules/home/programs/t3code/default.nix
-# T3 Code: OpenCode / Big Pickle を既定モデルに、wezterm 風のキーバインドを設定する
+# T3 Code: 既定プロバイダは nix/lib/ai-config.nix で切替、wezterm 風キーバインドを設定する
 { pkgs, ... }:
-
+let
+  aiConfig = import ../../../../lib/ai-config.nix;
+  provider = aiConfig.t3codeProvider;
+  model = aiConfig.t3codeModels.${provider};
+in
 {
   dotfiles.programs.t3code = {
     icon = "💻";
-    note = "opencode / big-pickle + wezterm keybindings";
+    note = "${model} + wezterm keybindings";
   };
 
   programs.t3code = {
@@ -19,8 +23,8 @@
     userSettings = {
       # 新規スレッドの既定モデル
       defaultModelSelection = {
-        instanceId = "opencode";
-        model = "opencode/big-pickle";
+        instanceId = provider;
+        inherit model;
       };
 
       # OpenCode プロバイダは既定で無効なので明示的に有効化する
@@ -37,8 +41,7 @@
     clientSettings = {
       favorites = [
         {
-          provider = "opencode";
-          model = "opencode/big-pickle";
+          inherit provider model;
         }
       ];
     };

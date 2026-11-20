@@ -8,6 +8,7 @@
 let
   link = config.lib.file.mkOutOfStoreSymlink;
   mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
+  permConfig = import ../../../../overlays/mcp/permissions.nix { };
 in
 {
   dotfiles.programs.opencode = {
@@ -23,21 +24,7 @@ in
 
       default_agent = "build";
 
-      permission = {
-        read = "allow";
-        edit = "allow";
-        glob = "allow";
-        grep = "allow";
-        list = "allow";
-        bash = "ask";
-        task = "ask";
-        webfetch = "allow";
-        websearch = "allow";
-        skill = "allow";
-        todowrite = "allow";
-        question = "ask";
-        lsp = "allow";
-      };
+      permission = permConfig.opencode;
 
       agent = {
         build = {
@@ -67,6 +54,19 @@ in
           temperature = 0.3;
           steps = 10;
           prompt = "You are a planning agent. Focus on architecture, design, and creating detailed implementation plans. Think before acting.";
+        };
+        review = {
+          temperature = 0.2;
+          steps = 12;
+          prompt = "You are a code review agent. Review the current changes for correctness, security, and maintainability. Report concrete findings with file:line references and severity. Do not modify files.";
+          permission = {
+            edit = "deny";
+          };
+        };
+        test = {
+          temperature = 0.2;
+          steps = 15;
+          prompt = "You are a test agent. Write or update focused tests for the current changes, run the relevant test commands, and report failures and coverage gaps.";
         };
         explore = {
           steps = 15;

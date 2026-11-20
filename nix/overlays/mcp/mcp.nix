@@ -9,16 +9,33 @@ let
   servers = {
     context7 = {
       type = "local";
-      command = [
-        "${pkgs.bun}/bin/bunx"
-        "-y"
-        "@upstash/context7-mcp"
-      ];
+      # bunx -y は起動のたびにレジストリへ触れるので Nix store の実体を使う
+      command = [ "${pkgs.context7-mcp}/bin/context7-mcp" ];
     };
 
     TypescriptDocs = {
       type = "remote";
       url = "https://gitmcp.io/microsoft/TypeScript";
+    };
+
+    github = {
+      type = "local";
+      # トークンは fish/conf.d/ai-secrets.fish が
+      # GITHUB_PERSONAL_ACCESS_TOKEN として export する
+      command = [
+        "${pkgs.github-mcp-server}/bin/github-mcp-server"
+        "stdio"
+      ];
+    };
+
+    git = {
+      type = "local";
+      command = [ "${pkgs.mcp-server-git}/bin/mcp-server-git" ];
+    };
+
+    nixos = {
+      type = "local";
+      command = [ "${pkgs.mcp-nixos}/bin/mcp-nixos" ];
     };
   }
   // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {

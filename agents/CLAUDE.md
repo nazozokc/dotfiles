@@ -69,6 +69,6 @@ Always refer to this skill when creating flake.nix for project-level development
 
 Always refer to this skill at the START of every conversation to retrieve relevant memories, and when saving reusable patterns, user preferences, lessons learned, or memorable knowledge to the agent-memory repository.
 
-## ./agents/skills/merge-main/SKILL.md
+## ./skills/merge-main/SKILL.md
 
 Always refer to this skill when merging main branch into current branch.

@@ -160,15 +160,16 @@ Ambxst が同一機能を自前で持つため。
 
 以下の設定ファイルは Nix（Linux/macOS/WSL）と Windows（PowerShell 7）で同じファイルを共有しています：
 
-| ツール         | 共有ファイル      | Nixでの管理方法                                   | Windowsでの管理方法    |
-| -------------- | ----------------- | ------------------------------------------------- | ---------------------- |
-| nvim           | `nvim/`           | `home.file` で symlink                            | `apply.ps1` で symlink |
-| wezterm        | `wezterm/`        | `home.file` で symlink                            | `apply.ps1` で symlink |
-| opencode       | `opencode/`       | `xdg.configFile` + `home.file` でデプロイ・リンク | `apply.ps1` で symlink |
-| efm-langserver | `efm-langserver/` | `home.file` でデプロイ                            | `apply.ps1` で symlink |
+| ツール         | 共有ファイル      | Nixでの管理方法        | Windowsでの管理方法    |
+| -------------- | ----------------- | ---------------------- | ---------------------- |
+| nvim           | `nvim/`           | `home.file` で symlink | `apply.ps1` で symlink |
+| wezterm        | `wezterm/`        | `home.file` で symlink | `apply.ps1` で symlink |
+| efm-langserver | `efm-langserver/` | `home.file` でデプロイ | `apply.ps1` で symlink |
 
-`nvim/` `wezterm/` `opencode/` `efm-langserver/` は `dotfilesDir` でリポジトリルートの
-ファイルを参照し、`home.file` で symlink する（上記4つ）。
+`nvim/` `wezterm/` `efm-langserver/` は `dotfilesDir` でリポジトリルートの
+ファイルを参照し、`home.file` で symlink する（上記3つ）。
+`opencode/` は `rules/`・`output-style/`・`AGENTS.md` だけを共有し、
+`opencode.json` は Nix (`xdg.configFile`) が生成するため Windows とは共有しない。
 
 ## Nix が生成する設定
 
@@ -262,6 +263,7 @@ nix/
 │       ├── nvim-update.nix            # apps.nvim-update (プラグイン input の bump)
 │       ├── llm-agents.nix              # apps.llm-agents-update (llm-agents.nix 由来のエージェント更新)
 │       ├── agent-skills.nix            # apps.agents-skills-update (Agent Skills の更新と自己検証)
+│       ├── agents-doctor.nix           # apps.agents-doctor (AI 設定の自己診断)
 │       └── system.nix                 # apps.system-build / system-check / system-switch
 ├── modules/                           # home-manager / system-manager のモジュール
 │   ├── home/                          # home-manager 共通モジュール
@@ -389,6 +391,9 @@ nix run .#llm-agents-update
 
 # Agent Skills の更新と自己検証
 nix run .#agents-skills-update
+
+# AI エージェント設定の自己診断 (read-only)
+nix run .#agents-doctor
 ```
 
 ### config-update (`apps.config-update`)
@@ -519,6 +524,25 @@ agent-skills-nix の source registry (`registry/sources/*.nix` + npins) は
   末尾の `nix flake check --no-build` も評価エラーとして検出する。
 - `name` は SKILL.md の frontmatter が正で、ディレクトリ名は配置先 merely。
   両者が違うのは致命的ではないため `[warn]` 止まりにしてある。
+
+### agents-doctor (`apps.agents-doctor`)
+
+AI エージェント設定を **読むだけ** で診断する。反映・更新はしない。
+
+```bash
+nix run .#agents-doctor                 # flake check まで実行
+nix run .#agents-doctor -- --no-check   # ファイルと生成 JSON のみ
+```
+
+見るのは以下:
+
+- 必須ファイル (`nix/lib/ai-config.nix` / MCP・権限の共通定義 / `fish/conf.d/ai-secrets.fish`)
+- MCP サーバー一覧と `bunx -y` 依存が残っていないこと
+- opencode / claude-code / codex が権限の共通定義を参照していること
+- API キーと GitHub トークンの env 橋渡し
+- 生成済み JSON (`opencode.json` / `tui.json` / pi の settings・mcp)
+
+`[fail]` が 1 件でもあれば終了コード 1。
 
 ### bootstrap (`apps.default`)
 
@@ -907,3 +931,7 @@ nix build .#checks.x86_64-linux.deadnix .#checks.x86_64-linux.statix .#checks.x8
   - `api/anthropic_api_key` → `~/.config/secrets/anthropic_api_key`
 - AGE鍵は `~/.config/sops/age/keys.txt`。
 - `secrets/common.yaml` がない環境では secret を読まない（復号不要のCIを壊さないため）。
+- `fish/conf.d/ai-secrets.fish` が `*_API_KEY_PATH` / `GITHUB_TOKEN_PATH` のファイルを読み、
+  `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GITHUB_PERSONAL_ACCESS_TOKEN` を export する。
+  各 AI CLI と MCP サーバーは環境変数を自動で読むので、
+  Nix の pure 評価を壊さずに認証情報を渡せる。

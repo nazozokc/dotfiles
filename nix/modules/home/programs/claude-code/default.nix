@@ -12,43 +12,10 @@ let
   link = config.lib.file.mkOutOfStoreSymlink;
   mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
   mcpServersJson = builtins.toJSON mcpConfig.claudeCode;
+  permConfig = import ../../../../overlays/mcp/permissions.nix { };
 
   settings = {
-    permissions = {
-      allow = [
-        "Bash(git:*)"
-        "Bash(nix:*)"
-        "Bash(fish:*)"
-        "Bash(nvim:*)"
-        "Bash(cat:*)"
-        "Bash(ls:*)"
-        "Bash(find:*)"
-        "Bash(grep:*)"
-        "Bash(rg:*)"
-        "Bash(fd:*)"
-        "Bash(bat:*)"
-        "Bash(eza:*)"
-        "Bash(mkdir:*)"
-        "Bash(cp:*)"
-        "Bash(mv:*)"
-        "Bash(rm:*)"
-        "Bash(touch:*)"
-        "Bash(echo:*)"
-        "Bash(which:*)"
-        "Bash(gh:*)"
-        "Bash(node:*)"
-        "Bash(vite:*)"
-        "Bash(bun:*)"
-        "Bash(deno:*)"
-      ];
-      deny = [
-        "Bash(sudo:*)"
-        "Bash(curl:*)"
-        "Bash(wget:*)"
-        "Bash(rm -rf /*:*)"
-        "Bash(rm -rf ~/*:*)"
-      ];
-    };
+    permissions = permConfig.claudeCode;
   };
 in
 {
