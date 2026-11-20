@@ -28,11 +28,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795182820,
-        "narHash": "sha256-Y9LKxQftPnBjzmZyOaOq+4hHo5opHhJLB0ZxpZWuWuI=",
+        "lastModified": 1795186989,
+        "narHash": "sha256-NeauXnQr0u37nTzoLBQYMiLKRfGYM2BovTBU4J6L3cc=",
         "owner": "Axenide",
         "repo": "Ambxst",
-        "rev": "6ee4e0cbba57f257acc5e134bea5fa86cbbc7d2c",
+        "rev": "13bfbcbec657ffe2a2e064134669ea81d6b371e5",
         "type": "github"
       },
       "original": {
