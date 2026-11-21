@@ -291,7 +291,7 @@
         ./nix/flake-parts/apps/agents-doctor.nix
         ./nix/flake-parts/apps/system.nix
         ./nix/flake-parts/dev-shells.nix
-        # 品質ゲート (deadnix / statix / shellcheck / typos)
+        # 品質ゲート (deadnix / statix / nu-check / typos)
         ./nix/flake-parts/checks.nix
         # nix fmt (treefmt-nix)
         ./nix/modules/home/packages/treefmt.nix
