@@ -282,7 +282,8 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 
 ## 運用ルール（品質ゲート）
 
-- PR では **Nix Flake Check**（`nix flake check`）を必須とします（`flake check` は deadnix/statix/my-scripts/nu-check/typos/treefmt のチェックも含みます）。
+- PR では **Nix Flake Check**（`nix flake check`）を必須とします（`flake check` は deadnix/statix/my-scripts/nu-check/typos のチェックを含みます）。
+- treefmt の整形差分は専用ジョブ（`nix fmt -- --ci`）で検証します。
 - ローカルでも PR 前に次を実行してください。
 
 ```bash

@@ -1,6 +1,6 @@
 # nix/flake-parts/checks.nix
 # 品質ゲート: deadnix / statix / my-scripts / nu-check / typos
-# treefmt の check は treefmt-nix flakeModule (packages/treefmt.nix) が提供する。
+# treefmt の check は flakeCheck=false で無効化し、CI の fmt-check job で検証する。
 #
 # 全チェックは flake のソース (${self}) に対して走らせる。
 # `nix flake check` に含まれるので、CI は素の flake check で足りる。

@@ -12,6 +12,10 @@
         # nix fmt で全ファイルを一括フォーマット
         projectRootFile = "flake.nix";
 
+        # treefmt の flake check は x86_64-darwin で 30 分以上 hang するため無効化。
+        # 整形差分は CI の fmt-check job (nix fmt -- --ci) で検証する。
+        flakeCheck = false;
+
         programs = {
           # Nix
           nixfmt = {

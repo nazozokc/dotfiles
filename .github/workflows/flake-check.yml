@@ -26,12 +26,11 @@ jobs:
     uses: ./.github/workflows/_nix-ci.yml
     with:
       runs-on: ${{ matrix.os }}
-      # checks (deadnix / statix / my-scripts / nu-check / typos / treefmt) も
+      # checks (deadnix / statix / my-scripts / nu-check / typos) も
       # flake check に含まれるため、追加のステップは不要
+      # treefmt は下の fmt-check job (nix fmt -- --ci) で検証する
       run-command: nix flake check
-      # macOS は my-scripts の runtimeInputs と treefmt check の初回ビルドに
-      # 20 分超かかるため余裕を持たせる
-      timeout-minutes: 40
+      timeout-minutes: 20
 
   fmt-check:
     name: treefmt-ci (${{ matrix.os }})
