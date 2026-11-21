@@ -1,0 +1,47 @@
+name: Update Neovim plugins (auto-merge)
+on:
+  schedule:
+    - cron: "0 */6 * * *" # 6時間ごと
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update-nvim-plugins:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v23
+      - name: Update Neovim plugins
+        env:
+          # 136 inputs の解決は未認証 (60 req/h) では 403 になる。
+          # app 内の `gh auth token` がこれを読んで NIX_CONFIG へ渡す。
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: nix run .#nvim-update
+      - name: Check flake
+        run: nix flake check
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore(nvim): update plugins"
+          title: "chore(nvim): update plugins"
+          body: |
+            Automated Neovim plugin update.
+            - nix run .#nvim-update
+            - nix flake check passed
+          branch: nvim-update
+          delete-branch: true
+          labels: |
+            nix
+            dependencies
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --squash "${{ steps.cpr.outputs.pull-request-number }}"
