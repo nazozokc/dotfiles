@@ -1,4 +1,5 @@
 # nix/overlays/default.nix
+{ self }:
 final: prev:
 prev.lib.composeManyExtensions [
   (import ./ai-tools.nix)
@@ -9,4 +10,5 @@ prev.lib.composeManyExtensions [
   (import ./rust-packages.nix)
   (import ./fish-plugins.nix)
   (import ./typescript.nix)
+  (import ./my-scripts.nix { inherit self; })
 ] final prev

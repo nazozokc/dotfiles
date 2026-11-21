@@ -30,7 +30,7 @@
 - Git / GitHub: git, lazygit, gh, gh-dash, jujutsu
 - ターミナルツール: bat, fzf, yazi, direnv, pnpm, bun, docker, sops, cmux
 - デスクトップ: hypr (Hyprland), herdr, aerospace (macOS)
-- その他: mise, my_scripts, agents/skills
+- その他: mise, packages, agents/skills
 
 OS 層 (`/etc`・systemd) は system-manager で管理 (上記「管理方法」参照)。
 プラットフォーム別の適用範囲は `nix/README.md` を参照。

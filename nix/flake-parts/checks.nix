@@ -1,5 +1,5 @@
 # nix/flake-parts/checks.nix
-# 品質ゲート: deadnix / statix / nu-check / typos
+# 品質ゲート: deadnix / statix / my-scripts / nu-check / typos
 # treefmt の check は treefmt-nix flakeModule (packages/treefmt.nix) が提供する。
 #
 # 全チェックは flake のソース (${self}) に対して走らせる。
@@ -10,6 +10,9 @@
     { pkgs, ... }:
     {
       checks = {
+        # my-scripts 自体もビルドしてoverlayの評価/依存を検証する
+        inherit (pkgs) my-scripts;
+
         # 未使用バインディングの検出 (--fail: findings で exit 1)
         deadnix = pkgs.runCommand "check-deadnix" { } ''
           echo "deadnix ${self}" >&2
@@ -24,11 +27,11 @@
           touch $out
         '';
 
-        # my_scripts/ の Nushell スクリプト構文チェック
+        # packages/ の Nushell スクリプト構文チェック
         # source するだけで main は実行しない (parse エラーで非ゼロ終了)
         nu-check = pkgs.runCommand "check-nu" { } ''
-          echo "nu source ${self}/my_scripts/*.nu" >&2
-          for f in ${self}/my_scripts/*.nu; do
+          echo "nu source ${self}/packages/*.nu" >&2
+          for f in ${self}/packages/*.nu; do
             echo "  $f" >&2
             ${pkgs.nushell}/bin/nu --no-config-file -c "source $f"
           done

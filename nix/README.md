@@ -33,15 +33,20 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 
 パッケージの置き場所は環境の広さで決める。
 
-| 置き場所                                | 対象                           |
-| --------------------------------------- | ------------------------------ |
-| `nix/modules/home/packages/<category>/` | 全環境共通                     |
-| `nix/lib/packages/shared.nix`           | ネイティブ Linux + WSL 共通    |
-| `nix/modules/linux/packages.nix`        | ネイティブ Linux のみ          |
-| `nix/modules/wsl/packages.nix`          | WSL のみ（現状は shared のみ） |
+| 置き場所                                | 対象                            |
+| --------------------------------------- | ------------------------------- |
+| `nix/modules/home/packages/<category>/` | 全環境共通                      |
+| `nix/lib/packages/shared.nix`           | ネイティブ Linux + WSL 共通     |
+| `nix/modules/linux/packages.nix`        | ネイティブ Linux のみ           |
+| `nix/modules/wsl/packages.nix`          | WSL のみ（shared + my-scripts） |
 
 **同じパッケージを 2 箇所に書かない。** home-manager は重複を許すが、
 片方だけ更新すると挙動が割れる。Linux/WSL の共通分は `nix/lib/packages/shared.nix` に集約する。
+
+`my-scripts` は overlay (`nix/overlays/my-scripts.nix`) で定義した自作パッケージ。
+`packages/` の Nu スクリプトを `.nu` を除いた名前で PATH に出す。
+Linux / macOS は `base/default.nix`、WSL は `nix/modules/wsl/packages.nix` から参照する
+(WSL は `home/packages/` を読まないため)。
 
 ### 共通パッケージ (`nix/modules/home/packages/`)
 
@@ -56,7 +61,7 @@ nixpkgs 26.11 で `x86_64-darwin` のサポートが削除されたため、Inte
 - **Docker**: docker, lazydocker
 - **Git/GitHub**: gh, ghq, git-wt, jujutsu, gitui, git-secrets, ghgrab
 - **ユーティリティ**: presenterm, trash-cli
-- **その他**: rename, inetutils, comma, aria2, mise, tokei
+- **その他**: rename, inetutils, comma, aria2, mise, tokei, my-scripts
 
 `cmake` は `dev` のビルドツール側だけ。`bitwarden-cli` は
 `nix/overlays/bitwarden-cli.nix` が Darwin ビルドを補修する。
@@ -271,7 +276,7 @@ nix/
 │   │   ├── default.nix                # エントリーポイント (Linux/WSL 共通)
 │   │   ├── config-update.nix          # config-update 用 (installPackages を無効化)
 │   │   ├── wsl.nix                    # WSL エントリーポイント (packages なし)
-│   │   ├── dotfiles-link.nix          # fish/wezterm/zsh/bash/my_scripts の symlink 管理
+│   │   ├── dotfiles-link.nix          # fish/wezterm/zsh/bash の symlink 管理
 │   │   ├── tools-read.nix             # Linux 用ツール読み取り
 │   │   ├── agent-skills.nix           # opencode agent-skills-nix 設定
 │   │   ├── programs-common.nix        # 共通 program モジュール一括 import
@@ -356,6 +361,7 @@ nix/
 │   ├── bitwarden-cli.nix              # Bitwarden CLI
 │   ├── compiler-rt.nix                # compiler-rt
 │   ├── fish-plugins.nix               # fish プラグイン
+│   ├── my-scripts.nix                 # packages/ を PATH 上のコマンドとして提供
 │   ├── node-packages.nix              # Node.js パッケージ
 │   ├── pipx.nix                       # pipx
 │   └── typescript.nix                 # TS7 内蔵 LSP (tsgo)
@@ -957,7 +963,7 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
 ### CI品質ゲート
 
 - PR の必須チェックは `nix flake check`（Linux / macOS 両方で実行）。
-  - `flake check` には deadnix / statix / nu-check / typos / treefmt の各チェックも含まれます。
+  - `flake check` には deadnix / statix / my-scripts / nu-check / typos / treefmt の各チェックも含まれます。
 - 補助チェックとして個別に実行する場合は以下のようにします。
 
 ```bash

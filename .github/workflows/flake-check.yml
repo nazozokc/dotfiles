@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/_nix-ci.yml
     with:
       runs-on: ${{ matrix.os }}
-      # checks (deadnix / statix / nu-check / typos / treefmt) も
+      # checks (deadnix / statix / my-scripts / nu-check / typos / treefmt) も
       # flake check に含まれるため、追加のステップは不要
       run-command: nix flake check
       timeout-minutes: 20

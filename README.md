@@ -158,10 +158,10 @@ nix run .#update
 
 WSL の設定は次の 2 ファイルで管理します。配置先が異なるため注意してください。
 
-| ファイル         | 配置先                               | スコープ                    | 管理方法                         |
-| ---------------- | ------------------------------------ | --------------------------- | -------------------------------- |
-| `wsl/.wslconfig` | Windows側 `%USERPROFILE%\.wslconfig` | **全ディストロ共通** (WSL2) | 手動コピー                       |
-| `wsl/wsl.conf`   | ディストロ内 `/etc/wsl.conf`         | ディストロ別                | `my_scripts/wsl-setup.nu` (root) |
+| ファイル         | 配置先                               | スコープ                    | 管理方法                    |
+| ---------------- | ------------------------------------ | --------------------------- | --------------------------- |
+| `wsl/.wslconfig` | Windows側 `%USERPROFILE%\.wslconfig` | **全ディストロ共通** (WSL2) | 手動コピー                  |
+| `wsl/wsl.conf`   | ディストロ内 `/etc/wsl.conf`         | ディストロ別                | `wsl-setup` コマンド (root) |
 
 ### `.wslconfig` — 全ディストロ共通 (Windows側)
 
@@ -183,8 +183,8 @@ cp wsl/.wslconfig $env:USERPROFILE\.wslconfig
 ### `/etc/wsl.conf` — ディストロ別 (root 必要)
 
 ```fish
-# リポジトリの wsl/wsl.conf を /etc/wsl.conf に反映 + ja_JP.UTF-8 ロケール生成
-sudo -E (which nu) ~/.scripts/wsl-setup.nu
+# wsl.conf を /etc/wsl.conf に反映 + ja_JP.UTF-8 ロケール生成
+sudo -E (which wsl-setup)
 ```
 
 主な設定:
@@ -202,33 +202,37 @@ wsl --shutdown
 ```
 
 - 設定は WSL インスタンス完全停止後に読み込まれます (8秒ルール)
-- 複数ディストロがある場合、`/etc/wsl.conf` は各ディストロで `wsl-setup.nu` を実行してください (`.wslconfig` は全ディストロに自動適用されます)
+- 複数ディストロがある場合、`/etc/wsl.conf` は各ディストロで `wsl-setup` を実行してください (`.wslconfig` は全ディストロに自動適用されます)
 - `nix run .#switch` (WSL) は実行前に `.wslconfig` の symlink 状態を事前チェックします
 
 ---
 
-## `~/.scripts` — 手書きの補助スクリプト
+## 自作スクリプト — `my-scripts` コマンド
 
-`my_scripts/` は `~/.scripts` へ symlink される。PATH には載らないので
-`~/.scripts/<name>.nu` で直接呼ぶ。全部 Nushell 製 (shebang `#!/usr/bin/env nu`)。
+`packages/` の Nu スクリプトは Nix の overlay (`nix/overlays/my-scripts.nix`) で
+パッケージ化され、`.nu` を除いた名前で PATH に載る。`~/.scripts` symlink は作らない。
+スクリプトを編集したら `nix run .#switch` で反映する。Linux / macOS / NixOS / WSL の全環境で `home.packages` に入る。
 
-| スクリプト      | 用途                                                        |
-| --------------- | ----------------------------------------------------------- |
-| `wsl-setup.nu`  | `/etc/wsl.conf` 反映 + `ja_JP.UTF-8` 生成（`sudo` 必須）    |
-| `extract.nu`    | アーカイブ自動判別で展開（tar / zip / 7z / deb / rpm など） |
-| `gh-new.nu`     | GitHub リポジトリを作って clone して cd                     |
-| `gh-pr.nu`      | PR 作成と `--web` 表示                                      |
-| `mkcd.nu`       | ディレクトリ作成して cd                                     |
-| `port-check.nu` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
+| コマンド     | 用途                                                        |
+| ------------ | ----------------------------------------------------------- |
+| `wsl-setup`  | `/etc/wsl.conf` 反映 + `ja_JP.UTF-8` 生成（`sudo` 必須）    |
+| `extract`    | アーカイブ自動判別で展開（tar / zip / 7z / deb / rpm など） |
+| `gh-new`     | GitHub リポジトリを作って clone して cd                     |
+| `gh-pr`      | PR 作成と `--web` 表示                                      |
+| `mkcd`       | ディレクトリ作成して cd                                     |
+| `port-check` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
 
-`wsl-setup.nu` は root 権限が要る。`sudo` 実行時は root の PATH に nu が無いことが多いので、
-nu 本体を明示して実行する。
+`wsl-setup` は root 権限が要る。ラッパーが nu の実体を直接 exec するので、
+sudo 時に root の PATH に nu が無くても動く。
 
 ```fish
-sudo -E (which nu) ~/.scripts/wsl-setup.nu
+sudo -E (which wsl-setup)
 ```
 
-bash なら `sudo -E $(which nu) ~/.scripts/wsl-setup.nu`。
+bash なら `sudo -E $(which wsl-setup)`。
+
+`mkcd` / `gh-new` の `cd` はコマンド内部で閉じるため、呼び出し側シェルの
+カレントディレクトリは変わらない (出力されたパスへ手動で移動する)。
 
 更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#config-update` / `.#nvim-install` / `.#nvim-update` / `.#llm-agents-update` / `.#agents-skills-update` / `.#agents-doctor` が持ち、
 Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で実行する。
@@ -278,7 +282,7 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 
 ## 運用ルール（品質ゲート）
 
-- PR では **Nix Flake Check**（`nix flake check`）を必須とします（`flake check` は deadnix/statix/nu-check/typos/treefmt のチェックも含みます）。
+- PR では **Nix Flake Check**（`nix flake check`）を必須とします（`flake check` は deadnix/statix/my-scripts/nu-check/typos/treefmt のチェックも含みます）。
 - ローカルでも PR 前に次を実行してください。
 
 ```bash

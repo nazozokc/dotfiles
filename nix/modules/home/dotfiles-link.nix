@@ -50,7 +50,6 @@ in
     ".config/mise/config.toml".source = link "${dotfilesDirStr}/mise.toml";
     ".zshrc".source = link "${dotfilesDirStr}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDirStr}/bash/bashrc";
-    ".scripts".source = link "${dotfilesDirStr}/my_scripts";
     ".config/schrun/agent-memory-manage.json".source =
       link "${dotfilesDirStr}/schrun/agent-memory-manage.json";
   };
