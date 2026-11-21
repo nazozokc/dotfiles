@@ -34,7 +34,6 @@ def main [file?: string] {
     { suffix: ".tgz",      cmd: "tar",       args: ["xzf"] }
     { suffix: ".tar.xz",   cmd: "tar",       args: ["xJf"] }
     { suffix: ".txz",      cmd: "tar",       args: ["xJf"] }
-    { suffix: ".tar.zst",  cmd: "tar",       args: ["--zstd", "-xf"] }
     { suffix: ".tar",      cmd: "tar",       args: ["xf"] }
     { suffix: ".bz2",      cmd: "bunzip2",   args: [] }
     { suffix: ".gz",       cmd: "gunzip",    args: [] }
@@ -48,25 +47,30 @@ def main [file?: string] {
     { suffix: ".7z",       cmd: "7z",        args: ["x"] }
   ]
 
-  let found = ($extractors | where { |e| $file | str ends-with $e.suffix } | first)
-
-  if ($found | is-not-empty) {
-    ^$found.cmd ...$found.args $file
-  } else if ($file | str ends-with ".deb") {
-    if (which dpkg | is-empty) {
-      print -e "Error: dpkg not found"
-      exit 1
-    }
-    ^dpkg-deb -x $file ($file | path parse | get stem)
-  } else if ($file | str ends-with ".rpm") {
-    if (which rpm2cpio | is-empty) {
-      print -e "Error: rpm2cpio not found"
-      exit 1
-    }
-    ^rpm2cpio $file | ^cpio -idmv
+  if ($file | str ends-with ".tar.zst") {
+    # macOS の tar は --zstd 非対応の場合があるため unzstd で展開する
+    ^unzstd -c $file | ^tar xf -
   } else {
-    print -e $"Error: Unknown archive format '($file)'"
-    exit 1
+    let found = ($extractors | where { |e| $file | str ends-with $e.suffix } | first)
+
+    if ($found | is-not-empty) {
+      ^$found.cmd ...$found.args $file
+    } else if ($file | str ends-with ".deb") {
+      if (which dpkg | is-empty) {
+        print -e "Error: dpkg not found"
+        exit 1
+      }
+      ^dpkg-deb -x $file ($file | path parse | get stem)
+    } else if ($file | str ends-with ".rpm") {
+      if (which rpm2cpio | is-empty) {
+        print -e "Error: rpm2cpio not found"
+        exit 1
+      }
+      ^rpm2cpio $file | ^cpio -idmv
+    } else {
+      print -e $"Error: Unknown archive format '($file)'"
+      exit 1
+    }
   }
 
   print "Extraction complete."

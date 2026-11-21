@@ -23,7 +23,6 @@ let
     coreutils
     findutils
     gnugrep
-    gnutar
     gzip
     bzip2
     xz
@@ -38,10 +37,13 @@ let
     lsof
   ];
 
+  # gnutar は x86_64-darwin で source build になり CI timeout の原因になる。
+  # macOS は system の tar を使い、Linux のみ GNU tar を PATH に入れる。
   linuxInputs = with prev; [
     dpkg
     rpm
     iproute2
+    gnutar
   ];
 
   runtimeInputs = commonInputs ++ lib.optionals prev.stdenv.hostPlatform.isLinux linuxInputs;
