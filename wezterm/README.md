@@ -18,6 +18,7 @@ weztermの設定ファイル
 | `config/performance.lua` | パフォーマンス設定                                     |
 | `config/session.lua`     | ワークスペースの簡易保存・復元                         |
 | `utils/platform.lua`     | プラットフォーム固有設定                               |
+| `utils/path.lua`         | パス名・Gitブランチ取得（tab/status で共有）           |
 
 ## キーバインディング
 
@@ -123,9 +124,9 @@ Leader key として `Ctrl+Shift+Space` を設定。Leader は追加操作用で
 
 ### ワークスペース
 
-`Leader+W` でワークスペース切り替え。`Leader+1..9` で直接切り替えも可能。
+`Leader+W` でワークスペース切り替え。`Leader+1..9` で名前のソート順の N 番目へ直接切り替えも可能。
 `Leader+,` で現在のワークスペース名をリネーム可能。
-ワークスペースは終了時に保存され、次回起動時に復元される（簡易セッション永続化）。
+ワークスペースは切り替え時に自動保存され、次回起動時に復元される（簡易セッション永続化）。
 
 ### 起動メニュー
 
@@ -171,5 +172,5 @@ Linux は nixGL でラップしてシステムの GPU ライブラリ（libEGL �
 
 ### セッション
 
-現在のワークスペースを JSON ファイル (`~/.config/wezterm/.workspace_state.json`) に保存。次回起動時に自動復元。
+現在のワークスペースを切り替え時に JSON ファイル (`~/.config/wezterm/.workspace_state.json`) に保存。次回起動時に自動復元。
 対応範囲はワークスペースのみ（ペインレイアウトの復元は対象外）。

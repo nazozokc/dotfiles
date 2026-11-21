@@ -29,12 +29,20 @@ function M.apply(config)
 		action = act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }),
 	})
 
-	-- Quick workspace number keys (1-9)
+	-- Direct workspace number keys (1-9): jump to the Nth known workspace.
+	-- get_workspace_names() order is not guaranteed, so sort for predictability.
 	for i = 1, 9 do
 		table.insert(config.keys, {
 			key = tostring(i),
 			mods = "LEADER",
-			action = act.SwitchWorkspaceRelative(i - 1),
+			action = wezterm.action_callback(function(window, pane)
+				local names = wezterm.mux.get_workspace_names()
+				table.sort(names)
+				local name = names[i]
+				if name then
+					window:perform_action(act.SwitchToWorkspace({ name = name }), pane)
+				end
+			end),
 		})
 	end
 
