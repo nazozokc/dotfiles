@@ -35,3 +35,11 @@
 
 - 保存のためだけに余計なタスクをしない
 - gitの`commit`/`push`をしない（ユーザーが行う）
+
+## Subagent
+
+- 委譲は spawn ツール経由。ロールは `~/.codex/agents/*.toml` を参照
+  (`build` / `plan` / `explore` / `scout` / `review` / `test`)。
+- 定義の single source は `nix/lib/agent-roles.nix`。ロールを足すときはここへ追加してから
+  `nix run .#config-update` を実行する。
+- ネストは 1 段のみ (`config.toml` の `[agents] max_depth = 1`)。

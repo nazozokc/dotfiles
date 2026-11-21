@@ -246,6 +246,7 @@ nix/
 ├── shared.nix                         # 共通設定 (username, stateVersion, xdg)
 ├── lib/                               # flake が使う「値」と「小物」
 │   ├── identity.nix                   # username / repoOwner (誰の dotfiles か)
+│   ├── agent-roles.nix                # subagent の prompt / description 共通定義
 │   ├── packages/shared.nix            # ネイティブ Linux と WSL の共通パッケージ
 │   ├── pkgs.nix                       # pkgsFor (nixpkgs インスタンス生成 + Intelスタック切替)
 │   ├── shell.nix                      # app 共通シェルヘルパ (require_nix_features / is_wsl ...)
@@ -525,6 +526,46 @@ agent-skills-nix の source registry (`registry/sources/*.nix` + npins) は
 - `name` は SKILL.md の frontmatter が正で、ディレクトリ名は配置先 merely。
   両者が違うのは致命的ではないため `[warn]` 止まりにしてある。
 
+### subagent 構成
+
+4 つのエージェントが同じロールを共有する。prompt / description の single source は
+`nix/lib/agent-roles.nix` で、各エージェントの固有設定 (mode / 権限 / ツール) は
+各 module が持つ。
+
+| ロール    | opencode | Claude | Codex | pi parallel | pi mode |
+| --------- | -------- | ------ | ----- | ----------- | ------- |
+| `build`   | primary  | agent  | role  | agent       | mode    |
+| `plan`    | primary  | agent  | role  | agent       | mode    |
+| `explore` | subagent | agent  | role  | agent       | mode    |
+| `scout`   | subagent | agent  | role  | agent       | mode    |
+| `review`  | subagent | agent  | role  | agent       | —       |
+| `test`    | subagent | agent  | role  | agent       | —       |
+
+デプロイ先:
+
+- opencode: `~/.config/opencode/opencode.json` (Nix が生成)
+- Claude Code: `~/.claude/agents/<role>.md` (frontmatter に name / description / tools / model)
+- Codex: `~/.codex/agents/<role>.toml` + `config.toml` の `[agents]` (`max_threads = 6`, `max_depth = 1`)
+- pi: `extensions/parallel-agents/agents.ts` と `extensions/agent-modes/*.ts`
+
+安全側の制約:
+
+- opencode の subagent は `permission.task."*" = "deny"` で再帰 spawn を禁止。
+  親の `permission.task` は glob で `explore` / `review` / `scout` / `test` のみ allow
+  (broad → narrow の後勝ち)。
+- pi は role の `tools` を mode の tools と交差し、どの role も `parallel` を含まない。
+- Claude / Codex の read-only ロールもツールを明示制限する。
+
+ロールを足す・変える手順:
+
+1. `nix/lib/agent-roles.nix` を編集する。
+2. 必要なら各 module のツール allowlist と `agents-doctor` の期待リストを更新する。
+3. 新規ファイルを作ったら `git add -N <file>` する (flake の git source に必要)。
+4. `nix run .#config-update` で反映する。
+5. `nix run .#agents-doctor -- --no-check` で drift を確認する。
+
+起動中のエージェントは旧定義のままなので、再起動して新規セッションを開くこと。
+
 ### agents-doctor (`apps.agents-doctor`)
 
 AI エージェント設定を **読むだけ** で診断する。反映・更新はしない。
@@ -538,9 +579,11 @@ nix run .#agents-doctor -- --no-check   # ファイルと生成 JSON のみ
 
 - 必須ファイル (`nix/lib/ai-config.nix` / MCP・権限の共通定義 / `fish/conf.d/ai-secrets.fish`)
 - MCP サーバー一覧と `bunx -y` 依存が残っていないこと
-- opencode / claude-code / codex が権限の共通定義を参照していること
+- opencode / claude-code / codex が権限と共通ロール定義を参照していること
 - API キーと GitHub トークンの env 橋渡し
 - 生成済み JSON (`opencode.json` / `tui.json` / pi の settings・mcp)
+- subagent 定義 (opencode の mode / task glob / prompt、Claude の frontmatter、
+  Codex の role TOML と `max_depth`、pi の prompt drift と旧ロール名)
 
 `[fail]` が 1 件でもあれば終了コード 1。
 

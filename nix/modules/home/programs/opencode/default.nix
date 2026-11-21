@@ -9,6 +9,7 @@ let
   link = config.lib.file.mkOutOfStoreSymlink;
   mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
   permConfig = import ../../../../overlays/mcp/permissions.nix { };
+  roles = import ../../../../lib/agent-roles.nix;
 in
 {
   dotfiles.programs.opencode = {
@@ -31,9 +32,9 @@ in
       agent = {
         build = {
           mode = "primary";
-          description = "Default coding agent: implements features, fixes bugs, writes code";
+          description = roles.build.description;
           steps = 20;
-          prompt = "You are a build agent. Focus on implementing features, fixing bugs, and writing code. Follow existing patterns and conventions.";
+          prompt = roles.build.prompt;
         };
         dangerously-skip-permission = {
           mode = "primary";
@@ -57,17 +58,17 @@ in
         };
         plan = {
           mode = "primary";
-          description = "Architecture, design, and detailed implementation plans";
+          description = roles.plan.description;
           temperature = 0.3;
           steps = 10;
-          prompt = "You are a planning agent. Focus on architecture, design, and creating detailed implementation plans. Think before acting.";
+          prompt = roles.plan.prompt;
         };
         review = {
           mode = "subagent";
-          description = "Review current changes for correctness, security, and maintainability";
+          description = roles.review.description;
           temperature = 0.2;
           steps = 12;
-          prompt = "You are a code review agent. Review the current changes for correctness, security, and maintainability. Report concrete findings with file:line references and severity. Do not modify files.";
+          prompt = roles.review.prompt;
           permission = {
             edit = "deny";
             task = {
@@ -77,10 +78,10 @@ in
         };
         test = {
           mode = "subagent";
-          description = "Write or update focused tests and run the relevant test commands";
+          description = roles.test.description;
           temperature = 0.2;
           steps = 15;
-          prompt = "You are a test agent. Write or update focused tests for the current changes, run the relevant test commands, and report failures and coverage gaps.";
+          prompt = roles.test.prompt;
           permission = {
             task = {
               "*" = "deny";
@@ -89,9 +90,9 @@ in
         };
         explore = {
           mode = "subagent";
-          description = "Read-only codebase exploration: patterns, structure, context";
+          description = roles.explore.description;
           steps = 15;
-          prompt = "You are an exploration agent. Focus on understanding the codebase, finding patterns, and gathering context.";
+          prompt = roles.explore.prompt;
           permission = {
             edit = "deny";
             task = {
@@ -101,9 +102,9 @@ in
         };
         scout = {
           mode = "subagent";
-          description = "Quick read-only information gathering and codebase questions";
+          description = roles.scout.description;
           steps = 10;
-          prompt = "You are a scout agent. Focus on quick information gathering and answering questions about the codebase.";
+          prompt = roles.scout.prompt;
           permission = {
             edit = "deny";
             task = {

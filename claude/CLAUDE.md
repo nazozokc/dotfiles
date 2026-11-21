@@ -35,3 +35,10 @@
 
 - 保存のためだけに余計なタスクをしない
 - gitの`commit`/`push`をしない（ユーザーが行う）
+
+## Subagent
+
+- 委譲は Task ツール経由。ロールは `~/.claude/agents/*.md` を参照
+  (`build` / `plan` / `explore` / `scout` / `review` / `test`)。
+- 定義の single source は `nix/lib/agent-roles.nix`。ロールを足すときはここへ追加してから
+  `nix run .#config-update` を実行する。

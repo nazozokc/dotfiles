@@ -13,6 +13,33 @@ let
   mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
   mcpServersJson = builtins.toJSON mcpConfig.claudeCode;
   permConfig = import ../../../../overlays/mcp/permissions.nix { };
+  roles = import ../../../../lib/agent-roles.nix;
+
+  # Claude Code subagents are Markdown files with YAML frontmatter.
+  # Tools are an explicit allowlist so a read-only role stays read-only.
+  claudeTools = {
+    build = "Bash, Read, Edit, Write, Glob, Grep";
+    plan = "Read, Glob, Grep";
+    explore = "Read, Glob, Grep";
+    scout = "Read, Glob, Grep";
+    review = "Bash, Read, Glob, Grep";
+    test = "Bash, Read, Glob, Grep";
+  };
+  claudeAgent = name: ''
+    ---
+    name: ${name}
+    description: ${roles.${name}.description}
+    tools: ${claudeTools.${name}}
+    model: inherit
+    ---
+    ${roles.${name}.prompt}
+  '';
+  claudeAgents = lib.listToAttrs (
+    map (name: {
+      name = ".claude/agents/${name}.md";
+      value.text = claudeAgent name;
+    }) roles.roles
+  );
 
   settings = {
     permissions = permConfig.claudeCode;
@@ -21,7 +48,7 @@ in
 {
   dotfiles.programs.claude-code = {
     icon = "🤖";
-    note = "settings.json + CLAUDE.md";
+    note = "settings.json + CLAUDE.md + 6 agents";
   };
 
   home.activation = {
@@ -48,7 +75,9 @@ in
   };
 
   # グローバル指示: agent-memoryの保存ルールを毎セッション読み込ませる
-  home.file.".claude/CLAUDE.md" = {
-    source = link "${dotfilesDir}/claude/CLAUDE.md";
+  home.file = claudeAgents // {
+    ".claude/CLAUDE.md" = {
+      source = link "${dotfilesDir}/claude/CLAUDE.md";
+    };
   };
 }
