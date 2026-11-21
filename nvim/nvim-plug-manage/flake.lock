@@ -1299,11 +1299,11 @@
     "nvim-scrollbar": {
       "flake": false,
       "locked": {
-        "lastModified": 1795170250,
-        "narHash": "sha256-nobKwn8q60sYoi+LqJG18YjsS45UdL5K8kb/YFit7EY=",
+        "lastModified": 1795243062,
+        "narHash": "sha256-TcgT1k4298UK33Q8emM0G/+MPljPudt4bewt4iXAV5w=",
         "owner": "petertriho",
         "repo": "nvim-scrollbar",
-        "rev": "bbee38d037df1251ffa94d20f5255368f6c6ae1f",
+        "rev": "78709eea6c485618a11eabcf4ea6250f6f78f878",
         "type": "github"
       },
       "original": {
@@ -1794,11 +1794,11 @@
     "rustaceanvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795134221,
-        "narHash": "sha256-H3ZeyC9vUrNAggfmKftP9dqbhveBQl8GClxU9JWy8QY=",
+        "lastModified": 1795220727,
+        "narHash": "sha256-5YCYjIO8VU7SwtEv9yvPJng0iz8UP+ZhlUH2nrzOraU=",
         "owner": "mrcjkb",
         "repo": "rustaceanvim",
-        "rev": "cd58d8a4d82b67f046086eb78f04dd42058ccfcd",
+        "rev": "e505aadad1a57d8d96b9fe5ce2bc0e5005264c48",
         "type": "github"
       },
       "original": {
@@ -2226,11 +2226,11 @@
     "vim-test": {
       "flake": false,
       "locked": {
-        "lastModified": 1795094743,
-        "narHash": "sha256-iKZPU83TTO9P3vwNvCPaNIYndJwOgEEPfyqiybSTGBQ=",
+        "lastModified": 1795229322,
+        "narHash": "sha256-yxjiFpZ9vi2S+EuD6qDLvV+80i+onK4q1ALUbIW6+/w=",
         "owner": "vim-test",
         "repo": "vim-test",
-        "rev": "70dc0f77ef46c1bd46ff6e82587c6a76076f0314",
+        "rev": "ad6e74cfac81158042014fe31d155df0b70e571a",
         "type": "github"
       },
       "original": {
