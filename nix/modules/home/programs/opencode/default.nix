@@ -26,13 +26,18 @@ in
 
       permission = permConfig.opencode;
 
+      # mode を省略すると primary 扱いになり、built-in の subagent (explore/general)
+      # を上書きしたり「subagent のつもりが primary」になったりする。全定義で明示する。
       agent = {
         build = {
+          mode = "primary";
+          description = "Default coding agent: implements features, fixes bugs, writes code";
           steps = 20;
           prompt = "You are a build agent. Focus on implementing features, fixing bugs, and writing code. Follow existing patterns and conventions.";
         };
         dangerously-skip-permission = {
           mode = "primary";
+          description = "Unattended build agent with all tool calls auto-approved";
           prompt = ''
             You are running in dangerously-skip-permission mode. All tool calls — including bash commands, file edits, subagent invocations, and user questions — execute without confirmation prompts.
 
@@ -51,38 +56,75 @@ in
           };
         };
         plan = {
+          mode = "primary";
+          description = "Architecture, design, and detailed implementation plans";
           temperature = 0.3;
           steps = 10;
           prompt = "You are a planning agent. Focus on architecture, design, and creating detailed implementation plans. Think before acting.";
         };
         review = {
+          mode = "subagent";
+          description = "Review current changes for correctness, security, and maintainability";
           temperature = 0.2;
           steps = 12;
           prompt = "You are a code review agent. Review the current changes for correctness, security, and maintainability. Report concrete findings with file:line references and severity. Do not modify files.";
           permission = {
             edit = "deny";
+            task = {
+              "*" = "deny";
+            };
           };
         };
         test = {
+          mode = "subagent";
+          description = "Write or update focused tests and run the relevant test commands";
           temperature = 0.2;
           steps = 15;
           prompt = "You are a test agent. Write or update focused tests for the current changes, run the relevant test commands, and report failures and coverage gaps.";
+          permission = {
+            task = {
+              "*" = "deny";
+            };
+          };
         };
         explore = {
+          mode = "subagent";
+          description = "Read-only codebase exploration: patterns, structure, context";
           steps = 15;
           prompt = "You are an exploration agent. Focus on understanding the codebase, finding patterns, and gathering context.";
+          permission = {
+            edit = "deny";
+            task = {
+              "*" = "deny";
+            };
+          };
         };
         scout = {
+          mode = "subagent";
+          description = "Quick read-only information gathering and codebase questions";
           steps = 10;
           prompt = "You are a scout agent. Focus on quick information gathering and answering questions about the codebase.";
+          permission = {
+            edit = "deny";
+            task = {
+              "*" = "deny";
+            };
+          };
         };
+        # built-in の hidden 保守エージェント。visible primary にしない。
         title = {
+          mode = "primary";
+          hidden = true;
           steps = 1;
         };
         summary = {
+          mode = "primary";
+          hidden = true;
           steps = 1;
         };
         compaction = {
+          mode = "primary";
+          hidden = true;
           steps = 1;
         };
       };
