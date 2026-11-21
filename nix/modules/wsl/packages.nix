@@ -7,5 +7,8 @@
 { pkgs, ... }:
 
 {
-  home.packages = import ../../lib/packages/shared.nix { inherit pkgs; };
+  home.packages = (import ../../lib/packages/shared.nix { inherit pkgs; }) ++ [
+    # WSL は home/packages/ を読まないので自作スクリプトはここへ
+    pkgs.my-scripts
+  ];
 }

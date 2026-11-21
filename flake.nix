@@ -185,7 +185,7 @@
       inherit (identity) username;
 
       # カスタム overlay (./nix/overlays/default.nix)
-      overlay = import ./nix/overlays;
+      overlay = import ./nix/overlays { inherit self; };
 
       # nixpkgs インスタンス生成ヘルパー (nix/lib/pkgs.nix)
       # Intel Mac (x86_64-darwin) は 26.05 系スタックを使い分ける
@@ -291,7 +291,7 @@
         ./nix/flake-parts/apps/agents-doctor.nix
         ./nix/flake-parts/apps/system.nix
         ./nix/flake-parts/dev-shells.nix
-        # 品質ゲート (deadnix / statix / nu-check / typos)
+        # 品質ゲート (deadnix / statix / my-scripts / nu-check / typos)
         ./nix/flake-parts/checks.nix
         # nix fmt (treefmt-nix)
         ./nix/modules/home/packages/treefmt.nix

@@ -60,4 +60,7 @@ with pkgs;
   aria2
   mise
   tokei
+
+  # self-authored (overlay: nix/overlays/my-scripts.nix)
+  my-scripts
 ]
