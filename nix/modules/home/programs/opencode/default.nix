@@ -9,6 +9,7 @@ let
   link = config.lib.file.mkOutOfStoreSymlink;
   mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
   permConfig = import ../../../../overlays/mcp/permissions.nix { };
+  roles = import ../../../../lib/agent-roles.nix;
 in
 {
   dotfiles.programs.opencode = {
@@ -26,13 +27,18 @@ in
 
       permission = permConfig.opencode;
 
+      # mode を省略すると primary 扱いになり、built-in の subagent (explore/general)
+      # を上書きしたり「subagent のつもりが primary」になったりする。全定義で明示する。
       agent = {
         build = {
+          mode = "primary";
+          description = roles.build.description;
           steps = 20;
-          prompt = "You are a build agent. Focus on implementing features, fixing bugs, and writing code. Follow existing patterns and conventions.";
+          prompt = roles.build.prompt;
         };
         dangerously-skip-permission = {
           mode = "primary";
+          description = "Unattended build agent with all tool calls auto-approved";
           prompt = ''
             You are running in dangerously-skip-permission mode. All tool calls — including bash commands, file edits, subagent invocations, and user questions — execute without confirmation prompts.
 
@@ -51,38 +57,75 @@ in
           };
         };
         plan = {
+          mode = "primary";
+          description = roles.plan.description;
           temperature = 0.3;
           steps = 10;
-          prompt = "You are a planning agent. Focus on architecture, design, and creating detailed implementation plans. Think before acting.";
+          prompt = roles.plan.prompt;
         };
         review = {
+          mode = "subagent";
+          description = roles.review.description;
           temperature = 0.2;
           steps = 12;
-          prompt = "You are a code review agent. Review the current changes for correctness, security, and maintainability. Report concrete findings with file:line references and severity. Do not modify files.";
+          prompt = roles.review.prompt;
           permission = {
             edit = "deny";
+            task = {
+              "*" = "deny";
+            };
           };
         };
         test = {
+          mode = "subagent";
+          description = roles.test.description;
           temperature = 0.2;
           steps = 15;
-          prompt = "You are a test agent. Write or update focused tests for the current changes, run the relevant test commands, and report failures and coverage gaps.";
+          prompt = roles.test.prompt;
+          permission = {
+            task = {
+              "*" = "deny";
+            };
+          };
         };
         explore = {
+          mode = "subagent";
+          description = roles.explore.description;
           steps = 15;
-          prompt = "You are an exploration agent. Focus on understanding the codebase, finding patterns, and gathering context.";
+          prompt = roles.explore.prompt;
+          permission = {
+            edit = "deny";
+            task = {
+              "*" = "deny";
+            };
+          };
         };
         scout = {
+          mode = "subagent";
+          description = roles.scout.description;
           steps = 10;
-          prompt = "You are a scout agent. Focus on quick information gathering and answering questions about the codebase.";
+          prompt = roles.scout.prompt;
+          permission = {
+            edit = "deny";
+            task = {
+              "*" = "deny";
+            };
+          };
         };
+        # built-in の hidden 保守エージェント。visible primary にしない。
         title = {
+          mode = "primary";
+          hidden = true;
           steps = 1;
         };
         summary = {
+          mode = "primary";
+          hidden = true;
           steps = 1;
         };
         compaction = {
+          mode = "primary";
+          hidden = true;
           steps = 1;
         };
       };

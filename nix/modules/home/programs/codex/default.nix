@@ -12,20 +12,45 @@ let
   homeDir = config.home.homeDirectory;
   mcpConfig = import ../../../../overlays/mcp/mcp.nix { inherit config pkgs; };
   permConfig = import ../../../../overlays/mcp/permissions.nix { };
-  mcpToml = (pkgs.formats.toml { }).generate "mcp.toml" {
+  roles = import ../../../../lib/agent-roles.nix;
+  tomlFormat = pkgs.formats.toml { };
+  mcpToml = tomlFormat.generate "mcp.toml" {
     mcp_servers = mcpConfig.codex;
   };
+
+  # Codex は ~/.codex/agents/<role>.toml をスキャンして role を登録する。
+  # ファイル側に developer_instructions が必要 (detected file は role_name_hint が無い)。
+  codexAgents = lib.listToAttrs (
+    map (
+      name:
+      let
+        role = builtins.getAttr name roles;
+        promptText = role.prompt;
+      in
+      {
+        name = ".codex/agents/${name}.toml";
+        value.source = tomlFormat.generate "${name}.toml" {
+          inherit name;
+          inherit (role) description;
+          developer_instructions = promptText;
+        };
+      }
+    ) roles.roles
+  );
+
   python = pkgs.python3.withPackages (p: [ p.tomli-w ]);
 in
 {
   dotfiles.programs.codex = {
     icon = "🧩";
-    note = "グローバル AGENTS.md + MCP";
+    note = "グローバル AGENTS.md + MCP + 6 agents";
   };
 
   # グローバル指示: agent-memoryの保存ルールを毎セッション読み込ませる
-  home.file.".codex/AGENTS.md" = {
-    source = config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/codex/AGENTS.md";
+  home.file = codexAgents // {
+    ".codex/AGENTS.md" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/codex/AGENTS.md";
+    };
   };
 
   # config.toml は Codex 自身も書き込むので、MCP セクションだけマージする。
@@ -50,6 +75,8 @@ in
     # 権限は共通定義 (overlays/mcp/permissions.nix) を正本として上書きする
     config.update(json.loads(perms_json))
     config["mcp_servers"] = {**config.get("mcp_servers", {}), **mcp["mcp_servers"]}
+    # subagent は 1 段だけ。max_threads は max_concurrent_threads_per_session の alias。
+    config["agents"] = {**config.get("agents", {}), "max_threads": 6, "max_depth": 1}
     with open(out_path, "wb") as f:
         tomli_w.dump(config, f)
     PY

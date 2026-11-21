@@ -51,20 +51,22 @@ in
                       bad() { printf '      [fail] %s\n' "$1"; fail=$((fail + 1)); }
 
                       # -----------------------------------------------------------------
-                      echo "[1/4] 必須ファイル"
+                      echo "[1/5] 必須ファイル"
                       for f in \
                         nix/lib/ai-config.nix \
+                        nix/lib/agent-roles.nix \
                         nix/overlays/mcp/mcp.nix \
                         nix/overlays/mcp/permissions.nix \
                         fish/conf.d/ai-secrets.fish \
-                        agents/CLAUDE.md
+                        agents/CLAUDE.md \
+                        nix/modules/home/programs/pi/extensions/parallel-agents/agents.ts
                       do
                         if [ -f "$f" ]; then ok "$f"; else bad "$f がありません"; fi
                       done
                       echo ""
 
                       # -----------------------------------------------------------------
-                      echo "[2/4] 単一ソースの整合"
+                      echo "[2/5] 単一ソースの整合"
                       mcp="nix/overlays/mcp/mcp.nix"
                       perm="nix/overlays/mcp/permissions.nix"
                       ai="nix/lib/ai-config.nix"
@@ -104,6 +106,18 @@ in
                         fi
                       done
 
+                      for f in \
+                        nix/modules/home/programs/opencode/default.nix \
+                        nix/modules/home/programs/claude-code/default.nix \
+                        nix/modules/home/programs/codex/default.nix
+                      do
+                        if grep -q 'lib/agent-roles.nix' "$f"; then
+                          ok "$(basename "$(dirname "$f")") が共通ロール定義を参照"
+                        else
+                          bad "$f が共通ロール定義を参照していません"
+                        fi
+                      done
+
                       for var in OPENAI_API_KEY ANTHROPIC_API_KEY GITHUB_PERSONAL_ACCESS_TOKEN; do
                         if grep -q "set -gx $var" "$secrets"; then
                           ok "secret bridge: $var"
@@ -122,7 +136,7 @@ in
                       echo ""
 
                       # -----------------------------------------------------------------
-                      echo "[3/4] 生成された設定 (JSON)"
+                      echo "[3/5] 生成された設定 (JSON)"
                       check_json() {
                         label=$1
                         apply=$2
@@ -137,19 +151,93 @@ in
                       check_json "opencode/opencode.json" 'f: f."opencode/opencode.json".text'
                       check_json "opencode/tui.json" 'f: f."opencode/tui.json".text'
                       check_json "pi/agent/settings.json" 'f: f."pi/agent/settings.json".text'
-                      check_json "pi/agent/mcp.json" 'f: f."pi/agent/mcp.json".text'
-                      echo ""
+                       check_json "pi/agent/mcp.json" 'f: f."pi/agent/mcp.json".text'
+                       echo ""
 
-                      # -----------------------------------------------------------------
-                      if [ "$run_check" = 1 ]; then
-                        echo "[4/4] nix flake check --no-build"
+                       # -----------------------------------------------------------------
+                       echo "[4/5] subagent 定義"
+                       roles_json=$(nix eval --file ./nix/lib/agent-roles.nix --raw --apply 'r: builtins.toJSON (builtins.listToAttrs (map (n: { name = n; value = { description = (builtins.getAttr n r).description; prompt = (builtins.getAttr n r).prompt; }; }) r.roles))' 2>/dev/null)
+
+                       # opencode: mode / permission.task / 共通 prompt の一致
+                       oc=$(nix eval --raw --apply 'f: f."opencode/opencode.json".text' "$hc.config.xdg.configFile" 2>/dev/null)
+                       if printf '%s\n' "$oc" | ${jq} -e --argjson roles "$roles_json" '
+                         . as $c
+                         | ($c.agent | to_entries) as $entries
+                         | (($entries | map(select(.value.mode == "subagent") | .key) | sort) == ["explore","review","scout","test"])
+                         and ($entries | map(select(.value.mode == "subagent") | .value.permission.task["*"]) | all(. == "deny"))
+                         and ($c.agent[$c.default_agent].mode == "primary")
+                         and (($c.permission.task | to_entries | map(select(.value == "allow") | .key) | sort) == ["explore","review","scout","test"])
+                         and (["build","plan","explore","scout","review","test"] | all(.[]; . as $k | $c.agent[$k].prompt == $roles[$k].prompt))
+                       ' >/dev/null 2>&1
+                       then
+                         ok "opencode: 4 subagent + 親の task glob + prompt"
+                       else
+                         bad "opencode: subagent 定義が共通ロールと一致しません"
+                       fi
+
+                       # claude-code: 6 ロールの frontmatter と prompt
+                       claude_agents=$(nix eval --raw --apply 'f: builtins.toJSON (builtins.listToAttrs (map (n: { name = n; value = ((builtins.getAttr (".claude/agents/" + n + ".md") f).text or ""); }) [ "build" "plan" "explore" "scout" "review" "test" ]))' "$hc.config.home.file" 2>/dev/null)
+                       if printf '%s\n' "$claude_agents" | ${jq} -e --argjson roles "$roles_json" '
+                         keys == ($roles | keys)
+                         and (to_entries | all(.[]; . as $e | $e.value | contains("name: " + $e.key) and contains("description: " + $roles[$e.key].description) and contains($roles[$e.key].prompt)))
+                       ' >/dev/null 2>&1
+                       then
+                         ok "claude-code: 6 agent の frontmatter + prompt"
+                       else
+                         bad "claude-code: agent 定義が共通ロールと一致しません"
+                       fi
+
+                       # codex: role TOML 6 個 + ネスト制限
+                       codex_agents=$(nix eval --raw --apply 'f: builtins.toJSON (map (n: builtins.hasAttr (".codex/agents/" + n + ".toml") f) [ "build" "plan" "explore" "scout" "review" "test" ])' "$hc.config.home.file" 2>/dev/null)
+                       if printf '%s\n' "$codex_agents" | ${jq} -e 'all(.[]; . == true)' >/dev/null 2>&1; then
+                         ok "codex: 6 agent role TOML"
+                       else
+                         bad "codex: agent role TOML が不足しています"
+                       fi
+                       if grep -Eq 'max_depth[^0-9]*1' nix/modules/home/programs/codex/default.nix \
+                         && grep -Eq 'max_threads[^0-9]*6' nix/modules/home/programs/codex/default.nix
+                       then
+                         ok "codex: subagent は 1 段 (max_depth=1 / max_threads=6)"
+                       else
+                         bad "codex: [agents] のネスト制限がありません"
+                       fi
+
+                       # pi: parallel-agents と agent-modes の prompt drift
+                       pi_agents=nix/modules/home/programs/pi/extensions/parallel-agents/agents.ts
+                       for role in build plan explore scout review test; do
+                         prompt=$(nix eval --file ./nix/lib/agent-roles.nix --raw --apply "r: r.$role.prompt" 2>/dev/null)
+                         desc=$(nix eval --file ./nix/lib/agent-roles.nix --raw --apply "r: r.$role.description" 2>/dev/null)
+                         if grep -Fq "$prompt" "$pi_agents" && grep -Fq "$desc" "$pi_agents"; then
+                           ok "pi parallel-agents: $role"
+                         else
+                           bad "pi parallel-agents: $role の prompt/description が drift"
+                         fi
+                       done
+                       if grep -Eq '(researcher|reviewer|tester|implementer)' "$pi_agents"; then
+                         bad "pi parallel-agents: 旧ロール名が残っています"
+                       else
+                         ok "pi parallel-agents: ロール名は共通定義に統一"
+                       fi
+                       for role in build plan explore scout; do
+                         prompt=$(nix eval --file ./nix/lib/agent-roles.nix --raw --apply "r: r.$role.prompt" 2>/dev/null)
+                         if grep -Fq "$prompt" "nix/modules/home/programs/pi/extensions/agent-modes/$role.ts"; then
+                           ok "pi agent-modes: $role"
+                         else
+                           bad "pi agent-modes: $role の prompt が drift"
+                         fi
+                       done
+                       echo ""
+
+                       # -----------------------------------------------------------------
+                       if [ "$run_check" = 1 ]; then
+                         echo "[5/5] nix flake check --no-build"
                         if nix flake check --no-build; then
                           ok "flake check"
                         else
                           bad "flake check が失敗しました"
                         fi
                       else
-                        echo "[4/4] flake check をスキップしました (--no-check)"
+                         echo "[5/5] flake check をスキップしました (--no-check)"
                       fi
 
                       if [ "$fail" -gt 0 ]; then

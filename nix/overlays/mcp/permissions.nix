@@ -11,7 +11,15 @@ let
     grep = "allow";
     list = "allow";
     bash = "ask";
-    task = "ask";
+    # 親が起動できる subagent をglobで制御 (後勝ち: broad → narrow)。
+    # 各 subagent 側は permission.task."*" = "deny" で再帰 spawn を防ぐ。
+    task = {
+      "*" = "ask";
+      explore = "allow";
+      review = "allow";
+      scout = "allow";
+      test = "allow";
+    };
     webfetch = "allow";
     websearch = "allow";
     skill = "allow";

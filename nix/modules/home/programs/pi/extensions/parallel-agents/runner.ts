@@ -20,6 +20,22 @@ import type { ParallelAgentConfig, SubAgentResult } from "./types.ts";
 
 type SessionModel = NonNullable<ExtensionContext["model"]>;
 
+/**
+ * Role tools are a ceiling on top of the active mode's tools. A role without
+ * `tools` inherits the mode as-is; with no active mode the role's own list is
+ * used. The `parallel` tool is never included in a role, so sub-agents cannot
+ * spawn further sub-agents.
+ */
+function resolveTools(
+  mode: AgentModeState | undefined,
+  agent: ParallelAgentConfig,
+): string[] | undefined {
+  if (!mode) return agent.tools;
+  if (!agent.tools) return mode.tools;
+  const allowed = new Set(agent.tools);
+  return mode.tools.filter((tool) => allowed.has(tool));
+}
+
 export interface RunSubAgentOptions {
   agent: ParallelAgentConfig;
   task: string;
@@ -34,6 +50,7 @@ export async function runSubAgent(
 ): Promise<SubAgentResult> {
   const { agent, task, cwd, model, mode, signal } = options;
   const agentDir = getAgentDir();
+  const tools = resolveTools(mode, agent);
 
   const loader = new DefaultResourceLoader({
     cwd,
@@ -53,7 +70,7 @@ export async function runSubAgent(
     model,
     resourceLoader: loader,
     sessionManager: SessionManager.inMemory(cwd),
-    ...(mode ? { tools: mode.tools } : {}),
+    ...(tools ? { tools } : {}),
   });
 
   const onAbort = (): void => {
