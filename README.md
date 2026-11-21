@@ -161,7 +161,7 @@ WSL の設定は次の 2 ファイルで管理します。配置先が異なる�
 | ファイル         | 配置先                               | スコープ                    | 管理方法                         |
 | ---------------- | ------------------------------------ | --------------------------- | -------------------------------- |
 | `wsl/.wslconfig` | Windows側 `%USERPROFILE%\.wslconfig` | **全ディストロ共通** (WSL2) | 手動コピー                       |
-| `wsl/wsl.conf`   | ディストロ内 `/etc/wsl.conf`         | ディストロ別                | `my_scripts/wsl-setup.sh` (root) |
+| `wsl/wsl.conf`   | ディストロ内 `/etc/wsl.conf`         | ディストロ別                | `my_scripts/wsl-setup.nu` (root) |
 
 ### `.wslconfig` — 全ディストロ共通 (Windows側)
 
@@ -182,9 +182,9 @@ cp wsl/.wslconfig $env:USERPROFILE\.wslconfig
 
 ### `/etc/wsl.conf` — ディストロ別 (root 必要)
 
-```bash
+```fish
 # リポジトリの wsl/wsl.conf を /etc/wsl.conf に反映 + ja_JP.UTF-8 ロケール生成
-sudo ~/.scripts/wsl-setup.sh
+sudo -E (which nu) ~/.scripts/wsl-setup.nu
 ```
 
 主な設定:
@@ -202,7 +202,7 @@ wsl --shutdown
 ```
 
 - 設定は WSL インスタンス完全停止後に読み込まれます (8秒ルール)
-- 複数ディストロがある場合、`/etc/wsl.conf` は各ディストロで `wsl-setup.sh` を実行してください (`.wslconfig` は全ディストロに自動適用されます)
+- 複数ディストロがある場合、`/etc/wsl.conf` は各ディストロで `wsl-setup.nu` を実行してください (`.wslconfig` は全ディストロに自動適用されます)
 - `nix run .#switch` (WSL) は実行前に `.wslconfig` の symlink 状態を事前チェックします
 
 ---
@@ -210,16 +210,25 @@ wsl --shutdown
 ## `~/.scripts` — 手書きの補助スクリプト
 
 `my_scripts/` は `~/.scripts` へ symlink される。PATH には載らないので
-`~/.scripts/<name>.sh` で直接呼ぶ。
+`~/.scripts/<name>.nu` で直接呼ぶ。全部 Nushell 製 (shebang `#!/usr/bin/env nu`)。
 
 | スクリプト      | 用途                                                        |
 | --------------- | ----------------------------------------------------------- |
-| `wsl-setup.sh`  | `/etc/wsl.conf` 反映 + `ja_JP.UTF-8` 生成（`sudo` 必須）    |
-| `extract.sh`    | アーカイブ自動判別で展開（tar / zip / 7z / deb / rpm など） |
-| `gh-new.sh`     | GitHub リポジトリを作って clone して cd                     |
-| `gh-pr.sh`      | PR 作成と `--web` 表示                                      |
-| `mkcd.sh`       | ディレクトリ作成して cd                                     |
-| `port-check.sh` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
+| `wsl-setup.nu`  | `/etc/wsl.conf` 反映 + `ja_JP.UTF-8` 生成（`sudo` 必須）    |
+| `extract.nu`    | アーカイブ自動判別で展開（tar / zip / 7z / deb / rpm など） |
+| `gh-new.nu`     | GitHub リポジトリを作って clone して cd                     |
+| `gh-pr.nu`      | PR 作成と `--web` 表示                                      |
+| `mkcd.nu`       | ディレクトリ作成して cd                                     |
+| `port-check.nu` | 待ち受けポートとプロセスの表示（`ss` / `lsof`）             |
+
+`wsl-setup.nu` は root 権限が要る。`sudo` 実行時は root の PATH に nu が無いことが多いので、
+nu 本体を明示して実行する。
+
+```fish
+sudo -E (which nu) ~/.scripts/wsl-setup.nu
+```
+
+bash なら `sudo -E $(which nu) ~/.scripts/wsl-setup.nu`。
 
 更新・ビルド・プラグイン更新は `nix run .#switch` / `.#build` / `.#update` / `.#config-update` / `.#nvim-install` / `.#nvim-update` / `.#llm-agents-update` / `.#agents-skills-update` / `.#agents-doctor` が持ち、
 Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で実行する。
@@ -269,7 +278,7 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 
 ## 運用ルール（品質ゲート）
 
-- PR では **Nix Flake Check**（`nix flake check`）を必須とします（`flake check` は deadnix/statix/shellcheck/typos/treefmt のチェックも含みます）。
+- PR では **Nix Flake Check**（`nix flake check`）を必須とします（`flake check` は deadnix/statix/nu-check/typos/treefmt のチェックも含みます）。
 - ローカルでも PR 前に次を実行してください。
 
 ```bash
@@ -280,7 +289,7 @@ nix fmt -- --ci  # 必要に応じて自動フォーマット（treefmt）
 **補助チェック（個別実行）**
 
 - typos のみ: `nix build .#checks.x86_64-linux.typos --print-build-logs`
-- lint のみ: `nix build .#checks.x86_64-linux.deadnix .#checks.x86_64-linux.statix .#checks.x86_64-linux.shellcheck --print-build-logs`
+- lint のみ: `nix build .#checks.x86_64-linux.deadnix .#checks.x86_64-linux.statix .#checks.x86_64-linux.nu-check --print-build-logs`
 
 ## ユーザー名
 

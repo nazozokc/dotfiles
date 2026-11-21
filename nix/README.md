@@ -957,12 +957,12 @@ flake.nix                                 # 配線のみ (inputs / imports / 設
 ### CI品質ゲート
 
 - PR の必須チェックは `nix flake check`（Linux / macOS 両方で実行）。
-  - `flake check` には deadnix / statix / shellcheck / typos / treefmt の各チェックも含まれます。
+  - `flake check` には deadnix / statix / nu-check / typos / treefmt の各チェックも含まれます。
 - 補助チェックとして個別に実行する場合は以下のようにします。
 
 ```bash
 nix build .#checks.x86_64-linux.typos --print-build-logs
-nix build .#checks.x86_64-linux.deadnix .#checks.x86_64-linux.statix .#checks.x86_64-linux.shellcheck --print-build-logs
+nix build .#checks.x86_64-linux.deadnix .#checks.x86_64-linux.statix .#checks.x86_64-linux.nu-check --print-build-logs
 ```
 
 ### sops-nix シークレット運用

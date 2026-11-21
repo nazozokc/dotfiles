@@ -1,5 +1,5 @@
 # nix/flake-parts/checks.nix
-# 品質ゲート: deadnix / statix / shellcheck / typos
+# 品質ゲート: deadnix / statix / nu-check / typos
 # treefmt の check は treefmt-nix flakeModule (packages/treefmt.nix) が提供する。
 #
 # 全チェックは flake のソース (${self}) に対して走らせる。
@@ -24,10 +24,14 @@
           touch $out
         '';
 
-        # my_scripts/ のシェルスクリプト lint
-        shellcheck = pkgs.runCommand "check-shellcheck" { } ''
-          echo "shellcheck ${self}/my_scripts/*.sh" >&2
-          ${pkgs.shellcheck}/bin/shellcheck ${self}/my_scripts/*.sh
+        # my_scripts/ の Nushell スクリプト構文チェック
+        # source するだけで main は実行しない (parse エラーで非ゼロ終了)
+        nu-check = pkgs.runCommand "check-nu" { } ''
+          echo "nu source ${self}/my_scripts/*.nu" >&2
+          for f in ${self}/my_scripts/*.nu; do
+            echo "  $f" >&2
+            ${pkgs.nushell}/bin/nu --no-config-file -c "source $f"
+          done
           touch $out
         '';
 

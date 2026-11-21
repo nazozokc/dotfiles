@@ -67,7 +67,7 @@ in
   # NOTE: .wslconfig は Windows 側 (%USERPROFILE%\.wslconfig) のファイルであり、
   #       WSL の Linux 側 ~/.wslconfig は読まれない。
   #       wsl/.wslconfig を手動で Windows 側にコピーして管理する。
-  #       /etc/wsl.conf は root 権限が必要なため my_scripts/wsl-setup.sh で管理する。
+  #       /etc/wsl.conf は root 権限が必要なため my_scripts/wsl-setup.nu で管理する。
 
   home.file = {
     ".config/hypr".source = link "${dotfilesDir}/hypr";
