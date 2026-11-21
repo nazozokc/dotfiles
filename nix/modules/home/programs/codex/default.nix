@@ -21,14 +21,21 @@ let
   # Codex は ~/.codex/agents/<role>.toml をスキャンして role を登録する。
   # ファイル側に developer_instructions が必要 (detected file は role_name_hint が無い)。
   codexAgents = lib.listToAttrs (
-    map (name: {
-      name = ".codex/agents/${name}.toml";
-      value.source = tomlFormat.generate "${name}.toml" {
-        name = name;
-        description = roles.${name}.description;
-        developer_instructions = roles.${name}.prompt;
-      };
-    }) roles.roles
+    map (
+      name:
+      let
+        role = builtins.getAttr name roles;
+        promptText = role.prompt;
+      in
+      {
+        name = ".codex/agents/${name}.toml";
+        value.source = tomlFormat.generate "${name}.toml" {
+          inherit name;
+          inherit (role) description;
+          developer_instructions = promptText;
+        };
+      }
+    ) roles.roles
   );
 
   python = pkgs.python3.withPackages (p: [ p.tomli-w ]);
