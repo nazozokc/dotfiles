@@ -1,5 +1,5 @@
 -- Purpose: lightweight workspace session persistence.
--- Saves active workspace on config reload, restores on next startup.
+-- Saves the active workspace whenever it changes, restores on next startup.
 -- This is intentionally simple: no mux server, no pane-layout serialization.
 -- Uses a JSON file in the config directory (wezterm.state does not exist in the Lua API).
 
@@ -34,13 +34,29 @@ local function write_state(workspace)
 	f:close()
 end
 
+-- WezTerm exposes no window-close/gui-shutdown event with workspace context,
+-- so persist on change instead. update-status ticks often; the in-memory guard
+-- keeps actual file writes rare.
+local last_saved_workspace = nil
+
+local function save_workspace(workspace)
+	if not workspace or workspace == "" or workspace == last_saved_workspace then
+		return
+	end
+	write_state(workspace)
+	last_saved_workspace = workspace
+end
+
 function M.apply(config)
-	-- Save current workspace whenever config is reloaded (including on startup).
+	-- Startup and config reload.
 	wezterm.on("window-config-reloaded", function(window, _)
-		local workspace = window:active_workspace()
-		if workspace and workspace ~= "" then
-			write_state(workspace)
-		end
+		save_workspace(window:active_workspace())
+	end)
+
+	-- Covers every switch path (launcher, number keys, relative switches).
+	-- The last switch is already on disk before the app exits.
+	wezterm.on("update-status", function(window, _)
+		save_workspace(window:active_workspace())
 	end)
 end
 

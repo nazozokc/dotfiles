@@ -6,6 +6,7 @@
 
 local wezterm = require("wezterm")
 local platform = require("utils.platform")
+local path = require("utils.path")
 
 local M = {}
 
@@ -20,36 +21,6 @@ local function run_cmd(args)
 		return stdout:gsub("^%s+", ""):gsub("%s+$", "")
 	end
 	return nil
-end
-
---- Equivalent to POSIX basename(3); handles \ and / separators.
-local function basename(path)
-	if not path then
-		return nil
-	end
-	local norm = path:gsub("\\", "/")
-	return (norm:gsub("/$", ""):match("([^/]+)$")) or norm
-end
-
---- Read git branch from .git/HEAD in the given cwd file-path.
-local function get_git_branch(cwd_url)
-	if not cwd_url or not cwd_url.file_path then
-		return nil
-	end
-
-	local git_head = cwd_url.file_path:gsub("\\", "/") .. "/.git/HEAD"
-	local f = io.open(git_head, "r")
-	if not f then
-		return nil
-	end
-
-	local content = f:read("*l")
-	f:close()
-	if not content then
-		return nil
-	end
-
-	return content:match("ref: refs/heads/(.+)")
 end
 
 -- ──────────────────────────────────────────────
@@ -163,7 +134,7 @@ wezterm.on("update-status", function(window, pane)
 	local git_branch
 	if pane_id ~= git_cache.pane_id or now - git_cache.time >= 30 then
 		local cwd_url = pane.current_working_dir
-		git_branch = get_git_branch(cwd_url)
+		git_branch = path.git_branch(cwd_url)
 		git_cache.branch = git_branch
 		git_cache.pane_id = pane_id
 		git_cache.time = now

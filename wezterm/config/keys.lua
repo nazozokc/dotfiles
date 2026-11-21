@@ -27,7 +27,11 @@ function M.apply(config)
 	-- Defaults include Ctrl-only bindings (zoom, etc). We disable them to enforce the rule strictly.
 	config.disable_default_key_bindings = true
 
-	config.keys = {
+	-- Append instead of replacing: leader.lua registers its LEADER bindings first.
+	-- A direct assignment here would silently drop them (require order in wezterm.lua).
+	config.keys = config.keys or {}
+
+	local keys = {
 		-- ========================
 		-- Tabs
 		-- ========================
@@ -227,6 +231,10 @@ function M.apply(config)
 		{ key = "F13", mods = "NONE", action = act.SendString("") },
 		{ key = "F14", mods = "NONE", action = act.SendString("") },
 	}
+
+	for _, key in ipairs(keys) do
+		table.insert(config.keys, key)
+	end
 
 	-- ========================
 	-- macOS SUPER (Cmd) bindings (appended only on macOS)

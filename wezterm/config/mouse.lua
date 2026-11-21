@@ -1,4 +1,4 @@
--- Purpose: mouse is allowed only for selection and scrolling; no right-click paste, no link opening.
+-- Purpose: mouse is allowed for selection, scrolling and Ctrl+Shift+click hyperlink opening.
 -- On Linux the selection goes to PrimarySelection (X11 middle-click paste);
 -- on macOS/Windows the same gesture copies straight to Clipboard.
 
@@ -85,6 +85,20 @@ function M.apply(config)
 			event = { Down = { streak = 1, button = { WheelDown = 1 } } },
 			mods = "NONE",
 			action = act.ScrollByCurrentEventWheelDelta,
+		},
+
+		-- Hyperlinks: Ctrl+Shift+click fires the open-uri handler, which sends
+		-- file:// links to $EDITOR. Bind Down to Nop so mouse-reporting apps
+		-- (tmux/vim) don't receive a Down without its matching Up.
+		{
+			event = { Down = { streak = 1, button = "Left" } },
+			mods = "CTRL|SHIFT",
+			action = act.Nop,
+		},
+		{
+			event = { Up = { streak = 1, button = "Left" } },
+			mods = "CTRL|SHIFT",
+			action = act.OpenLinkAtMouseCursor,
 		},
 	}
 end
