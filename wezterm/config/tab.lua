@@ -52,8 +52,8 @@ local function get_process_icon(process_name, pane_title)
 end
 
 local function pane_cwd_basename(pane)
-	-- current_working_dir is a URL object or nil
-	local cwd_url = pane.current_working_dir
+	-- get_current_working_dir() returns a URL object or nil (PaneInformation のフィールドではない)
+	local cwd_url = pane:get_current_working_dir()
 	if cwd_url and cwd_url.file_path then
 		return path.basename(cwd_url.file_path), cwd_url
 	end

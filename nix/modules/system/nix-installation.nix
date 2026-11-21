@@ -19,6 +19,7 @@
 {
   lib,
   config,
+  pkgs,
   username,
   ...
 }:
@@ -72,9 +73,8 @@ in
 
     # 宣言した導入モードと実ホストの突き合わせ。
     #
-    # 外部コマンド (stat / getent / id / grep) に依存しないよう、test の
-    # ファイルテスト演算子と /etc/group の読み出しだけで判定する。
-    # sudo の secure_path に依存させないため。
+    # 外部コマンドは nixpkgs の絶対パスで呼ぶ (sudo の secure_path に依存しない)。
+    # -O は root 実行時に常に真になるため所有者判定には使わない。
     #
     # 失敗の重み付け:
     #   - 宣言が `nixbld` なのに実ホストが nixbld 以外 → activation を中断する。
@@ -96,18 +96,21 @@ in
         fatal=0
 
         # ---- 実モードの判定 -------------------------------------------------
+        # assertion は root で走る。bash の -O は実効 UID で判定するので
+        # root 所有の store を「実行ユーザー所有」と誤る。UID を直接比べる。
+        store_owner=$(${pkgs.coreutils}/bin/stat -c %u /nix/store 2>/dev/null || echo unknown)
+        user_uid=$(${pkgs.coreutils}/bin/id -u "$me" 2>/dev/null || echo unknown)
+
         # 1) nix-daemon が動いていれば multi-user。
         #    socket は Unix ドメインソケットなので -S で判定できる。
         if [ -S /nix/var/nix/daemon-socket ] || [ -S /run/nix-daemon.socket ]; then
           detected=daemon
 
-        # 2) そうでなければ store の所有者を考える。
-        #    -O は「存在して、有効 uid が所有者なら真」。
-        #    新 installer の single-user 導入 (store が実行ユーザー所有) がこれ。
-        elif [ -O /nix/store ]; then
+        # 2) store が実行ユーザー所有なら新 installer の single-user 導入。
+        elif [ "$store_owner" != unknown ] && [ "$store_owner" = "$user_uid" ]; then
           detected=user
 
-        # 3) それも違う = store が root 所有。nixbld 経由でしか書けない。
+        # 3) それ以外 = store が root 所有。nixbld 経由でしか書けない。
         else
           detected=nixbld
         fi

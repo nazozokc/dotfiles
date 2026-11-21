@@ -10,6 +10,8 @@ return {
 		{ "L3MON4D3/LuaSnip", lazy = true },
 		{ "saadparwaiz1/cmp_luasnip", lazy = true },
 		{ "rafamadriz/friendly-snippets", lazy = true },
+		-- 依存として読み込み、lspkind.lua の config (symbol_map) を先に走らせる
+		{ "onsails/lspkind.nvim", lazy = true },
 	},
 
 	config = function()
@@ -60,10 +62,8 @@ return {
 			formatting = {
 				fields = { "kind", "abbr", "menu" },
 				format = function(entry, item)
-					local icons = {
-						Function = "󰊕",
-						Snippet = "",
-					}
+					-- lspkind.init() が設定した symbol_map をそのまま使う
+					local icons = require("lspkind").symbol_map
 
 					item.kind = (icons[item.kind] or "") .. " " .. item.kind
 					item.menu = ({

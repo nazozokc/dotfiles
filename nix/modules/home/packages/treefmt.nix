@@ -1,4 +1,4 @@
-# nix/modules/home-manager/packages/treefmt.nix
+# nix/modules/home/packages/treefmt.nix
 # treefmt-nix によるフォーマッター統合設定
 # 使い方: nix fmt
 { inputs, ... }:

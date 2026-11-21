@@ -13,7 +13,7 @@
 
 - テーマ: Powerlevel10k
 - Oh My Zsh 経由で以下のプラグインをロード:
-  - git, zsh-autosuggestions, zsh-syntax-highlighting
+  - git, zsh-autosuggestions
   - fzf-tab, fzf, git-open
   - zsh-you-should-use, zsh-interactive-cd, zsh-vi-mode
   - zsh-autocomplete, zsh-history-enquirer, fast-syntax-highlighting

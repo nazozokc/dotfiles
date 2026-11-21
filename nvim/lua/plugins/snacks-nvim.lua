@@ -68,7 +68,12 @@ return {
 					{ icon = "", desc = "New file", key = "e", action = ":enew" },
 					{ icon = "󰒲", desc = "Lazy", key = "z", action = ":Lazy" },
 					{ icon = "󰈙", desc = "Oil", key = ".", action = ":Oil" },
-					{ icon = "", desc = "Dotfiles", key = "d", action = ":Config" },
+					{
+						icon = "",
+						desc = "Dotfiles",
+						key = "d",
+						action = ":Oil ~/ghq/github.com/nazozokc/dotfiles/",
+					},
 					{ icon = "󰈙", desc = "Files", key = "f", action = ":Telescope find_files" },
 					{ icon = "", desc = "Restore Session", key = "s", section = "session" },
 					{ icon = "󰅚", desc = "Quit", key = "q", action = ":qa" },

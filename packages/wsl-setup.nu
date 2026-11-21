@@ -27,8 +27,19 @@ def main [] {
     exit 1
   }
 
-  print $"==> Deploying ($wsl_conf_src) -> /etc/wsl.conf"
-  ^install -m 644 $wsl_conf_src /etc/wsl.conf
+  # デフォルトユーザーは実行ユーザーから解決する。sudo -E なら SUDO_USER / USER が残る。
+  let target_user = if "SUDO_USER" in $env {
+    $env.SUDO_USER
+  } else if "USER" in $env {
+    $env.USER
+  } else {
+    ^id -un | str trim
+  }
+
+  print $"==> Deploying ($wsl_conf_src) -> /etc/wsl.conf (user: ($target_user))"
+  let rendered = (open --raw $wsl_conf_src | str replace '@USER@' $target_user)
+  $rendered | save --force /etc/wsl.conf
+  ^chmod 644 /etc/wsl.conf
   print "    Done."
 
   print "==> Ensuring ja_JP.UTF-8 locale..."

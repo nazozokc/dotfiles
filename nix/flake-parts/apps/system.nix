@@ -53,7 +53,7 @@ in
       # '#default' を付けて flake として解決させる
       systemManagerRun =
         cmd:
-        "nix run ${c.systemManager}#default -- ${cmd} --flake '.#${t.systemConfigName}'${
+        "nix run ${c.systemManagerRef}#default -- ${cmd} --flake '.#${t.systemConfigName}'${
           if cmd == "switch" then " --sudo" else ""
         }";
     in

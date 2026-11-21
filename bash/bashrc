@@ -29,22 +29,24 @@ export XCODEBIN="/Applications/Xcode.app/Contents/Developer/usr/bin"
 export HOMEBREW_X86_64_BIN="/usr/local/bin"
 export HOMEBREW_ARM_BIN="/opt/homebrew/bin"
 export CURLBIN="/usr/local/opt/curl/bin"
-export PKG_CONFIG_PATH="/usr/local/opt/sqlite/lib/pkgconfig"
 export ZIG_PATH="$HOME/zig"
 export CODONBIN="$HOME/.codon/bin"
 PATH=${HOMEBREW_ARM_BIN}:${HOMEBREW_X86_64_BIN}:${LOCALBIN}:/usr/bin:/bin:/opt/local/sbin:${AQUA_BIN_PATH}:${BUNBIN}:${ZIG_PATH}:${NODEBREWBIN}:${CODONBIN}:${GOBIN}:${GOPATH}:${POETRY_PATH}:${CUSTOM_SCRIPTS_PATH}:${CURLBIN}:${NIMBLEBIN}:${GNUBIN}:${XCODEBIN}:${PATH}
 # aqua
 export AQUA_GLOBAL_CONFIG=${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml
 # languages
-# c++
-export CPPFLAGS=-I/opt/X11/include
-export LDFLAGS="$LDFLAGS -L/usr/local/opt/zlib/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/sqlite/lib -L/usr/local/opt/binutils/lib -L/opt/homebrew/lib"
-_sdk=$(xcrun --show-sdk-path 2>/dev/null)
-export CFLAGS="-I/usr/local/opt/zlib/include -I${_sdk} $CFLAGS"
-export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/zlib/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I${_sdk} -I/usr/local/opt/binutils/include -I/opt/homebrew/include"
-unset _sdk
-export LDFLAGS="$LDFLAGS -L/usr/local/opt/openblas/lib -L/usr/local/opt/lapack/lib"
-export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/openblas/include -I/usr/local/opt/lapack/include"
+# Homebrew / Xcode 由来のフラグは macOS 専用
+if [ "$(uname)" = "Darwin" ]; then
+  export PKG_CONFIG_PATH="/usr/local/opt/sqlite/lib/pkgconfig"
+  export CPPFLAGS=-I/opt/X11/include
+  export LDFLAGS="$LDFLAGS -L/usr/local/opt/zlib/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/sqlite/lib -L/usr/local/opt/binutils/lib -L/opt/homebrew/lib"
+  _sdk=$(xcrun --show-sdk-path 2>/dev/null)
+  export CFLAGS="-I/usr/local/opt/zlib/include -I${_sdk} $CFLAGS"
+  export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/zlib/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I${_sdk} -I/usr/local/opt/binutils/include -I/opt/homebrew/include"
+  unset _sdk
+  export LDFLAGS="$LDFLAGS -L/usr/local/opt/openblas/lib -L/usr/local/opt/lapack/lib"
+  export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/openblas/include -I/usr/local/opt/lapack/include"
+fi
 # CCACHE
 export USE_CCACHE=1
 export CCACHE_DIR="$HOME/.ccache"

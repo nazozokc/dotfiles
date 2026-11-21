@@ -5,7 +5,7 @@ abbr --add ll ls\ -lh
 abbr --add lah ls\ -lah
 abbr --add la eza\ -lah
 abbr --add l ls\ -CF
-abbr --add rm rm\ -rf
+abbr --add rm rm\ -i
 abbr --add cp cp\ -i
 abbr --add mv mv\ -i
 abbr --add grep grep\ --color=auto
