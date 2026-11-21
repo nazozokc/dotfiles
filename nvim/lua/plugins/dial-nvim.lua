@@ -5,21 +5,24 @@ return {
 	config = function()
 		local augend = require("dial.augend")
 
-		require("dial.config").augends:register_group({
-			default = {
-				augend.integer.alias.decimal,
-				augend.constant.alias.bool,
-			},
-		})
-		augend.constant.new({
+		local size = augend.constant.new({
 			elements = { "small", "medium", "large" },
 			word = true,
 			cyclic = true,
 		})
-		augend.constant.new({
+		local declaration = augend.constant.new({
 			elements = { "let", "const", "var" },
 			word = true,
 			cyclic = true,
+		})
+
+		require("dial.config").augends:register_group({
+			default = {
+				augend.integer.alias.decimal,
+				augend.constant.alias.bool,
+				size,
+				declaration,
+			},
 		})
 	end,
 }

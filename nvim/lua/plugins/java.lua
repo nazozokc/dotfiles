@@ -16,8 +16,7 @@ return {
 				spring_boot_tools = { enable = true }, -- Spring Boot
 				jdk = { auto_install = true, version = "17" },
 			})
-			-- LSP を有効化
-			require("lspconfig").jdtls.setup({})
+			-- LSP は lsp-config.lua の vim.lsp.config / vim.lsp.enable が有効化する
 		end,
 	},
 }

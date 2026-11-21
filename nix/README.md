@@ -795,7 +795,7 @@ macOS 側の nix-darwin に相当する役割。
 `nix run .#switch` でも適用されるが、単独で実行するコマンド如下。
 
 ```bash
-# OS 層設定的评价確認
+# OS 層設定の評価確認
 nix run .#system-check
 
 # OS 層設定のビルドのみ

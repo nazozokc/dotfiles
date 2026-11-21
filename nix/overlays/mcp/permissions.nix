@@ -46,7 +46,6 @@ let
       "Bash(mkdir:*)"
       "Bash(cp:*)"
       "Bash(mv:*)"
-      "Bash(rm:*)"
       "Bash(touch:*)"
       "Bash(echo:*)"
       "Bash(which:*)"
@@ -60,8 +59,8 @@ let
       "Bash(sudo:*)"
       "Bash(curl:*)"
       "Bash(wget:*)"
-      "Bash(rm -rf /*:*)"
-      "Bash(rm -rf ~/*:*)"
+      # rm は allow しない (毎回確認させる)。再帰強制削除は全バリアントを明示的に拒否。
+      "Bash(rm -rf:*)"
     ];
   };
 

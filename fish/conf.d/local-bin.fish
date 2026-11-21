@@ -3,5 +3,8 @@ fish_add_path "$HOME/.cmux/bin"
 
 # WSL でのみ Windows 側 X サーバーへ DISPLAY を向ける (macOS / 素の Linux では設定しない)
 if test -n "$WSL_DISTRO_NAME"
-    set -gx DISPLAY (cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+    set -l nameserver (grep -m 1 '^nameserver' /etc/resolv.conf | awk '{print $2}')
+    if test -n "$nameserver"
+        set -gx DISPLAY "$nameserver:0"
+    end
 end

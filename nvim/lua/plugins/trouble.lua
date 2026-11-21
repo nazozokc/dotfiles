@@ -3,9 +3,9 @@ return {
 	"folke/trouble.nvim",
 	event = "InsertEnter",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
-	cmd = { "Trouble", "TroubleToggle" },
+	cmd = "Trouble",
 	keys = {
-		{ "<leader>e", "<cmd>TroubleToggle<cr>", desc = "Toggle Trouble" },
+		{ "<leader>e", "<cmd>Trouble diagnostics toggle<cr>", desc = "Toggle Trouble" },
 		{ "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Toggle Diagnostics (Trouble)" },
 		{ "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics" },
 		{ "<leader>cs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols (Trouble)" },

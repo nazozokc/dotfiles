@@ -8,16 +8,31 @@ def main [port?: string] {
     print "-----------------------------------------"
 
     if not (which ss | is-empty) {
-      try {
-        ^ss -tlnp $"sport = :($port)" e> /dev/null
-      } catch {
+      # ss は待受が無くても終了コード 0 + ヘッダだけを返すので stdout を見る
+      let result = (^ss -H -tlnp $"sport = :($port)" | complete)
+      if ($result.stdout | str trim | is-empty) {
         print $"No process listening on port ($port)"
+      } else {
+        print $result.stdout
+      }
+      if not ($result.stderr | str trim | is-empty) {
+        print -e $result.stderr
+      }
+      if $result.exit_code != 0 {
+        exit $result.exit_code
       }
     } else if not (which lsof | is-empty) {
-      try {
-        ^lsof -i $":($port)" -P -n e> /dev/null
-      } catch {
+      let result = (^lsof -i $":($port)" -P -n | complete)
+      if ($result.stdout | str trim | is-empty) {
         print $"No process listening on port ($port)"
+      } else {
+        print $result.stdout
+      }
+      if not ($result.stderr | str trim | is-empty) {
+        print -e $result.stderr
+      }
+      if $result.exit_code != 0 {
+        exit $result.exit_code
       }
     } else {
       print -e "Error: Neither ss nor lsof found"

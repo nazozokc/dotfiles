@@ -1,6 +1,6 @@
 return {
 	"windwp/nvim-ts-autotag",
-	ft = { "html", "jsx", "tsx", "vue", "svelte", "astro" },
+	ft = { "html", "javascriptreact", "typescriptreact", "vue", "svelte", "astro" },
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
 	},

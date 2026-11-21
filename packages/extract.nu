@@ -39,7 +39,7 @@ def main [file?: string] {
     { suffix: ".gz",       cmd: "gunzip",    args: [] }
     { suffix: ".xz",       cmd: "unxz",      args: [] }
     { suffix: ".zst",      cmd: "unzstd",    args: [] }
-    { suffix: ".lz",       cmd: "unlzip",    args: [] }
+    { suffix: ".lz",       cmd: "lzip",      args: ["-d"] }
     { suffix: ".lzma",     cmd: "unlzma",    args: [] }
     { suffix: ".Z",        cmd: "uncompress", args: [] }
     { suffix: ".zip",      cmd: "unzip",     args: [] }
