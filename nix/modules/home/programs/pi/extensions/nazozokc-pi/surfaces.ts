@@ -21,11 +21,14 @@ import { NazozokcPiFooter } from "./footer.ts";
 import { NazozokcPiHeader } from "./header.ts";
 import { NazozokcPiPanel } from "./panel.ts";
 import type { NazozokcPiState } from "./state.ts";
+import { NazozokcPiStatusRail } from "./statusrail.ts";
 
 const PANEL_KEY = "nazozokc-pi";
+const RAIL_KEY = "nazozokc-pi-rail";
 
 export class NazozokcPiSurfaces {
   private panelEnabled = true;
+  private railEnabled = true;
 
   constructor(
     private readonly state: NazozokcPiState,
@@ -38,6 +41,7 @@ export class NazozokcPiSurfaces {
     this.installFooter(ctx);
     this.installHeader(ctx);
     this.installPanel(ctx);
+    this.installRail(ctx);
     this.installEditor(ctx);
   }
 
@@ -46,6 +50,13 @@ export class NazozokcPiSurfaces {
     this.panelEnabled = !this.panelEnabled;
     this.installPanel(ctx);
     return this.panelEnabled;
+  }
+
+  /** Toggle the status rail and return its new state. */
+  toggleRail(ctx: ExtensionContext): boolean {
+    this.railEnabled = !this.railEnabled;
+    this.installRail(ctx);
+    return this.railEnabled;
   }
 
   private installPanel(ctx: ExtensionContext): void {
@@ -65,6 +76,25 @@ export class NazozokcPiSurfaces {
         );
       },
       { placement: "aboveEditor" },
+    );
+  }
+
+  private installRail(ctx: ExtensionContext): void {
+    if (!this.railEnabled) {
+      ctx.ui.setWidget(RAIL_KEY, undefined);
+      return;
+    }
+    ctx.ui.setWidget(
+      RAIL_KEY,
+      (tui: TUI, theme: Theme) => {
+        this.controller.attachTui(tui);
+        this.state.setFallbackTheme(theme);
+        return new NazozokcPiStatusRail(
+          this.state.getData,
+          this.state.getTheme,
+        );
+      },
+      { placement: "belowEditor" },
     );
   }
 

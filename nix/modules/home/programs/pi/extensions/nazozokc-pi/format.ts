@@ -29,6 +29,18 @@ export function formatDuration(ms: number): string {
   return `${secs}s`;
 }
 
+/** Local 24-hour clock from an epoch timestamp: "12:34". */
+export function formatClock(now: number): string {
+  const date = new Date(now);
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+/** Integer percentage, clamped to 0-100. */
+export function formatPercent(n: number): string {
+  if (!Number.isFinite(n)) return "?%";
+  return `${Math.round(Math.max(0, Math.min(100, n)))}%`;
+}
+
 /** Session cost: "$0.0042" / "<$0.001". */
 export function formatCost(n: number): string {
   if (!Number.isFinite(n) || n <= 0) return "$0.000";

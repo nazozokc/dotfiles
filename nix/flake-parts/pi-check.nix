@@ -62,7 +62,7 @@ _: {
 
             cat > $out/bin/pi-check <<'EOF'
             #!/bin/sh
-            echo "pi-check: passed (tsc + 6 extensions + 9 render surfaces)"
+            echo "pi-check: passed (tsc + 6 extensions + 11 render surfaces)"
             EOF
             chmod +x $out/bin/pi-check
           '';

@@ -7,6 +7,8 @@
  * renders stay cheap.
  */
 
+import { cpus, freemem, loadavg, totalmem } from "node:os";
+
 import type { AssistantMessage } from "@earendil-works/pi-ai";
 import type {
   ExtensionAPI,
@@ -19,6 +21,8 @@ import type { TUI } from "@earendil-works/pi-tui";
 import type {
   NazozokcPiContext,
   NazozokcPiData,
+  NazozokcPiGit,
+  NazozokcPiHost,
   NazozokcPiStats,
   NazozokcPiStatus,
   NazozokcPiToolCall,
@@ -26,6 +30,52 @@ import type {
 } from "./types.ts";
 
 const RECENT_TOOL_LIMIT = 8;
+const HOST_CACHE_MS = 5000;
+
+/** Parse `git status --porcelain=v1 -b` into the rail's compact snapshot. */
+export function parseGitStatus(stdout: string): NazozokcPiGit {
+  const lines = stdout.split("\n");
+  const head = (lines[0] ?? "").startsWith("## ") ? lines[0].slice(3) : "";
+  const [branchPart = "", trackingPart = ""] = head.split("...");
+
+  let branch = branchPart.trim();
+  const detached =
+    !branch || branch === "HEAD" || branch.startsWith("No commits");
+  if (detached) branch = "detached";
+
+  let ahead = 0;
+  let behind = 0;
+  const divergence = trackingPart.match(/\[([^\]]+)\]/)?.[1] ?? "";
+  const aheadMatch = divergence.match(/ahead (\d+)/);
+  const behindMatch = divergence.match(/behind (\d+)/);
+  if (aheadMatch) ahead = Number(aheadMatch[1]) || 0;
+  if (behindMatch) behind = Number(behindMatch[1]) || 0;
+
+  let staged = 0;
+  let modified = 0;
+  let untracked = 0;
+  for (const line of lines.slice(1)) {
+    if (!line) continue;
+    const x = line[0];
+    const y = line[1];
+    if (x === "?" && y === "?") {
+      untracked += 1;
+      continue;
+    }
+    if (x !== " " && x !== "?") staged += 1;
+    if (y !== " " && y !== "?") modified += 1;
+  }
+
+  return {
+    branch,
+    detached,
+    dirty: staged + modified + untracked,
+    staged,
+    untracked,
+    ahead,
+    behind,
+  };
+}
 
 export class NazozokcPiController {
   private readonly pi: ExtensionAPI;
@@ -39,6 +89,17 @@ export class NazozokcPiController {
   private memoKey = "";
   private memoStats: NazozokcPiStats | null = null;
   private memoContext: NazozokcPiContext | null = null;
+
+  private gitSnapshot: NazozokcPiGit | null = null;
+  private gitRefreshing = false;
+  private gitRefreshQueued = false;
+
+  private readonly cpuCount = cpus().length;
+  private hostCache: {
+    at: number;
+    load: number | null;
+    memoryPercent: number | null;
+  } | null = null;
 
   constructor(pi: ExtensionAPI) {
     this.pi = pi;
@@ -64,6 +125,36 @@ export class NazozokcPiController {
   /** Live terminal height in rows, or undefined when the TUI is not attached. */
   getTerminalRows(): number | undefined {
     return this.tui?.terminal?.rows;
+  }
+
+  /**
+   * Re-read the work tree for the status rail. Overlapping requests are
+   * coalesced so a burst of tool events cannot pile up git processes.
+   */
+  async refreshGit(ctx: ExtensionContext): Promise<void> {
+    if (this.gitRefreshing) {
+      this.gitRefreshQueued = true;
+      return;
+    }
+    this.gitRefreshing = true;
+    try {
+      do {
+        this.gitRefreshQueued = false;
+        const result = await this.pi.exec(
+          "git",
+          ["status", "--porcelain=v1", "-b"],
+          { cwd: ctx.cwd },
+        );
+        this.gitSnapshot =
+          result.code === 0 ? parseGitStatus(result.stdout) : null;
+      } while (this.gitRefreshQueued);
+    } catch {
+      // Not a repository (or git unavailable): keep the rail git-free.
+      this.gitSnapshot = null;
+    } finally {
+      this.gitRefreshing = false;
+    }
+    this.requestRender();
   }
 
   // --- event handlers ------------------------------------------------------
@@ -92,6 +183,8 @@ export class NazozokcPiController {
     this.memoKey = "";
     this.memoStats = null;
     this.memoContext = null;
+    this.gitSnapshot = null;
+    this.hostCache = null;
   }
 
   // --- snapshot ------------------------------------------------------------
@@ -108,6 +201,7 @@ export class NazozokcPiController {
 
     const header = ctx.sessionManager.getHeader();
     const started = header ? Date.parse(header.timestamp) : Number.NaN;
+    const now = Date.now();
 
     return {
       model: model
@@ -136,6 +230,32 @@ export class NazozokcPiController {
       activeTool: this.getActiveTool(),
       recentTools: [...this.recentTools],
       statuses,
+      git: this.gitSnapshot,
+      host: this.getHost(now),
+      now,
+    };
+  }
+
+  /** Host metrics sampled at most once every HOST_CACHE_MS. */
+  private getHost(now: number): NazozokcPiHost {
+    if (this.hostCache === null || now - this.hostCache.at >= HOST_CACHE_MS) {
+      const total = totalmem();
+      const free = freemem();
+      const loadValues = loadavg();
+      this.hostCache = {
+        at: now,
+        load:
+          this.cpuCount > 0 && loadValues.length > 0
+            ? loadValues[0] / this.cpuCount
+            : null,
+        memoryPercent:
+          total > 0 ? Math.round(((total - free) / total) * 100) : null,
+      };
+    }
+    return {
+      load: this.hostCache.load,
+      memoryPercent: this.hostCache.memoryPercent,
+      cpuCount: this.cpuCount,
     };
   }
 
@@ -191,10 +311,21 @@ export class NazozokcPiController {
     }
     const stats = computeStats(session.getEntries());
     const usage = ctx.getContextUsage();
+    const contextWindow = usage?.contextWindow ?? ctx.model?.contextWindow ?? 0;
+    const tokens = usage?.tokens ?? null;
+    const remaining =
+      tokens === null ? null : Math.max(0, contextWindow - tokens);
+    const burn = stats.lastTurnTokens;
     const context: NazozokcPiContext = {
-      tokens: usage?.tokens ?? null,
-      contextWindow: usage?.contextWindow ?? ctx.model?.contextWindow ?? 0,
+      tokens,
+      contextWindow,
       percent: usage?.percent ?? null,
+      remaining,
+      lastTurnTokens: burn,
+      turnsLeft:
+        remaining !== null && burn !== null && burn > 0
+          ? Math.floor(remaining / burn)
+          : null,
     };
     this.memoKey = key;
     this.memoStats = stats;
@@ -214,6 +345,8 @@ export function computeStats(entries: SessionEntry[]): NazozokcPiStats {
   let cacheRead = 0;
   let cacheWrite = 0;
   let cost = 0;
+  let turnCost = 0;
+  let lastTurnTokens: number | null = null;
   let messages = 0;
   let toolCalls = 0;
   let cacheHitRate: number | null = null;
@@ -240,6 +373,9 @@ export function computeStats(entries: SessionEntry[]): NazozokcPiStats {
           messages += 1;
           const assistant = message as AssistantMessage;
           addUsage(assistant.usage);
+          // Later assistant entries win, so both values describe the last turn.
+          turnCost = assistant.usage.cost?.total ?? 0;
+          lastTurnTokens = assistant.usage.input + assistant.usage.output;
           const promptTokens =
             assistant.usage.input +
             assistant.usage.cacheRead +
@@ -274,6 +410,8 @@ export function computeStats(entries: SessionEntry[]): NazozokcPiStats {
     cacheRead,
     cacheWrite,
     cost,
+    turnCost,
+    lastTurnTokens,
     cacheHitRate,
     messages,
     toolCalls,
