@@ -16,12 +16,11 @@ import {
   contextFragment,
   elapsedFragment,
   locationFragment,
+  ruleFragment,
   statsFragment,
   toolsCountFragment,
 } from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
-
-const RULE = "▌";
 
 export class NazozokcPiPanel implements Component {
   private readonly getData: () => NazozokcPiData | null;
@@ -48,7 +47,7 @@ export class NazozokcPiPanel implements Component {
     if (!data) return [];
 
     const barWidth = Math.min(16, Math.max(6, Math.floor(width * 0.12)));
-    const title = `${" ".repeat(1)}${theme.fg("accent", RULE)} ${theme.bold(theme.fg("text", data.sessionName ?? "session"))}`;
+    const title = `${ruleFragment(theme, 1)}${theme.bold(theme.fg("text", data.sessionName ?? "session"))}`;
     const identity =
       width >= 56
         ? `${title}${theme.fg("dim", "  ")}${locationFragment(theme, data, this.home)}`

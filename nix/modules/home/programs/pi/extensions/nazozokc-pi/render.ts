@@ -9,14 +9,16 @@
 import type { Theme, ThemeColor } from "@earendil-works/pi-coding-agent";
 
 import {
+  formatClock,
   formatCost,
   formatDuration,
+  formatPercent,
   formatTokens,
   joinParts,
   makeBar,
   shortenHome,
 } from "./format.ts";
-import type { NazozokcPiData } from "./types.ts";
+import type { NazozokcPiData, NazozokcPiGit, NazozokcPiHost } from "./types.ts";
 
 const THINK_TOKEN: Record<string, ThemeColor> = {
   off: "thinkingOff",
@@ -28,11 +30,21 @@ const THINK_TOKEN: Record<string, ThemeColor> = {
   max: "thinkingMax",
 };
 
-/** Color used for the context bar/percentage by pressure. */
-function contextColor(percent: number | null): ThemeColor {
+/** Color used by context, memory and load gauges at their pressure levels. */
+export function pressureColor(percent: number | null): ThemeColor {
   if (percent !== null && percent > 90) return "error";
   if (percent !== null && percent > 70) return "warning";
   return "success";
+}
+
+/** Shared left-edge rule for header and panel surfaces. */
+export function ruleFragment(theme: Theme, inset = 0): string {
+  return " ".repeat(inset) + theme.fg("accent", "▌") + " ";
+}
+
+/** Dim divider between sections of the status rail. */
+export function sectionDivider(theme: Theme): string {
+  return theme.fg("dim", " │ ");
 }
 
 /** Last path segment, for a compact title. */
@@ -70,7 +82,7 @@ export function contextFragment(
   barWidth: number,
 ): string {
   const { percent, tokens, contextWindow } = data.context;
-  const color = contextColor(percent);
+  const color = pressureColor(percent);
   const barText = theme.fg(color, makeBar((percent ?? 0) / 100, barWidth));
   const percentText = percent === null ? "?" : `${percent.toFixed(1)}%`;
   const usage =
@@ -161,6 +173,41 @@ export function contextDetailFragment(
     ? theme.fg("dim", `${formatTokens(data.model.maxTokens)} out`)
     : theme.fg("dim", "? out");
   return joinParts([ctx, out], theme.fg("dim", " · "));
+}
+
+/** Compact work-tree fragment: `git:main ●3 ↑1↓0`. */
+export function gitFragment(theme: Theme, git: NazozokcPiGit): string {
+  const branch = git.detached
+    ? theme.fg("muted", git.branch)
+    : theme.fg("accent", git.branch);
+  const parts = [`${theme.fg("dim", "git:")}${branch}`];
+  if (git.dirty > 0) parts.push(theme.fg("warning", `●${git.dirty}`));
+  if (git.ahead > 0 || git.behind > 0) {
+    parts.push(theme.fg("muted", `↑${git.ahead}↓${git.behind}`));
+  }
+  return joinParts(parts, theme.fg("dim", " "));
+}
+
+/** Host fragment: `load 0.42 mem 63% 12:34`. */
+export function hostFragment(
+  theme: Theme,
+  host: NazozokcPiHost,
+  now: number,
+): string {
+  const parts: string[] = [];
+  if (host.load !== null) {
+    const color = pressureColor(Math.min(100, host.load * 100));
+    parts.push(
+      `${theme.fg("dim", "load")} ${theme.fg(color, host.load.toFixed(2))}`,
+    );
+  }
+  if (host.memoryPercent !== null) {
+    parts.push(
+      `${theme.fg("dim", "mem")} ${theme.fg(pressureColor(host.memoryPercent), formatPercent(host.memoryPercent))}`,
+    );
+  }
+  parts.push(theme.fg("text", formatClock(now)));
+  return joinParts(parts, theme.fg("dim", " "));
 }
 
 /** Active/recent tool summary used by the sidebar. */

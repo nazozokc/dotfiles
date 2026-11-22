@@ -6,12 +6,12 @@
  * command and shortcuts. Per-surface logic lives in sibling modules:
  *
  *   state.ts         shared context/theme state
- *   surfaces.ts      header / panel / footer / editor installation
+ *   surfaces.ts      header / panel / status rail / footer / editor installation
  *   sidebar-host.ts  sidebar overlay lifecycle
  *   screens.ts       help / stats / sessions overlays
  *
  * Commands:
- *   /nazozokc-pi [sidebar|panel|help|stats|sessions]
+ *   /nazozokc-pi [sidebar|panel|rail|help|stats|sessions]
  *                                Toggle a surface / open a screen
  *
  * Shortcuts:
@@ -36,6 +36,7 @@ import { NazozokcPiSurfaces } from "./surfaces.ts";
 const SIDEBAR_KEY = "alt+h";
 const HELP_KEY = "alt+i";
 const STATS_KEY = "alt+s";
+const CLOCK_TICK_MS = 30_000;
 
 export default function nazozokcPiExtension(pi: ExtensionAPI): void {
   const home = process.env.HOME || process.env.USERPROFILE;
@@ -46,6 +47,8 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
     controller.getTerminalRows();
   const sidebar = new NazozokcPiSidebarHost({ state, home, getTerminalRows });
   const screens = new NazozokcPiScreens({ pi, state, home, getTerminalRows });
+
+  let clockTimer: ReturnType<typeof setInterval> | null = null;
 
   /** Track the latest context and schedule a repaint (the common event body). */
   const refresh = (ctx: ExtensionContext): void => {
@@ -62,9 +65,16 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
     sidebar.reset();
     surfaces.installAll(ctx);
     controller.requestRender();
+    void controller.refreshGit(ctx);
+    if (clockTimer) clearInterval(clockTimer);
+    clockTimer = setInterval(() => controller.requestRender(), CLOCK_TICK_MS);
   });
 
   pi.on("session_shutdown", () => {
+    if (clockTimer) {
+      clearInterval(clockTimer);
+      clockTimer = null;
+    }
     sidebar.dispose();
     state.clear();
   });
@@ -72,7 +82,10 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
   pi.on("session_info_changed", (_event, ctx) => refresh(ctx));
   pi.on("agent_start", (_event, ctx) => refresh(ctx));
   pi.on("agent_end", (_event, ctx) => refresh(ctx));
-  pi.on("turn_end", (_event, ctx) => refresh(ctx));
+  pi.on("turn_end", (_event, ctx) => {
+    refresh(ctx);
+    void controller.refreshGit(ctx);
+  });
   pi.on("message_end", (_event, ctx) => refresh(ctx));
   pi.on("model_select", (_event, ctx) => refresh(ctx));
   pi.on("thinking_level_select", (_event, ctx) => refresh(ctx));
@@ -91,9 +104,10 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
   // --- command + shortcuts -------------------------------------------------
 
   pi.registerCommand("nazozokc-pi", {
-    description: "nazozokc-pi surfaces (sidebar, panel, help, stats, sessions)",
+    description:
+      "nazozokc-pi surfaces (sidebar, panel, rail, help, stats, sessions)",
     getArgumentCompletions: (prefix) => {
-      const options = ["sidebar", "panel", "help", "stats", "sessions"];
+      const options = ["sidebar", "panel", "rail", "help", "stats", "sessions"];
       const matches = options.filter((o) => o.startsWith(prefix));
       return matches.length > 0
         ? matches.map((value) => ({ value, label: value }))
@@ -115,6 +129,17 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
           controller.requestRender();
           return;
         }
+        case "rail": {
+          const enabled = surfaces.toggleRail(ctx);
+          ctx.ui.notify(
+            enabled
+              ? "nazozokc-pi status rail: on"
+              : "nazozokc-pi status rail: off",
+            "info",
+          );
+          controller.requestRender();
+          return;
+        }
         case "help":
           screens.openHelp(ctx);
           return;
@@ -126,7 +151,7 @@ export default function nazozokcPiExtension(pi: ExtensionAPI): void {
           return;
         default:
           ctx.ui.notify(
-            "nazozokc-pi — sidebar | panel | help | stats | sessions",
+            "nazozokc-pi — sidebar | panel | rail | help | stats | sessions",
             "info",
           );
           return;

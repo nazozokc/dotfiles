@@ -15,12 +15,12 @@ import {
   activityFragment,
   locationFragment,
   modelFragment,
+  ruleFragment,
   thinkingFragment,
 } from "./render.ts";
 import type { NazozokcPiData } from "./types.ts";
 
 const LEFT_INSET = 1;
-const RULE = "▌";
 
 export class NazozokcPiHeader implements Component {
   private readonly getData: () => NazozokcPiData | null;
@@ -42,7 +42,7 @@ export class NazozokcPiHeader implements Component {
   }
 
   private rule(theme: Theme): string {
-    return " ".repeat(LEFT_INSET) + theme.fg("accent", RULE) + " ";
+    return ruleFragment(theme, LEFT_INSET);
   }
 
   render(width: number): string[] {

@@ -15,6 +15,7 @@ import { NazozokcPiSidebar } from "./extensions/nazozokc-pi/sidebar.ts";
 import { NazozokcPiHelp } from "./extensions/nazozokc-pi/help.ts";
 import { NazozokcPiStats } from "./extensions/nazozokc-pi/stats.ts";
 import { NazozokcPiSessions } from "./extensions/nazozokc-pi/sessions.ts";
+import { NazozokcPiStatusRail } from "./extensions/nazozokc-pi/statusrail.ts";
 
 const theme = new Proxy(
   {},
@@ -43,13 +44,22 @@ const data = {
     maxTokens: 8192,
   },
   thinkingLevel: "high",
-  context: { tokens: 48213, contextWindow: 200000, percent: 24.1 },
+  context: {
+    tokens: 48213,
+    contextWindow: 200000,
+    percent: 24.1,
+    remaining: 151787,
+    lastTurnTokens: 8120,
+    turnsLeft: 18,
+  },
   stats: {
     input: 18342,
     output: 5211,
     cacheRead: 90120,
     cacheWrite: 2048,
     cost: 1.27,
+    turnCost: 0.031,
+    lastTurnTokens: 8120,
     cacheHitRate: 0.83,
     messages: 42,
     toolCalls: 17,
@@ -67,6 +77,17 @@ const data = {
   activeTool: null,
   recentTools: ["read", "bash", "edit", "grep"],
   statuses: [{ key: "codex-usage", text: "5h 12% · week 30%" }],
+  git: {
+    branch: "main",
+    detached: false,
+    dirty: 3,
+    staged: 1,
+    untracked: 1,
+    ahead: 1,
+    behind: 0,
+  },
+  host: { load: 0.42, memoryPercent: 63, cpuCount: 12 },
+  now: Date.UTC(2026, 10, 22, 12, 34),
 } as any;
 
 const getData = () => data;
@@ -75,6 +96,7 @@ const getTheme = () => theme;
 const components: Record<string, { render(width: number): string[] }> = {
   header: new NazozokcPiHeader(getData, getTheme, home),
   panel: new NazozokcPiPanel(getData, getTheme, home),
+  statusrail: new NazozokcPiStatusRail(getData, getTheme),
   sidebar: new NazozokcPiSidebar(getData, getTheme, home, rows),
   help: new NazozokcPiHelp(
     getData,
@@ -111,6 +133,7 @@ const components: Record<string, { render(width: number): string[] }> = {
 const emptyComponents = {
   "header-empty": new NazozokcPiHeader(() => null, getTheme, home),
   "panel-empty": new NazozokcPiPanel(() => null, getTheme, home),
+  "statusrail-empty": new NazozokcPiStatusRail(() => null, getTheme),
   "sidebar-empty": new NazozokcPiSidebar(() => null, getTheme, home, rows),
 };
 
