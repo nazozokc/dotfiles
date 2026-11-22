@@ -278,7 +278,7 @@
       imports = [
         # apps (default=bootstrap / switch / build / update / config-update /
         #       nvim-install / nvim-update / llm-agents-update /
-        #       agents-skills-update / agents-doctor / system-*)
+        #       agents-skills-update / agents-doctor / pi-check / system-*)
         ./nix/flake-parts/apps/bootstrap.nix
         ./nix/flake-parts/apps/switch.nix
         ./nix/flake-parts/apps/build.nix
@@ -293,6 +293,8 @@
         ./nix/flake-parts/dev-shells.nix
         # 品質ゲート (deadnix / statix / my-scripts / nu-check / typos)
         ./nix/flake-parts/checks.nix
+        # pi 拡張の型・登録・描画チェック
+        ./nix/flake-parts/pi-check.nix
         # nix fmt (treefmt-nix)
         ./nix/modules/home/packages/treefmt.nix
         # native PM manager (nlp)

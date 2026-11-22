@@ -10,6 +10,7 @@ in
     let
       t = c.targetsFor system;
       jq = "${pkgs.jq}/bin/jq";
+      piKeybindingsSchema = "${pkgs.pi-coding-agent}/lib/node_modules/pi-monorepo/schemas/keybindings.schema.json";
     in
     {
       apps.agents-doctor = {
@@ -150,9 +151,45 @@ in
                       }
                       check_json "opencode/opencode.json" 'f: f."opencode/opencode.json".text'
                       check_json "opencode/tui.json" 'f: f."opencode/tui.json".text'
-                      check_json "pi/agent/settings.json" 'f: f."pi/agent/settings.json".text'
-                       check_json "pi/agent/mcp.json" 'f: f."pi/agent/mcp.json".text'
-                       echo ""
+                       check_json "pi/agent/settings.json" 'f: f."pi/agent/settings.json".text'
+                        check_json "pi/agent/mcp.json" 'f: f."pi/agent/mcp.json".text'
+
+                        pi_settings=$(nix eval --raw --apply 'f: f."pi/agent/settings.json".text' "$hc.config.xdg.configFile" 2>/dev/null)
+                        pi_keys=$(nix eval --raw --apply 'f: f."pi/agent/keybindings.json".text' "$hc.config.xdg.configFile" 2>/dev/null)
+                        pi_ext_dirs=$(nix eval --raw --apply 'f: builtins.toJSON (builtins.filter (k: builtins.substring 0 20 k == "pi/agent/extensions/") (builtins.attrNames f))' "$hc.config.xdg.configFile" 2>/dev/null)
+
+                        # pi silently ignores unknown keybinding IDs, so drift here
+                        # would look like a working config while doing nothing.
+                        if printf '%s\n' "$pi_keys" | ${jq} -e --slurpfile schema "${piKeybindingsSchema}" '
+                          (keys - ["$schema"]) | all(.[]; . as $k | $schema[0].properties | has($k))
+                        ' >/dev/null 2>&1
+                        then
+                          ok "pi keybindings: 全 ID が pi の schema に存在"
+                        else
+                          bad "pi keybindings: 未定義 ID があります"
+                        fi
+
+                        # settings.extensions and the deployed extension dirs must agree.
+                        # shared/ is a library, not an extension: deliberately unregistered.
+                        if printf '%s\n' "$pi_settings" | ${jq} -e --argjson deployed "$pi_ext_dirs" '
+                          (.extensions | map(ltrimstr("./extensions/"))) as $registered
+                          | ($deployed | map(ltrimstr("pi/agent/extensions/"))) as $paths
+                          | (($registered - $paths) == []) and (($paths - $registered - ["shared"]) == [])
+                        ' >/dev/null 2>&1
+                        then
+                          ok "pi extensions: settings と配置先が一致"
+                        else
+                          bad "pi extensions: settings と配置先が一致しません"
+                        fi
+
+                        if printf '%s\n' "$pi_settings" | ${jq} -e '.packages | all(.[]; test("^npm:.+@[0-9]"))' >/dev/null 2>&1
+                        then
+                          ok "pi packages: npm バージョン固定"
+                        else
+                          bad "pi packages: バージョン未固定の npm パッケージがあります"
+                        fi
+                        echo ""
+
 
                        # -----------------------------------------------------------------
                        echo "[4/5] subagent 定義"
