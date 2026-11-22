@@ -6,10 +6,11 @@ in
 {
   xdg.configFile."pi/agent/settings.json".text = builtins.toJSON {
     "$schema" = "https://pi.dev/schemas/settings.schema.json";
+    # Exact versions only — agents-doctor rejects unpinned npm packages.
     packages = [
-      "npm:opencode-pi"
-      "npm:pi-vim"
-      "npm:pi-web-access"
+      "npm:opencode-pi@1.5.0"
+      "npm:pi-vim@0.16.0"
+      "npm:pi-web-access@0.48.0"
     ];
     extensions = [
       "./extensions/codex-usage.ts"

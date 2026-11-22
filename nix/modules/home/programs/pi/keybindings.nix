@@ -13,9 +13,13 @@
     "tui.editor.cursorWordRight" = [ "alt+f" ];
     "tui.editor.deleteWordBackward" = [ "ctrl+w" ];
     "tui.editor.deleteWordForward" = [ "alt+d" ];
-    "tui.history.prev" = [ "ctrl+p" ];
-    "tui.history.next" = [ "ctrl+n" ];
-    "tui.input.accept" = [ "ctrl+y" ];
-    "tui.search.toggle" = [ "ctrl+r" ];
+    # Prompt history. The old tui.history.* names were never recognised by pi,
+    # so free the two defaults that would otherwise claim the same keys.
+    "app.model.cycleForward" = [ ];
+    "app.session.toggleNamedFilter" = [ ];
+    "tui.editor.historyPrevious" = [ "ctrl+p" ];
+    "tui.editor.historyNext" = [ "ctrl+n" ];
+    # Transcript search (the old tui.search.toggle was ignored).
+    "tui.altScreen.search" = [ "ctrl+r" ];
   };
 }
