@@ -9,9 +9,13 @@ _: {
       checkRoot = piRoot + "/check";
       extensions = piRoot + "/extensions";
       piPkg = pkgs.pi-coding-agent or null;
+      tsPkg = pkgs.typescript_5 or null;
+      # pi 0.75 on the Intel nixpkgs stack has different internals; the harness
+      # targets the 1.6 loader/API used by this config.
+      supported = piPkg != null && tsPkg != null && pkgs.lib.versionAtLeast piPkg.version "1.6.0";
 
       nodeModules =
-        if piPkg == null then
+        if !supported then
           null
         else
           pkgs.runCommand "pi-check-node-modules" { } ''
@@ -34,7 +38,7 @@ _: {
             mkdir -p $out/bin
             cat > $out/bin/pi-check <<'EOF'
             #!/bin/sh
-            echo "pi-check: skipped (pi-coding-agent unavailable on this platform)"
+            echo "pi-check: skipped (pi 1.6+ / typescript_5 unavailable on this platform)"
             EOF
             chmod +x $out/bin/pi-check
           ''
@@ -50,7 +54,7 @@ _: {
               ./
 
             echo "pi-check: tsc" >&2
-            ${pkgs.typescript_5}/bin/tsc -p tsconfig.json --pretty false
+            ${tsPkg}/bin/tsc -p tsconfig.json --pretty false
             echo "pi-check: load extensions" >&2
             ${pkgs.nodejs_latest}/bin/node load-test.ts
             echo "pi-check: render surfaces" >&2
