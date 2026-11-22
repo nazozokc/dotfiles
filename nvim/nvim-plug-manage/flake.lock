@@ -1299,11 +1299,11 @@
     "nvim-scrollbar": {
       "flake": false,
       "locked": {
-        "lastModified": 1795303401,
-        "narHash": "sha256-69gYbIO4zbeKkddCdEIeAvqlVTm6zZ1kmb9OgJ3xDq0=",
+        "lastModified": 1795347085,
+        "narHash": "sha256-N5zuUT/DSCYJBwUyW8KIAM3/rqIpPtFKmDeLMiEu6Ls=",
         "owner": "petertriho",
         "repo": "nvim-scrollbar",
-        "rev": "3674de0ce9d6e280d2506e991e803c35da2a1481",
+        "rev": "4d2551cfe5647862b9e17f3e8aec4553040a1c1c",
         "type": "github"
       },
       "original": {
@@ -2322,11 +2322,11 @@
     "yazi.nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795314339,
-        "narHash": "sha256-F4cHbd4sShybej1ANShzoO/s4WC5jyOpijX3qljAEmc=",
+        "lastModified": 1795343783,
+        "narHash": "sha256-rASh9qLM/8MeNGQZLIyXncAXk9VylfW7SKOQo5c/wU0=",
         "owner": "mikavilpas",
         "repo": "yazi.nvim",
-        "rev": "2402109610d971d4379d86d7e8cf4ec88dee2971",
+        "rev": "53f82c55cb3bba29732f12208ad24103931056d0",
         "type": "github"
       },
       "original": {
