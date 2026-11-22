@@ -819,11 +819,11 @@
     "mini.nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795176650,
-        "narHash": "sha256-sJCO3GDxcM9krp5AzN+gvK/ICZ3mDj51hb5zYRI4cRM=",
+        "lastModified": 1795358638,
+        "narHash": "sha256-WX+h7Jd7U0pja16S4YjveQLUPcYw6Fr4LJ3+BjbAJ4w=",
         "owner": "nvim-mini",
         "repo": "mini.nvim",
-        "rev": "b8a0af521530f8ee68c738657429eab59de6a2ae",
+        "rev": "24cf4ad5840f0d092e3d8296b17eaf7026bf27f3",
         "type": "github"
       },
       "original": {
