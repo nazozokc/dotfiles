@@ -33,7 +33,8 @@ jobs:
       # flake check に含まれるため、追加のステップは不要
       # treefmt は下の fmt-check job (nix fmt -- --ci) で検証する
       run-command: nix flake check
-      timeout-minutes: 20
+      # macos-15-intel は my-scripts のビルドに時間がかかるため他より長く取る
+      timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 40 || 20 }}
 
   fmt-check:
     name: treefmt-ci (${{ matrix.os }})
