@@ -58,18 +58,27 @@ in
         config="${homeDir}/.codex/config.toml"
         mkdir -p "$(dirname "$config")"
         if [ ! -f "$config" ]; then
-          printf '{}\n' > "$config"
+          : > "$config"
         fi
         tmp="$(mktemp "${homeDir}/.codex/config.toml.XXXXXX")"
         ${python}/bin/python3 - "$config" "${mcpToml}" "$tmp" '${builtins.toJSON permConfig.codex}' <<'PY'
     import json
+    import shutil
     import sys
+    import time
     import tomllib
     import tomli_w
 
     config_path, mcp_path, out_path, perms_json = sys.argv[1:5]
-    with open(config_path, "rb") as f:
-        config = tomllib.load(f)
+    try:
+        with open(config_path, "rb") as f:
+            config = tomllib.load(f)
+    except (tomllib.TOMLDecodeError, UnicodeDecodeError) as e:
+        # Codex 以外が JSON などを書いていたら退避して作り直す
+        backup = f"{config_path}.invalid.{int(time.time())}"
+        shutil.copy2(config_path, backup)
+        print(f"codexMcp: invalid {config_path}: {e}; saved to {backup}", file=sys.stderr)
+        config = {}
     with open(mcp_path, "rb") as f:
         mcp = tomllib.load(f)
     # 権限は共通定義 (overlays/mcp/permissions.nix) を正本として上書きする
