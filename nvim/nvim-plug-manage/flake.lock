@@ -1794,11 +1794,11 @@
     "rustaceanvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795307241,
-        "narHash": "sha256-nCDYGg7Zk+CiK7AJ0UjX5SLJ2TISW3xPx4ZD0aG6mGM=",
+        "lastModified": 1795393654,
+        "narHash": "sha256-yAFuxP+PNdN9eRZfihNXnCccyg72hD2xpT//Vhs7fS0=",
         "owner": "mrcjkb",
         "repo": "rustaceanvim",
-        "rev": "029d3ece8b4aee8807dee163919886f0399c6c17",
+        "rev": "d4ade53789266bc54d4f194dc91f6c73233c327d",
         "type": "github"
       },
       "original": {
@@ -2322,11 +2322,11 @@
     "yazi.nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795343783,
-        "narHash": "sha256-rASh9qLM/8MeNGQZLIyXncAXk9VylfW7SKOQo5c/wU0=",
+        "lastModified": 1795399481,
+        "narHash": "sha256-C53e3nNxcEZ+zXCJBi7cBRVZQQLYNIKcwh5UNP2NnpQ=",
         "owner": "mikavilpas",
         "repo": "yazi.nvim",
-        "rev": "53f82c55cb3bba29732f12208ad24103931056d0",
+        "rev": "4fef9599c3d4248886d4619dc6e0cb2936682e96",
         "type": "github"
       },
       "original": {
@@ -2354,11 +2354,11 @@
     "zls": {
       "flake": false,
       "locked": {
-        "lastModified": 1794942328,
-        "narHash": "sha256-5oDVFgxEb1EevujnwXAlvMzT/k7KNhbpmg0wnwwn1o0=",
+        "lastModified": 1795395798,
+        "narHash": "sha256-9iLiuPNw0hsmQLyuwLd+H+lTu0W5LA7YwV2pRbWguUI=",
         "owner": "zigtools",
         "repo": "zls",
-        "rev": "e0911cd1ca5a48060c209c242ea3775dcd2a74e2",
+        "rev": "37a0d59803419dda5f97133cbc8fe6c68098386d",
         "type": "github"
       },
       "original": {
