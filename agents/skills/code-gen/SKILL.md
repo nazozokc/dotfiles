@@ -21,6 +21,7 @@ description: When generating or writing code in any language
 
 - Follow the file structure conventions already established in the target project — read existing files before writing new ones
 - For TypeScript projects: see ../typescript/SKILL.md
+- For Rust projects: see ../rust/SKILL.md
 - For Nix expressions: see ../nix/SKILL.md
 - For fish shell scripts: see ../shell/SKILL.md
 
