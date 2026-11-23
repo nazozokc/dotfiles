@@ -17,6 +17,8 @@ enew = "enew"
 # <leader>nd / <leader>fo — キーマップのラベル
 nd = "nd"
 fo = "fo"
+# flate2 — Rust の zlib バインディング crate 名
+flate2 = "flate2"
 
 [files]
 extend-exclude = [

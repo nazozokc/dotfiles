@@ -508,7 +508,7 @@ nix run .#agents-skills-update -- --no-switch    # switch をskip
 nix run .#agents-skills-update -- --no-validate  # agents/skills/ の検証をskip
 ```
 
-**`agents/skills/*` は 18 個すべて自前の手書きで upstream origin がない。**
+**`agents/skills/*` は 19 個すべて自前の手書きで upstream origin がない。**
 agent-skills-nix の source registry (`registry/sources/*.nix` + npins) は
 このリポジトリでは使っていない。所以「更新」は input bump のみで、
 スキル実体に対しては自己検証だけを行う。
