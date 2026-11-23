@@ -1,4 +1,3 @@
 [
   "man-db"
-  "bash-completion"
 ]

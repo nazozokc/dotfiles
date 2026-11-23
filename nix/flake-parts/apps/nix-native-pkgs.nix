@@ -1,38 +1,19 @@
+# nlp の新仕様 (flat packages + packagesByPm) を使う。
+# autoDetect は既定 true なので、packages は全 pm に配られ、
+# 実際に使う pm は実行時の PATH で決まる。
 { inputs, ... }:
-let
-  lib = inputs.nixpkgs.lib;
-  linuxPkg = inputs.linux-pkgmanager-nix;
-  backends = import "${linuxPkg}/nix/lib/backends.nix";
-  declaredCheck = import "${linuxPkg}/nix/lib/declared.nix" { inherit lib backends; };
-  inherit (declaredCheck) validate;
-  mkNlp = import "${linuxPkg}/nix/lib/mk-nlp.nix" { inherit lib backends validate; };
-
-  pms = lib.attrNames backends;
-in
 {
-  perSystem =
-    { pkgs, ... }:
-    let
-      declared = validate (
-        lib.genAttrs pms (
-          pm:
-          let
-            path = ../../native-pkgs/${pm}.nix;
-          in
-          if builtins.pathExists path then import path else [ ]
-        )
-      );
+  imports = [ inputs.linux-pkgmanager-nix.flakeModules.default ];
 
-      nlpDrv = mkNlp { inherit pkgs declared; };
-      built = import "${linuxPkg}/nix/lib/apps.nix" {
-        inherit lib pkgs;
-        nlp = nlpDrv;
-        appPrefix = "nlp-";
-        defaultApp = null;
-      };
-    in
-    {
-      inherit (built) apps;
-      packages.nlp = built.package;
+  nlp = {
+    packages = import ../../native-pkgs/common.nix;
+    # パスのまま渡すと packages (flat) と連結されないので、必ず import してリストにする
+    packagesByPm = {
+      apt = import ../../native-pkgs/apt.nix;
+      dnf = import ../../native-pkgs/dnf.nix;
+      pacman = import ../../native-pkgs/pacman.nix;
+      yum = import ../../native-pkgs/yum.nix;
+      zypper = import ../../native-pkgs/zypper.nix;
     };
+  };
 }

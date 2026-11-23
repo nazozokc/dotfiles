@@ -246,8 +246,10 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 ディストロ標準のパッケージマネージャ (pacman / apt / dnf / zypper / yum) の
 導入済みパッケージを宣言的に扱う（OS 本体のカーネル・ドライバはディストロ管理のまま）。
 
-- 宣言は `nix/native-pkgs/<pm>.nix` にパッケージ名のリストで書く（検出された pm に対応するファイルのみ使われる）
-- `nix run .#nlp-status` / `.#nlp-diff` — 検出した pm と宣言件数の表示 / 宣言と導入済みの差分確認
+- 宣言は新仕様の flat な `packages` / `packagesByPm` に合わせる
+  - `nix/native-pkgs/common.nix` — 全 pm 共通のパッケージ名リスト（`nlp.packages`）
+  - `nix/native-pkgs/<pm>.nix` — pm 固有のリスト（`nlp.packagesByPm.<pm>`。`autoDetect` 既定 true で全 pm 分の宣言を作り、実際に使う pm は実行時の PATH で決まる）
+- `nix run .#nlp-status` / `.#nlp-diff` — 全 pm の検出結果と宣言件数の表示 / 宣言と導入済みの差分確認
 - `nix run .#nlp-adopt` / `.#nlp-apply` / `.#nlp-update` — 導入済みを宣言の雛形として出力 / 不足パッケージの導入 / pm 更新と不足分の補完
 - `nix build .#nlp` で `nlp` バイナリ単体も取得できる
 

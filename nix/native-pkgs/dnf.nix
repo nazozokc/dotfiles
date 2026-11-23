@@ -1,4 +1,3 @@
 [
   "man-pages"
-  "bash-completion"
 ]

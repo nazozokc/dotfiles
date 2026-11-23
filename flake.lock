@@ -615,11 +615,11 @@
         "treefmt-nix": "treefmt-nix_3"
       },
       "locked": {
-        "lastModified": 1791092348,
-        "narHash": "sha256-BE1N2GtObKFnrvJ7PNEVJt2v9xTnxFB/bw7sTVZYD8k=",
+        "lastModified": 1795411147,
+        "narHash": "sha256-5KToMBKCgG3GKqkTwEcSk/ndi2p0eFWB1xcYd6wymgA=",
         "owner": "nazozokc",
         "repo": "linux-pkgmanager.nix",
-        "rev": "f9f46841d12a5305f36d0e7ed9841dc370c2d336",
+        "rev": "e3391be776e3f0db92c6a1b7b010adb9a13aea65",
         "type": "github"
       },
       "original": {
