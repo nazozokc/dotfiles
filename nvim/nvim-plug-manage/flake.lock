@@ -451,11 +451,11 @@
     "fzf-lua": {
       "flake": false,
       "locked": {
-        "lastModified": 1795061508,
-        "narHash": "sha256-m7W+WSEh5y0NZ+U3RJGYnQkA2JRjoSRPuXKDF/6xCy4=",
+        "lastModified": 1795479074,
+        "narHash": "sha256-tRMBCHombhLaQC+pWhK69BhxHPLpcfvpDYeIsDmwfOw=",
         "owner": "ibhagwan",
         "repo": "fzf-lua",
-        "rev": "a8312697c30b4d3b110fa3dc56e3699107aed9a0",
+        "rev": "a3b5e6bebcc604d0286fffa1c4eb05b066a2a198",
         "type": "github"
       },
       "original": {
@@ -1794,11 +1794,11 @@
     "rustaceanvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795393654,
-        "narHash": "sha256-yAFuxP+PNdN9eRZfihNXnCccyg72hD2xpT//Vhs7fS0=",
+        "lastModified": 1795479850,
+        "narHash": "sha256-PaOHPaC9WM/ILG9ffY42Dslzf2rVkIN3FcA7ra0yV7M=",
         "owner": "mrcjkb",
         "repo": "rustaceanvim",
-        "rev": "d4ade53789266bc54d4f194dc91f6c73233c327d",
+        "rev": "0257bfd737af5265647b2e50654481666372e6d5",
         "type": "github"
       },
       "original": {
@@ -2274,11 +2274,11 @@
     "vscode-js-debug": {
       "flake": false,
       "locked": {
-        "lastModified": 1795453271,
-        "narHash": "sha256-neLP4w+xaF1+WknnjLBz9sqtXr9DDHgLOuxC8Q77wGk=",
+        "lastModified": 1795476174,
+        "narHash": "sha256-i+aUlmwmlGnYqoXXXKM7d0RadOteR0BtML4I5JTX/oQ=",
         "owner": "microsoft",
         "repo": "vscode-js-debug",
-        "rev": "194a5547cbce00061771ffe2c68d04cbbd22aee9",
+        "rev": "e2fdfc2b7856546838f0760d23293cfaa83e7452",
         "type": "github"
       },
       "original": {
