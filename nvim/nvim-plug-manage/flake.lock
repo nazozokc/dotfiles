@@ -1794,11 +1794,11 @@
     "rustaceanvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795479850,
-        "narHash": "sha256-PaOHPaC9WM/ILG9ffY42Dslzf2rVkIN3FcA7ra0yV7M=",
+        "lastModified": 1795566398,
+        "narHash": "sha256-oaKLsW53YgKVqVYYvEFYY2kFydhNFRcDR3QKcZgs3kw=",
         "owner": "mrcjkb",
         "repo": "rustaceanvim",
-        "rev": "0257bfd737af5265647b2e50654481666372e6d5",
+        "rev": "01476bba833b3874f77385b9f6f4ff5b8c0aef23",
         "type": "github"
       },
       "original": {
@@ -1986,11 +1986,11 @@
     "tiny-inline-diagnostic.nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1791481741,
-        "narHash": "sha256-SRverbbR2b7hhMDa0KCfumNcHP/ZAH/KgQ1KyNSS2EM=",
+        "lastModified": 1795545277,
+        "narHash": "sha256-pZjpil448++6WoFKP+Xo7eZk7PZTNF0s7LjdTowrMmA=",
         "owner": "rachartier",
         "repo": "tiny-inline-diagnostic.nvim",
-        "rev": "46ae9b3c8f3039e96ff4497d190ad0aee091f30d",
+        "rev": "43ff39303869f3aa0fcdeb625872ba89eab68e69",
         "type": "github"
       },
       "original": {
