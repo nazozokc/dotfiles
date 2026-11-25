@@ -8,6 +8,7 @@
   nix-index-database,
   sops-nix,
   agent-skills-nix,
+  orca-nix,
 }:
 {
   system,
@@ -15,6 +16,8 @@
 }:
 let
   pkgs = pkgsFor system;
+  # WSL は GUI を使わないため CLI のみ (orca-cli)。
+  orcaPackages = orca-nix.packages.${system};
   commonHomeModules = [
     nix-index-database.homeModules.nix-index
     sops-nix.homeManagerModules.sops
@@ -25,7 +28,7 @@ in
 home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
   extraSpecialArgs = {
-    inherit pkgs username;
+    inherit pkgs username orcaPackages;
     dotfilesDir = self.outPath;
   };
   modules =

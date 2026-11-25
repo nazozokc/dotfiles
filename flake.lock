@@ -409,6 +409,24 @@
         "type": "github"
       }
     },
+    "flake-utils_2": {
+      "inputs": {
+        "systems": "systems_4"
+      },
+      "locked": {
+        "lastModified": 1794427683,
+        "narHash": "sha256-o7ey9gEilsxaifqJWnBDlYSKbNWYQYtKwDyXeZU2kaU=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "cd489559845d81f673a12885576016c65cbe9363",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "gh-graph": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -874,6 +892,27 @@
         "type": "github"
       }
     },
+    "orca-nix": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795581799,
+        "narHash": "sha256-4/YMZs3v2ZBEViAbirlvceVaW3Lq/CtoBqOPdIDPPuo=",
+        "owner": "kevinpita",
+        "repo": "orca-nix",
+        "rev": "c472f65ff7408208c8c3e7bdca9ec0f1633c0b5f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kevinpita",
+        "repo": "orca-nix",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks-nix": {
       "inputs": {
         "flake-compat": [
@@ -922,6 +961,7 @@
         "nixGL": "nixGL",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-intel": "nixpkgs-intel",
+        "orca-nix": "orca-nix",
         "sops-nix": "sops-nix",
         "system-manager": "system-manager",
         "treefmt-nix": "treefmt-nix_6",
@@ -1016,6 +1056,21 @@
       }
     },
     "systems_4": {
+      "locked": {
+        "lastModified": 1791244623,
+        "narHash": "sha256-uuanbkFk8a313Zfrxdcz8Us/yQtaxNnKJtX8v0ZPpd8=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "d36eeed142f88b5a636f2e3856a53c61654cf29b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_5": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
@@ -1167,7 +1222,7 @@
           "nixpkgs"
         ],
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
-        "systems": "systems_4"
+        "systems": "systems_5"
       },
       "locked": {
         "lastModified": 1770377964,

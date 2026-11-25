@@ -83,6 +83,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Orca (parallel agent ADE) — Linux 用 AppImage パッケージを提供する
+    # x86_64-linux / aarch64-linux のみ。macOS 向け出力は無い。
+    orca-nix = {
+      url = "github:kevinpita/orca-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # GPU ライブラリラッパー (非 NixOS で Nix GUI アプリを動かす)
     nixGL = {
       url = "github:guibou/nixGL";
@@ -165,6 +172,7 @@
       sops-nix,
       nixGL,
       zen-browser,
+      orca-nix,
       system-manager,
       ambxst,
       # x86_64-darwin (Intel Mac) 専用スタック
@@ -215,6 +223,7 @@
           agent-skills-nix
           nixGL
           zen-browser
+          orca-nix
           ambxst
           ;
       };
@@ -229,6 +238,7 @@
           nix-index-database
           sops-nix
           agent-skills-nix
+          orca-nix
           ;
       };
 

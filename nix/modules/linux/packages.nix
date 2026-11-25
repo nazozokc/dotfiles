@@ -6,7 +6,7 @@
 # ここに書くのは「ネイティブ Linux だけ」の分だけ。
 # 全環境で入る CLI (jq など) は nix/modules/home/packages/base/ が
 # 持つので、ここには重複して書かない。
-{ pkgs, ... }:
+{ pkgs, orcaPackages, ... }:
 
 {
   home.packages =
@@ -41,5 +41,9 @@
 
       # microsoft
       teams-for-linux
+
+      # Orca (parallel agent ADE) — GUI と CLI の両方
+      # orca-nix は Linux 専用。macOS 向け出力は無い。
+      orcaPackages.default
     ]);
 }

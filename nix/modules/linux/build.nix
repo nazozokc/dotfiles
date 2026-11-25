@@ -16,6 +16,7 @@
   agent-skills-nix,
   nixGL,
   zen-browser,
+  orca-nix,
   ambxst,
 }:
 {
@@ -29,6 +30,8 @@ let
   # zen-browser-flake は x86_64-linux / aarch64-linux のみ提供するため、
   # mkLinuxHomeConfig が受け取るのはこの 2 システムに限られる。
   zenBrowser = zen-browser.packages.${system}.zen-browser;
+  # orca-nix は Linux のみ (x86_64-linux / aarch64-linux)。GUI と CLI の両方を含む。
+  orcaPackages = orca-nix.packages.${system};
   commonHomeModules = [
     nix-index-database.homeModules.nix-index
     sops-nix.homeManagerModules.sops
@@ -43,6 +46,7 @@ home-manager.lib.homeManagerConfiguration {
       pkgs
       username
       zenBrowser
+      orcaPackages
       useNixGL
       ;
     dotfilesDir = self.outPath;
