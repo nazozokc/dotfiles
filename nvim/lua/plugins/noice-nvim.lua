@@ -6,7 +6,6 @@ return {
 
 		dependencies = {
 			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify",
 		},
 
 		opts = {
@@ -79,7 +78,6 @@ return {
 					enabled = true,
 				},
 
-				-- lspsaga と競合するから切る
 				signature = {
 					enabled = false,
 				},

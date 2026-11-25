@@ -102,7 +102,6 @@ nix run .#switch
 | nvim-lspconfig  | LSP設定                    |
 | nvim-cmp        | 補完エンジン               |
 | LuaSnip         | スニペット                 |
-| Lspsaga         | LSP UI拡張                 |
 | actions-preview | コードアクションプレビュー |
 
 ### Fuzzy Finder / ナビゲーション
@@ -122,7 +121,6 @@ nix run .#switch
 | kanagawa.nvim  | カラースキーム   |
 | lualine.nvim   | ステータスライン |
 | noice.nvim     | コマンドラインUI |
-| nvim-notify    | 通知             |
 | nvim-scrollbar | スクロールバー   |
 
 ### Git
@@ -149,7 +147,6 @@ nix run .#switch
 | プラグイン  | 用途            |
 | ----------- | --------------- |
 | nvim-dap    | デバッガー      |
-| neotest     | テストランナー  |
 | crates.nvim | Cargo.toml 管理 |
 
 ---
@@ -176,10 +173,7 @@ nix run .#switch
 | キー         | 動作                       |
 | ------------ | -------------------------- |
 | `K`          | ホバー                     |
-| `gd`         | 定義へ移動                 |
-| `ga`         | コードアクション (Lspsaga) |
 | `<Leader>ca` | コードアクション (preview) |
-| `<Leader>gd` | 定義へ移動                 |
 | `<Leader>gr` | 参照一覧                   |
 
 ### UI
@@ -252,7 +246,7 @@ filetype plugin 形式なので `lazy = false`。
 - **デバッグ**: codelldb（`vscode-extensions.vadimcn.vscode-lldb`）。
   wrapper 環境変数 `CODELLDB` / `LIBLLDB` から `rustaceanvim.dap` が
   adapter を組み、Attach 時に `dap.configurations.rust` を自動登録する
-- **テスト**: neotest（`hoxbro/neotest-rust`）が PATH 上の `cargo-nextest` を使う
+- **テスト**: vim-test（vimux 経由）で `:TestNearest` / `:TestFile` などを使う
 - **Cargo.toml**: crates.nvim（crates.io のバージョン補完）。
 
 ### SQL の接続設定（.sqls/config.yml）
