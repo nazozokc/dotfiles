@@ -257,7 +257,6 @@ if set -q __done_enabled
             set -l title "Done in $humanized_duration"
             set -l wd (string replace --regex "^$HOME" "~" (pwd))
             set -l message "$wd/ $argv[1]"
-            set -l sender $__done_initial_window_id
 
             if test "$exit_status" -ne 0
                 set title "Failed ($exit_status) after $humanized_duration"
