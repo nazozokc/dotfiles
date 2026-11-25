@@ -160,7 +160,7 @@ in
       sqls
       clang-tools
 
-      # Rust: neotest-rust が PATH 上の `cargo-nextest` を使う。
+      # Rust: cargo-nextest (Rust テスト実行用)。
       # rust-analyzer は shim と紛れるため PATH に入れず
       # extraWrapperArgs の RUST_ANALYZER で渡す。
       cargo-nextest
