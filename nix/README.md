@@ -91,6 +91,7 @@ Linux / macOS は `base/default.nix`、WSL は `nix/modules/wsl/packages.nix` �
 AI / LLM 関連ツール。
 
 - ollama, opencode, codex, claude-monitor, claude-code
+- OpenHands Agent Canvas (`agent-canvas`) — llm-agents.nix 由来。x86_64-darwin は上流が未提供のため除外
 - aarch64-darwin のみ: codexbar
 
 #### gui (`gui/default.nix`)
@@ -479,9 +480,9 @@ nix run .#llm-agents-update -- --no-check    # flake check をskip
 nix run .#llm-agents-update -- --no-switch   # switch をskip (更新だけ)
 ```
 
-**更新対象は `opencode` と `coderabbit-cli` のみ。**
+**更新対象は `opencode` / `coderabbit-cli` / `openhands-agent-canvas` のみ。**
 
-`nix/overlays/ai-tools.nix` が llm-agents から nixpkgs へ注入しているのはこの 2 つだけ。
+`nix/overlays/ai-tools.nix` が llm-agents から nixpkgs へ注入しているのはこの 3 つだけ。
 `claude-code` / `codex` / `ollama` / `codexbar` は nixpkgs 由来なので
 このコマンドでは更新されない (`nix flake update nixpkgs` の領域)。
 

@@ -263,7 +263,7 @@ Nix store の GC は systemd ユーザタイマー (`nix-store-gc`) が週1で�
 - **CLIツール**: Nix によるパッケージ管理。`nix/modules/home/packages/` 配下で分類 (`base/`, `dev/`, `ai/`, `gui/`, `experimental/`)
   - **base**: jq, curl, zoxide, fd, eza, tmux, yazi, gh, ghq, jujutsu, docker, lazydocker, nix-tree, cachix, nh など
   - **dev**: nodejs_latest, bun, deno, rustc, go, jdk, clang, efm-langserver など
-  - **ai**: ollama, opencode, codex, claude-code, claude-monitor など
+  - **ai**: ollama, opencode, codex, claude-code, claude-monitor, agent-canvas (OpenHands) など
   - **gui**: vscode, audacity, spotify, discord, google-chrome など (x86_64-linux 固有で tor-browser / macOS 固有で obsidian, raycast, vscodium)
   - **experimental**: pi-coding-agent, grok-cli, qwen-code
   - **Linux / WSL 共通**は `nix/lib/packages/shared.nix`（クリップボード / アーカイブ / nmap / fontconfig / gnupg / openssh / XDG / herdr）

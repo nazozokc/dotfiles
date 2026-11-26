@@ -13,3 +13,8 @@ with pkgs;
   # codexbar は macOS のメニューバーアプリ (Intel Mac は nixpkgs 26.05 側に無い)
   codexbar
 ]
+
+++ lib.optionals (openhands-agent-canvas != null) [
+  # OpenHands Agent Canvas (llm-agents.nix 由来 / x86_64-darwin は未提供)
+  openhands-agent-canvas
+]
