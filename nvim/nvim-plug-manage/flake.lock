@@ -2226,11 +2226,11 @@
     "vim-test": {
       "flake": false,
       "locked": {
-        "lastModified": 1795229322,
-        "narHash": "sha256-yxjiFpZ9vi2S+EuD6qDLvV+80i+onK4q1ALUbIW6+/w=",
+        "lastModified": 1795701860,
+        "narHash": "sha256-uGWa8a9mRfx0yo89et+ISelCSks5Q+hcT7k6lqV4N94=",
         "owner": "vim-test",
         "repo": "vim-test",
-        "rev": "ad6e74cfac81158042014fe31d155df0b70e571a",
+        "rev": "417e78dfcac0f47b5cd2525cfaa5eb37eaf8b238",
         "type": "github"
       },
       "original": {
