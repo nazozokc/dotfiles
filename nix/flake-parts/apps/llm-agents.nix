@@ -6,9 +6,10 @@
 #   llm-agents       … github:numtide/llm-agents.nix
 #   llm-agents-intel … 同じリポジトリ。nixpkgs-intel を follow する x86_64-darwin 専用
 #
-# 実際に llm-agents から nixpkgs へ注入されるのは opencode と coderabbit-cli
-# だけ (nix/overlays/ai-tools.nix)。claude-code / codex / ollama / codexbar は
-# nixpkgs 由来なので、このコマンドでは更新されない (nix flake update nixpkgs の領域)。
+# 実際に llm-agents から nixpkgs へ注入されるのは opencode / coderabbit-cli /
+# openhands-agent-canvas だけ (nix/overlays/ai-tools.nix)。
+# claude-code / codex / ollama / codexbar は nixpkgs 由来なので、このコマンドでは
+# 更新されない (nix flake update nixpkgs の領域)。
 { inputs, ... }:
 let
   c = import ./common.nix { inherit inputs; };
@@ -27,7 +28,7 @@ in
     {
       apps.llm-agents-update = {
         type = "app";
-        meta.description = "llm-agents.nix 由来の AI エージェント (opencode / coderabbit-cli) を更新する";
+        meta.description = "llm-agents.nix 由来の AI エージェント (opencode / coderabbit-cli / openhands-agent-canvas) を更新する";
         program = "${pkgs.writeShellScriptBin "llm-agents-update" ''
                       set -eo pipefail
 
