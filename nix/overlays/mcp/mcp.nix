@@ -33,6 +33,14 @@ let
       command = [ "${pkgs.mcp-server-git}/bin/mcp-server-git" ];
     };
 
+    samemory = {
+      type = "local";
+      command = [
+        "bunx"
+        "samemory"
+      ];
+    };
+
     nixos = {
       type = "local";
       command = [ "${pkgs.mcp-nixos}/bin/mcp-nixos" ];
