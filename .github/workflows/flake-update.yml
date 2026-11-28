@@ -25,7 +25,12 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          commit-message: "chore(nix): update flake.lock"
+          # auto-merge は CI 完了を待たず即マージされる (branch protection なし)。
+          # PR が閉じた直後に pull_request CI が起動すると merge ref が消えて
+          # workflow file issue で落ちる。検証は上の "Check flake" が担うため
+          # bot PR の PR CI だけ [skip ci] でスキップする。タイトル側には付けない
+          # (squash 後の main push CI は残すため)。
+          commit-message: "chore(nix): update flake.lock [skip ci]"
           title: "chore(nix): update flake.lock"
           body: |
             Automated flake.lock update.
