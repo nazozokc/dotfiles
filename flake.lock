@@ -900,11 +900,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795774802,
-        "narHash": "sha256-AnZnluMHRWUTlctVAfa3nv353nTog6gMvPp3mGk6/Ec=",
+        "lastModified": 1795808712,
+        "narHash": "sha256-myUyS8iOC9RdTSUlEli0oI7DT141E8nQMeOHLjm0OwE=",
         "owner": "kevinpita",
         "repo": "orca-nix",
-        "rev": "04d5edc2965897fae901110ae74e522c725d275c",
+        "rev": "f513f050d5a56ac42b65a0083f012e34940a115f",
         "type": "github"
       },
       "original": {
