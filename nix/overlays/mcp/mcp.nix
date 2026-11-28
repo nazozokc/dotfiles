@@ -37,7 +37,7 @@ let
       type = "local";
       command = [
         "bunx"
-        "samemory"
+        "samemory@latest"
       ];
     };
 
